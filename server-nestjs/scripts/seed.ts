@@ -64,7 +64,7 @@ async function seed() {
         const [newUser] = await db.insert(schema.users).values({
             email: adminEmail,
             name: 'Fustan Admin',
-            password: '$2b$10$EpIxNwllqg.jN6x/g.q0Oe.v.q0Oe.v.q0Oe.v.q0Oe.v.q0Oe.v', // Placeholder hash
+            password: '4065975c6b0bef5fc47b9f54dacd572c:7c5fa605084d96b4848d88d86f13b21f3174308232a8fd0af7ec810690d3237cad03e87c1426e1f22983316a74ff15a85f92d973e785d34140ec25d8b265f053', // 'password123'
             role: 'admin',
             phone: '0500000000',
             openId: 'admin_openid_123',
