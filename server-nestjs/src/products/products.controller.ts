@@ -16,7 +16,7 @@ export class ProductsController {
     @UseInterceptors(AnyFilesInterceptor())
     async create(
         @Body() body: any,
-        @UploadedFiles(new FileValidationPipe()) files: Express.Multer.File[]
+        @UploadedFiles(new FileValidationPipe(50 * 1024 * 1024)) files: Express.Multer.File[]
     ) {
         console.log("📥 [Products Controller] Create Request Received");
         console.log("   - Body:", JSON.stringify(body, null, 2));

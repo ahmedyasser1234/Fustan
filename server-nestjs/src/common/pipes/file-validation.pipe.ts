@@ -23,10 +23,12 @@ export class FileValidationPipe implements PipeTransform {
         const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
 
         if (!allowedMimeTypes.includes(file.mimetype)) {
+            console.error(`❌ [FileValidationPipe] Invalid file type: ${file.mimetype}`);
             throw new BadRequestException(`Invalid file type: ${file.mimetype}. Only JPEG, PNG, WEBP, and GIF are allowed.`);
         }
 
         if (file.size > this.maxSizeBytes) {
+            console.error(`❌ [FileValidationPipe] File too large: ${(file.size / 1024 / 1024).toFixed(2)}MB > ${(this.maxSizeBytes / 1024 / 1024).toFixed(2)}MB`);
             throw new BadRequestException(`File too large: ${(file.size / 1024 / 1024).toFixed(2)}MB. Max allowed is ${(this.maxSizeBytes / 1024 / 1024).toFixed(2)}MB.`);
         }
 
