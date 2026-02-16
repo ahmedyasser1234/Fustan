@@ -30,14 +30,17 @@ export class CategoriesService {
     }
 
     async create(data: any, files: Express.Multer.File[]) {
+        console.log("⚙️ [Backend Service] Processing Create Category...");
         let imageUrl = data.image || null;
 
         // Upload image if file is provided
         const imageFile = files?.find(f => f.fieldname === 'image');
         if (imageFile) {
+            console.log("   - Uploading image to Cloudinary...");
             const result = await this.cloudinary.uploadFile(imageFile);
             if ('secure_url' in result) {
                 imageUrl = result.secure_url;
+                console.log("   - Image Uploaded:", imageUrl);
             }
         }
 
@@ -46,8 +49,11 @@ export class CategoriesService {
             .replace(/^-+|-+$/g, '')
             .replace(/-+/g, '-');
 
+        console.log("   - Generated Slug:", slug);
+
         if (!slug || slug.length < 2) {
             slug = `category-${Date.now()}`;
+            console.log("   - Slug fallback used:", slug);
         }
 
         // Ensure uniqueness (simple append)
@@ -56,22 +62,30 @@ export class CategoriesService {
         });
         if (existing) {
             slug = `${slug}-${Date.now().toString().slice(-4)}`;
+            console.log("   - Slug conflict, resolved to:", slug);
         }
 
-        const [newCategory] = await this.databaseService.db
-            .insert(categories)
-            .values({
-                nameAr: data.nameAr,
-                nameEn: data.nameEn,
-                descriptionAr: data.descriptionAr || null,
-                descriptionEn: data.descriptionEn || null,
-                image: imageUrl,
-                slug,
-                displayOrder: data.displayOrder || 0,
-            })
-            .returning();
+        try {
+            console.log("   - Inserting into DB...");
+            const [newCategory] = await this.databaseService.db
+                .insert(categories)
+                .values({
+                    nameAr: data.nameAr,
+                    nameEn: data.nameEn,
+                    descriptionAr: data.descriptionAr || null,
+                    descriptionEn: data.descriptionEn || null,
+                    image: imageUrl,
+                    slug,
+                    displayOrder: data.displayOrder || 0,
+                })
+                .returning();
 
-        return newCategory;
+            console.log("✅ [Backend Service] Category Created:", newCategory.id);
+            return newCategory;
+        } catch (error) {
+            console.error("❌ [Backend Service] Insert Failed:", error);
+            throw error;
+        }
     }
 
     async update(id: number, data: any, files: Express.Multer.File[]) {

@@ -1518,6 +1518,7 @@ function CategoriesTab({
   };
 
   const handleSubmit = () => {
+    console.log("🚀 [Frontend] Submitting Category Form...");
     const formData = new FormData();
     formData.append("nameAr", nameAr);
     formData.append("nameEn", nameEn);
@@ -1527,6 +1528,11 @@ function CategoriesTab({
     if (imageFile) {
       formData.append("image", imageFile); // Actual file upload (prioritized by backend)
     }
+
+    // Debug FormData
+    formData.forEach((value, key) => {
+      console.log(`📦 [FormData] ${key}:`, value);
+    });
 
     if (editingCategory) {
       updateCategory.mutate({ id: editingCategory.id, data: formData });

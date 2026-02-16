@@ -28,6 +28,9 @@ export class CategoriesController {
         @Body() body: any,
         @UploadedFiles(new FileValidationPipe()) files: Express.Multer.File[]
     ) {
+        console.log("📥 [Backend Controller] Create Category Request Received");
+        console.log("   - Body:", body);
+        console.log("   - Files:", files ? files.map(f => f.originalname) : 'None');
         return this.categoriesService.create(body, files);
     }
 
