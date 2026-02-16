@@ -12,16 +12,21 @@ export class ProductsService {
     ) { }
 
     async create(data: any, files: Express.Multer.File[]) {
+        console.log("⚙️ [Products Service] Processing Create Product...");
         const imageUrls: string[] = [];
 
         const vendorId = parseInt(data.vendorId);
         const collectionId = data.collectionId ? parseInt(data.collectionId) : null;
 
+        console.log(`   - Parsed IDs: Vendor=${vendorId}, Collection=${collectionId}`);
+
         if (isNaN(vendorId)) {
+            console.error("❌ Invalid Vendor ID");
             throw new BadRequestException('Invalid vendor ID');
         }
 
         if (!collectionId) {
+            console.error("❌ Missing Collection ID");
             throw new BadRequestException('Product must belong to a collection');
         }
 
@@ -31,10 +36,12 @@ export class ProductsService {
         });
 
         if (!collection) {
+            console.error(`❌ Collection not found for ID ${collectionId} and Vendor ${vendorId}`);
             throw new BadRequestException('Invalid collection ID');
         }
 
         if (!collection.categoryId) {
+            console.error("❌ Collection has no category ID");
             throw new BadRequestException('Selected collection does not have a category');
         }
 

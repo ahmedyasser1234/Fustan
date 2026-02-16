@@ -18,6 +18,9 @@ export class ProductsController {
         @Body() body: any,
         @UploadedFiles(new FileValidationPipe()) files: Express.Multer.File[]
     ) {
+        console.log("📥 [Products Controller] Create Request Received");
+        console.log("   - Body:", JSON.stringify(body, null, 2));
+        console.log("   - Files Count:", files?.length || 0);
         return this.productsService.create(body, files);
     }
 
