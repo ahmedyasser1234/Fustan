@@ -45,7 +45,10 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         }
 
         if (!socket) {
-            const newSocket = io('/chat', {
+            const SOCKET_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+            // The chat namespace might need to be appended or handled via path if using namespaces
+            // Standard socket.io namespaces are handled by connecting to URL/namespace
+            const newSocket = io(`${SOCKET_URL}/chat`, {
                 withCredentials: true,
                 transports: ['websocket', 'polling'],
             });

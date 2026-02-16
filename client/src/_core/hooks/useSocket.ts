@@ -19,7 +19,8 @@ export const useSocket = () => {
         }
 
         if (!socketRef.current) {
-            socketRef.current = io('/', {
+            const SOCKET_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+            socketRef.current = io(SOCKET_URL, {
                 path: '/socket.io',
                 withCredentials: true,
                 transports: ['websocket', 'polling'],

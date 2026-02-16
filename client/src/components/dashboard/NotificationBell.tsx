@@ -31,7 +31,8 @@ export default function NotificationBell() {
     useEffect(() => {
         if (!user) return;
 
-        const newSocket = io('/', {
+        const SOCKET_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+        const newSocket = io(SOCKET_URL, {
             withCredentials: true,
             transports: ['websocket', 'polling'],
         });
