@@ -45,6 +45,11 @@
     "reflect-metadata": "^0.2.2",
     "replicate": "^1.4.0",
     "rxjs": "^7.8.1",
+    "@nestjs/platform-socket.io": "^11.1.13",
+    "@nestjs/websockets": "^11.1.13",
+    "socket.io": "^4.8.3",
+    "stripe": "^14.10.0",
+    "dotenv": "^17.2.3",
     "zod": "^3.24.1"
   },
   "devDependencies": {
@@ -62,6 +67,7 @@
     "@types/pdfkit": "^0.17.4",
     "@types/streamifier": "^0.1.2",
     "@types/stripe": "^8.0.417",
+    "@types/dotenv": "^8.2.3",
     "@types/supertest": "^6.0.2",
     "drizzle-kit": "^0.31.8",
     "eslint": "^9.18.0",
