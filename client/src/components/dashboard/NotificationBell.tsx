@@ -31,8 +31,8 @@ export default function NotificationBell() {
     useEffect(() => {
         if (!user) return;
 
-        const SOCKET_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
-        const newSocket = io(SOCKET_URL, {
+        // Use relative path to leverage Netlify proxy
+        const newSocket = io('/', {
             withCredentials: true,
             transports: ['websocket', 'polling'],
         });

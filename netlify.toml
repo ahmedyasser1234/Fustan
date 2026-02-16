@@ -9,8 +9,17 @@
   status = 200
   force = true
 
+# Proxy Socket.io requests to VPS
+[[redirects]]
+  from = "/socket.io/*"
+  to = "http://148.230.126.48/socket.io/:splat"
+  status = 200
+  force = true
+
 # SPA fallback for everything else
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
+
+

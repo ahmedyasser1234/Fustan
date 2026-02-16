@@ -45,10 +45,8 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         }
 
         if (!socket) {
-            const SOCKET_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
-            // The chat namespace might need to be appended or handled via path if using namespaces
-            // Standard socket.io namespaces are handled by connecting to URL/namespace
-            const newSocket = io(`${SOCKET_URL}/chat`, {
+            // Use relative path to leverage Netlify proxy
+            const newSocket = io('/chat', {
                 withCredentials: true,
                 transports: ['websocket', 'polling'],
             });

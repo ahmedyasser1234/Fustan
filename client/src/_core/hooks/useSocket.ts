@@ -19,8 +19,8 @@ export const useSocket = () => {
         }
 
         if (!socketRef.current) {
-            const SOCKET_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
-            socketRef.current = io(SOCKET_URL, {
+            // Use relative path to leverage Netlify proxy
+            socketRef.current = io('/', {
                 path: '/socket.io',
                 withCredentials: true,
                 transports: ['websocket', 'polling'],
