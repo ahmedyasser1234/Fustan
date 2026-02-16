@@ -73,7 +73,13 @@ async function seed() {
         console.log(`   Created admin user: ${adminEmail}`);
     } else {
         adminId = existingAdmin.id;
-        console.log(`   Admin user already exists`);
+        console.log(`   Admin user already exists - Updating Password...`);
+        await db.update(schema.users)
+            .set({
+                password: '4065975c6b0bef5fc47b9f54dacd572c:7c5fa605084d96b4848d88d86f13b21f3174308232a8fd0af7ec810690d3237cad03e87c1426e1f22983316a74ff15a85f92d973e785d34140ec25d8b265f053'
+            })
+            .where(eq(schema.users.id, adminId));
+        console.log(`   ✅ Admin password updated`);
     }
 
     // 3. Seed Vendor
