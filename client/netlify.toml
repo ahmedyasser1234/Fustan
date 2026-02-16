@@ -5,7 +5,7 @@
 # Proxy /api requests to VPS
 [[redirects]]
   from = "/api/*"
-  to = "http://148.230.126.48/api/:splat"
+  to = "http://148.230.126.48/api"
   status = 200
   force = true
 
