@@ -1,0 +1,152 @@
+import { useState } from "react";
+import { Link, useLocation } from "wouter";
+import { useAuth } from "@/_core/hooks/useAuth";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { useLanguage } from "@/lib/i18n";
+import api from "@/lib/api";
+import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
+import { GoogleLogin } from "@react-oauth/google";
+
+export default function Login() {
+    const { t, language } = useLanguage();
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
+    const [, setLocation] = useLocation();
+    const { refresh } = useAuth();
+
+    const handleGoogleSuccess = async (credentialResponse: any) => {
+        setIsLoading(true);
+        try {
+            const { credential } = credentialResponse;
+            const response = await api.post("/auth/google", { token: credential });
+            await refresh();
+            toast.success(language === 'ar' ? 'تم تسجيل الدخول بنجاح' : 'Logged in successfully');
+            const userRole = response.data.user?.role;
+            if (userRole === 'vendor') {
+                setLocation("/vendor-dashboard");
+            } else {
+                setLocation("/");
+            }
+        } catch (error) {
+            toast.error(language === 'ar' ? 'فشل تسجيل الدخول بواسطة جوجل' : 'Google Login failed');
+            console.error(error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsLoading(true);
+
+        try {
+            const response = await api.post("/auth/login", {
+                email: email.toLowerCase(),
+                password,
+                role: 'customer'
+            });
+            await refresh(); // Refresh auth state
+            toast.success(language === 'ar' ? 'تم تسجيل الدخول بنجاح' : 'Logged in successfully');
+            setLocation("/");
+        } catch (error: any) {
+            const message = error.response?.data?.message || (language === 'ar' ? 'فشل تسجيل الدخول. تحقق من بياناتك' : 'Login failed. Check your credentials');
+            toast.error(message);
+            console.error(error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    return (
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+            <Card className="w-full max-w-md shadow-xl border-0 bg-white/80 backdrop-blur-xl overflow-hidden focus-within:ring-2 ring-rose-500/20 transition-all">
+                <div className="flex w-full border-b border-gray-100">
+                    <Link href="/login" className="flex-1 py-4 text-center text-sm font-bold bg-white text-rose-600 border-b-2 border-rose-600 transition-all">
+                        {language === 'ar' ? 'حساب العميل' : 'Customer Account'}
+                    </Link>
+                    <Link href="/vendor/login" className="flex-1 py-4 text-center text-sm font-bold text-gray-400 hover:text-gray-600 hover:bg-gray-50/50 transition-all">
+                        {language === 'ar' ? 'حساب التاجر' : 'Vendor Account'}
+                    </Link>
+                </div>
+                <CardHeader className="space-y-1 text-center pt-8">
+                    <CardTitle className="text-2xl font-bold tracking-tight text-gray-900">
+                        {language === 'ar' ? 'تسجيل الدخول' : 'Sign in to your account'}
+                    </CardTitle>
+                    <p className="text-sm text-gray-500">
+                        {language === 'ar' ? 'أهلا بك مجددا! الرجاء ادخال بياناتك' : 'Welcome back! Please enter your details'}
+                    </p>
+                </CardHeader>
+                <CardContent>
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                        <div className={`space-y-2 text-${language === 'ar' ? 'right' : 'left'}`}>
+                            <Label htmlFor="email">{language === 'ar' ? 'البريد الإلكتروني' : 'Email'}</Label>
+                            <Input
+                                id="email"
+                                type="email"
+                                placeholder="name@example.com"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value.toLowerCase())}
+                                required
+                                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-rose-500 focus:ring-rose-500"
+                            />
+                        </div>
+                        <div className={`space-y-2 text-${language === 'ar' ? 'right' : 'left'}`}>
+                            <Label htmlFor="password">{language === 'ar' ? 'كلمة المرور' : 'Password'}</Label>
+                            <Input
+                                id="password"
+                                type="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-rose-500 focus:ring-rose-500"
+                            />
+                        </div>
+
+                        <Button
+                            type="submit"
+                            className="w-full bg-rose-600 hover:bg-rose-700 text-white font-bold py-2 px-4 rounded-full shadow-lg transition-all"
+                            disabled={isLoading}
+                        >
+                            {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : (language === 'ar' ? 'تسجيل الدخول' : 'Sign In')}
+                        </Button>
+
+                        <div className="relative">
+                            <div className="absolute inset-0 flex items-center">
+                                <span className="w-full border-t border-gray-300" />
+                            </div>
+                            <div className="relative flex justify-center text-xs uppercase">
+                                <span className="bg-white px-2 text-gray-500">
+                                    {language === 'ar' ? 'أو' : 'Or continue with'}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div className="flex justify-center">
+                            <GoogleLogin
+                                onSuccess={handleGoogleSuccess}
+                                onError={() => {
+                                    console.log('Login Failed');
+                                    toast.error("Google Login Failed");
+                                }}
+                                useOneTap
+                            />
+                        </div>
+                    </form>
+                </CardContent>
+                <CardFooter className="justify-center">
+                    <div className="text-sm text-center">
+                        <span className="text-gray-500">{language === 'ar' ? 'ليس لديك حساب؟' : "Don't have an account?"} </span>
+                        <Link href="/register" className="font-medium text-rose-600 hover:text-rose-500">
+                            {language === 'ar' ? 'إنشاء حساب جديد' : 'Sign up'}
+                        </Link>
+                    </div>
+                </CardFooter>
+            </Card>
+        </div>
+    );
+}

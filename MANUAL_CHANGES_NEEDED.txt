@@ -1,0 +1,2 @@
+// Add this line after line 62 in api.ts:
+analytics: () => api.get('/vendors/analytics').then(res => res.data),

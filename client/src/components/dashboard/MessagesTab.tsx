@@ -1,0 +1,339 @@
+import { useState, useEffect, useRef, useMemo } from "react";
+import { MessageSquare, Send, Search, User, AlertCircle, Check, Zap } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import api, { endpoints } from "@/lib/api";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { io, Socket } from "socket.io-client";
+import { useAuth } from "@/_core/hooks/useAuth";
+import { formatDistanceToNow } from "date-fns";
+import { ar } from "date-fns/locale";
+import { toast } from "sonner";
+import { cn } from "@/lib/utils";
+import { useLanguage } from "@/lib/i18n";
+
+
+interface Conversation {
+    id: number;
+    counterpartName: string;
+    counterpartImage?: string;
+    lastMessage?: string;
+    lastMessageTime: string;
+    unread: boolean;
+    recipientId?: number; // Added
+}
+
+interface Message {
+    id: number;
+    conversationId: number; // Added
+    content: string;
+    senderRole: 'customer' | 'vendor';
+    createdAt: string;
+    isRead: boolean;
+}
+
+export default function MessagesTab() {
+    const { user } = useAuth();
+    const { language, t } = useLanguage();
+    const queryClient = useQueryClient();
+    const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
+    const [socket, setSocket] = useState<Socket | null>(null);
+    const [messages, setMessages] = useState<Message[]>([]);
+    const [inputValue, setInputValue] = useState("");
+    const [searchTerm, setSearchTerm] = useState("");
+    const [onlineUsers, setOnlineUsers] = useState<Set<number>>(new Set());
+    const scrollRef = useRef<HTMLDivElement>(null);
+
+    // Fetch Conversations
+    const { data: conversations, refetch: refetchConversations } = useQuery({
+        queryKey: ['vendor-conversations'],
+        queryFn: () => endpoints.chat.conversations(),
+    });
+
+    const filteredConversations = useMemo(() => {
+        return conversations?.filter((conv: any) =>
+            conv.counterpartName.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+    }, [conversations, searchTerm]);
+
+    // Socket Connection
+    useEffect(() => {
+        if (!user) return;
+        const newSocket = io("/chat", {
+            withCredentials: true,
+            transports: ['websocket', 'polling']
+        });
+
+        newSocket.on("connect", () => {
+            // console.log("Vendor Chat Connected");
+        });
+
+        newSocket.on("receiveMessage", (message: Message) => {
+            setMessages((prev) => {
+                if (selectedConversation && message.conversationId === selectedConversation.id) {
+                    // Mark as read immediately if chat is open
+                    newSocket.emit('markAsRead', {
+                        conversationId: selectedConversation.id,
+                        recipientId: selectedConversation.recipientId
+                    });
+                    return [...prev, message];
+                }
+                return prev;
+            });
+            refetchConversations();
+        });
+
+        newSocket.on("userStatus", ({ userId, status }: { userId: number, status: 'online' | 'offline' }) => {
+            setOnlineUsers(prev => {
+                const next = new Set(prev);
+                if (status === 'online') next.add(userId);
+                else next.delete(userId);
+                return next;
+            });
+        });
+
+        newSocket.on("messagesRead", ({ conversationId }: { conversationId: number }) => {
+            if (selectedConversation && conversationId === selectedConversation.id) {
+                setMessages(prev => prev.map(m => ({ ...m, isRead: true })));
+            }
+        });
+
+        setSocket(newSocket);
+
+        return () => {
+            newSocket.disconnect();
+        };
+    }, [user, selectedConversation, refetchConversations]);
+
+    // Fetch Messages when conversation selected
+    useEffect(() => {
+        if (selectedConversation) {
+            endpoints.chat.getMessages(selectedConversation.id).then(setMessages);
+
+            // Mark as read via HTTP
+            endpoints.chat.markRead(selectedConversation.id).then(() => {
+                queryClient.invalidateQueries({ queryKey: ['chat', 'unread'] });
+                queryClient.invalidateQueries({ queryKey: ['vendor-conversations'] });
+            });
+
+            // Mark as read via Socket (to notify counterparty)
+            if (socket && selectedConversation.recipientId) {
+                socket.emit('markAsRead', {
+                    conversationId: selectedConversation.id,
+                    recipientId: selectedConversation.recipientId
+                });
+
+                // Initial status check
+                if (selectedConversation.recipientId) {
+                    socket.emit('checkUserStatus', selectedConversation.recipientId, (res: any) => {
+                        const recId = selectedConversation.recipientId;
+                        if (res?.status === 'online' && recId) {
+                            setOnlineUsers(prev => new Set(prev).add(recId));
+                        }
+                    });
+                }
+            }
+        }
+    }, [selectedConversation, queryClient, socket]);
+
+    // Auto scroll
+    useEffect(() => {
+        if (scrollRef.current) {
+            scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+        }
+    }, [messages, selectedConversation]);
+
+    const handleSend = () => {
+        if (!inputValue.trim() || !selectedConversation || !socket) return;
+
+        console.log("Sending message to:", selectedConversation.recipientId);
+
+        socket.emit("sendMessage", {
+            conversationId: selectedConversation.id,
+            content: inputValue,
+            recipientId: selectedConversation.recipientId
+        }, (response: any) => {
+            if (response && response.id) {
+                setMessages(prev => [...prev, response]);
+            } else {
+                console.error("Message send failed:", response);
+                toast.error(t('messageFailed'));
+            }
+        });
+
+        setInputValue("");
+    };
+
+    return (
+        <div className="flex h-[calc(100vh-200px)] border-0 rounded-2xl overflow-hidden bg-white shadow-xl shadow-slate-100" dir={language === 'ar' ? "rtl" : "ltr"}>
+            {/* Sidebar List */}
+            <div className={`w-1/3 border-${language === 'ar' ? 'l' : 'r'} border-gray-100 bg-gray-50/50 flex flex-col`}>
+                <div className="p-4 border-b border-gray-100 bg-white">
+                    <h3 className={`font-black text-gray-900 mb-4 ${language === 'ar' ? 'text-right' : 'text-left'}`}>{t('conversations')}</h3>
+                    <div className="relative">
+                        <Search className={`absolute ${language === 'ar' ? 'right-3' : 'left-3'} top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400`} />
+                        <Input
+                            placeholder={t('searchPlaceholder')}
+                            className={`bg-gray-50 border-0 h-10 ${language === 'ar' ? 'pr-9' : 'pl-9'} rounded-xl focus-visible:ring-1 focus-visible:ring-gray-200`}
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                    </div>
+                </div>
+
+                <ScrollArea className="flex-1 px-2">
+                    <div className="py-2 space-y-1">
+                        {filteredConversations?.map((conv: any) => (
+                            <div
+                                key={conv.id}
+                                onClick={() => setSelectedConversation(conv)}
+                                className={cn(
+                                    "p-3 rounded-2xl cursor-pointer flex items-center gap-3 transition-all duration-200",
+                                    selectedConversation?.id === conv.id
+                                        ? 'bg-white shadow-md border border-gray-100 ring-2 ring-[#e91e63]/5'
+                                        : 'hover:bg-white/60 border border-transparent'
+                                )}
+                            >
+                                <div className="relative">
+                                    <Avatar className="h-12 w-12 border-2 border-white shadow-sm">
+                                        <AvatarImage src={conv.counterpartImage} />
+                                        <AvatarFallback className="bg-gradient-to-br from-slate-100 to-slate-200 text-slate-400">
+                                            <User className="h-5 w-5" />
+                                        </AvatarFallback>
+                                    </Avatar>
+                                    {onlineUsers.has(conv.recipientId) && (
+                                        <span className="absolute bottom-0 right-0 h-3.5 w-3.5 bg-emerald-500 border-2 border-white rounded-full shadow-sm"></span>
+                                    )}
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <div className="flex justify-between items-center mb-1">
+                                        <h4 className={cn("text-sm truncate", selectedConversation?.id === conv.id ? "font-black" : "font-bold text-gray-700")}>
+                                            {conv.counterpartName}
+                                        </h4>
+                                        <span className="text-[10px] text-gray-400 font-medium">
+                                            {formatDistanceToNow(new Date(conv.lastMessageTime), { addSuffix: true, locale: language === 'ar' ? ar : undefined })}
+                                        </span>
+                                    </div>
+                                    <p className={cn("text-xs truncate", conv.unread ? "text-[#e91e63] font-bold" : "text-gray-400")}>
+                                        {conv.lastMessage || t('startNewChat')}
+                                    </p>
+                                </div>
+                                {conv.unread && (
+                                    <div className="h-2 w-2 bg-[#e91e63] rounded-full shadow-lg shadow-[#e91e63]/20" />
+                                )}
+                            </div>
+                        ))}
+                        {filteredConversations?.length === 0 && searchTerm && (
+                            <div className="p-8 text-center text-gray-400 text-xs">
+                                {t('noConversations')}
+                            </div>
+                        )}
+                    </div>
+                </ScrollArea>
+            </div>
+
+            {/* Chat Area */}
+            <div className="flex-1 flex flex-col bg-white">
+                {selectedConversation ? (
+                    <>
+                        <div className="p-4 border-b border-gray-100 flex items-center justify-between bg-white/80 backdrop-blur-md z-20">
+                            <div className="flex items-center gap-3">
+                                <Avatar className="h-10 w-10 border border-gray-100">
+                                    <AvatarImage src={selectedConversation.counterpartImage} />
+                                    <AvatarFallback><User className="h-5 w-5" /></AvatarFallback>
+                                </Avatar>
+                                <div>
+                                    <h3 className="font-black text-sm text-gray-900">{selectedConversation.counterpartName}</h3>
+                                    <div className="flex items-center gap-1.5">
+                                        <span className={cn(
+                                            "h-2 w-2 rounded-full",
+                                            selectedConversation.recipientId && onlineUsers.has(selectedConversation.recipientId) ? 'bg-emerald-500 animate-pulse' : 'bg-gray-300'
+                                        )} />
+                                        <span className={cn(
+                                            "text-[10px] font-bold",
+                                            selectedConversation.recipientId && onlineUsers.has(selectedConversation.recipientId) ? 'text-emerald-500' : 'text-gray-400'
+                                        )}>
+                                            {selectedConversation.recipientId && onlineUsers.has(selectedConversation.recipientId) ? t('online') : t('offline')}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <Button variant="ghost" size="icon" className="rounded-full text-gray-400 hover:text-[#e91e63]">
+                                <AlertCircle className="h-5 w-5" />
+                            </Button>
+                        </div>
+
+                        <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-[#fcfcfd]" ref={scrollRef}>
+                            {messages
+                                .filter(m => m.conversationId === selectedConversation.id)
+                                .map((msg, index, arr) => {
+                                    const isMe = msg.senderRole === 'vendor';
+                                    const nextMsg = arr[index + 1];
+                                    const isLastInGroup = !nextMsg || nextMsg.senderRole !== msg.senderRole;
+
+                                    return (
+                                        <div key={msg.id} className={cn("flex flex-col", isMe ? 'items-end' : 'items-start')}>
+                                            <div className={cn(
+                                                "max-w-[80%] px-4 py-2.5 text-sm shadow-sm transition-all animate-in fade-in slide-in-from-bottom-2",
+                                                isMe
+                                                    ? 'bg-[#e91e63] text-white rounded-2xl rounded-tr-[4px]'
+                                                    : 'bg-white text-gray-800 border border-gray-100 rounded-2xl rounded-tl-[4px]'
+                                            )}>
+                                                {msg.content}
+                                            </div>
+                                            {isLastInGroup && (
+                                                <div className={cn("flex items-center gap-1.5 mt-1.5 px-1", isMe ? 'flex-row-reverse' : 'flex-row')}>
+                                                    <span className="text-[9px] font-bold text-gray-300">
+                                                        {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                    </span>
+                                                    {isMe && (
+                                                        <span className={msg.isRead ? 'text-emerald-500' : 'text-gray-300'}>
+                                                            <Check className="h-3 w-3 stroke-[3]" />
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            )}
+                                        </div>
+                                    );
+                                })}
+                        </div>
+
+                        <div className="p-4 bg-white border-t border-gray-100">
+                            <div className="flex gap-2 items-center bg-gray-50 p-1.5 rounded-2xl border border-gray-100 focus-within:ring-2 focus-within:ring-[#e91e63]/10 transition-all">
+                                <Input
+                                    value={inputValue}
+                                    onChange={(e) => setInputValue(e.target.value)}
+                                    onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+                                    placeholder={t('writeReply')}
+                                    className="border-0 bg-transparent h-12 text-sm focus-visible:ring-0 placeholder:text-gray-400"
+                                />
+                                <Button
+                                    onClick={handleSend}
+                                    size="icon"
+                                    className="bg-[#e91e63] hover:bg-[#c2185b] h-10 w-10 rounded-xl shadow-lg shadow-[#e91e63]/20 shrink-0"
+                                >
+                                    <Send className={`h-4 w-4 ${language === 'ar' ? 'rtl:rotate-180' : ''}`} />
+                                </Button>
+                            </div>
+                        </div>
+                    </>
+                ) : (
+                    <div className="flex-1 flex flex-col items-center justify-center bg-gray-50/50 p-12 text-center">
+                        <div className="relative mb-6">
+                            <div className="h-24 w-24 bg-white rounded-3xl shadow-xl flex items-center justify-center rotate-3 scale-110">
+                                <MessageSquare className="h-10 w-10 text-[#e91e63]" />
+                            </div>
+                            <div className="absolute -bottom-2 -right-2 h-10 w-10 bg-[#e91e63] rounded-2xl shadow-lg flex items-center justify-center -rotate-6">
+                                <Zap className="h-5 w-5 text-white" />
+                            </div>
+                        </div>
+                        <h3 className="text-xl font-black text-slate-800 mb-2">{t('startChat')}</h3>
+                        <p className="text-slate-400 text-sm max-w-[280px]">{t('selectChat')}</p>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+}

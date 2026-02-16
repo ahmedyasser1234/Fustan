@@ -1,0 +1,52 @@
+$content = Get-Content 'c:\Users\hp\Downloads\Fustan-main\Fustan-main\server-nestjs\src\vendors\vendors.service.ts' -Raw
+$content = $content.TrimEnd()
+$content = $content.Substring(0, $content.Length - 1)
+$newMethod = @'
+
+
+    async getAnalytics(vendorId: number) {
+        const sevenMonthsAgo = new Date();
+        sevenMonthsAgo.setMonth(sevenMonthsAgo.getMonth() - 6);
+
+        const ordersList = await this.databaseService.db
+            .select({
+                createdAt: orders.createdAt,
+                total: orders.total,
+                paymentStatus: orders.paymentStatus
+            })
+            .from(orders)
+            .where(
+                and(
+                    eq(orders.vendorId, vendorId),
+                    sql`${orders.createdAt} >= ${sevenMonthsAgo.toISOString()}`
+                )
+            )
+            .orderBy(orders.createdAt);
+
+        const monthlyData: { [key: string]: number } = {};
+        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+        ordersList.forEach(order => {
+            if (order.paymentStatus === 'paid') {
+                const date = new Date(order.createdAt);
+                const monthKey = `${monthNames[date.getMonth()]}`;
+                monthlyData[monthKey] = (monthlyData[monthKey] || 0) + Number(order.total);
+            }
+        });
+
+        const result = [];
+        for (let i = 6; i >= 0; i--) {
+            const date = new Date();
+            date.setMonth(date.getMonth() - i);
+            const monthName = monthNames[date.getMonth()];
+            result.push({
+                name: monthName,
+                value: Math.round(monthlyData[monthName] || 0)
+            });
+        }
+
+        return result;
+    }
+}
+'@
+$content + $newMethod | Set-Content 'c:\Users\hp\Downloads\Fustan-main\Fustan-main\server-nestjs\src\vendors\vendors.service.ts'
