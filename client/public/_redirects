@@ -1,5 +1,0 @@
-# Handle SPA routing
-/*  /index.html  200
-
-# Proxy API requests to VPS (Avoid Mixed Content)
-/api/*  http://148.230.126.48/api/:splat  200
