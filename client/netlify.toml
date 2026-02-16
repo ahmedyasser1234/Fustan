@@ -1,0 +1,16 @@
+[build]
+  publish = "dist"
+  command = "npm run build"
+
+# Proxy /api requests to VPS
+[[redirects]]
+  from = "/api/*"
+  to = "http://148.230.126.48/api/:splat"
+  status = 200
+  force = true
+
+# SPA fallback for everything else
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
