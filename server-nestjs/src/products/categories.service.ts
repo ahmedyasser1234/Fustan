@@ -41,7 +41,22 @@ export class CategoriesService {
             }
         }
 
-        const slug = (data.nameEn || data.nameAr).toLowerCase().replace(/[^a-z0-9]+/g, '-');
+        let slug = (data.nameEn || data.nameAr).toLowerCase()
+            .replace(/[^a-z0-9\u0600-\u06FF]+/g, '-') // Allow Arabic chars
+            .replace(/^-+|-+$/g, '')
+            .replace(/-+/g, '-');
+
+        if (!slug || slug.length < 2) {
+            slug = `category-${Date.now()}`;
+        }
+
+        // Ensure uniqueness (simple append)
+        const existing = await this.databaseService.db.query.categories.findFirst({
+            where: eq(categories.slug, slug)
+        });
+        if (existing) {
+            slug = `${slug}-${Date.now().toString().slice(-4)}`;
+        }
 
         const [newCategory] = await this.databaseService.db
             .insert(categories)
