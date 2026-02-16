@@ -71,12 +71,17 @@ export class OrdersService {
     }
 
     async create(customerId: number, shippingAddress: any, paymentMethod = 'card', couponCode?: string) {
+        console.log(`📦 [OrdersService] Creating Order for Customer ID: ${customerId}`);
+
         const cart = await this.databaseService.db
             .select()
             .from(cartItems)
             .where(eq(cartItems.customerId, customerId));
 
+        console.log(`   - Cart Items Found: ${cart.length}`);
+
         if (cart.length === 0) {
+            console.error(`❌ [OrdersService] Cart is empty for Customer ID: ${customerId}`);
             throw new BadRequestException('السلة فارغة');
         }
 
