@@ -238,7 +238,7 @@ export function TryOnSection({ productName, productImage, productDescription }: 
                                         </Label>
                                         {!dressPreview ? (
                                             <label className="block cursor-pointer">
-                                                <div className="border-2 border-dashed border-purple-300 rounded-2xl p-8 hover:border-purple-500 transition-all bg-white/70 hover:bg-white hover:shadow-lg h-64 flex items-center justify-center">
+                                                <div className="border-2 border-dashed border-purple-300 rounded-2xl p-8 hover:border-purple-500 transition-all bg-white/70 hover:bg-white hover:shadow-lg aspect-[3/4] w-full max-w-[320px] mx-auto flex items-center justify-center">
                                                     <div className="text-center">
                                                         <Upload className="w-12 h-12 mx-auto mb-3 text-purple-400" />
                                                         <p className="font-bold text-gray-800 text-base mb-1">
@@ -257,7 +257,7 @@ export function TryOnSection({ productName, productImage, productDescription }: 
                                                 />
                                             </label>
                                         ) : (
-                                            <div className="relative rounded-2xl overflow-hidden bg-white shadow-xl border-2 border-purple-200 h-64">
+                                            <div className="relative rounded-2xl overflow-hidden bg-white shadow-xl border-2 border-purple-200 aspect-[3/4] w-full max-w-[320px] mx-auto">
                                                 <img src={dressPreview} alt="Dress" className="w-full h-full object-cover" />
                                                 {!dressImage && (
                                                     <div className="absolute bottom-3 left-3 bg-purple-600/80 backdrop-blur-md text-white px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 shadow-lg">
@@ -283,7 +283,7 @@ export function TryOnSection({ productName, productImage, productDescription }: 
                                         </Label>
                                         {!userPreview ? (
                                             <label className="block cursor-pointer">
-                                                <div className="border-2 border-dashed border-pink-300 rounded-2xl p-8 hover:border-pink-500 transition-all bg-white/70 hover:bg-white hover:shadow-lg h-64 flex items-center justify-center">
+                                                <div className="border-2 border-dashed border-pink-300 rounded-2xl p-8 hover:border-pink-500 transition-all bg-white/70 hover:bg-white hover:shadow-lg aspect-[3/4] w-full max-w-[320px] mx-auto flex items-center justify-center">
                                                     <div className="text-center">
                                                         <ImageIcon className="w-12 h-12 mx-auto mb-3 text-pink-400" />
                                                         <p className="font-bold text-gray-800 text-base mb-1">
@@ -302,7 +302,7 @@ export function TryOnSection({ productName, productImage, productDescription }: 
                                                 />
                                             </label>
                                         ) : (
-                                            <div className="relative rounded-2xl overflow-hidden bg-white shadow-xl border-2 border-pink-200 h-64">
+                                            <div className="relative rounded-2xl overflow-hidden bg-white shadow-xl border-2 border-pink-200 aspect-[3/4] w-full max-w-[320px] mx-auto">
                                                 <img src={userPreview} alt="You" className="w-full h-full object-cover" />
                                                 <button
                                                     onClick={removeUserImage}
