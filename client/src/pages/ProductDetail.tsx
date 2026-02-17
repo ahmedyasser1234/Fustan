@@ -850,7 +850,7 @@ export default function ProductDetail() {
         </div>
 
         {/* Tabs System */}
-        <div className="mt-32">
+        <div className="mt-16">
           <div className="flex items-center justify-center gap-12 mb-16 border-b border-gray-100 pb-8">
             <button
               onClick={() => setActiveTab("details")}
@@ -986,7 +986,7 @@ export default function ProductDetail() {
       </section>
 
       {/* Related Products Section */}
-      <section className="container mx-auto px-4 mt-20 border-t border-gray-100 pt-20">
+      <section className="container mx-auto px-4 mt-10 border-t border-gray-100 pt-12">
         <RelatedProducts
           collectionId={product.collectionId}
           currentProductId={product.id}
