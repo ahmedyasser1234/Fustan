@@ -842,7 +842,7 @@ export default function ProductDetail() {
             >
               <TryOnSection
                 productName={language === 'ar' ? product.nameAr : product.nameEn}
-                productImage={product.aiQualifiedImage || product.images?.[0] || ''}
+                productImage={displayImage}
                 productDescription={language === 'ar' ? product.descriptionAr : product.descriptionEn}
               />
             </motion.div>

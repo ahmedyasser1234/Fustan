@@ -65,10 +65,10 @@ export class AiService {
         let dressImageUrl = data.productImage;
         let userImageUrl: string | null = null;
 
-        if (files && files.length >= 2) {
-            this.logger.log('Processing uploaded images...');
+        if (files && files.length > 0) {
+            this.logger.log(`Processing ${files.length} uploaded images...`);
 
-            // Upload dress image to Cloudinary
+            // Upload dress image to Cloudinary if it's a file
             const dressFile = files.find(f => f.fieldname === 'dressImage');
             if (dressFile) {
                 const dressUpload = await new Promise<any>((resolve, reject) => {

@@ -333,6 +333,7 @@ export class ChatService {
 
         // Send notification to recipient if offline/not focusing chat
         if (finalRecipientId) {
+            console.log(`ChatService: Notifying recipient ${finalRecipientId} about message ${message.id} (Type: new_message)`);
             await this.notificationsService.notify(
                 finalRecipientId,
                 'new_message',
@@ -340,6 +341,8 @@ export class ChatService {
                 content.length > 50 ? content.substring(0, 47) + '...' : content,
                 convId!
             );
+        } else {
+            console.warn(`ChatService: No recipientId found for message ${message.id} in conversation ${convId}`);
         }
 
         return { message, conversationId: convId, recipientId: finalRecipientId };

@@ -169,14 +169,14 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
         if (notificationRecipientId) {
             const recipientRoom = `user_${notificationRecipientId}`;
-            console.log(`Chat: Notifying recipient ${notificationRecipientId} (Room: ${recipientRoom})`);
+            console.log(`Chat: Notifying recipient ${notificationRecipientId} on namespace /chat (Room: ${recipientRoom})`);
             this.server.to(recipientRoom).emit('receiveMessage', result.message);
         }
 
         // Also notify sender's other tabs/sockets
         this.server.to(`user_${sender.id}`).except(client.id).emit('receiveMessage', result.message);
 
-        console.log(`Chat: Message from ${sender.name} sent successfully to conversation ${result.conversationId}`);
+        console.log(`Chat: Message from ${sender.name} sent successfully to conversation ${result.conversationId}. Room was user_${notificationRecipientId}`);
 
         // Return whole result to sender
         return result;

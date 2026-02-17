@@ -69,6 +69,13 @@ export function TryOnSection({ productName, productImage, productDescription }: 
         }
     }, [user]);
 
+    // Sync dressPreview with productImage prop if no manual file is selected
+    useEffect(() => {
+        if (!dressImage && productImage) {
+            setDressPreview(productImage);
+        }
+    }, [productImage, dressImage]);
+
     const handleSaveMeasurements = async () => {
         if (!user) {
             toast.error(language === 'ar' ? "يرجى تسجيل الدخول لحفظ المقاسات" : "Please login to save measurements");
@@ -131,8 +138,8 @@ export function TryOnSection({ productName, productImage, productDescription }: 
     };
 
     const handleGenerate = async () => {
-        if (!dressImage || !userImage) {
-            toast.error(language === 'ar' ? 'يرجى رفع صورة الفستان وصورتك' : 'Please upload both dress and your photo');
+        if (!dressPreview || !userImage) {
+            toast.error(language === 'ar' ? 'يرجى اختيار صورة الفستان وصورتك' : 'Please select both dress and your photo');
             return;
         }
 
@@ -154,7 +161,12 @@ export function TryOnSection({ productName, productImage, productDescription }: 
 
         try {
             const formData = new FormData();
-            formData.append('dressImage', dressImage);
+            if (dressImage) {
+                formData.append('dressImage', dressImage);
+            } else if (dressPreview) {
+                formData.append('productImage', dressPreview);
+            }
+
             formData.append('userImage', userImage);
             formData.append('productName', productName);
             formData.append('productDescription', productDescription || '');
@@ -247,6 +259,12 @@ export function TryOnSection({ productName, productImage, productDescription }: 
                                         ) : (
                                             <div className="relative rounded-2xl overflow-hidden bg-white shadow-xl border-2 border-purple-200 h-64">
                                                 <img src={dressPreview} alt="Dress" className="w-full h-full object-cover" />
+                                                {!dressImage && (
+                                                    <div className="absolute bottom-3 left-3 bg-purple-600/80 backdrop-blur-md text-white px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 shadow-lg">
+                                                        <ImageIcon size={12} />
+                                                        {language === 'ar' ? 'صورة المنتج المختارة' : 'Selected Product Image'}
+                                                    </div>
+                                                )}
                                                 <button
                                                     onClick={removeDressImage}
                                                     className="absolute top-3 right-3 bg-red-500 text-white p-2.5 rounded-full hover:bg-red-600 transition-colors shadow-lg"

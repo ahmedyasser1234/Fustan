@@ -23,6 +23,7 @@ export class NotificationsService {
         }).returning();
 
         // 2. Emit via Gateway for real-time update
+        console.log(`NotificationsService: Emitting event to NotificationsGateway for user ${userId}`);
         this.notificationsGateway.sendNotification(String(userId), {
             id: notif.id,
             type,

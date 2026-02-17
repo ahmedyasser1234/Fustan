@@ -11,6 +11,7 @@ import { Injectable } from '@nestjs/common';
 @WebSocketGateway({
     cors: {
         origin: '*',
+        credentials: true
     },
 })
 @Injectable()
@@ -32,6 +33,7 @@ export class NotificationsGateway implements OnGatewayConnection, OnGatewayDisco
 
     @SubscribeMessage('join')
     handleJoinRoom(client: Socket, userId: string) {
+        console.log(`Notifications: User joining room user_${userId} (client: ${client.id})`);
         client.join(`user_${userId}`);
         return { event: 'joined', data: userId };
     }
