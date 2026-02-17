@@ -761,6 +761,17 @@ export default function ProductDetail() {
                       </Button>
 
                       <Button
+                        onClick={() => {
+                          const element = document.getElementById('ai-try-on-section');
+                          element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }}
+                        className="flex-1 h-14 md:h-16 rounded-[2rem] md:rounded-[4rem] bg-gradient-to-r from-purple-600 to-rose-600 hover:from-purple-700 hover:to-rose-700 text-white text-lg md:text-xl font-black shadow-xl shadow-purple-200 gap-3 md:gap-4 w-full md:w-auto"
+                      >
+                        <Sparkles size={20} />
+                        {language === 'ar' ? 'تجربة ذكية' : 'Magic Try-On'}
+                      </Button>
+
+                      <Button
                         onClick={handleToggleWishlist}
                         variant="outline"
                         className={cn(
@@ -820,8 +831,8 @@ export default function ProductDetail() {
           </div>
         </div>
 
-        <AnimatePresence>
-          {product.aiQualifiedImage && (
+        <div id="ai-try-on-section">
+          <AnimatePresence>
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -831,12 +842,12 @@ export default function ProductDetail() {
             >
               <TryOnSection
                 productName={language === 'ar' ? product.nameAr : product.nameEn}
-                productImage={product.aiQualifiedImage}
+                productImage={product.aiQualifiedImage || product.images?.[0] || ''}
                 productDescription={language === 'ar' ? product.descriptionAr : product.descriptionEn}
               />
             </motion.div>
-          )}
-        </AnimatePresence>
+          </AnimatePresence>
+        </div>
 
         {/* Tabs System */}
         <div className="mt-32">
