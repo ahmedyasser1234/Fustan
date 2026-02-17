@@ -144,23 +144,35 @@ export function ChatWidget({ vendorId, recipientId: explicitRecipientId, vendorN
     const handleSend = async () => {
         if (!inputValue.trim()) return;
 
+        console.log('📤 Debug: handleSend triggered');
         const content = inputValue;
         setInputValue("");
 
         if (socket) {
+            console.log('📤 Debug: Emit sendMessage', {
+                conversationId: conversationIdRef.current,
+                vendorId,
+                recipientId: presenceUserId,
+                content,
+            });
             socket.emit("sendMessage", {
                 conversationId: conversationIdRef.current,
                 vendorId,
                 recipientId: presenceUserId,
                 content,
             }, (response: { message: Message, conversationId: number }) => {
+                console.log('✅ Debug: sendMessage Ack/Response:', response);
                 if (response && response.message) {
                     setMessages((prev) => [...prev, response.message]);
                     if (!conversationIdRef.current && response.conversationId) {
                         setConversationId(response.conversationId);
                     }
+                } else {
+                    console.error('❌ Debug: sendMessage Ack returned no message!', response);
                 }
             });
+        } else {
+            console.error('❌ Debug: Socket is null in handleSend!');
         }
     };
 
