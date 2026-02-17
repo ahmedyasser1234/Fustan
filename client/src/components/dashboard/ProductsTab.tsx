@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Plus, Edit, Trash2, Package, Loader2, Save, X, Image as ImageIcon, CheckCircle2, Eye } from "lucide-react";
+import { Plus, Edit, Trash2, Package, Loader2, Save, X, Image as ImageIcon, CheckCircle2, Eye, Sparkles, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -40,6 +40,7 @@ export default function ProductsTab({ vendorId, collectionId, onProductClick, on
     const [collectionIdState, setCollectionId] = useState("");
     const [categoryId, setCategoryId] = useState("");
     const [images, setImages] = useState<File[]>([]);
+    const [aiQualifiedImage, setAiQualifiedImage] = useState<File | null>(null);
     const [sizes, setSizes] = useState<{ size: string; quantity: number }[]>([{ size: "", quantity: 0 }]);
     const [cutType, setCutType] = useState("");
     const [bodyShape, setBodyShape] = useState("");
@@ -88,6 +89,11 @@ export default function ProductsTab({ vendorId, collectionId, onProductClick, on
 
     const submitMutation = useMutation({
         mutationFn: async () => {
+            if (!aiQualifiedImage && !editingProduct?.aiQualifiedImage) {
+                toast.error(language === 'ar' ? "صورة AI مطلوبة للميزة التجريبية" : "AI-Ready image is required for Try-On feature");
+                throw new Error("AI Image required");
+            }
+
             const formData = new FormData();
             formData.append("vendorId", vendorId.toString());
             formData.append("nameAr", nameAr);
@@ -113,6 +119,10 @@ export default function ProductsTab({ vendorId, collectionId, onProductClick, on
             images.forEach((image) => {
                 formData.append("images", image);
             });
+
+            if (aiQualifiedImage) {
+                formData.append("aiQualifiedImage", aiQualifiedImage);
+            }
 
             // Process and append Color Variants
             const processedVariants = colorVariants.map((v, idx) => {
@@ -210,7 +220,7 @@ export default function ProductsTab({ vendorId, collectionId, onProductClick, on
         setIsModalOpen(false);
         setEditingProduct(null);
         setNameAr(""); setNameEn(""); setDescriptionAr(""); setDescriptionEn("");
-        setPrice(""); setDiscount("0"); setImages([]); setSizes([{ size: "", quantity: 0 }]);
+        setPrice(""); setDiscount("0"); setImages([]); setAiQualifiedImage(null); setSizes([{ size: "", quantity: 0 }]);
         setCategoryId(""); setCollectionId("");
         setCutType(""); setBodyShape(""); setImpression(""); setOccasion(""); setSilhouette("");
         setSku(""); setTags("");
@@ -432,6 +442,38 @@ export default function ProductsTab({ vendorId, collectionId, onProductClick, on
                                                     }} />
                                                 </label>
                                             )}
+                                        </div>
+                                    </div>
+
+                                    {/* AI Try-On Feature Section */}
+                                    <div className="space-y-4 pt-4 border-t border-slate-100 px-2">
+                                        <div className="flex items-center justify-between">
+                                            <h4 className="font-black text-slate-900 uppercase tracking-widest text-xs flex items-center gap-2">
+                                                <Sparkles className="w-4 h-4 text-rose-500" />
+                                                {language === 'ar' ? "صورة التجربة الافتراضية (AI)" : "AI Try-On Image"}
+                                            </h4>
+                                            <span className="text-[9px] font-black text-rose-500 bg-rose-50 px-2 py-0.5 rounded-full uppercase">
+                                                {language === 'ar' ? "إلزامي" : "Required"}
+                                            </span>
+                                        </div>
+
+                                        <div className="aspect-[4/3] bg-rose-50/30 rounded-[28px] border-2 border-dashed border-rose-200 flex flex-col items-center justify-center overflow-hidden relative group transition-all duration-500 hover:border-rose-300">
+                                            {aiQualifiedImage ? (
+                                                <img src={URL.createObjectURL(aiQualifiedImage)} className="w-full h-full object-cover" />
+                                            ) : editingProduct?.aiQualifiedImage ? (
+                                                <img src={editingProduct.aiQualifiedImage} className="w-full h-full object-cover" />
+                                            ) : (
+                                                <div className="text-center p-4">
+                                                    <div className="w-12 h-12 bg-white rounded-2xl shadow-sm flex items-center justify-center mx-auto mb-2">
+                                                        <Upload className="w-6 h-6 text-rose-500" />
+                                                    </div>
+                                                    <p className="text-[10px] font-black text-slate-900">{language === 'ar' ? "تحميل صورة AI" : "Upload AI Image"}</p>
+                                                    <p className="text-[8px] font-bold text-slate-400 mt-1">{language === 'ar' ? "صورة واضحة للفستان على مانيكان" : "Clear dress on mannequin"}</p>
+                                                </div>
+                                            )}
+                                            <label className="absolute inset-0 cursor-pointer">
+                                                <input type="file" accept="image/*" className="hidden" onChange={(e) => setAiQualifiedImage(e.target.files?.[0] || null)} />
+                                            </label>
                                         </div>
                                     </div>
 
@@ -811,6 +853,6 @@ export default function ProductsTab({ vendorId, collectionId, onProductClick, on
                     </div>
                 </DialogContent>
             </Dialog>
-        </div>
+        </div >
     );
 }

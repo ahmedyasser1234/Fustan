@@ -820,6 +820,24 @@ export default function ProductDetail() {
           </div>
         </div>
 
+        <AnimatePresence>
+          {product.aiQualifiedImage && (
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              className="mt-20 md:mt-32"
+            >
+              <TryOnSection
+                productName={language === 'ar' ? product.nameAr : product.nameEn}
+                productImage={product.aiQualifiedImage}
+                productDescription={language === 'ar' ? product.descriptionAr : product.descriptionEn}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* Tabs System */}
         <div className="mt-32">
           <div className="flex items-center justify-center gap-12 mb-16 border-b border-gray-100 pb-8">

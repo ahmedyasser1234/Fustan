@@ -3,10 +3,12 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
-import { Loader2, Sparkles, Upload, X, Image as ImageIcon } from "lucide-react";
+import { Loader2, Sparkles, Upload, X, Image as ImageIcon, Save } from "lucide-react";
 import { useLanguage } from "@/lib/i18n";
 import api from "@/lib/api";
 import { toast } from "sonner";
+import { useAuth } from "@/_core/hooks/useAuth";
+import { useEffect } from "react";
 
 interface TryOnSectionProps {
     productName: string;
@@ -16,7 +18,9 @@ interface TryOnSectionProps {
 
 export function TryOnSection({ productName, productImage, productDescription }: TryOnSectionProps) {
     const { language } = useLanguage();
+    const { user } = useAuth();
     const [isLoading, setIsLoading] = useState(false);
+    const [isSavingMeasurements, setIsSavingMeasurements] = useState(false);
     const [generatedImage, setGeneratedImage] = useState<string | null>(null);
 
     // Image uploads
@@ -54,6 +58,35 @@ export function TryOnSection({ productName, productImage, productDescription }: 
         backWidth: '',
         frontLength: ''
     });
+
+    // Pre-fill measurements from user profile
+    useEffect(() => {
+        if (user?.measurements) {
+            setMeasurements(prev => ({
+                ...prev,
+                ...user.measurements
+            }));
+        }
+    }, [user]);
+
+    const handleSaveMeasurements = async () => {
+        if (!user) {
+            toast.error(language === 'ar' ? "يرجى تسجيل الدخول لحفظ المقاسات" : "Please login to save measurements");
+            return;
+        }
+
+        setIsSavingMeasurements(true);
+        try {
+            await api.patch(`/users/${user.id}`, { measurements });
+            toast.success(language === 'ar' ? "تم حفظ المقاسات بنجاح" : "Measurements saved successfully");
+            // Optionally update local storage/auth state if needed, but the patch should be enough for next visit
+        } catch (err) {
+            console.error(err);
+            toast.error(language === 'ar' ? "فشل حفظ المقاسات" : "Failed to save measurements");
+        } finally {
+            setIsSavingMeasurements(false);
+        }
+    };
 
     const handleDressImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -550,6 +583,23 @@ export function TryOnSection({ productName, productImage, productDescription }: 
                                         </div>
                                     </div>
                                 </div>
+
+                                {/* Measurement Persistence */}
+                                {user && (
+                                    <Button
+                                        variant="outline"
+                                        onClick={handleSaveMeasurements}
+                                        disabled={isSavingMeasurements}
+                                        className="w-full border-2 border-purple-100 text-purple-600 font-bold h-12 rounded-2xl flex items-center justify-center gap-2 hover:bg-purple-50 transition-all mb-4"
+                                    >
+                                        {isSavingMeasurements ? (
+                                            <Loader2 className="h-4 w-4 animate-spin" />
+                                        ) : (
+                                            <Save className="h-4 w-4" />
+                                        )}
+                                        {language === 'ar' ? "حفظ هذه القياسات لملفي الشخصي" : "Save these measurements to my profile"}
+                                    </Button>
+                                )}
 
                                 {/* Generate Button */}
                                 <Button

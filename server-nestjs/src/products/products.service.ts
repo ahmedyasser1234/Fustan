@@ -58,6 +58,16 @@ export class ProductsService {
             });
         }
 
+        // Upload AI-Ready Image
+        let aiQualifiedImageUrl: string | null = null;
+        const aiFile = files?.find(f => f.fieldname === 'aiQualifiedImage');
+        if (aiFile) {
+            const result = await this.cloudinary.uploadFile(aiFile);
+            if ('secure_url' in result) {
+                aiQualifiedImageUrl = result.secure_url;
+            }
+        }
+
         const slug = data.nameEn.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + Date.now();
         const sizesArr = typeof data.sizes === 'string' ? JSON.parse(data.sizes) : data.sizes;
         const tagsArr = typeof data.tags === 'string' ? JSON.parse(data.tags) : data.tags;
@@ -92,6 +102,7 @@ export class ProductsService {
                 collectionId,
                 categoryId: collection.categoryId,
                 images: imageUrls,
+                aiQualifiedImage: aiQualifiedImageUrl,
                 discount: parseFloat(data.discount || '0'),
                 vendorPrice: vendorPrice, // Store vendor's base price
                 vendorOriginalPrice: parseFloat(data.originalPrice || vendorPrice.toString()), // Store vendor's base original price
@@ -284,6 +295,16 @@ export class ProductsService {
             imageUrls = newUrls;
         }
 
+        // Upload AI-Ready Image if provided
+        let aiQualifiedImageUrl = product.aiQualifiedImage;
+        const aiFile = files?.find(f => f.fieldname === 'aiQualifiedImage');
+        if (aiFile) {
+            const result = await this.cloudinary.uploadFile(aiFile);
+            if ('secure_url' in result) {
+                aiQualifiedImageUrl = result.secure_url;
+            }
+        }
+
         const sizesArr = typeof data.sizes === 'string' ? JSON.parse(data.sizes) : data.sizes;
         const tagsArr = typeof data.tags === 'string' ? JSON.parse(data.tags) : data.tags;
 
@@ -323,6 +344,7 @@ export class ProductsService {
                     impression: data.impression,
                     occasion: data.occasion,
                     images: imageUrls,
+                    aiQualifiedImage: aiQualifiedImageUrl,
                     stock: totalStock,
                     sizes: sizesArr,
                     vendorPrice: vendorPrice,
