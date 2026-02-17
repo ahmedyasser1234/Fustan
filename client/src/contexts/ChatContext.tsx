@@ -53,7 +53,8 @@ export function ChatProvider({ children }: { children: ReactNode }) {
                 console.error("VITE_SOCKET_URL is missing! You must set this to your secure backend URL (e.g. https://api.yourdomain.com) in Netlify.");
             }
 
-            console.log('Connecting socket to:', socketUrl);
+            console.log('🔌 Debug: Initializing socket connection...');
+            console.log('🔌 Debug: Using Socket URL:', socketUrl);
 
             // Append /chat namespace manually if the library doesn't handle it automatically with the full URL
             const newSocket = io(`${socketUrl}/chat`, {
@@ -62,12 +63,18 @@ export function ChatProvider({ children }: { children: ReactNode }) {
             });
 
             newSocket.on('connect', () => {
-                console.log('Global Chat Socket Connected:', newSocket.id);
+                console.log('✅ Debug: Socket connected successfully! ID:', newSocket.id);
                 // Join user room for notifications
                 newSocket.emit('join', String(user.id));
             });
 
+            newSocket.on('connect_error', (err) => {
+                console.error('❌ Debug: Socket connection error:', err.message);
+                console.error('❌ Debug: Full error details:', err);
+            });
+
             newSocket.on('userStatus', ({ userId, status }: { userId: number, status: 'online' | 'offline' }) => {
+                console.log(`👤 Debug: User ${userId} is now ${status}`);
                 setOnlineUsers(prev => {
                     const next = new Set(prev);
                     if (status === 'online') {
@@ -79,7 +86,8 @@ export function ChatProvider({ children }: { children: ReactNode }) {
                 });
             });
 
-            newSocket.on('receiveMessage', () => {
+            newSocket.on('receiveMessage', (msg) => {
+                console.log('📩 Debug: Received new message:', msg);
                 // Invalidate conversation lists to update snippets and unread counts
                 queryClient.invalidateQueries({ queryKey: ['chat-conversations'] });
                 queryClient.invalidateQueries({ queryKey: ['chat-conversations-customer'] });
@@ -88,7 +96,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
 
             // Handle General Notifications (Moved from useSocket.ts)
             newSocket.on('notification', (data: any) => {
-                console.log('Notification received:', data);
+                console.log('🔔 Debug: Notification received:', data);
                 // Show toast (requires toast import, verify if imported)
                 // We'll trust sonner is available or import it.
                 // Invalidate queries
@@ -104,6 +112,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
             setSocket(newSocket);
 
             return () => {
+                console.log('🔌 Debug: Disconnecting socket...');
                 newSocket.disconnect();
                 setSocket(null);
             };

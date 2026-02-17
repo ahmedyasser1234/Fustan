@@ -97,19 +97,9 @@ export function ProductCard({ product, index = 0, loading = false, onQuickView }
                                 </Button>
                             )}
 
-                            {onQuickView && (
-                                <Button
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        e.stopPropagation();
-                                        onQuickView(product);
-                                    }}
-                                    size="icon"
-                                    className="rounded-full h-12 w-12 bg-white hover:bg-rose-50 text-rose-600 shadow-2xl scale-0 group-hover:scale-100 transition-all duration-300 delay-75"
-                                >
-                                    <Eye size={20} />
-                                </Button>
-                            )}
+                            <div className="rounded-full h-12 w-12 bg-white hover:bg-rose-50 text-rose-600 shadow-2xl scale-0 group-hover:scale-100 transition-all duration-300 delay-75 flex items-center justify-center pointer-events-none">
+                                <Eye size={20} />
+                            </div>
 
                             {user?.role !== 'admin' && user?.role !== 'vendor' && (
                                 <Button
