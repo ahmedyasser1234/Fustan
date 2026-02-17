@@ -43,7 +43,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 import { Switch as UISwitch } from "@/components/ui/switch"; // Renamed to avoid conflict with wouter's Switch
 import { useLanguage } from "@/lib/i18n";
-import { useSocket } from "@/_core/hooks/useSocket";
+
 import { ChatHistory } from "./components/chat/ChatHistory";
 import { useChatNotifications } from "@/hooks/useChatNotifications";
 import { useSystemNotifications } from "@/hooks/useSystemNotifications";
