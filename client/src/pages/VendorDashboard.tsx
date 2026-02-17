@@ -224,6 +224,7 @@ export default function VendorDashboard() {
                 { id: "coupons", icon: Plus, color: "from-violet-500 to-purple-500" },
                 { id: "shipping", icon: Truck, color: "from-cyan-500 to-blue-500" },
                 { id: "wallet", icon: CreditCard, color: "from-emerald-500 to-teal-500" },
+                { id: "customers", icon: User, color: "from-teal-500 to-green-500" },
                 { id: "messages", icon: MessageSquare, badge: unreadCount, color: "from-indigo-500 to-purple-500" },
               ].map((tab) => (
                 <button

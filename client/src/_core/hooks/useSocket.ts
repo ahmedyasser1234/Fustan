@@ -21,15 +21,35 @@ export const useSocket = () => {
         if (!socketRef.current) {
             // Use environment variable for socket URL, or correct backend URL from VITE_API_URL
             let socketUrl = import.meta.env.VITE_SOCKET_URL;
-            if (!socketUrl && import.meta.env.VITE_API_URL) {
+            const apiUrl = import.meta.env.VITE_API_URL;
+
+            if (!socketUrl && apiUrl) {
                 try {
-                    const url = new URL(import.meta.env.VITE_API_URL);
-                    socketUrl = url.origin;
+                    // Check if apiUrl is absolute
+                    if (apiUrl.startsWith('http')) {
+                        const url = new URL(apiUrl);
+                        socketUrl = url.origin;
+                    } else {
+                        // Relative path, use window origin or fallback
+                        // If it's just '/api', we might want to check if there is a hardcoded fallback
+                        console.warn("VITE_API_URL is relative, using default fallback for socket.");
+                    }
                 } catch (e) {
                     console.error("Invalid API URL for socket", e);
                 }
             }
-            if (!socketUrl) socketUrl = window.location.origin;
+
+            // Fallback to the backend IP found in netlify.toml if no other URL is found
+            if (!socketUrl) {
+                // Check if we are in production (netlify) to avoid breaking local dev if env is missing
+                if (window.location.hostname.includes('netlify.app')) {
+                    socketUrl = "http://148.230.126.48";
+                } else {
+                    socketUrl = window.location.origin;
+                }
+            }
+
+            console.log('Connecting socket to:', socketUrl);
 
             socketRef.current = io(socketUrl, {
                 path: '/socket.io',

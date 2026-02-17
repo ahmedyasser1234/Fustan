@@ -593,7 +593,15 @@ export default function ProductDetail() {
                         </div>
                       </div>
                       <div className="w-10 h-10 md:w-14 md:h-14 rounded-lg md:rounded-2xl bg-white border border-gray-100 p-0.5 overflow-hidden shadow-sm group-hover:shadow-md transition-all shrink-0">
-                        <img src={vendor.logo || "/placeholder-store.png"} className="w-full h-full object-cover rounded-md md:rounded-xl" alt="" />
+                        {vendor.logo ? (
+                          <img
+                            src={vendor.logo}
+                            className="w-full h-full object-cover rounded-md md:rounded-xl"
+                            alt={language === 'ar' ? vendor.storeNameAr : vendor.storeNameEn}
+                          />
+                        ) : (
+                          <Store className="w-6 h-6 md:w-8 md:h-8 text-gray-300" />
+                        )}
                       </div>
                     </div>
                   </Link>

@@ -151,25 +151,27 @@ export default function VendorProfile() {
               <div className="flex flex-wrap gap-3">
                 {/* Debug: UserID={user?.id} VendorUserID={vendor?.userId} Role={user?.role} */}
                 {(!user || (vendor?.userId && Number(user.id) !== Number(vendor.userId))) && (
-                  <>
-                    <Button
-                      className="bg-purple-600 hover:bg-purple-700"
-                      onClick={() => openChat({
-                        vendorId: vendor.id,
-                        recipientId: vendor.userId,
-                        vendorName: language === 'ar' ? vendor.storeNameAr : vendor.storeNameEn,
-                        vendorLogo: vendor.logo,
-                        sessionId: `vendor-${vendor.id}`
-                      })}
-                    >
-                      <MessageSquare className="w-4 h-4 ml-2" />
-                      {language === 'ar' ? "تواصل مع البائع" : "Contact Seller"}
-                    </Button>
-                    <Button variant="outline" onClick={() => setIsRatingOpen(true)}>
-                      <Star className="w-4 h-4 ml-2 mr-1" />
-                      {language === 'ar' ? "تقييم المتجر" : "Rate Store"}
-                    </Button>
-                  </>
+                  <Button
+                    className="bg-purple-600 hover:bg-purple-700"
+                    onClick={() => openChat({
+                      vendorId: vendor.id,
+                      recipientId: vendor.userId,
+                      vendorName: language === 'ar' ? vendor.storeNameAr : vendor.storeNameEn,
+                      vendorLogo: vendor.logo,
+                      sessionId: `vendor-${vendor.id}`
+                    })}
+                  >
+                    <MessageSquare className="w-4 h-4 ml-2" />
+                    {language === 'ar' ? "تواصل مع البائع" : "Contact Seller"}
+                  </Button>
+                )}
+
+                {/* Always show Rate Store button for verification, or check if user is logged in */}
+                {user && (
+                  <Button variant="outline" onClick={() => setIsRatingOpen(true)}>
+                    <Star className="w-4 h-4 ml-2 mr-1" />
+                    {language === 'ar' ? "تقييم المتجر" : "Rate Store"}
+                  </Button>
                 )}
               </div>
             </div>
