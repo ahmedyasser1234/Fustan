@@ -19,6 +19,7 @@ export function useChatNotifications() {
         enabled: !!user && !!user?.id,
         refetchOnWindowFocus: true,
         staleTime: 1000 * 30, // 30 seconds
+        retry: false, // Do not retry on failure (avoids 401 loop)
     });
 
     const unreadCount = unreadData?.count || 0;

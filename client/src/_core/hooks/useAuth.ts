@@ -33,6 +33,14 @@ export function useAuth(options?: UseAuthOptions) {
     },
     retry: false,
     refetchOnWindowFocus: false,
+    // @ts-ignore
+    onError: (err: any) => {
+      // If 401/403, immediately clear local state to stop further requests
+      if (err.response?.status === 401 || err.response?.status === 403) {
+        localStorage.removeItem("manus-runtime-user-info");
+        queryClient.setQueryData(['auth', 'me'], null);
+      }
+    }
   });
 
   const logoutMutation = useMutation({
@@ -54,8 +62,10 @@ export function useAuth(options?: UseAuthOptions) {
     } catch (error: unknown) {
       console.error("Logout failed:", error);
     } finally {
+      localStorage.removeItem("manus-runtime-user-info");
       queryClient.setQueryData(['auth', 'me'], null);
       await queryClient.invalidateQueries({ queryKey: ['auth', 'me'] });
+      await queryClient.resetQueries({ queryKey: ['auth', 'me'] });
     }
   }, [logoutMutation, queryClient]);
 

@@ -340,10 +340,10 @@ export default function ProductsTab({ vendorId, collectionId, onProductClick, on
 
             {/* CREATE/EDIT PRODUCT MODAL */}
             <Dialog open={isModalOpen} onOpenChange={handleCloseModal}>
-                <DialogContent className="max-w-[95vw] w-[95vw] sm:max-w-7xl h-[95vh] rounded-[40px] p-0 overflow-hidden shadow-2xl transition-all duration-700 animate-in zoom-in-95">
+                <DialogContent className="w-full h-full sm:h-[95vh] sm:max-w-7xl sm:w-[95vw] p-0 overflow-hidden shadow-2xl transition-all duration-700 animate-in zoom-in-95 rounded-none sm:rounded-[40px]">
                     <div className="flex flex-col h-full bg-slate-50">
                         {/* Custom Header */}
-                        <div className="bg-white px-8 py-6 flex items-center justify-between border-b border-slate-100">
+                        <div className="bg-white px-4 py-4 md:px-8 md:py-6 flex items-center justify-between border-b border-slate-100 sticky top-0 z-50">
                             <div>
                                 <h3 className="text-2xl font-black text-slate-900">
                                     {editingProduct ? (language === 'ar' ? 'تعديل منتج' : 'Edit Product') : (language === 'ar' ? 'إضافة منتج جديد' : 'New Dress')}
@@ -358,7 +358,7 @@ export default function ProductsTab({ vendorId, collectionId, onProductClick, on
                         <div className="flex-1 overflow-y-auto">
                             <div className="grid grid-cols-1 md:grid-cols-12 h-full">
                                 {/* Media Section (Left/Top) */}
-                                <div className="md:col-span-4 bg-white p-8 border-l border-slate-100 flex flex-col gap-8">
+                                <div className="md:col-span-4 bg-white p-4 md:p-8 border-l border-slate-100 flex flex-col gap-6 md:gap-8">
                                     <div className="space-y-4">
                                         <div className="flex items-center justify-between">
                                             <h4 className="font-black text-slate-900 uppercase tracking-widest text-xs flex items-center gap-2">
@@ -442,9 +442,9 @@ export default function ProductsTab({ vendorId, collectionId, onProductClick, on
                                 </div>
 
                                 {/* Form Section (Right/Bottom) */}
-                                <div className="md:col-span-8 p-12 space-y-12">
+                                <div className="md:col-span-8 p-4 md:p-12 space-y-8 md:space-y-12 pb-24 md:pb-12">
                                     {/* Global Sections */}
-                                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-12">
                                         {/* Basic Info */}
                                         <div className="space-y-6">
                                             <div className="flex items-center gap-3">
@@ -544,7 +544,7 @@ export default function ProductsTab({ vendorId, collectionId, onProductClick, on
                                     </div>
 
                                     {/* Optional Attributes Section */}
-                                    <div className="space-y-6 bg-gradient-to-br from-purple-50 to-pink-50 p-12 rounded-[40px] border border-purple-100">
+                                    <div className="space-y-6 bg-gradient-to-br from-purple-50 to-pink-50 p-6 md:p-12 rounded-[24px] md:rounded-[40px] border border-purple-100">
                                         <div className="flex items-center gap-3">
                                             <div className="h-2 w-8 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full" />
                                             <h4 className="font-black text-slate-900 uppercase tracking-widest text-xs">{language === 'ar' ? "معلومات إضافية (اختيارية)" : "Optional Attributes"}</h4>
@@ -574,7 +574,7 @@ export default function ProductsTab({ vendorId, collectionId, onProductClick, on
                                     </div>
 
                                     {/* Color Variants Section */}
-                                    <div className="space-y-6 bg-gradient-to-br from-blue-50 to-cyan-50 p-12 rounded-[40px] border border-blue-100">
+                                    <div className="space-y-6 bg-gradient-to-br from-blue-50 to-cyan-50 p-6 md:p-12 rounded-[24px] md:rounded-[40px] border border-blue-100">
                                         <div className="flex items-center justify-between">
                                             <div className="flex items-center gap-3">
                                                 <div className="h-2 w-8 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-full" />
@@ -722,7 +722,7 @@ export default function ProductsTab({ vendorId, collectionId, onProductClick, on
                                     </div>
 
                                     {/* Inventory (Sizes) Section */}
-                                    <div className="space-y-6 bg-slate-900 p-12 rounded-[40px] text-white">
+                                    <div className="space-y-6 bg-slate-900 p-6 md:p-12 rounded-[24px] md:rounded-[40px] text-white">
                                         <div className="flex items-center justify-between">
                                             <div className="flex items-center gap-3">
                                                 <div className="h-2 w-8 bg-amber-500 rounded-full" />
@@ -778,7 +778,7 @@ export default function ProductsTab({ vendorId, collectionId, onProductClick, on
                         </div>
 
                         {/* Sticky Footer */}
-                        <div className="bg-white px-12 py-8 flex items-center justify-between border-t border-slate-100">
+                        <div className="bg-white px-4 py-4 md:px-12 md:py-8 flex flex-col-reverse sm:flex-row items-center justify-between border-t border-slate-100 gap-4 sticky bottom-0 z-50 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
                             <Button variant="ghost" onClick={handleCloseModal} className="h-14 px-8 rounded-full font-black text-slate-400 hover:bg-slate-50">
                                 {language === 'ar' ? "تجاهل" : "Discard"}
                             </Button>
@@ -795,7 +795,7 @@ export default function ProductsTab({ vendorId, collectionId, onProductClick, on
                                         submitMutation.mutate();
                                     }}
                                     disabled={submitMutation.isPending}
-                                    className="bg-slate-900 hover:bg-black h-16 px-16 rounded-[28px] text-lg font-black text-white shadow-2xl transition-all hover:scale-[1.05] active:scale-95 disabled:opacity-50"
+                                    className="bg-slate-900 hover:bg-black w-full sm:w-auto h-14 md:h-16 px-8 md:px-16 rounded-[20px] md:rounded-[28px] text-base md:text-lg font-black text-white shadow-2xl transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50"
                                 >
                                     {submitMutation.isPending ? (
                                         <div className="flex items-center gap-3">

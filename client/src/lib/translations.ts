@@ -135,6 +135,8 @@ export const translations = {
         productCount: "{count} منتج",
         noResults: "لا توجد نتائج",
         resetFilters: "إعادة تعيين الفلتر",
+        errorLoadingProducts: "خطأ في تحميل المنتجات",
+        retry: "إعادة المحاولة",
         loadMore: "تحميل المزيد",
 
         // Checkout
@@ -649,6 +651,8 @@ export const translations = {
         productCount: "{count} Products",
         noResults: "No results found",
         resetFilters: "Reset Filters",
+        errorLoadingProducts: "Error loading products",
+        retry: "Retry",
         loadMore: "Load More",
         reviewOrder: "Review Order",
         firstName: "First Name",

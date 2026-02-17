@@ -51,7 +51,8 @@ export default function Products() {
       categoryId: selectedCategory,
       collectionId: selectedCollection,
       limit: 100 // Fetch more to allow client-side filtering safely for now
-    })
+    }),
+    retry: 1,
   });
 
   // Derived state for UI
@@ -206,6 +207,17 @@ export default function Products() {
                 <h3 className="text-2xl font-black text-gray-400 mb-4">{t('noResults')}</h3>
                 <Button onClick={() => { setPriceRange([0, 5000]); setSearchQuery(""); }} variant="outline">
                   {t('resetFilters')}
+                </Button>
+              </div>
+            )}
+
+            {/* Error State */}
+            {/* @ts-ignore */}
+            {products?.error && (
+              <div className="bg-red-50 rounded-[3rem] p-20 text-center">
+                <h3 className="text-2xl font-black text-red-500 mb-4">{t('errorLoadingProducts') || "Error loading products"}</h3>
+                <Button onClick={() => window.location.reload()} variant="outline" className="border-red-200 text-red-500 hover:bg-red-50">
+                  {t('retry') || "Retry"}
                 </Button>
               </div>
             )}

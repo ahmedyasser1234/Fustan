@@ -142,8 +142,8 @@ export default function VendorDashboard() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50/30 text-right pb-20" dir={language === 'ar' ? 'rtl' : 'ltr'}>
       {/* Enhanced Dynamic Header */}
-      <header className="bg-gradient-to-r from-white via-white to-purple-50/50 backdrop-blur-xl sticky top-20 z-40 border-b border-slate-200/60 shadow-sm">
-        <div className="container mx-auto px-6 py-4">
+      <header className="bg-gradient-to-r from-white via-white to-purple-50/50 backdrop-blur-xl sticky top-0 md:top-20 z-40 border-b border-slate-200/60 shadow-sm transition-all">
+        <div className="container mx-auto px-4 py-3 md:px-6 md:py-4">
           {/* Top Section: Vendor Info + Quick Stats */}
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 mb-8">
             {/* Vendor Info */}

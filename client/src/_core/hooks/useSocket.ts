@@ -19,8 +19,9 @@ export const useSocket = () => {
         }
 
         if (!socketRef.current) {
-            // Use relative path to leverage Netlify proxy
-            socketRef.current = io('/', {
+            // Use environment variable for socket URL, fallback to window.location.origin
+            const socketUrl = import.meta.env.VITE_SOCKET_URL || window.location.origin;
+            socketRef.current = io(socketUrl, {
                 path: '/socket.io',
                 withCredentials: true,
                 transports: ['websocket', 'polling'],

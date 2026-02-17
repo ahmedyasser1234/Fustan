@@ -45,8 +45,10 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         }
 
         if (!socket) {
-            // Use relative path to leverage Netlify proxy
-            const newSocket = io('/chat', {
+            // Use environment variable for socket URL
+            const socketUrl = import.meta.env.VITE_SOCKET_URL || window.location.origin;
+            // Append /chat namespace manually if the library doesn't handle it automatically with the full URL
+            const newSocket = io(`${socketUrl}/chat`, {
                 withCredentials: true,
                 transports: ['websocket', 'polling'],
             });

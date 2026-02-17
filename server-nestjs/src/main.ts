@@ -14,7 +14,9 @@ async function bootstrap() {
   app.use(cookieParser());
   app.setGlobalPrefix('api');
   app.enableCors({
-    origin: true, // Allow all origins for production (temporary fix for Netlify)
+    origin: process.env.NODE_ENV === 'production'
+      ? true
+      : ['http://localhost:5173', 'http://localhost:3000', 'http://127.0.0.1:5173'],
     credentials: true,
   });
 
