@@ -551,7 +551,7 @@ import { ChatProvider } from "./contexts/ChatContext";
 import { ChatContainer } from "./components/chat/ChatContainer";
 
 function App() {
-  const socket = useSocket();
+  // const socket = useSocket(); // Socket is now managed in ChatContext
   const { user } = useAuth();
   // const [isChatHistoryOpen, setIsChatHistoryOpen] = useState(false); // MOVED TO CONTEXT
 

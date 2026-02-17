@@ -55,6 +55,8 @@ export function ChatProvider({ children }: { children: ReactNode }) {
 
             newSocket.on('connect', () => {
                 console.log('Global Chat Socket Connected:', newSocket.id);
+                // Join user room for notifications
+                newSocket.emit('join', String(user.id));
             });
 
             newSocket.on('userStatus', ({ userId, status }: { userId: number, status: 'online' | 'offline' }) => {
@@ -69,17 +71,26 @@ export function ChatProvider({ children }: { children: ReactNode }) {
                 });
             });
 
-            // Initial status check for already open chats or known users could be here,
-            // but we rely on broadcast events and lazy checks in widgets if needed.
-            // Ideally, the server pushes the full list or we fetch it?
-            // For scalability, we usually don't fetch *everyone*.
-            // But we can listen to the stream.
-
             newSocket.on('receiveMessage', () => {
                 // Invalidate conversation lists to update snippets and unread counts
                 queryClient.invalidateQueries({ queryKey: ['chat-conversations'] });
                 queryClient.invalidateQueries({ queryKey: ['chat-conversations-customer'] });
-                // Also invalidate specific chat messages if we wanted, but individual widgets handle that.
+                queryClient.invalidateQueries({ queryKey: ['chat', 'unread-count'] });
+            });
+
+            // Handle General Notifications (Moved from useSocket.ts)
+            newSocket.on('notification', (data: any) => {
+                console.log('Notification received:', data);
+                // Show toast (requires toast import, verify if imported)
+                // We'll trust sonner is available or import it.
+                // Invalidate queries
+                queryClient.invalidateQueries({ queryKey: ['notifications'] });
+                queryClient.invalidateQueries({ queryKey: ['notifications', 'unread-count'] });
+
+                if (data.type === 'new_order' || data.type === 'order_created' || data.type === 'order_status') {
+                    queryClient.invalidateQueries({ queryKey: ['orders'] });
+                    queryClient.invalidateQueries({ queryKey: ['vendor', 'orders'] });
+                }
             });
 
             setSocket(newSocket);
@@ -91,11 +102,11 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         }
     }, [user, queryClient]);
 
-    const isUserOnline = (userId: number) => {
+    const isUserOnline = useCallback((userId: number) => {
         return onlineUsers.has(userId);
-    };
+    }, [onlineUsers]);
 
-    const openChat = (session: Omit<ChatSession, 'sessionId'> & { sessionId?: string }) => {
+    const openChat = useCallback((session: Omit<ChatSession, 'sessionId'> & { sessionId?: string }) => {
         const id = session.sessionId || `vendor-${session.vendorId}`;
         const newSession = { ...session, sessionId: id };
 
@@ -109,17 +120,17 @@ export function ChatProvider({ children }: { children: ReactNode }) {
             }
             return [...prev, { ...newSession, isMinimized: false }];
         });
-    };
+    }, []);
 
-    const closeChat = (sessionId: string) => {
+    const closeChat = useCallback((sessionId: string) => {
         setOpenChats(prev => prev.filter(c => c.sessionId !== sessionId));
-    };
+    }, []);
 
-    const minimizeChat = (sessionId: string) => {
+    const minimizeChat = useCallback((sessionId: string) => {
         setOpenChats(prev => prev.map(c =>
             c.sessionId === sessionId ? { ...c, isMinimized: !c.isMinimized } : c
         ));
-    };
+    }, []);
 
     const checkOnlineStatus = useCallback((userId: number) => {
         if (!socket) return;
@@ -136,18 +147,20 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         });
     }, [socket]);
 
+    const value = React.useMemo(() => ({
+        openChats,
+        openChat,
+        closeChat,
+        minimizeChat,
+        isChatHistoryOpen,
+        setIsChatHistoryOpen,
+        socket,
+        isUserOnline,
+        checkOnlineStatus
+    }), [openChats, openChat, closeChat, minimizeChat, isChatHistoryOpen, socket, isUserOnline, checkOnlineStatus]);
+
     return (
-        <ChatContext.Provider value={{
-            openChats,
-            openChat,
-            closeChat,
-            minimizeChat,
-            isChatHistoryOpen,
-            setIsChatHistoryOpen,
-            socket,
-            isUserOnline,
-            checkOnlineStatus
-        }}>
+        <ChatContext.Provider value={value}>
             {children}
         </ChatContext.Provider>
     );

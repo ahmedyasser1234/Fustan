@@ -49,7 +49,7 @@ export default function Home() {
   const tabsRef = useRef<HTMLDivElement>(null);
   const productsPerPage = 4;
 
-  const videos = ["/hero-video-1.mp4", "/hero-video-2.mp4", "/hero-video-3.mp4"];
+  const videos = ["/132.mp4"];
 
   // Fetch Categories
   const { data: categories } = useQuery({

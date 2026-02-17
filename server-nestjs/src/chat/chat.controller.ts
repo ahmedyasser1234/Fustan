@@ -1,6 +1,7 @@
 
 import { Controller, Get, Post, Patch, Req, Body, Query, Param, UnauthorizedException } from '@nestjs/common';
 import { ChatService } from './chat.service';
+import { ChatGateway } from './chat.gateway';
 import { AuthService } from '../auth/auth.service';
 import type { Request } from 'express';
 import { COOKIE_NAME } from '../common/constants';
@@ -9,7 +10,8 @@ import { COOKIE_NAME } from '../common/constants';
 export class ChatController {
     constructor(
         private chatService: ChatService,
-        private authService: AuthService
+        private authService: AuthService,
+        private chatGateway: ChatGateway
     ) { }
 
     private async getUser(req: Request) {
@@ -38,26 +40,30 @@ export class ChatController {
     async startConversation(@Req() req: Request, @Body() body: { vendorId: number; content: string }) {
         const user = await this.getUser(req);
         // Customer starting chat with vendor
-        return this.chatService.sendMessage(user.id, user.role, null, body.content, undefined, body.vendorId);
+        const result = await this.chatService.sendMessage(user.id, user.role, null, body.content, undefined, body.vendorId);
+        this.chatGateway.broadcastMessage(result.message, result.recipientId);
+        return result;
     }
 
     @Post('messages')
     async sendMessage(@Req() req: Request, @Body() body: { conversationId?: number; content: string; vendorId?: number; userId?: number }) {
         const user = await this.getUser(req);
+        let result;
 
         // If conversationId is provided, just reply
         if (body.conversationId) {
-            return this.chatService.sendMessage(user.id, user.role, body.conversationId, body.content);
-        }
-
-        // If no conversationId, we are starting a new one
-        if (user.role === 'vendor') {
+            result = await this.chatService.sendMessage(user.id, user.role, body.conversationId, body.content);
+        } else if (user.role === 'vendor') {
             // Vendor starting chat with customer (body.userId is customerId)
-            return this.chatService.sendMessage(user.id, user.role, null, body.content, body.userId);
+            // If no conversationId, we are starting a new one
+            result = await this.chatService.sendMessage(user.id, user.role, null, body.content, body.userId);
         } else {
             // Customer starting chat with vendor
-            return this.chatService.sendMessage(user.id, user.role, null, body.content, undefined, body.vendorId);
+            result = await this.chatService.sendMessage(user.id, user.role, null, body.content, undefined, body.vendorId);
         }
+
+        this.chatGateway.broadcastMessage(result.message, result.recipientId);
+        return result;
     }
     @Get('unread-count')
     async getUnreadCount(@Req() req: Request) {

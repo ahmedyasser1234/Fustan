@@ -230,4 +230,16 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         client.join(`conversation_${conversationId}`);
         return { event: 'joinedConversation', id: conversationId };
     }
+    broadcastMessage(message: any, recipientId?: number) {
+        if (recipientId) {
+            const recipientRoom = `user_${recipientId}`;
+            this.server.to(recipientRoom).emit('receiveMessage', message);
+        }
+        // Also notify sender (in case they have multiple tabs/screens open)
+        // message.senderId should be available in message object
+        if (message.senderId) {
+            const senderRoom = `user_${message.senderId}`;
+            this.server.to(senderRoom).emit('receiveMessage', message);
+        }
+    }
 }

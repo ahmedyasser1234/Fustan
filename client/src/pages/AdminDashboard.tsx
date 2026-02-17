@@ -1,5 +1,5 @@
 import { useAuth } from "@/_core/hooks/useAuth";
-import { useSocket } from "@/_core/hooks/useSocket";
+// import { useSocket } from "@/_core/hooks/useSocket";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -357,7 +357,7 @@ export default function AdminDashboard() {
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
   const [isAdminOrderModalOpen, setIsAdminOrderModalOpen] = useState(false);
   const [showProfilePassword, setShowProfilePassword] = useState(false);
-  const { openChat } = useChat(); // Use global chat context
+  const { openChat, isUserOnline } = useChat(); // Use global chat context
 
   // Add Vendor Modal State
   const [isAddVendorModalOpen, setIsAddVendorModalOpen] = useState(false);
@@ -421,26 +421,9 @@ export default function AdminDashboard() {
     onError: () => toast.error("فشل في حذف البائع"),
   });
 
-  const socket = useSocket();
-  const [onlineUsers, setOnlineUsers] = useState<Set<number>>(new Set());
-
-  useEffect(() => {
-    if (!socket) return;
-
-    const handleStatus = ({ userId, status }: { userId: number, status: string }) => {
-      setOnlineUsers(prev => {
-        const next = new Set(prev);
-        if (status === 'online') next.add(userId);
-        else next.delete(userId);
-        return next;
-      });
-    };
-
-    socket.on('userStatus', handleStatus);
-    return () => {
-      socket.off('userStatus', handleStatus);
-    };
-  }, [socket]);
+  // Socket logic moved to ChatContext
+  // const socket = useSocket();
+  // const [onlineUsers, setOnlineUsers] = useState<Set<number>>(new Set());
 
   const totalRevenue = adminOrders
     ?.filter((o: any) => o.paymentStatus === 'paid')
@@ -783,7 +766,7 @@ export default function AdminDashboard() {
                                     <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 font-black text-[10px] uppercase shadow-sm border border-slate-200">
                                       {(v.storeNameAr || v.storeNameEn || 'S').substring(0, 2)}
                                     </div>
-                                    {onlineUsers.has(v.userId) && (
+                                    {isUserOnline(v.userId) && (
                                       <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full animate-pulse shadow-sm"></span>
                                     )}
                                   </div>
@@ -1074,7 +1057,7 @@ export default function AdminDashboard() {
                                   <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 font-black text-[10px] uppercase shadow-sm border border-slate-200">
                                     {(c.name || 'C').substring(0, 2)}
                                   </div>
-                                  {onlineUsers.has(c.id) && (
+                                  {isUserOnline(c.id) && (
                                     <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full animate-pulse shadow-sm"></span>
                                   )}
                                 </div>
