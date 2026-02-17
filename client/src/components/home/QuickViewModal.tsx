@@ -22,6 +22,7 @@ export function QuickViewModal({ initialProduct, isOpen, onClose }: QuickViewMod
     const { language, t } = useLanguage();
     const { user } = useAuth();
     const queryClient = useQueryClient();
+    const addToCartMutation = useAddToCart();
     const [selectedImage, setSelectedImage] = useState(0);
     const [selectedSize, setSelectedSize] = useState<string | null>(null);
     const [selectedColor, setSelectedColor] = useState<string | null>(null);
@@ -49,8 +50,6 @@ export function QuickViewModal({ initialProduct, isOpen, onClose }: QuickViewMod
     // Handle colors from relation (array of objects) or legacy/prop (if any)
     // The backend getter returns 'colors' property which is array of ProductColor
     const colors = product.colors || [];
-
-    const addToCartMutation = useAddToCart();
 
     return (
         <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
