@@ -120,18 +120,21 @@ export function QuickViewModal({ initialProduct, isOpen, onClose }: QuickViewMod
                             <div className="mb-6">
                                 <span className="text-sm font-bold text-gray-900 mb-3 block">{t('size')}</span>
                                 <div className="flex flex-wrap gap-2">
-                                    {sizes.map((size: string) => (
-                                        <button
-                                            key={size}
-                                            onClick={() => setSelectedSize(size)}
-                                            className={`h-10 min-w-[2.5rem] px-3 rounded-lg border-2 font-bold text-sm transition-all ${selectedSize === size
-                                                ? 'border-gray-900 bg-gray-900 text-white'
-                                                : 'border-gray-200 text-gray-600 hover:border-gray-900'
-                                                }`}
-                                        >
-                                            {size}
-                                        </button>
-                                    ))}
+                                    {sizes.map((sizeItem: any) => {
+                                        const sizeName = typeof sizeItem === 'string' ? sizeItem : sizeItem.size;
+                                        return (
+                                            <button
+                                                key={sizeName}
+                                                onClick={() => setSelectedSize(sizeName)}
+                                                className={`h-10 min-w-[2.5rem] px-3 rounded-lg border-2 font-bold text-sm transition-all ${selectedSize === sizeName
+                                                    ? 'border-gray-900 bg-gray-900 text-white'
+                                                    : 'border-gray-200 text-gray-600 hover:border-gray-900'
+                                                    }`}
+                                            >
+                                                {sizeName}
+                                            </button>
+                                        );
+                                    })}
                                 </div>
                             </div>
                         )}

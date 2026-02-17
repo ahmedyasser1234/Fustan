@@ -45,17 +45,12 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         }
 
         if (!socket) {
-            // Use environment variable for socket URL, or fallback to backend IP if in production
-            let socketUrl = import.meta.env.VITE_SOCKET_URL;
+            // Use environment variable for socket URL
+            // CRITICAL: This MUST be a secure URL (wss:// or https://) in production to avoid Mixed Content errors.
+            const socketUrl = import.meta.env.VITE_SOCKET_URL || window.location.origin;
 
-            if (!socketUrl) {
-                if (window.location.hostname.includes('netlify.app')) {
-                    // Production fallback
-                    socketUrl = "http://148.230.126.48";
-                } else {
-                    // Local development
-                    socketUrl = window.location.origin;
-                }
+            if (!import.meta.env.VITE_SOCKET_URL && window.location.hostname.includes('netlify.app')) {
+                console.error("VITE_SOCKET_URL is missing! You must set this to your secure backend URL (e.g. https://api.yourdomain.com) in Netlify.");
             }
 
             console.log('Connecting socket to:', socketUrl);
