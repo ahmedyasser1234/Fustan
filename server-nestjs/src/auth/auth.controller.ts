@@ -124,7 +124,8 @@ export class AuthController {
         const payload = await this.authService.verifySession(token);
         if (!payload) return null;
 
-        return this.authService.findUserByOpenId(payload.openId);
+        const user = await this.authService.findUserByOpenId(payload.openId);
+        return { user, token };
     }
 
     @Get('profile')

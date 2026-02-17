@@ -27,7 +27,7 @@ interface ChatContextType {
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
 
 export function ChatProvider({ children }: { children: ReactNode }) {
-    const { user } = useAuth();
+    const { user, token } = useAuth();
     const [openChats, setOpenChats] = useState<ChatSession[]>([]);
     const [isChatHistoryOpen, setIsChatHistoryOpen] = useState(false);
     const [socket, setSocket] = useState<Socket | null>(null);
@@ -44,6 +44,20 @@ export function ChatProvider({ children }: { children: ReactNode }) {
             return;
         }
 
+        if (socket) {
+            // If socket exists but token doesn't match, we might need to reconnect 
+            // or we can just let it be if it's already working (though unlikely if cookies are blocked).
+            // But for now, if we have a socket but we just got a token, we should probably recreate it.
+            // Check if socket already has this token in its auth
+            const currentToken = (socket as any).auth?.token;
+            if (token && currentToken !== token) {
+                console.log('🔌 Debug: Token changed or acquired, reconnecting socket...');
+                socket.disconnect();
+                setSocket(null);
+                return; // Next render will trigger reconnection with the new token
+            }
+        }
+
         if (!socket) {
             // Use environment variable for socket URL
             // CRITICAL: This MUST be a secure URL (wss:// or https://) in production to avoid Mixed Content errors.
@@ -53,10 +67,9 @@ export function ChatProvider({ children }: { children: ReactNode }) {
                 console.error("VITE_SOCKET_URL is missing! You must set this to your secure backend URL (e.g. https://api.yourdomain.com) in Netlify.");
             }
 
-            const token = localStorage.getItem('app_token');
             console.log('🔌 Debug: Initializing socket connection...');
             console.log('🔌 Debug: Using Socket URL:', socketUrl);
-            console.log('🔌 Debug: Token present in localStorage:', !!token);
+            console.log('🔌 Debug: Token acquired from auth state:', !!token);
 
             // Append /chat namespace manually if the library doesn't handle it automatically with the full URL
             const newSocket = io(`${socketUrl}/chat`, {
@@ -120,7 +133,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
                 setSocket(null);
             };
         }
-    }, [user, queryClient]);
+    }, [user, token, queryClient]);
 
     const isUserOnline = useCallback((userId: number) => {
         return onlineUsers.has(userId);

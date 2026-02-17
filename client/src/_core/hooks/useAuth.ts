@@ -17,6 +17,7 @@ export function useAuth(options?: UseAuthOptions) {
     queryKey: ['auth', 'me'],
     queryFn: async () => {
       const response = await endpoints.auth.me();
+      // If the response is { user, token }, return it
       return response.data;
     },
     initialData: () => {
@@ -25,6 +26,7 @@ export function useAuth(options?: UseAuthOptions) {
       if (saved) {
         try {
           const parsed = JSON.parse(saved);
+          // Handle both old flat format and new {user, token} format
           return parsed;
         } catch (e) {
           return undefined;
@@ -44,11 +46,6 @@ export function useAuth(options?: UseAuthOptions) {
     }
   });
 
-  // Since useAuth uses tanstack query and endpoints.auth.login isn't directly shown as a mutation in this file,
-  // but many components use useAuth, I need to check where the login logic is.
-  // Wait, useAuth.ts doesn't have login/register mutations, only logout.
-  // It seems they are in individual components.
-
   const logoutMutation = useMutation({
     mutationFn: async () => {
       const response = await endpoints.auth.logout();
@@ -56,6 +53,7 @@ export function useAuth(options?: UseAuthOptions) {
     },
     onSuccess: () => {
       queryClient.setQueryData(['auth', 'me'], null);
+      localStorage.removeItem("app_token"); // Clear token on logout
       if (typeof window !== "undefined") {
         window.location.href = "/";
       }
@@ -69,6 +67,7 @@ export function useAuth(options?: UseAuthOptions) {
       console.error("Logout failed:", error);
     } finally {
       localStorage.removeItem("manus-runtime-user-info");
+      localStorage.removeItem("app_token");
       queryClient.setQueryData(['auth', 'me'], null);
       await queryClient.invalidateQueries({ queryKey: ['auth', 'me'] });
       await queryClient.resetQueries({ queryKey: ['auth', 'me'] });
@@ -85,11 +84,16 @@ export function useAuth(options?: UseAuthOptions) {
   }, [meQuery.data]);
 
   const state = useMemo(() => {
+    // Extract user if it's nested, otherwise use top-level
+    const userData = meQuery.data?.user ?? meQuery.data ?? null;
+    const token = meQuery.data?.token ?? localStorage.getItem('app_token') ?? null;
+
     return {
-      user: meQuery.data ?? null,
+      user: userData,
+      token: token,
       loading: (meQuery.isLoading || (meQuery.isFetching && !meQuery.data)) || logoutMutation.isPending,
       error: meQuery.error ?? logoutMutation.error ?? null,
-      isAuthenticated: Boolean(meQuery.data),
+      isAuthenticated: Boolean(userData),
     };
   }, [
     meQuery.data,

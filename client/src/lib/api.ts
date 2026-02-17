@@ -5,6 +5,26 @@ const api = axios.create({
     withCredentials: true,
 });
 
+// Request Interceptor: Attach token to headers if available
+api.interceptors.request.use((config) => {
+    const token = localStorage.getItem('app_token');
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+});
+
+// Response Interceptor: Capture token from response body
+api.interceptors.response.use((response) => {
+    if (response.data && response.data.token) {
+        console.log('📝 Debug: Token captured from response, saving to localStorage');
+        localStorage.setItem('app_token', response.data.token);
+    }
+    return response;
+}, (error) => {
+    return Promise.reject(error);
+});
+
 export default api;
 
 export const endpoints = {
