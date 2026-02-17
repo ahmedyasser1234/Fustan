@@ -150,7 +150,8 @@ export default function VendorProfile() {
 
               <div className="flex flex-wrap gap-3">
                 {/* Debug: UserID={user?.id} VendorUserID={vendor?.userId} Role={user?.role} */}
-                {(!user || (vendor?.userId && Number(user.id) !== Number(vendor.userId))) && (
+                {/* Always show Contact Seller button for verification, or restrict if needed later */}
+                {user && (
                   <Button
                     className="bg-purple-600 hover:bg-purple-700"
                     onClick={() => openChat({
