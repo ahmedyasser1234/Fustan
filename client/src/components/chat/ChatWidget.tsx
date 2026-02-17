@@ -225,7 +225,7 @@ export function ChatWidget({ vendorId, recipientId: explicitRecipientId, vendorN
 
     if (isMinimized) {
         return (
-            <div className="w-64 bg-white rounded-t-lg shadow-lg border border-gray-200 flex items-center justify-between p-3 cursor-pointer hover:bg-gray-50 transition-colors"
+            <div className="w-[85vw] sm:w-64 bg-white rounded-t-lg shadow-lg border border-gray-200 flex items-center justify-between p-3 cursor-pointer hover:bg-gray-50 transition-colors"
                 onClick={onMinimize}>
                 <div className="flex items-center gap-2">
                     <div className="relative">
@@ -249,7 +249,7 @@ export function ChatWidget({ vendorId, recipientId: explicitRecipientId, vendorN
     }
 
     return (
-        <div className="w-80 h-[500px] bg-white rounded-t-2xl shadow-2xl flex flex-col border border-gray-100 ring-1 ring-black/5 animate-in slide-in-from-bottom-10 duration-200 relative">
+        <div className="w-[95vw] sm:w-80 h-[70vh] sm:h-[500px] bg-white rounded-t-2xl shadow-2xl flex flex-col border border-gray-100 ring-1 ring-black/5 animate-in slide-in-from-bottom-10 duration-200 relative mb-4 sm:mb-0">
             {/* Header */}
             <div className="p-3 border-b flex items-center justify-between bg-gradient-to-r from-rose-500 to-rose-600 text-white rounded-t-2xl shadow-sm cursor-pointer"
                 onClick={onMinimize}>

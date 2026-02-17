@@ -12,7 +12,7 @@ export function ChatContainer() {
     // Let's render all but manage layout.
 
     return (
-        <div className="fixed bottom-0 right-20 z-[100] flex items-end gap-4 pointer-events-none">
+        <div className="fixed bottom-0 right-0 sm:right-20 z-[100] flex flex-col sm:flex-row items-center sm:items-end gap-2 sm:gap-4 pointer-events-none w-full sm:w-auto p-4 sm:p-0">
             {/* Right padding 20 (approx 5rem) to avoid overlapping the floating History button */}
             {openChats.map((chat) => (
                 <div key={chat.sessionId} className="pointer-events-auto">

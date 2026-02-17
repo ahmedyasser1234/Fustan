@@ -52,7 +52,7 @@ export function ChatHistory({ isOpen, onOpenChange }: ChatHistoryProps) {
 
     return (
         <Sheet open={isOpen} onOpenChange={onOpenChange}>
-            <SheetContent side="right" className="w-[400px] sm:w-[540px] p-0 flex flex-col" dir="rtl">
+            <SheetContent side="right" className="w-full sm:w-[540px] p-0 flex flex-col" dir="rtl">
                 <SheetHeader className="p-6 border-b">
                     <SheetTitle className="text-xl font-black flex items-center justify-between gap-2 w-full">
                         <div className="flex items-center gap-2">
