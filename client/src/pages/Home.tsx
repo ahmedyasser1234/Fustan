@@ -743,11 +743,11 @@ export default function Home() {
             <div>
               <h2 className="text-3xl font-black mb-2 flex items-center gap-3">
                 <Instagram className="text-rose-600" size={32} />
-                @ahmedyasser1456
+                @ahmedkrishna
               </h2>
               <p className="text-gray-500 font-bold">{language === 'ar' ? "تابعينا على انستقرام" : "Follow us on Instagram"}</p>
             </div>
-            <a href="https://www.instagram.com/ahmedyasser1456/" target="_blank" rel="noopener noreferrer">
+            <a href="https://www.instagram.com/ahmedkrishna/ogdg" target="_blank" rel="noopener noreferrer">
               <Button variant="outline" className="rounded-full px-8 h-12 border-2 border-gray-200 hover:border-rose-600 hover:text-rose-600 font-bold">
                 {language === 'ar' ? "مشاهدة الكل" : "View All"}
               </Button>
