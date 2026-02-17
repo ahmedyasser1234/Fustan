@@ -15,7 +15,13 @@ export class ChatController {
     ) { }
 
     private async getUser(req: Request) {
-        const token = req.cookies?.[COOKIE_NAME];
+        let token = req.cookies?.[COOKIE_NAME];
+
+        // Check Authorization header fallback (for cross-site requests where cookies are blocked)
+        if (!token && req.headers.authorization) {
+            token = req.headers.authorization.split(' ')[1];
+        }
+
         if (!token) throw new UnauthorizedException('No token found');
         const payload = await this.authService.verifySession(token);
         if (!payload) throw new UnauthorizedException('Invalid session');

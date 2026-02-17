@@ -137,6 +137,7 @@ export const endpoints = {
     chat: {
         conversations: () => api.get('/chat/conversations').then(res => res.data),
         getMessages: (conversationId: number) => api.get(`/chat/messages/${conversationId}`).then(res => res.data),
+        sendMessage: (data: { conversationId?: number; content: string; vendorId?: number; userId?: number }) => api.post('/chat/messages', data).then(res => res.data),
         start: (data: { vendorId: number; content: string }) => api.post('/chat/start', data).then(res => res.data),
         unreadCount: () => api.get('/chat/unread-count').then(res => res.data),
         markRead: (id: number) => api.patch(`/chat/conversations/${id}/read`).then(res => res.data),

@@ -148,7 +148,7 @@ export function ChatWidget({ vendorId, recipientId: explicitRecipientId, vendorN
         const content = inputValue;
         setInputValue("");
 
-        if (socket) {
+        if (socket && socket.connected) {
             console.log('📤 Debug: Emit sendMessage', {
                 conversationId: conversationIdRef.current,
                 vendorId,
@@ -163,7 +163,10 @@ export function ChatWidget({ vendorId, recipientId: explicitRecipientId, vendorN
             }, (response: { message: Message, conversationId: number }) => {
                 console.log('✅ Debug: sendMessage Ack/Response:', response);
                 if (response && response.message) {
-                    setMessages((prev) => [...prev, response.message]);
+                    setMessages((prev) => {
+                        if (prev.some(m => m.id === response.message.id)) return prev;
+                        return [...prev, response.message];
+                    });
                     if (!conversationIdRef.current && response.conversationId) {
                         setConversationId(response.conversationId);
                     }
@@ -172,7 +175,28 @@ export function ChatWidget({ vendorId, recipientId: explicitRecipientId, vendorN
                 }
             });
         } else {
-            console.error('❌ Debug: Socket is null in handleSend!');
+            console.warn('⚠️ Debug: Socket is null or disconnected, using API fallback');
+            try {
+                const response = await endpoints.chat.sendMessage({
+                    conversationId: conversationIdRef.current || undefined,
+                    content,
+                    vendorId,
+                    userId: explicitRecipientId // If vendor is sending to customer
+                });
+
+                console.log('✅ Debug: sendMessage API Response:', response);
+                if (response && response.message) {
+                    setMessages((prev) => {
+                        if (prev.some(m => m.id === response.message.id)) return prev;
+                        return [...prev, response.message];
+                    });
+                    if (!conversationIdRef.current && response.conversationId) {
+                        setConversationId(response.conversationId);
+                    }
+                }
+            } catch (err) {
+                console.error('❌ Debug: API fallback failed', err);
+            }
         }
     };
 

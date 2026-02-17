@@ -53,8 +53,9 @@ export function ChatProvider({ children }: { children: ReactNode }) {
             if (token && currentToken !== token) {
                 console.log('🔌 Debug: Token changed or acquired, reconnecting socket...');
                 socket.disconnect();
+                // We'll set it to null and let the next block handle reconnection immediately
                 setSocket(null);
-                return; // Next render will trigger reconnection with the new token
+                return;
             }
         }
 
