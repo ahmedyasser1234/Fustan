@@ -22,8 +22,8 @@ export class AuthController {
             res.cookie(COOKIE_NAME, token, {
                 httpOnly: true,
                 path: '/',
-                sameSite: 'lax',
-                secure: false, // For local dev
+                sameSite: 'none',
+                secure: true,
                 maxAge: ONE_YEAR_MS,
             });
 
@@ -42,12 +42,12 @@ export class AuthController {
         res.cookie(COOKIE_NAME, token, {
             httpOnly: true,
             path: '/',
-            sameSite: 'lax',
-            secure: false,
+            sameSite: 'none',
+            secure: true,
             maxAge: ONE_YEAR_MS,
         });
 
-        return { user };
+        return { user, token };
     }
 
     @Post('google')
@@ -57,12 +57,12 @@ export class AuthController {
         res.cookie(COOKIE_NAME, token, {
             httpOnly: true,
             path: '/',
-            sameSite: 'lax',
-            secure: false,
+            sameSite: 'none',
+            secure: true,
             maxAge: ONE_YEAR_MS,
         });
 
-        return { user };
+        return { user, token };
     }
 
     @Throttle({ auth: { limit: 3, ttl: 60000 } })
@@ -93,12 +93,12 @@ export class AuthController {
             res.cookie(COOKIE_NAME, token, {
                 httpOnly: true,
                 path: '/',
-                sameSite: 'lax',
-                secure: false,
+                sameSite: 'none',
+                secure: true,
                 maxAge: ONE_YEAR_MS,
             });
 
-            return { user };
+            return { user, token };
         } catch (error) {
             console.error('Register Controller Error:', error);
             throw error;
@@ -110,8 +110,8 @@ export class AuthController {
         res.clearCookie(COOKIE_NAME, {
             httpOnly: true,
             path: '/',
-            sameSite: 'lax',
-            secure: false,
+            sameSite: 'none',
+            secure: true,
         });
         return { success: true };
     }

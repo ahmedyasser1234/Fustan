@@ -25,12 +25,16 @@ export default function AdminRegister() {
         setIsLoading(true);
 
         try {
-            await api.post("/auth/register", {
+            const response = await api.post("/auth/register", {
                 name,
                 email: email.toLowerCase(),
                 password,
                 role: 'admin'
             });
+
+            if (response.data.token) {
+                localStorage.setItem('app_token', response.data.token);
+            }
 
             await refresh();
             toast.success("Admin account created successfully");

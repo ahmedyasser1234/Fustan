@@ -54,9 +54,13 @@ export default function VendorRegister() {
             formData.append("phone", phone);
             if (logo) formData.append("logo", logo);
 
-            await api.post("/auth/register", formData, {
+            const response = await api.post("/auth/register", formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
+
+            if (response.data.token) {
+                localStorage.setItem('app_token', response.data.token);
+            }
 
             await refresh();
             toast.success(language === 'ar' ? 'تم إنشاء متجركِ بنجاح! أهلاً بكِ في عائلة فستان' : 'Store created successfully! Welcome to Fustan family');

@@ -29,7 +29,7 @@ export default function Register() {
         setIsLoading(true);
 
         try {
-            await api.post("/auth/register", {
+            const response = await api.post("/auth/register", {
                 name,
                 email: email.toLowerCase(),
                 password,
@@ -37,6 +37,9 @@ export default function Register() {
                 phone,
                 address
             });
+            if (response.data.token) {
+                localStorage.setItem('app_token', response.data.token);
+            }
 
             await refresh(); // Refresh auth state
             toast.success(language === 'ar' ? 'تم إنشاء الحساب بنجاح' : 'Account created successfully');

@@ -29,6 +29,9 @@ export default function VendorLogin() {
                 password,
                 role: 'vendor'
             });
+            if (response.data.token) {
+                localStorage.setItem('app_token', response.data.token);
+            }
             await refresh();
             toast.success(language === 'ar' ? 'أهلاً بك في بوابة التجار' : 'Welcome to the Vendor Portal');
             setLocation("/vendor-dashboard");

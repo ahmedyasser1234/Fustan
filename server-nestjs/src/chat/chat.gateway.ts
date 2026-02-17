@@ -53,8 +53,16 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
                 token = client.handshake.headers.authorization.split(' ')[1];
             }
 
+            // Fallback to handshake auth (for cross-origin without cookies)
+            if (!token && client.handshake.auth?.token) {
+                token = client.handshake.auth.token;
+            }
+
             if (!token) {
-                console.log(`Chat: Disconnecting client ${client.id} (No token)`);
+                console.log(`Chat: Disconnecting client ${client.id} (No token). Handshake:`, {
+                    hasCookie: !!cookieHeader,
+                    hasAuth: !!client.handshake.auth?.token
+                });
                 client.disconnect();
                 return;
             }

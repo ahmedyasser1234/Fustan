@@ -24,7 +24,8 @@ export function useAuth(options?: UseAuthOptions) {
       const saved = localStorage.getItem("manus-runtime-user-info");
       if (saved) {
         try {
-          return JSON.parse(saved);
+          const parsed = JSON.parse(saved);
+          return parsed;
         } catch (e) {
           return undefined;
         }
@@ -35,13 +36,18 @@ export function useAuth(options?: UseAuthOptions) {
     refetchOnWindowFocus: false,
     // @ts-ignore
     onError: (err: any) => {
-      // If 401/403, immediately clear local state to stop further requests
       if (err.response?.status === 401 || err.response?.status === 403) {
         localStorage.removeItem("manus-runtime-user-info");
+        localStorage.removeItem("app_token"); // Clear token
         queryClient.setQueryData(['auth', 'me'], null);
       }
     }
   });
+
+  // Since useAuth uses tanstack query and endpoints.auth.login isn't directly shown as a mutation in this file,
+  // but many components use useAuth, I need to check where the login logic is.
+  // Wait, useAuth.ts doesn't have login/register mutations, only logout.
+  // It seems they are in individual components.
 
   const logoutMutation = useMutation({
     mutationFn: async () => {

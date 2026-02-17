@@ -24,6 +24,9 @@ export default function Login() {
         try {
             const { credential } = credentialResponse;
             const response = await api.post("/auth/google", { token: credential });
+            if (response.data.token) {
+                localStorage.setItem('app_token', response.data.token);
+            }
             await refresh();
             toast.success(language === 'ar' ? 'تم تسجيل الدخول بنجاح' : 'Logged in successfully');
             const userRole = response.data.user?.role;
@@ -50,6 +53,9 @@ export default function Login() {
                 password,
                 role: 'customer'
             });
+            if (response.data.token) {
+                localStorage.setItem('app_token', response.data.token);
+            }
             await refresh(); // Refresh auth state
             toast.success(language === 'ar' ? 'تم تسجيل الدخول بنجاح' : 'Logged in successfully');
             setLocation("/");

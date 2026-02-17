@@ -24,6 +24,9 @@ export default function AdminLogin() {
                 password,
                 role: 'admin'
             });
+            if (response.data.token) {
+                localStorage.setItem('app_token', response.data.token);
+            }
             await refresh();
 
             toast.success("Welcome, Super Admin");

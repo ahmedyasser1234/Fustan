@@ -53,13 +53,16 @@ export function ChatProvider({ children }: { children: ReactNode }) {
                 console.error("VITE_SOCKET_URL is missing! You must set this to your secure backend URL (e.g. https://api.yourdomain.com) in Netlify.");
             }
 
+            const token = localStorage.getItem('app_token');
             console.log('🔌 Debug: Initializing socket connection...');
             console.log('🔌 Debug: Using Socket URL:', socketUrl);
+            console.log('🔌 Debug: Token present in localStorage:', !!token);
 
             // Append /chat namespace manually if the library doesn't handle it automatically with the full URL
             const newSocket = io(`${socketUrl}/chat`, {
                 withCredentials: true,
                 transports: ['websocket', 'polling'],
+                auth: { token } // Pass token for cross-site auth fallback
             });
 
             newSocket.on('connect', () => {
