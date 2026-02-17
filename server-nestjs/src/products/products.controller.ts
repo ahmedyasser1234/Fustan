@@ -65,7 +65,7 @@ export class ProductsController {
     async update(
         @Param('id', ParseIntPipe) id: number,
         @Body() body: any,
-        @UploadedFiles(new FileValidationPipe()) files: Express.Multer.File[]
+        @UploadedFiles(new FileValidationPipe(10 * 1024 * 1024)) files: Express.Multer.File[]
     ) {
         return this.productsService.update(id, body, files);
     }

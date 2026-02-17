@@ -2,7 +2,7 @@ import { PipeTransform, Injectable, BadRequestException } from '@nestjs/common';
 
 @Injectable()
 export class FileValidationPipe implements PipeTransform {
-    constructor(private readonly maxSizeBytes: number = 5 * 1024 * 1024) { } // Default 5MB
+    constructor(private readonly maxSizeBytes: number = 10 * 1024 * 1024) { } // Default 10MB
 
     transform(value: any) {
         if (!value) return null;

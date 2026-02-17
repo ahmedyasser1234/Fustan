@@ -19,8 +19,18 @@ export const useSocket = () => {
         }
 
         if (!socketRef.current) {
-            // Use environment variable for socket URL, fallback to window.location.origin
-            const socketUrl = import.meta.env.VITE_SOCKET_URL || window.location.origin;
+            // Use environment variable for socket URL, or correct backend URL from VITE_API_URL
+            let socketUrl = import.meta.env.VITE_SOCKET_URL;
+            if (!socketUrl && import.meta.env.VITE_API_URL) {
+                try {
+                    const url = new URL(import.meta.env.VITE_API_URL);
+                    socketUrl = url.origin;
+                } catch (e) {
+                    console.error("Invalid API URL for socket", e);
+                }
+            }
+            if (!socketUrl) socketUrl = window.location.origin;
+
             socketRef.current = io(socketUrl, {
                 path: '/socket.io',
                 withCredentials: true,

@@ -60,8 +60,10 @@ export function useChatNotifications() {
 
     // Re-fetch when location changes (e.g. user leaves chat page)
     useEffect(() => {
-        refetch();
-    }, [location, refetch]);
+        if (user) {
+            refetch();
+        }
+    }, [location, refetch, user]);
 
     return { unreadCount };
 }

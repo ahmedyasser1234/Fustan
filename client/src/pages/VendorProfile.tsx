@@ -14,6 +14,8 @@ import { EmptyState } from "@/components/ui/EmptyState";
 
 
 
+import { StoreRatingModal } from "@/components/store/StoreRatingModal";
+
 export default function VendorProfile() {
   const [match, params] = useRoute("/vendor/:id");
   const [location, setLocation] = useLocation();
@@ -22,6 +24,7 @@ export default function VendorProfile() {
   const { user } = useAuth();
   const { openChat } = useChat();
   const [quickViewProduct, setQuickViewProduct] = useState<any>(null);
+  const [isRatingOpen, setIsRatingOpen] = useState(false);
 
   // Parse query params
   const searchParams = new URLSearchParams(searchString);
@@ -160,10 +163,11 @@ export default function VendorProfile() {
                       })}
                     >
                       <MessageSquare className="w-4 h-4 ml-2" />
-                      تواصل مع البائع
+                      {language === 'ar' ? "تواصل مع البائع" : "Contact Seller"}
                     </Button>
-                    <Button variant="outline">
-                      متابعة المتجر
+                    <Button variant="outline" onClick={() => setIsRatingOpen(true)}>
+                      <Star className="w-4 h-4 ml-2 mr-1" />
+                      {language === 'ar' ? "تقييم المتجر" : "Rate Store"}
                     </Button>
                   </>
                 )}
@@ -172,7 +176,7 @@ export default function VendorProfile() {
 
             {/* Contact Info Card */}
             <div className="bg-gray-50 rounded-xl p-6 w-full md:w-80">
-              <h3 className="font-semibold text-gray-900 mb-4">معلومات التواصل</h3>
+              <h3 className="font-semibold text-gray-900 mb-4">{language === 'ar' ? "معلومات التواصل" : "Contact Info"}</h3>
               <div className="space-y-3">
                 {vendor?.phone && (
                   <div className="flex items-center gap-2">
@@ -201,6 +205,13 @@ export default function VendorProfile() {
           </div>
         </div>
       </div>
+
+      <StoreRatingModal
+        isOpen={isRatingOpen}
+        onClose={() => setIsRatingOpen(false)}
+        vendorId={vendor?.id}
+        vendorName={language === 'ar' ? vendor?.storeNameAr : vendor?.storeNameEn}
+      />
 
       {/* Navigation Tabs - Sticky offset increased to top-24 (was top-0 then top-20 proposed, trying 24 for more space) */}
       <div className="bg-white border-b border-gray-200 sticky top-24 z-20 mt-8 shadow-sm">

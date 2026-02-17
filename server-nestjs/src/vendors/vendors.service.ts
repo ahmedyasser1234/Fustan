@@ -262,8 +262,8 @@ export class VendorsService {
             .where(
                 and(
                     eq(orders.vendorId, vendorId),
-                    // Simplify: List anyone who has an order that is delivered
-                    eq(orders.status, 'delivered')
+                    // Simplify: List anyone who has an order that is paid, shipped or delivered
+                    inArray(orders.status, ['paid', 'shipped', 'delivered'])
                 )
             );
 
