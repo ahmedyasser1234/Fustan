@@ -536,22 +536,22 @@ export default function AdminDashboard() {
       </header>
 
       {/* Navigation Tabs */}
-      <div className="bg-white border-b border-gray-200 sticky top-20 z-20 overflow-x-auto scrollbar-hide">
+      <div className="bg-white border-b border-gray-200 sticky top-20 z-20 overflow-x-auto scrollbar-hide py-2 md:py-0">
         <div className="container mx-auto px-4">
-          <div className="flex gap-6 whitespace-nowrap">
+          <div className="flex gap-2 md:gap-6 whitespace-nowrap">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)}
-                className={`py-4 px-2 border-b-2 flex items-center gap-2 transition font-bold relative ${activeTab === tab.id
-                  ? "border-rose-600 text-rose-600"
-                  : "border-transparent text-gray-600 hover:text-gray-900"
+                className={`flex items-center gap-2 transition font-black relative px-4 py-2 md:py-4 md:px-2 rounded-xl md:rounded-none whitespace-nowrap text-xs md:text-sm ${activeTab === tab.id
+                  ? "bg-rose-50 md:bg-transparent text-rose-600 md:border-b-2 md:border-rose-600"
+                  : "text-gray-500 hover:text-gray-900 hover:bg-gray-50 md:hover:bg-transparent"
                   }`}
               >
-                <tab.icon className="w-5 h-5" />
+                <tab.icon className="w-4 h-4 md:w-5 md:h-5" />
                 {tab.label}
                 {tab.badge ? (
-                  <span className="absolute -top-1 -right-3 bg-red-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] flex items-center justify-center animate-pulse shadow-md">
+                  <span className="absolute -top-1 -right-1 md:-top-1 md:-right-3 bg-red-600 text-white text-[9px] md:text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[16px] md:min-w-[18px] flex items-center justify-center animate-pulse shadow-md">
                     {tab.badge > 99 ? '99+' : tab.badge}
                   </span>
                 ) : null}

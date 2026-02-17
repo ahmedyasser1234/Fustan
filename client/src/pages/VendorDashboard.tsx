@@ -213,7 +213,7 @@ export default function VendorDashboard() {
 
           {/* Tab Navigation */}
           <div className="relative">
-            <div className="flex gap-3 overflow-x-auto pb-4 scrollbar-hide -mx-2 px-2 lg:flex-wrap lg:overflow-visible lg:pb-0">
+            <div className="flex gap-2 md:gap-3 overflow-x-auto pb-4 scrollbar-hide -mx-2 px-2 lg:flex-wrap lg:overflow-visible lg:pb-0">
               {[
                 { id: "overview", icon: TrendingUp, color: "from-purple-500 to-pink-500" },
                 { id: "products", icon: Package, color: "from-blue-500 to-cyan-500" },
@@ -230,18 +230,18 @@ export default function VendorDashboard() {
                 <button
                   key={tab.id}
                   onClick={() => handleTabChange(tab.id)}
-                  className={`group h-14 px-7 rounded-[20px] font-black text-sm flex items-center gap-3 transition-all duration-300 relative overflow-hidden ${activeTab === tab.id
+                  className={`group h-11 md:h-14 px-4 md:px-7 rounded-2xl md:rounded-[20px] font-black text-xs md:text-sm flex items-center gap-2 md:gap-3 transition-all duration-300 relative overflow-hidden whitespace-nowrap min-w-fit ${activeTab === tab.id
                     ? "bg-slate-900 text-white shadow-xl shadow-slate-300/50 scale-105"
-                    : "bg-white/60 backdrop-blur-sm text-slate-500 hover:bg-white hover:text-slate-900 border border-slate-200/60 hover:border-slate-300 hover:shadow-lg hover:scale-102"
+                    : "bg-white/60 backdrop-blur-sm text-slate-500 hover:bg-white hover:text-slate-900 border border-slate-200/60 hover:border-slate-300 hover:shadow-lg"
                     }`}
                 >
                   {activeTab === tab.id && (
                     <div className={`absolute inset-0 bg-gradient-to-r ${tab.color} opacity-90`} />
                   )}
-                  <tab.icon className={`w-5 h-5 relative z-10 transition-transform group-hover:scale-110 ${activeTab === tab.id ? 'animate-pulse' : ''}`} />
+                  <tab.icon className={`w-4 h-4 md:w-5 md:h-5 relative z-10 transition-transform group-hover:scale-110 ${activeTab === tab.id ? 'animate-pulse' : ''}`} />
                   <span className="relative z-10">{t(`tab${tab.id.charAt(0).toUpperCase() + tab.id.slice(1)}` as any)}</span>
                   {tab.badge > 0 && (
-                    <span className="absolute -top-2 -left-2 w-6 h-6 bg-gradient-to-r from-red-500 to-pink-500 text-white text-[11px] font-black rounded-full flex items-center justify-center animate-bounce shadow-lg z-20">
+                    <span className="absolute -top-1 -left-1 md:-top-2 md:-left-2 w-5 h-5 md:w-6 md:h-6 bg-gradient-to-r from-red-500 to-pink-500 text-white text-[9px] md:text-[11px] font-black rounded-full flex items-center justify-center animate-bounce shadow-lg z-20">
                       {tab.badge}
                     </span>
                   )}
