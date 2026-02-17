@@ -22,10 +22,20 @@ export const CloudinaryProvider = {
 export class CloudinaryService {
     async uploadFile(file: Express.Multer.File): Promise<UploadApiResponse | UploadApiErrorResponse> {
         return new Promise((resolve, reject) => {
-            const upload = cloudinary.uploader.upload_stream((error, result) => {
-                if (error) return reject(error);
-                resolve(result!);
-            });
+            const upload = cloudinary.uploader.upload_stream(
+                {
+                    folder: 'fustan-products',
+                    transformation: [
+                        { width: 1200, height: 1200, crop: "limit" },
+                        { quality: "auto" },
+                        { fetch_format: "auto" }
+                    ]
+                },
+                (error, result) => {
+                    if (error) return reject(error);
+                    resolve(result!);
+                }
+            );
 
             streamifier.createReadStream(file.buffer).pipe(upload);
         });

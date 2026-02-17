@@ -217,6 +217,38 @@ export class ChatService {
                         throw new NotFoundException('Failed to initialize Support Vendor');
                     }
                 }
+            } else if (senderRole === 'vendor' && recipientId) {
+                // Vendor chatting with customer
+                const [vendor] = await this.databaseService.db
+                    .select()
+                    .from(vendors)
+                    .where(eq(vendors.userId, senderId))
+                    .limit(1);
+
+                if (!vendor) throw new NotFoundException('Vendor profile not found');
+
+                const [existing] = await this.databaseService.db
+                    .select()
+                    .from(conversations)
+                    .where(and(
+                        eq(conversations.customerId, recipientId),
+                        eq(conversations.vendorId, vendor.id)
+                    ));
+
+                if (existing) {
+                    convId = existing.id;
+                } else {
+                    const [newConv] = await this.databaseService.db
+                        .insert(conversations)
+                        .values({
+                            customerId: recipientId,
+                            vendorId: vendor.id,
+                            updatedAt: new Date(),
+                            createdAt: new Date(),
+                        })
+                        .returning();
+                    convId = newConv.id;
+                }
             } else if (senderRole === 'customer' && vendorId) {
                 const [existing] = await this.databaseService.db
                     .select()

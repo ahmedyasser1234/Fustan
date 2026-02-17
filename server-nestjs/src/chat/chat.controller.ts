@@ -40,6 +40,25 @@ export class ChatController {
         // Customer starting chat with vendor
         return this.chatService.sendMessage(user.id, user.role, null, body.content, undefined, body.vendorId);
     }
+
+    @Post('messages')
+    async sendMessage(@Req() req: Request, @Body() body: { conversationId?: number; content: string; vendorId?: number; userId?: number }) {
+        const user = await this.getUser(req);
+
+        // If conversationId is provided, just reply
+        if (body.conversationId) {
+            return this.chatService.sendMessage(user.id, user.role, body.conversationId, body.content);
+        }
+
+        // If no conversationId, we are starting a new one
+        if (user.role === 'vendor') {
+            // Vendor starting chat with customer (body.userId is customerId)
+            return this.chatService.sendMessage(user.id, user.role, null, body.content, body.userId);
+        } else {
+            // Customer starting chat with vendor
+            return this.chatService.sendMessage(user.id, user.role, null, body.content, undefined, body.vendorId);
+        }
+    }
     @Get('unread-count')
     async getUnreadCount(@Req() req: Request) {
         const user = await this.getUser(req);

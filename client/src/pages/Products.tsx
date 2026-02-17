@@ -19,7 +19,7 @@ export default function Products() {
   const [selectedCollection, setSelectedCollection] = useState<number | undefined>();
   const [showFilters, setShowFilters] = useState(false); // Mobile toggle
   const [sortBy, setSortBy] = useState<"newest" | "price-low" | "price-high" | "rating">("newest");
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 5000]);
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 30000]);
   const [displayCount, setDisplayCount] = useState(12);
   const [quickViewProduct, setQuickViewProduct] = useState<any>(null);
 
@@ -136,7 +136,7 @@ export default function Products() {
 
               <ProductFilters
                 minPrice={0}
-                maxPrice={5000}
+                maxPrice={30000}
                 priceRange={priceRange}
                 onPriceChange={setPriceRange}
                 topRatedProducts={topRated}
@@ -205,7 +205,7 @@ export default function Products() {
             {!isLoading && filteredProducts.length === 0 && (
               <div className="bg-gray-50 rounded-[3rem] p-20 text-center">
                 <h3 className="text-2xl font-black text-gray-400 mb-4">{t('noResults')}</h3>
-                <Button onClick={() => { setPriceRange([0, 5000]); setSearchQuery(""); }} variant="outline">
+                <Button onClick={() => { setPriceRange([0, 30000]); setSearchQuery(""); }} variant="outline">
                   {t('resetFilters')}
                 </Button>
               </div>

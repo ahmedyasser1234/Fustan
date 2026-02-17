@@ -511,6 +511,20 @@ export const translations = {
         enableFreeShipping: "تفعيل الشحن المجاني",
         freeShippingActive: "الشحن المجاني مفعل فوق",
         freeShippingInactive: "الشحن المجاني غير مفعل",
+
+        // Customers Tab
+        activeCustomers: "عميل نشط",
+        searchCustomers: "بحث عن العملاء...",
+        contactInfo: "معلومات التواصل",
+        totalSpent: "إجمالي الإنفاق",
+        guest: "زائر",
+        noCustomersFound: "لا يوجد عملاء",
+        sendMessageTo: "إرسال رسالة إلى",
+        writeMessageHere: "اكتب رسالتك هنا...",
+        sending: "جاري الإرسال...",
+        send: "إرسال",
+        messageSent: "تم إرسال الرسالة بنجاح",
+        errorSendingMessage: "حدث خطأ أثناء إرسال الرسالة",
     },
     en: {
         // Navbar
@@ -1030,8 +1044,21 @@ export const translations = {
         freeThreshold: "Free Shipping Threshold",
         freeThresholdDesc: "Customer gets free shipping if order exceeds this amount",
         enableFreeShipping: "Enable Free Shipping",
-        freeShippingActive: "Free shipping active above",
-        freeShippingInactive: "Free shipping inactive",
+        freeShippingActive: "Free Shipping Active Over",
+        freeShippingInactive: "Free Shipping Inactive",
+
+        // Customers Tab
+        activeCustomers: "Active Customers",
+        searchCustomers: "Search Customers...",
+        contactInfo: "Contact Info",
+        totalSpent: "Total Spent",
+        noCustomersFound: "No customers found",
+        sendMessageTo: "Send Message to",
+        writeMessageHere: "Write your message here...",
+        sending: "Sending...",
+        send: "Send",
+        messageSent: "Message sent successfully",
+        errorSendingMessage: "Error sending message",
     }
 };
 
