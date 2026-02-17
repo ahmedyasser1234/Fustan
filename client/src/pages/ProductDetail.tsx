@@ -986,7 +986,7 @@ export default function ProductDetail() {
       </section>
 
       {/* Related Products Section */}
-      <section className="container mx-auto px-4 mt-10 border-t border-gray-100 pt-12">
+      <section className="container mx-auto px-4 mt-0 border-t border-gray-100 pt-0">
         <RelatedProducts
           collectionId={product.collectionId}
           currentProductId={product.id}
