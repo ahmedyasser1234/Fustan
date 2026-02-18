@@ -389,6 +389,11 @@ export default function AdminDashboard() {
     queryFn: async () => (await api.get('/admin/products', { params: { search: productSearch } })).data,
   });
 
+  // Scroll to top on tab change
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [activeTab]);
+
   const { data: vendors, isLoading: vendorsLoading } = useQuery({
     queryKey: ['admin', 'vendors'],
     queryFn: async () => (await api.get('/admin/vendors')).data,
@@ -1020,7 +1025,39 @@ export default function AdminDashboard() {
                     </div>
                   </div>
 
-                  <div className="overflow-x-auto text-start" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+                  {/* Mobile Product Cards */}
+                  <div className="md:hidden space-y-4 p-4">
+                    {products?.map((product: any) => (
+                      <Card key={product.id} className="border border-gray-100 shadow-sm rounded-2xl overflow-hidden">
+                        <CardContent className="p-4 space-y-3">
+                          <div className="flex justify-between items-start">
+                            <div>
+                              <h3 className="font-bold text-gray-900">{product.nameAr} / {product.nameEn}</h3>
+                              <p className="text-xs text-gray-500 mt-1">
+                                {vendors?.find((v: any) => v.id === product.vendorId)?.storeNameAr || t('never')}
+                              </p>
+                            </div>
+                            <span className="font-black text-rose-600 bg-rose-50 px-2 py-1 rounded-lg text-sm">
+                              {Number(product.price).toFixed(2)} {t('currency')}
+                            </span>
+                          </div>
+
+                          <div className="flex items-center justify-between pt-2 border-t border-gray-50">
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm text-gray-500 font-medium">{t('stock')}:</span>
+                              <span className={`font-bold ${product.stock > 0 ? 'text-gray-900' : 'text-red-500'}`}>{product.stock}</span>
+                            </div>
+                            <Link href={`/products/${product.id}`}>
+                              <Button variant="outline" size="sm" className="h-8 font-bold">{t('viewDetails')}</Button>
+                            </Link>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+
+                  {/* Desktop Table View */}
+                  <div className="hidden md:block overflow-x-auto text-start" dir={language === 'ar' ? 'rtl' : 'ltr'}>
                     <table className="w-full">
                       <thead>
                         <tr className="border-b border-gray-200">
@@ -1086,7 +1123,45 @@ export default function AdminDashboard() {
                   <p className="text-xs font-bold text-rose-600">{t('paidOrdersDesc')}</p>
                 </div>
                 <CardContent className="p-0">
-                  <div className="overflow-x-auto text-start" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+                  {/* Mobile Order Cards */}
+                  <div className="md:hidden space-y-4 p-4">
+                    {adminOrders?.filter((o: any) => o.paymentStatus === 'paid').map((order: any) => (
+                      <Card key={order.id} className="border border-rose-100 shadow-sm rounded-2xl overflow-hidden bg-white">
+                        <CardContent className="p-4 space-y-3">
+                          <div className="flex justify-between items-start">
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <span className="font-black text-gray-900">#{order.orderNumber}</span>
+                                <span className={`px-2 py-0.5 rounded-full text-[10px] uppercase font-bold tracking-wider ${order.status === 'delivered' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'
+                                  }`}>
+                                  {order.status === 'delivered' ? t('delivered') : t('processing')}
+                                </span>
+                              </div>
+                              <p className="text-xs text-gray-500 mt-1 font-medium">
+                                {order.customerName || `${t('customer')} #${order.customerId}`}
+                              </p>
+                            </div>
+                            <span className="font-black text-rose-600 text-lg">
+                              {Number(order.total).toFixed(2)} {t('currency')}
+                            </span>
+                          </div>
+
+                          <Button
+                            className="w-full bg-slate-900 text-white hover:bg-slate-800 h-9 text-xs font-bold rounded-xl"
+                            onClick={() => {
+                              setSelectedOrder(order);
+                              setIsAdminOrderModalOpen(true);
+                            }}
+                          >
+                            {t('viewDetails')}
+                          </Button>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+
+                  {/* Desktop Table View */}
+                  <div className="hidden md:block overflow-x-auto text-start" dir={language === 'ar' ? 'rtl' : 'ltr'}>
                     <table className="w-full">
                       <thead>
                         <tr className="border-b border-gray-200 bg-slate-50/50">
@@ -1725,7 +1800,57 @@ function CategoriesTab({
             </div>
           </div>
 
-          <div className="overflow-x-auto text-start" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+          {/* Mobile Categories View */}
+          <div className="md:hidden grid grid-cols-1 gap-4 p-4">
+            {categories
+              ?.filter((c: any) =>
+                (c.nameAr || '').toLowerCase().includes(search.toLowerCase()) ||
+                (c.nameEn || '').toLowerCase().includes(search.toLowerCase())
+              )
+              .map((category: any) => (
+                <Card key={category.id} className="rounded-2xl border border-gray-100 shadow-sm overflow-hidden bg-white">
+                  <div className="flex items-center p-4 gap-4">
+                    <div className="w-16 h-16 rounded-xl bg-gray-50 border border-gray-100 flex items-center justify-center shrink-0 overflow-hidden">
+                      {category.image ? (
+                        <img src={category.image} alt="" className="w-full h-full object-cover" />
+                      ) : (
+                        <ImageIcon className="w-6 h-6 text-gray-300" />
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="font-bold text-gray-900 truncate">
+                        {language === 'ar' ? (category.nameAr || category.nameEn) : (category.nameEn || category.nameAr)}
+                      </h4>
+                      <p className="text-xs text-gray-500 line-clamp-2 mt-1">
+                        {language === 'ar' ? (category.descriptionAr || category.descriptionEn) : (category.descriptionEn || category.descriptionAr)}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="border-t border-gray-50 flex divide-x divide-gray-50 rtl:divide-x-reverse">
+                    <button
+                      onClick={() => handleEdit(category)}
+                      className="flex-1 py-3 text-sm font-bold text-blue-600 hover:bg-blue-50 transition-colors flex items-center justify-center gap-2"
+                    >
+                      <Edit className="w-4 h-4" /> {t('edit')}
+                    </button>
+                    <button
+                      onClick={() => handleDelete(category.id, category)}
+                      className="flex-1 py-3 text-sm font-bold text-rose-600 hover:bg-rose-50 transition-colors flex items-center justify-center gap-2"
+                    >
+                      <Trash2 className="w-4 h-4" /> {t('delete')}
+                    </button>
+                  </div>
+                </Card>
+              ))}
+            {categories && categories.length === 0 && (
+              <div className="text-center py-10 text-gray-400 font-medium border-2 border-dashed border-gray-200 rounded-2xl">
+                {t('noCategoriesFound')}
+              </div>
+            )}
+          </div>
+
+          {/* Desktop Categories Table */}
+          <div className="hidden md:block overflow-x-auto text-start" dir={language === 'ar' ? 'rtl' : 'ltr'}>
             <table className="w-full">
               <thead>
                 <tr className="border-b border-gray-200">

@@ -55,15 +55,16 @@ export default function ContentTab() {
 
     return (
         <div className="space-y-6">
-            <div className="flex items-center justify-between">
-                <div>
-                    <h2 className="text-2xl font-bold text-gray-900">{t('manageInstagramContent')}</h2>
-                    <p className="text-gray-500">{t('instagramContentDesc')}</p>
+            {/* Header Section */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div className="space-y-1">
+                    <h2 className="text-xl md:text-2xl font-bold text-gray-900">{t('manageInstagramContent')}</h2>
+                    <p className="text-sm text-gray-500 leading-relaxed max-w-2xl">{t('instagramContentDesc')}</p>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
                     <Dialog>
                         <DialogTrigger asChild>
-                            <Button variant="outline" className="gap-2">
+                            <Button variant="outline" className="gap-2 w-full sm:w-auto justify-center">
                                 <Instagram className="w-4 h-4" />
                                 {t('autoConnect')}
                             </Button>
@@ -105,6 +106,7 @@ export default function ContentTab() {
                         variant="ghost"
                         size="icon"
                         title={t('syncNow')}
+                        className="w-full sm:w-10 border border-gray-200 sm:border-transparent"
                         onClick={() => {
                             toast.promise(endpoints.content.syncInstagram(), {
                                 loading: t('syncing'),
@@ -113,55 +115,55 @@ export default function ContentTab() {
                             });
                         }}
                     >
-                        <RefreshCw className="w-4 h-4" />
+                        <RefreshCw className="w-4 h-4 mx-auto" />
+                        <span className="sm:hidden ml-2">{t('syncNow')}</span>
                     </Button>
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+            {/* Content Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6" dir={language === 'ar' ? 'rtl' : 'ltr'}>
                 {socialFeed?.map((item: any) => (
-                    <Card key={item.id} className="overflow-hidden border-0 shadow-sm hover:shadow-md transition-shadow">
-                        <div className="aspect-square relative bg-gray-100 group">
+                    <Card key={item.id} className="overflow-hidden border-0 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col h-full rounded-2xl bg-white border-gray-100">
+                        <div className="aspect-square relative bg-gray-50 group border-b border-gray-100">
                             {item.data.imageUrl ? (
                                 <img
                                     src={item.data.imageUrl}
                                     alt="Social Feed"
-                                    className="w-full h-full object-cover"
+                                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                                 />
                             ) : (
                                 <div className="flex items-center justify-center w-full h-full text-gray-400">
                                     <ImageIcon className="w-12 h-12" />
                                 </div>
                             )}
-                            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[2px]">
                                 <a
                                     href={item.data.link}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="p-2 bg-white rounded-full text-gray-900 hover:text-rose-600 transition-colors"
+                                    className="p-3 bg-white/90 backdrop-blur rounded-full text-gray-900 hover:text-rose-600 hover:scale-110 transition-all shadow-lg"
                                 >
                                     <ExternalLink className="w-5 h-5" />
                                 </a>
                             </div>
                         </div>
-                        <CardContent className="p-4 space-y-4">
+                        <CardContent className="p-4 space-y-4 flex-1 flex flex-col">
                             <div className="space-y-2">
-                                <label className="text-sm font-medium text-gray-700 block text-start">{t('imageUrl')}</label>
-                                <div className="flex gap-2">
-                                    <Input
-                                        defaultValue={item.data.imageUrl}
-                                        onBlur={(e) => {
-                                            if (e.target.value !== item.data.imageUrl) {
-                                                handleUpdate(item.id, item.data, 'imageUrl', e.target.value);
-                                            }
-                                        }}
-                                        className="text-left ltr"
-                                        placeholder="https://example.com/image.jpg"
-                                    />
-                                </div>
+                                <label className="text-xs md:text-sm font-bold text-gray-700 block text-start">{t('imageUrl')}</label>
+                                <Input
+                                    defaultValue={item.data.imageUrl}
+                                    onBlur={(e) => {
+                                        if (e.target.value !== item.data.imageUrl) {
+                                            handleUpdate(item.id, item.data, 'imageUrl', e.target.value);
+                                        }
+                                    }}
+                                    className="text-left ltr h-9 md:h-10 text-xs md:text-sm bg-gray-50/50 focus:bg-white transition-colors border-gray-200"
+                                    placeholder="https://example.com/image.jpg"
+                                />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-sm font-medium text-gray-700 block text-start">{t('postUrl')}</label>
+                                <label className="text-xs md:text-sm font-bold text-gray-700 block text-start">{t('postUrl')}</label>
                                 <Input
                                     defaultValue={item.data.link}
                                     onBlur={(e) => {
@@ -169,13 +171,13 @@ export default function ContentTab() {
                                             handleUpdate(item.id, item.data, 'link', e.target.value);
                                         }
                                     }}
-                                    className="text-left ltr"
+                                    className="text-left ltr h-9 md:h-10 text-xs md:text-sm bg-gray-50/50 focus:bg-white transition-colors border-gray-200"
                                     placeholder="https://instagram.com/..."
                                 />
                             </div>
-                            <div className="pt-2 flex justify-end">
+                            <div className="pt-2 flex justify-end mt-auto h-6">
                                 {updatingIds.includes(item.id) && (
-                                    <span className="text-xs text-rose-600 flex items-center gap-1 animate-pulse">
+                                    <span className="text-xs text-rose-600 flex items-center gap-1.5 animate-pulse font-medium bg-rose-50 px-2 py-0.5 rounded-full">
                                         <Loader2 className="w-3 h-3 animate-spin" />
                                         {t('saving')}
                                     </span>
