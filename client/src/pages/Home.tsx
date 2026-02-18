@@ -413,8 +413,8 @@ export default function Home() {
               viewport={{ once: true }}
               className="w-full lg:w-1/2 text-center lg:text-left rtl:lg:text-right"
             >
-              <span className="font-serif text-3xl text-rose-500 mb-4 block">{language === 'ar' ? "أناقة خالدة" : "Timeless Charm"}</span>
-              <h2 className="text-5xl lg:text-7xl font-serif text-gray-900 mb-6 leading-tight">
+              <span className="text-3xl text-rose-500 mb-4 block font-bold">{language === 'ar' ? "أناقة خالدة" : "Timeless Charm"}</span>
+              <h2 className="text-5xl lg:text-7xl text-gray-900 mb-6 leading-tight font-black">
                 {t('classicStyles')}
               </h2>
               <p className="text-gray-600 text-lg mb-8 leading-relaxed max-w-lg mx-auto lg:mx-0">
@@ -434,7 +434,7 @@ export default function Home() {
       < section className="py-24 bg-white" >
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <span className="font-serif text-2xl text-rose-500 mb-2 block">{language === 'ar' ? "أحدث الصيحات" : "Shop the Latest"}</span>
+            <span className="text-2xl text-rose-500 mb-2 block font-bold">{language === 'ar' ? "أحدث الصيحات" : "Shop the Latest"}</span>
             <h2 className="text-4xl md:text-5xl font-black text-gray-900">{t('trendingProducts')}</h2>
           </div>
 
@@ -677,7 +677,7 @@ export default function Home() {
         <div className="absolute inset-0 bg-[url('/noise.png')] opacity-5" />
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-16">
-            <span className="font-serif text-2xl text-rose-500 mb-2 block">
+            <span className="text-2xl text-rose-500 mb-2 block font-bold">
               {language === 'ar' ? "آراء عملائنا" : "Customer Reviews"}
             </span>
             <h2 className="text-4xl md:text-5xl font-black text-white">
@@ -708,7 +708,7 @@ export default function Home() {
                   transition={{ delay: i * 0.1 }}
                   className="bg-white rounded-[3rem] p-10 shadow-xl relative group hover:-translate-y-2 transition-transform duration-300"
                 >
-                  <div className="absolute top-10 right-10 text-6xl text-rose-100 font-serif opacity-50">"</div>
+                  <div className="absolute top-10 right-10 text-6xl text-rose-100 opacity-50 font-black">"</div>
 
                   <div className="flex gap-1 mb-6 text-yellow-400">
                     {Array(review.rating).fill(0).map((_, i) => (
@@ -795,7 +795,7 @@ export default function Home() {
                 {t('exclusiveInvitation')}
               </span>
 
-              <h2 className="text-4xl md:text-6xl font-serif text-white mb-6 leading-tight">
+              <h2 className="text-4xl md:text-6xl text-white mb-6 leading-tight font-black">
                 {t('joinElite')}
               </h2>
 

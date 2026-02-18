@@ -58,7 +58,7 @@ export function FlashSalesSection({ onQuickView }: FlashSalesSectionProps) {
                             <span className="bg-rose-600 text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider animate-pulse">
                                 {t('endingSoon')}
                             </span>
-                            <span className="text-rose-400 font-serif italic text-xl">{language === 'ar' ? 'عرض مخصص لفترة محدودة' : 'Limited Time Offer'}</span>
+                            <span className="text-rose-400 text-xl font-bold">{language === 'ar' ? 'عرض مخصص لفترة محدودة' : 'Limited Time Offer'}</span>
                         </div>
                         <h2 className="text-4xl md:text-5xl font-black mb-6 leading-tight">
                             {t('flashSaleTitle')}

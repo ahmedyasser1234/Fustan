@@ -31,7 +31,7 @@ export function VendorsSection() {
 
             <div className="container mx-auto px-4 relative z-10">
                 <div className="text-center mb-10 md:mb-16">
-                    <span className="font-serif italic text-xl md:text-2xl text-rose-500 mb-2 block">{language === 'ar' ? "شركاؤنا" : "Our Partners"}</span>
+                    <span className="text-xl md:text-2xl text-rose-500 mb-2 block font-bold">{language === 'ar' ? "شركاؤنا" : "Our Partners"}</span>
                     <h2 className="text-3xl md:text-5xl font-black text-gray-900">{language === 'ar' ? "بيوت الأزياء" : "Fashion Houses"}</h2>
                 </div>
 
