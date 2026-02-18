@@ -677,7 +677,7 @@ export default function Home() {
         <div className="absolute inset-0 bg-[url('/noise.png')] opacity-5" />
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-16">
-            <span className="font-serif italic text-2xl text-rose-500 mb-2 block">
+            <span className="font-serif text-2xl text-rose-500 mb-2 block">
               {language === 'ar' ? "آراء عملائنا" : "Customer Reviews"}
             </span>
             <h2 className="text-4xl md:text-5xl font-black text-white">
@@ -779,24 +779,48 @@ export default function Home() {
         </div>
       </section >
 
-      {/* Professional Newsletter */}
-      < section className="py-24 bg-[#f2f2f2]" >
-        <div className="container mx-auto px-4 max-w-5xl rounded-[3rem] bg-gray-900 overflow-hidden relative">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-rose-500/10 blur-[80px] rounded-full" />
-          <div className="relative z-10 py-20 px-8 text-center">
-            <h2 className="text-4xl font-bold text-white mb-6 underline decoration-rose-600 underline-offset-[12px]">{t('joinElite')}</h2>
-            <p className="text-gray-400 text-xl mb-12 max-w-2xl mx-auto">
-              {t('joinEliteDesc')}
-            </p>
-            <div className="flex flex-col md:flex-row gap-4 max-w-lg mx-auto">
-              <input
-                type="email"
-                placeholder={t('emailPlaceholder')}
-                className="flex-1 px-8 py-5 rounded-full bg-white/10 border border-white/20 text-white focus:outline-none focus:border-rose-500 backdrop-blur-md text-lg"
-              />
-              <Button className="h-full py-5 px-10 rounded-full bg-rose-600 hover:bg-rose-700 text-white font-bold text-lg">
-                {t('subscribe')}
-              </Button>
+      {/* Professional Newsletter - Elite Club Design */}
+      <section className="py-24 bg-white relative z-20">
+        <div className="container mx-auto px-4">
+          <div className="relative overflow-hidden rounded-[3rem] bg-[#1a0f16] shadow-2xl isolate">
+            {/* Background Decor */}
+            <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-[500px] h-[500px] bg-rose-500/20 blur-[100px] rounded-full" />
+            <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-purple-500/10 blur-[100px] rounded-full" />
+
+            {/* Texture Overlay */}
+            <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.03]" />
+
+            <div className="relative z-10 px-6 py-20 md:px-20 md:py-24 text-center">
+              <span className="inline-block py-1 px-4 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-300 text-sm font-semibold tracking-widest uppercase mb-6 backdrop-blur-md">
+                {t('exclusiveInvitation')}
+              </span>
+
+              <h2 className="text-4xl md:text-6xl font-serif text-white mb-6 leading-tight">
+                {t('joinElite')}
+              </h2>
+
+              <p className="text-white/70 text-lg md:text-xl mb-12 max-w-2xl mx-auto font-light leading-relaxed">
+                {t('joinEliteDesc')}
+              </p>
+
+              <form className="max-w-md mx-auto flex flex-col gap-4">
+                <div className="relative group">
+                  <input
+                    type="email"
+                    placeholder={t('emailPlaceholder')}
+                    className="w-full px-8 py-5 rounded-full bg-white/5 border border-white/10 text-white placeholder:text-white/40 focus:outline-none focus:bg-white/10 focus:border-rose-400/50 transition-all duration-300 backdrop-blur-sm"
+                  />
+                  <div className="absolute inset-0 rounded-full ring-1 ring-white/10 group-hover:ring-white/20 pointer-events-none transition-all" />
+                </div>
+
+                <Button className="w-full py-6 rounded-full bg-gradient-to-r from-rose-400 to-rose-600 hover:from-rose-500 hover:to-rose-700 text-white font-bold text-lg shadow-lg shadow-rose-900/20 hover:shadow-rose-900/40 transition-all transform hover:-translate-y-1 h-auto">
+                  {t('subscribe')}
+                </Button>
+              </form>
+
+              <p className="text-white/30 text-xs mt-6">
+                {t('noSpam')}
+              </p>
             </div>
           </div>
         </div>

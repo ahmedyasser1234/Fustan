@@ -55,6 +55,8 @@ export const translations = {
         discoverExclusive: "اكتشفي المجموعة الحصرية",
         joinElite: "انضمي إلى نادي النخبة",
         joinEliteDesc: "كوني أول من يعرف عن مجموعاتنا الجديدة والعروض الحصرية للأعضاء فقط.",
+        exclusiveInvitation: "دعوة حصرية",
+        noSpam: "نحن نحترم خصوصيتك، لا رسائل مزعجة.",
         emailPlaceholder: "بريدك الإلكتروني",
         subscribe: "اشتركي الآن",
 
@@ -583,6 +585,8 @@ export const translations = {
         discoverExclusive: "Discover Exclusive Collection",
         joinElite: "Join the Elite Club",
         joinEliteDesc: "Be the first to know about our new collections and member-exclusive offers.",
+        exclusiveInvitation: "Exclusive Invitation",
+        noSpam: "We respect your privacy, no spam.",
         emailPlaceholder: "Your Email Address",
         subscribe: "Subscribe Now",
 

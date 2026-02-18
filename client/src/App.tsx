@@ -149,7 +149,7 @@ function Navigation({ isChatHistoryOpen, setIsChatHistoryOpen, unreadCount, syst
           <Link href="/">
             <div className="flex items-center cursor-pointer group">
               <img
-                src="/12345.png"
+                src={(!isScrolled && isHeroPage) ? "/logo-white.png" : "/12345.png"}
                 alt="Fustan Logo"
                 className={`w-auto object-contain transition-all duration-500 ${isScrolled || !isHeroPage ? 'h-12' : 'h-16 drop-shadow-lg'}`}
               />
