@@ -536,22 +536,22 @@ export default function AdminDashboard() {
       </header>
 
       {/* Navigation Tabs */}
-      <div className="bg-white border-b border-gray-200 sticky top-20 z-20 overflow-x-auto scrollbar-hide py-2 md:py-0">
-        <div className="container mx-auto px-4">
-          <div className="flex gap-2 md:gap-6 whitespace-nowrap">
+      <div className="bg-white border-b border-gray-200 sticky top-20 z-20">
+        <div className="container mx-auto px-4 py-3">
+          <div className="flex gap-2 md:gap-3 overflow-x-auto pb-2 scrollbar-hide -mx-2 px-2 lg:flex-wrap lg:overflow-visible lg:pb-0">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)}
-                className={`flex items-center gap-2 transition font-black relative px-4 py-2 md:py-4 md:px-2 rounded-xl md:rounded-none whitespace-nowrap text-xs md:text-sm ${activeTab === tab.id
-                  ? "bg-rose-50 md:bg-transparent text-rose-600 md:border-b-2 md:border-rose-600"
-                  : "text-gray-500 hover:text-gray-900 hover:bg-gray-50 md:hover:bg-transparent"
+                className={`group h-10 md:h-12 px-4 md:px-6 rounded-xl md:rounded-2xl font-bold text-xs md:text-sm flex items-center gap-2 transition-all duration-300 relative overflow-hidden whitespace-nowrap min-w-fit ${activeTab === tab.id
+                  ? "bg-slate-900 text-white shadow-lg scale-105"
+                  : "bg-gray-100 text-gray-500 hover:bg-white hover:text-slate-900 border border-transparent hover:border-gray-200 hover:shadow-md"
                   }`}
               >
-                <tab.icon className="w-4 h-4 md:w-5 md:h-5" />
-                {tab.label}
+                <tab.icon className={`w-4 h-4 md:w-5 md:h-5 relative z-10 transition-transform group-hover:scale-110 ${activeTab === tab.id ? 'animate-pulse' : ''}`} />
+                <span className="relative z-10">{tab.label}</span>
                 {tab.badge ? (
-                  <span className="absolute -top-1 -right-1 md:-top-1 md:-right-3 bg-red-600 text-white text-[9px] md:text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[16px] md:min-w-[18px] flex items-center justify-center animate-pulse shadow-md">
+                  <span className="absolute -top-1 -right-1 md:-top-2 md:-right-2 w-5 h-5 md:w-6 md:h-6 bg-red-600 text-white text-[10px] md:text-xs font-black rounded-full flex items-center justify-center animate-bounce shadow-md z-20 border-2 border-white">
                     {tab.badge > 99 ? '99+' : tab.badge}
                   </span>
                 ) : null}
