@@ -178,7 +178,7 @@ export default function MessagesTab() {
     };
 
     return (
-        <div className="flex flex-col md:flex-row h-[calc(100vh-140px)] md:h-[calc(100vh-200px)] border-0 md:rounded-2xl overflow-hidden bg-white shadow-none md:shadow-xl shadow-slate-100" dir={language === 'ar' ? "rtl" : "ltr"}>
+        <div className="relative flex flex-col md:flex-row h-[calc(100dvh-140px)] md:h-[calc(100vh-200px)] border-0 md:rounded-2xl overflow-hidden bg-white shadow-none md:shadow-xl shadow-slate-100" dir={language === 'ar' ? "rtl" : "ltr"}>
             {/* Sidebar List */}
             <div className={cn(
                 "w-full md:w-1/3 border-b md:border-b-0 md:border-l md:rtl:border-l-0 md:rtl:border-r border-gray-100 bg-gray-50/50 flex flex-col transition-all duration-300 absolute inset-0 md:relative z-10",
