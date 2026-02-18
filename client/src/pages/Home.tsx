@@ -390,7 +390,7 @@ export default function Home() {
             >
               <div className="aspect-[4/5] rounded-[3rem] overflow-hidden relative shadow-2xl">
                 <img
-                  src="https://res.cloudinary.com/dk3wwuy5d/image/upload/v1771351298/Gemini_Generated_Image_mcjdegmcjdegmcjd_aipe9g.png"
+                  src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=800&q=80"
                   alt="Classic Stocking Styles"
                   className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
                 />
@@ -399,7 +399,7 @@ export default function Home() {
               {/* Floating Element */}
               <div className="absolute -bottom-12 -right-12 w-48 h-48 hidden lg:block">
                 <img
-                  src="https://res.cloudinary.com/dk3wwuy5d/image/upload/v1771283205/bx7ynzjvphc5luwc9ore.png"
+                  src="https://images.unsplash.com/photo-1566174053879-31528523f8ae?w=800&q=80"
                   alt="Detail"
                   className="w-full h-full object-cover rounded-full border-4 border-white shadow-xl"
                 />
