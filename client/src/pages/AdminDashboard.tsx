@@ -385,6 +385,30 @@ export default function AdminDashboard() {
     }
   }, [fetchedCustomerDetails]);
 
+  // Delete Product Mutation for AdminDashboard
+  const deleteProduct = useMutation({
+    mutationFn: (id: number) => endpoints.products.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['products'] });
+      toast.success(t('productDeleted') || 'Product deleted successfully');
+    },
+    onError: () => {
+      toast.error(t('errorDeleting') || 'Error deleting product');
+    }
+  });
+
+  // Verify deleteVendor exists or add it if missing (safe check)
+  const deleteVendor = useMutation({
+    mutationFn: (id: number) => endpoints.admin.deleteVendor(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['vendors'] });
+      toast.success(t('vendorDeleted'));
+    },
+    onError: () => {
+      toast.error(t('errorDeleting'));
+    }
+  });
+
 
   const handleDeleteCustomer = async () => {
     if (!customerToDelete) return;
@@ -460,14 +484,7 @@ export default function AdminDashboard() {
     queryFn: async () => (await api.get('/admin/conversations')).data,
   });
 
-  const deleteVendor = useMutation({
-    mutationFn: async (id: number) => (await api.delete(`/admin/vendors/${id}`)).data,
-    onSuccess: () => {
-      toast.success("تم حذف البائع بنجاح");
-      queryClient.invalidateQueries({ queryKey: ['admin', 'vendors'] });
-    },
-    onError: () => toast.error("فشل في حذف البائع"),
-  });
+
 
   // Socket logic moved to ChatContext
   // const socket = useSocket();
@@ -1088,9 +1105,23 @@ export default function AdminDashboard() {
                               <span className="text-sm text-gray-500 font-medium">{t('stock')}:</span>
                               <span className={`font-bold ${product.stock > 0 ? 'text-gray-900' : 'text-red-500'}`}>{product.stock}</span>
                             </div>
-                            <Link href={`/products/${product.id}`}>
-                              <Button variant="outline" size="sm" className="h-8 font-bold">{t('viewDetails')}</Button>
-                            </Link>
+                            <div className="flex gap-2">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-8 w-8 p-0 text-red-600 hover:bg-red-50"
+                                onClick={() => {
+                                  if (window.confirm(t('deleteProductConfirm') || 'Are you sure you want to delete this product?')) {
+                                    deleteProduct.mutate(product.id);
+                                  }
+                                }}
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                              <Link href={`/products/${product.id}`}>
+                                <Button variant="outline" size="sm" className="h-8 font-bold">{t('viewDetails')}</Button>
+                              </Link>
+                            </div>
                           </div>
                         </CardContent>
                       </Card>
@@ -1132,9 +1163,25 @@ export default function AdminDashboard() {
                               <td className="py-3 px-6 text-gray-900 text-center font-bold">{Number(product.price).toFixed(2)} {t('currency')}</td>
                               <td className="py-3 px-6 text-gray-900 text-center font-medium">{product.stock}</td>
                               <td className="py-3 px-6 text-end">
-                                <Link href={`/products/${product.id}`}>
-                                  <Button variant="outline" size="sm" className="font-bold">{t('viewDetails')}</Button>
-                                </Link>
+                                <div className="flex items-center justify-end gap-2">
+                                  <Link href={`/products/${product.id}`}>
+                                    <Button variant="ghost" size="icon" className="text-blue-600 hover:bg-blue-50">
+                                      <ExternalLink className="w-4 h-4" />
+                                    </Button>
+                                  </Link>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="text-red-600 hover:bg-red-50 hover:text-red-700"
+                                    onClick={() => {
+                                      if (window.confirm(t('deleteProductConfirm') || 'Are you sure you want to delete this product?')) {
+                                        deleteProduct.mutate(product.id);
+                                      }
+                                    }}
+                                  >
+                                    <Trash2 className="w-4 h-4" />
+                                  </Button>
+                                </div>
                               </td>
                             </tr>
                           ))
@@ -1926,6 +1973,10 @@ function CategoriesTab({
       toast.success(t('categoryUpdated'));
     },
   });
+
+
+
+
 
   const deleteCategory = useMutation({
     mutationFn: (id: number) => endpoints.categories.delete(id),

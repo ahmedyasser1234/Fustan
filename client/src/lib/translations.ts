@@ -348,7 +348,9 @@ export const translations = {
         actions: "الإجراءات",
         deleteVendorConfirm: "هل أنت متأكد من حذف المتجر",
         vendorDeleted: "تم حذف البائع بنجاح",
-        emailUpdated: "تم تحديث البريد الإلكتروني بنجاح",
+        deleteProductConfirm: "هل أنت متأكد من حذف هذا المنتج؟",
+        productDeleted: "تم حذف المنتج بنجاح",
+        errorDeleting: "حدث خطأ أثناء الحذف",
 
         manageProducts: "إدارة المنتجات",
         searchProductAdmin: "ابحث عن المنتج...",
@@ -701,9 +703,7 @@ export const translations = {
         statsProducts: "Products",
         statsOrders: "Orders",
 
-        // Tabs
         tabOverview: "Overview",
-        tabProducts: "Products",
         tabOrders: "Orders",
         tabCollections: "Collections",
         tabCategories: "Categories",
@@ -1065,6 +1065,9 @@ export const translations = {
         send: "Send",
         messageSent: "Message sent successfully",
         errorSendingMessage: "Error sending message",
+        deleteProductConfirm: "Are you sure you want to delete this product?",
+        productDeleted: "Product deleted successfully",
+        errorDeleting: "Error deleting item",
     }
 };
 
