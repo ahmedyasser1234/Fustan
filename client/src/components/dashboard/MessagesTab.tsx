@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useMemo } from "react";
-import { MessageSquare, Send, Search, User, AlertCircle, Check, Zap } from "lucide-react";
+import { MessageSquare, Send, Search, User, AlertCircle, Check, Zap, ArrowRight, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -178,10 +178,13 @@ export default function MessagesTab() {
     };
 
     return (
-        <div className="flex h-[calc(100vh-200px)] border-0 rounded-2xl overflow-hidden bg-white shadow-xl shadow-slate-100" dir={language === 'ar' ? "rtl" : "ltr"}>
+        <div className="flex flex-col md:flex-row h-[calc(100vh-140px)] md:h-[calc(100vh-200px)] border-0 md:rounded-2xl overflow-hidden bg-white shadow-none md:shadow-xl shadow-slate-100" dir={language === 'ar' ? "rtl" : "ltr"}>
             {/* Sidebar List */}
-            <div className={`w-1/3 border-${language === 'ar' ? 'l' : 'r'} border-gray-100 bg-gray-50/50 flex flex-col`}>
-                <div className="p-4 border-b border-gray-100 bg-white">
+            <div className={cn(
+                "w-full md:w-1/3 border-b md:border-b-0 md:border-l md:rtl:border-l-0 md:rtl:border-r border-gray-100 bg-gray-50/50 flex flex-col transition-all duration-300 absolute inset-0 md:relative z-10",
+                selectedConversation ? '-translate-x-full md:translate-x-0 rtl:translate-x-full rtl:md:translate-x-0 opacity-0 md:opacity-100 pointer-events-none md:pointer-events-auto' : 'translate-x-0 opacity-100'
+            )}>
+                <div className="p-4 border-b border-gray-100 bg-white sticky top-0 z-20">
                     <h3 className={`font-black text-gray-900 mb-4 ${language === 'ar' ? 'text-right' : 'text-left'}`}>{t('conversations')}</h3>
                     <div className="relative">
                         <Search className={`absolute ${language === 'ar' ? 'right-3' : 'left-3'} top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400`} />
@@ -246,11 +249,24 @@ export default function MessagesTab() {
             </div>
 
             {/* Chat Area */}
-            <div className="flex-1 flex flex-col bg-white">
+            <div className={cn(
+                "flex-1 flex flex-col bg-white absolute inset-0 md:relative z-20 transition-all duration-300",
+                selectedConversation ? 'translate-x-0 opacity-100' : 'translate-x-full md:translate-x-0 rtl:-translate-x-full rtl:md:translate-x-0 opacity-0 md:opacity-100 pointer-events-none md:pointer-events-auto'
+            )}>
                 {selectedConversation ? (
                     <>
-                        <div className="p-4 border-b border-gray-100 flex items-center justify-between bg-white/80 backdrop-blur-md z-20">
+                        <div className="p-3 md:p-4 border-b border-gray-100 flex items-center justify-between bg-white/80 backdrop-blur-md z-20 sticky top-0">
                             <div className="flex items-center gap-3">
+                                {/* Mobile Back Button */}
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="md:hidden -ml-2 rtl:-mr-2 text-gray-400 hover:text-gray-900"
+                                    onClick={() => setSelectedConversation(null)}
+                                >
+                                    {language === 'ar' ? <ArrowRight className="h-5 w-5" /> : <ArrowLeft className="h-5 w-5" />}
+                                </Button>
+
                                 <Avatar className="h-10 w-10 border border-gray-100">
                                     <AvatarImage src={selectedConversation.counterpartImage} />
                                     <AvatarFallback><User className="h-5 w-5" /></AvatarFallback>
@@ -276,7 +292,7 @@ export default function MessagesTab() {
                             </Button>
                         </div>
 
-                        <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-[#fcfcfd]" ref={scrollRef}>
+                        <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-6 bg-[#fcfcfd]" ref={scrollRef}>
                             {messages
                                 .filter(m => m.conversationId === selectedConversation.id)
                                 .map((msg, index, arr) => {
@@ -287,7 +303,7 @@ export default function MessagesTab() {
                                     return (
                                         <div key={msg.id} className={cn("flex flex-col", isMe ? 'items-end' : 'items-start')}>
                                             <div className={cn(
-                                                "max-w-[80%] px-4 py-2.5 text-sm shadow-sm transition-all animate-in fade-in slide-in-from-bottom-2",
+                                                "max-w-[85%] md:max-w-[80%] px-4 py-2.5 text-sm shadow-sm transition-all animate-in fade-in slide-in-from-bottom-2 break-words",
                                                 isMe
                                                     ? 'bg-[#e91e63] text-white rounded-2xl rounded-tr-[4px]'
                                                     : 'bg-white text-gray-800 border border-gray-100 rounded-2xl rounded-tl-[4px]'
@@ -311,7 +327,7 @@ export default function MessagesTab() {
                                 })}
                         </div>
 
-                        <div className="p-4 bg-white border-t border-gray-100">
+                        <div className="p-3 md:p-4 bg-white border-t border-gray-100 sticky bottom-0 z-20">
                             <div className="flex gap-2 items-center bg-gray-50 p-1.5 rounded-2xl border border-gray-100 focus-within:ring-2 focus-within:ring-[#e91e63]/10 transition-all">
                                 <Input
                                     value={inputValue}
@@ -331,7 +347,7 @@ export default function MessagesTab() {
                         </div>
                     </>
                 ) : (
-                    <div className="flex-1 flex flex-col items-center justify-center bg-gray-50/50 p-12 text-center">
+                    <div className="hidden md:flex flex-1 flex-col items-center justify-center bg-gray-50/50 p-12 text-center">
                         <div className="relative mb-6">
                             <div className="h-24 w-24 bg-white rounded-3xl shadow-xl flex items-center justify-center rotate-3 scale-110">
                                 <MessageSquare className="h-10 w-10 text-[#e91e63]" />

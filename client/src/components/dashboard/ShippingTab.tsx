@@ -189,15 +189,18 @@ export default function ShippingTab({ vendorId }: ShippingTabProps) {
             </div>
 
             {/* Bottom Actions */}
-            <div className="flex flex-col md:flex-row items-center justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                <div className="text-slate-500 text-sm font-medium">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4 bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-slate-100">
+                <div className="text-slate-500 text-sm font-medium w-full md:w-auto text-center md:text-start">
                     {hasFreeShipping ? (
-                        <span className="flex items-center gap-2">
-                            <span className="w-2 h-2 rounded-full bg-emerald-500" />
-                            {t('freeShippingActive')} <span className="text-slate-900 font-black">{freeShippingThreshold} {t('sar')}</span>
+                        <span className="flex flex-col md:flex-row items-center gap-2">
+                            <span className="flex items-center gap-2">
+                                <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                                {t('freeShippingActive')}
+                            </span>
+                            <span className="text-slate-900 font-black">{freeShippingThreshold} {t('sar')}</span>
                         </span>
                     ) : (
-                        <span className="flex items-center gap-2">
+                        <span className="flex items-center justify-center md:justify-start gap-2">
                             <span className="w-2 h-2 rounded-full bg-slate-300" />
                             {t('freeShippingInactive')}
                         </span>
