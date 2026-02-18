@@ -615,12 +615,12 @@ function AppContent() {
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={() => setIsChatHistoryOpen(true)}
-          className="fixed bottom-8 left-8 z-[100] w-16 h-16 rounded-full bg-rose-600 text-white shadow-2xl shadow-rose-200 flex items-center justify-center group transition-all hover:bg-rose-700"
+          className="fixed bottom-5 left-5 md:bottom-8 md:left-8 z-[100] w-14 h-14 md:w-16 md:h-16 rounded-full bg-rose-600 text-white shadow-2xl shadow-rose-200 flex items-center justify-center group transition-all hover:bg-rose-700"
         >
           <div className="absolute inset-0 bg-gradient-to-tr from-rose-600 to-rose-400 opacity-0 group-hover:opacity-100 transition-opacity rounded-full"></div>
-          <MessageSquare className="w-8 h-8 relative z-10" />
+          <MessageSquare className="w-6 h-6 md:w-8 md:h-8 relative z-10" />
           {unreadCount > 0 && (
-            <span className="absolute -top-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full bg-white text-rose-600 text-[12px] font-black shadow-lg animate-bounce border-2 border-rose-500">
+            <span className="absolute -top-1 -right-1 flex h-5 w-5 md:h-6 md:w-6 items-center justify-center rounded-full bg-white text-rose-600 text-[10px] md:text-[12px] font-black shadow-lg animate-bounce border-2 border-rose-500">
               {unreadCount}
             </span>
           )}
