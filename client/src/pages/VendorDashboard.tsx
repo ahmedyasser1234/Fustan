@@ -111,6 +111,11 @@ export default function VendorDashboard() {
     window.history.pushState({}, "", newUrl.toString());
   };
 
+  // Scroll to window top when tab changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, [activeTab]);
+
   const { data: dashboard, isLoading: dashboardLoading } = useQuery({
     queryKey: ['vendor', 'dashboard'],
     queryFn: async () => await endpoints.vendors.dashboard(),

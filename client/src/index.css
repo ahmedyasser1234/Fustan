@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Cairo", system-ui, sans-serif;
-  --font-heading: "Cairo", system-ui, sans-serif;
+  --font-sans: var(--font-family-sans);
+  --font-heading: var(--font-family-heading);
 }
 
 @custom-variant dark (&:is(.dark *));
@@ -136,10 +136,17 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Force Cairo font for Arabic language */
-:lang(ar),
-[dir="rtl"] {
-  font-family: "Cairo", system-ui, sans-serif !important;
+:root {
+  /* Default Fonts (English/LTR) */
+  --font-family-sans: "Montserrat", system-ui, sans-serif;
+  --font-family-heading: "Montserrat", system-ui, sans-serif;
+}
+
+/* Arabic/RTL Fonts */
+:root[lang="ar"],
+:root[dir="rtl"] {
+  --font-family-sans: "Cairo", "Montserrat", system-ui, sans-serif;
+  --font-family-heading: "Cairo", "Montserrat", system-ui, sans-serif;
 }
 
 @layer base {
