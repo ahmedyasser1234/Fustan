@@ -17,6 +17,7 @@ import {
   DollarSign,
   Download,
   Edit,
+  ExternalLink,
   Eye,
   EyeOff,
   Image as ImageIcon,
@@ -299,7 +300,8 @@ export default function AdminDashboard() {
     return (params.get("tab") as any) || "overview";
   });
 
-  const tabs = useMemo(() => [
+  /* Define tabs with distinct gradient colors */
+  const tabs = useMemo<{ id: string; label: string; icon: any; color?: string; badge?: number }[]>(() => [
     { id: "overview", label: t('overview'), icon: LayoutDashboard },
     { id: "vendors", label: t('vendors'), icon: Store },
     { id: "requests", label: t('vendorRequests'), icon: List },
@@ -544,7 +546,7 @@ export default function AdminDashboard() {
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)}
                 className={`group h-10 md:h-12 px-4 md:px-6 rounded-xl md:rounded-2xl font-bold text-xs md:text-sm flex items-center gap-2 transition-all duration-300 relative overflow-hidden whitespace-nowrap min-w-fit ${activeTab === tab.id
-                  ? "bg-slate-900 text-white shadow-lg scale-105"
+                  ? `bg-gradient-to-r ${tab.color} text-white shadow-lg scale-105`
                   : "bg-gray-100 text-gray-500 hover:bg-white hover:text-slate-900 border border-transparent hover:border-gray-200 hover:shadow-md"
                   }`}
               >
@@ -727,131 +729,260 @@ export default function AdminDashboard() {
                   </Button>
                 </div>
 
-                <div className="overflow-x-auto text-start" dir={language === 'ar' ? 'rtl' : 'ltr'}>
-                  <table className="w-full">
-                    <thead>
-                      <tr className="border-b border-gray-200">
-                        <th className="py-3 px-6 font-semibold text-gray-900 text-start">{t('storeName')}</th>
-                        <th className="py-3 px-6 font-semibold text-gray-900">{t('city')}</th>
-                        <th className="py-3 px-6 font-semibold text-gray-900">{t('emailContact')}</th>
-                        <th className="py-3 px-6 font-semibold text-gray-900 text-center">{t('rating')}</th>
-                        <th className="py-3 px-6 font-semibold text-gray-900 text-center">{t('commission')}</th>
-                        <th className="py-3 px-6 font-semibold text-gray-900 text-end">{t('actions')}</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {vendorsLoading ? (
-                        Array.from({ length: 5 }).map((_, i) => (
-                          <tr key={i} className="border-b border-gray-100">
-                            <td className="py-4 px-4"><div className="flex items-center gap-2"><Skeleton className="w-8 h-8 rounded-full" /><div className="space-y-1"><Skeleton className="h-4 w-24" /><Skeleton className="h-3 w-16" /></div></div></td>
-                            <td className="py-4 px-4"><Skeleton className="h-4 w-20" /></td>
-                            <td className="py-4 px-4"><Skeleton className="h-4 w-32" /></td>
-                            <td className="py-4 px-4"><Skeleton className="h-4 w-12" /></td>
-                            <td className="py-4 px-4"><Skeleton className="h-4 w-12" /></td>
-                            <td className="py-4 px-4"><div className="flex gap-2"><Skeleton className="h-8 w-8 rounded-lg" /><Skeleton className="h-8 w-8 rounded-lg" /></div></td>
-                          </tr>
-                        ))
-                      ) : (
-                        vendors
-                          ?.filter((v: any) =>
-                            v.storeNameAr?.toLowerCase().includes(vendorSearch.toLowerCase()) ||
-                            v.storeNameEn?.toLowerCase().includes(vendorSearch.toLowerCase()) ||
-                            v.email?.toLowerCase().includes(vendorSearch.toLowerCase())
-                          )
-                          .map((v: any) => (
-                            <tr key={v.id} className="border-b border-slate-50 hover:bg-slate-50/50 transition-colors">
-                              <td className="py-4 px-6 text-start">
-                                <div className="flex items-center gap-2">
-                                  <div className="relative">
-                                    <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 font-black text-[10px] uppercase shadow-sm border border-slate-200">
-                                      {(v.storeNameAr || v.storeNameEn || 'S').substring(0, 2)}
-                                    </div>
-                                    {isUserOnline(v.userId) && (
-                                      <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full animate-pulse shadow-sm"></span>
-                                    )}
-                                  </div>
-                                  <div>
-                                    <div className="text-slate-900 font-bold">{v.storeNameAr || v.storeNameEn}</div>
-                                    <div className="text-[10px] text-slate-400 font-medium">@{v.storeSlug}</div>
-                                  </div>
-                                </div>
-                              </td>
-                              <td className="py-4 px-6 text-slate-600 font-medium">{v.city}</td>
-                              <td className="py-4 px-6 text-slate-600 font-medium">{v.email}</td>
-                              <td className="py-4 px-6 text-center">
-                                <div className="flex items-center justify-center gap-1 text-yellow-500 font-bold">
-                                  {v.rating} <span className="text-xs">⭐</span>
-                                </div>
-                              </td>
-                              <td className="py-4 px-6 text-slate-900 font-bold text-center">{v.commissionRate}%</td>
-                              <td className="py-4 px-6 text-end">
-                                <div className="flex items-center justify-end gap-2">
-                                  <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    className="text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg"
-                                    onClick={() => {
-                                      setSelectedVendorForEdit(v);
-                                      setNewVendorEmail(v.email);
-                                      setIsAdminEditEmailOpen(true);
-                                    }}
-                                  >
-                                    <Mail className="w-4 h-4" />
-                                  </Button>
-                                  <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    className="text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 rounded-lg"
-                                    onClick={() => {
-                                      setSelectedVendorForCommission(v);
-                                      setNewCommissionRate(v.commissionRate || 10);
-                                      setIsAdminEditCommissionOpen(true);
-                                    }}
-                                  >
-                                    <span className="font-bold text-xs">%</span>
-                                  </Button>
-                                  <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    className="text-rose-600 hover:text-rose-700 hover:bg-rose-50 rounded-lg"
-                                    onClick={() => {
-                                      if (confirm(`${t('deleteVendorConfirm')} ${v.storeNameAr || v.storeNameEn}؟`)) {
-                                        deleteVendor.mutate(v.id);
-                                      }
-                                    }}
-                                  >
-                                    <Trash2 className="w-4 h-4" />
-                                  </Button>
-                                  <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    className="text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 rounded-lg"
-                                    onClick={() => {
-                                      openAdminChat({
-                                        vendorId: v.id,
-                                        recipientId: v.userId,
-                                        name: v.storeNameAr || v.storeNameEn,
-                                        logo: v.logo
-                                      });
-                                    }}
-                                  >
-                                    <MessageSquare className="w-4 h-4" />
-                                  </Button>
-                                  <Link href={`/vendor/${v.storeSlug}`}>
-                                    <Button variant="outline" size="sm" className="rounded-lg font-bold">{t('viewDetails')}</Button>
-                                  </Link>
-                                </div>
-                              </td>
+                <div className="text-start" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+                  {/* Desktop Table */}
+                  <div className="hidden md:block overflow-x-auto">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="border-b border-gray-200">
+                          <th className="py-3 px-6 font-semibold text-gray-900 text-start">{t('storeName')}</th>
+                          <th className="py-3 px-6 font-semibold text-gray-900">{t('city')}</th>
+                          <th className="py-3 px-6 font-semibold text-gray-900">{t('emailContact')}</th>
+                          <th className="py-3 px-6 font-semibold text-gray-900 text-center">{t('rating')}</th>
+                          <th className="py-3 px-6 font-semibold text-gray-900 text-center">{t('commission')}</th>
+                          <th className="py-3 px-6 font-semibold text-gray-900 text-end">{t('actions')}</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {vendorsLoading ? (
+                          Array.from({ length: 5 }).map((_, i) => (
+                            <tr key={i} className="border-b border-gray-100">
+                              <td className="py-4 px-4"><div className="flex items-center gap-2"><Skeleton className="w-8 h-8 rounded-full" /><div className="space-y-1"><Skeleton className="h-4 w-24" /><Skeleton className="h-3 w-16" /></div></div></td>
+                              <td className="py-4 px-4"><Skeleton className="h-4 w-20" /></td>
+                              <td className="py-4 px-4"><Skeleton className="h-4 w-32" /></td>
+                              <td className="py-4 px-4"><Skeleton className="h-4 w-12" /></td>
+                              <td className="py-4 px-4"><Skeleton className="h-4 w-12" /></td>
+                              <td className="py-4 px-4"><div className="flex gap-2"><Skeleton className="h-8 w-8 rounded-lg" /><Skeleton className="h-8 w-8 rounded-lg" /></div></td>
                             </tr>
                           ))
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
+                        ) : (
+                          vendors
+                            ?.filter((v: any) =>
+                              v.storeNameAr?.toLowerCase().includes(vendorSearch.toLowerCase()) ||
+                              v.storeNameEn?.toLowerCase().includes(vendorSearch.toLowerCase()) ||
+                              v.email?.toLowerCase().includes(vendorSearch.toLowerCase())
+                            )
+                            .map((v: any) => (
+                              <tr key={v.id} className="border-b border-slate-50 hover:bg-slate-50/50 transition-colors">
+                                <td className="py-4 px-6 text-start">
+                                  <div className="flex items-center gap-2">
+                                    <div className="relative">
+                                      <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 font-black text-[10px] uppercase shadow-sm border border-slate-200">
+                                        {(v.storeNameAr || v.storeNameEn || 'S').substring(0, 2)}
+                                      </div>
+                                      {isUserOnline(v.userId) && (
+                                        <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full animate-pulse shadow-sm"></span>
+                                      )}
+                                    </div>
+                                    <div>
+                                      <div className="text-slate-900 font-bold">{v.storeNameAr || v.storeNameEn}</div>
+                                      <div className="text-[10px] text-slate-400 font-medium">@{v.storeSlug}</div>
+                                    </div>
+                                  </div>
+                                </td>
+                                <td className="py-4 px-6 text-slate-600 font-medium">{v.city}</td>
+                                <td className="py-4 px-6 text-slate-600 font-medium">{v.email}</td>
+                                <td className="py-4 px-6 text-center">
+                                  <div className="flex items-center justify-center gap-1 text-yellow-500 font-bold">
+                                    {v.rating} <span className="text-xs">⭐</span>
+                                  </div>
+                                </td>
+                                <td className="py-4 px-6 text-slate-900 font-bold text-center">{v.commissionRate}%</td>
+                                <td className="py-4 px-6 text-end">
+                                  <div className="flex items-center justify-end gap-2">
+                                    <Button
+                                      variant="ghost"
+                                      size="icon"
+                                      className="text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg"
+                                      onClick={() => {
+                                        setSelectedVendorForEdit(v);
+                                        setNewVendorEmail(v.email);
+                                        setIsAdminEditEmailOpen(true);
+                                      }}
+                                    >
+                                      <Mail className="w-4 h-4" />
+                                    </Button>
+                                    <Button
+                                      variant="ghost"
+                                      size="icon"
+                                      className="text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 rounded-lg"
+                                      onClick={() => {
+                                        setSelectedVendorForCommission(v);
+                                        setNewCommissionRate(v.commissionRate || 10);
+                                        setIsAdminEditCommissionOpen(true);
+                                      }}
+                                    >
+                                      <span className="font-bold text-xs">%</span>
+                                    </Button>
+                                    <Button
+                                      variant="ghost"
+                                      size="icon"
+                                      className="text-rose-600 hover:text-rose-700 hover:bg-rose-50 rounded-lg"
+                                      onClick={() => {
+                                        if (confirm(`${t('deleteVendorConfirm')} ${v.storeNameAr || v.storeNameEn}؟`)) {
+                                          deleteVendor.mutate(v.id);
+                                        }
+                                      }}
+                                    >
+                                      <Trash2 className="w-4 h-4" />
+                                    </Button>
+                                    <Button
+                                      variant="ghost"
+                                      size="icon"
+                                      className="text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 rounded-lg"
+                                      onClick={() => {
+                                        openAdminChat({
+                                          vendorId: v.id,
+                                          recipientId: v.userId,
+                                          name: v.storeNameAr || v.storeNameEn,
+                                          logo: v.logo
+                                        });
+                                      }}
+                                    >
+                                      <MessageSquare className="w-4 h-4" />
+                                    </Button>
+                                    <Link href={`/vendor/${v.storeSlug}`}>
+                                      <Button variant="ghost" size="icon" className="text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-lg">
+                                        <ExternalLink className="w-4 h-4" />
+                                      </Button>
+                                    </Link>
+                                  </div>
+                                </td>
+                              </tr>
+                            ))
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* Mobile Card View */}
+                  <div className="md:hidden grid grid-cols-1 gap-4 p-4 bg-gray-50">
+                    {vendorsLoading ? (
+                      Array.from({ length: 3 }).map((_, i) => (
+                        <div key={i} className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+                          <div className="flex items-center gap-3 mb-4">
+                            <Skeleton className="w-12 h-12 rounded-full" />
+                            <div className="space-y-2">
+                              <Skeleton className="h-4 w-32" />
+                              <Skeleton className="h-3 w-20" />
+                            </div>
+                          </div>
+                          <div className="flex justify-between items-center mt-4 pt-4 border-t border-gray-50">
+                            <Skeleton className="h-8 w-20" />
+                            <Skeleton className="h-8 w-20" />
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      vendors
+                        ?.filter((v: any) =>
+                          v.storeNameAr?.toLowerCase().includes(vendorSearch.toLowerCase()) ||
+                          v.storeNameEn?.toLowerCase().includes(vendorSearch.toLowerCase()) ||
+                          v.email?.toLowerCase().includes(vendorSearch.toLowerCase())
+                        )
+                        .map((v: any) => (
+                          <div key={v.id} className="bg-white rounded-2xl p-5 shadow-sm border border-dashed border-gray-200">
+                            <div className="flex items-start justify-between mb-4">
+                              <div className="flex items-center gap-3">
+                                <div className="relative">
+                                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-50 to-pink-50 flex items-center justify-center text-slate-700 font-black text-sm uppercase shadow-inner border border-white">
+                                    {(v.storeNameAr || v.storeNameEn || 'S').substring(0, 2)}
+                                  </div>
+                                  {isUserOnline(v.userId) && (
+                                    <span className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 border-2 border-white rounded-full animate-pulse shadow-sm"></span>
+                                  )}
+                                </div>
+                                <div>
+                                  <h3 className="text-gray-900 font-bold text-lg leading-tight">{v.storeNameAr || v.storeNameEn}</h3>
+                                  <p className="text-xs text-gray-400 font-medium mt-0.5">@{v.storeSlug}</p>
+                                </div>
+                              </div>
+                              <div className="flex flex-col items-end gap-1">
+                                <div className="bg-yellow-50 text-yellow-600 px-2 py-1 rounded-lg text-xs font-bold flex items-center gap-1 border border-yellow-100">
+                                  {v.rating} <span className="text-[10px]">⭐</span>
+                                </div>
+                                <span className="text-[10px] text-gray-400">{v.city}</span>
+                              </div>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-3 mb-4 text-sm">
+                              <div className="bg-gray-50 rounded-xl p-3 flex flex-col items-center justify-center text-center border border-gray-100">
+                                <span className="text-xs text-gray-400 font-bold mb-1">{t('commission')}</span>
+                                <span className="font-black text-gray-900 text-lg">{v.commissionRate}%</span>
+                              </div>
+                              <div className="bg-gray-50 rounded-xl p-3 flex flex-col items-center justify-center text-center border border-gray-100">
+                                <span className="text-xs text-gray-400 font-bold mb-1">{t('emailContact')}</span>
+                                <span className="font-bold text-gray-700 text-xs truncate w-full">{v.email}</span>
+                              </div>
+                            </div>
+
+                            <div className="flex items-center justify-between gap-2 pt-4 border-t border-gray-100 border-dashed">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="flex-1 rounded-xl border-gray-200 text-gray-600 hover:text-indigo-600 hover:border-indigo-200 hover:bg-indigo-50 font-bold"
+                                onClick={() => {
+                                  openAdminChat({
+                                    vendorId: v.id,
+                                    recipientId: v.userId,
+                                    name: v.storeNameAr || v.storeNameEn,
+                                    logo: v.logo
+                                  });
+                                }}
+                              >
+                                <MessageSquare className="w-4 h-4 mr-2" />
+                                {t('chat')}
+                              </Button>
+
+                              <div className="flex items-center gap-1">
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="w-9 h-9 text-blue-600 bg-blue-50/50 hover:bg-blue-100 rounded-lg"
+                                  onClick={() => {
+                                    setSelectedVendorForEdit(v);
+                                    setNewVendorEmail(v.email);
+                                    setIsAdminEditEmailOpen(true);
+                                  }}
+                                >
+                                  <Mail className="w-4 h-4" />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="w-9 h-9 text-emerald-600 bg-emerald-50/50 hover:bg-emerald-100 rounded-lg"
+                                  onClick={() => {
+                                    setSelectedVendorForCommission(v);
+                                    setNewCommissionRate(v.commissionRate || 10);
+                                    setIsAdminEditCommissionOpen(true);
+                                  }}
+                                >
+                                  <span className="font-bold text-xs">%</span>
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="w-9 h-9 text-rose-600 bg-rose-50/50 hover:bg-rose-100 rounded-lg"
+                                  onClick={() => {
+                                    if (confirm(`${t('deleteVendorConfirm')} ${v.storeNameAr || v.storeNameEn}؟`)) {
+                                      deleteVendor.mutate(v.id);
+                                    }
+                                  }}
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
+                        ))
+                    )}
+                  </div>
+                </div >
+              </CardContent >
+            </Card >
+          </div >
+        )
+        }
 
         {/* Vendor Requests Tab */}
         {activeTab === "requests" && <VendorRequestsTab />}
@@ -869,305 +1000,315 @@ export default function AdminDashboard() {
         {activeTab === "settings" && <SettingsTab />}
 
         {/* Products Tab */}
-        {activeTab === "products" && (
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('manageProducts')}</h2>
+        {
+          activeTab === "products" && (
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('manageProducts')}</h2>
 
-            <Card className="border-0 shadow-sm overflow-hidden">
-              <CardContent className="p-0">
-                <div className="p-6 border-b border-gray-100 flex items-center justify-between">
-                  <div className="relative w-full md:w-64">
-                    <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                    <Input
-                      type="text"
-                      placeholder={t('searchProductAdmin')}
-                      className="pr-10"
-                      value={productSearch}
-                      onChange={(e) => setProductSearch(e.target.value)}
-                    />
+              <Card className="border-0 shadow-sm overflow-hidden">
+                <CardContent className="p-0">
+                  <div className="p-6 border-b border-gray-100 flex items-center justify-between">
+                    <div className="relative w-full md:w-64">
+                      <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                      <Input
+                        type="text"
+                        placeholder={t('searchProductAdmin')}
+                        className="pr-10"
+                        value={productSearch}
+                        onChange={(e) => setProductSearch(e.target.value)}
+                      />
+                    </div>
                   </div>
-                </div>
 
-                <div className="overflow-x-auto text-start" dir={language === 'ar' ? 'rtl' : 'ltr'}>
-                  <table className="w-full">
-                    <thead>
-                      <tr className="border-b border-gray-200">
-                        <th className="py-3 px-6 font-semibold text-gray-900 text-start">{t('productName')}</th>
-                        <th className="py-3 px-6 font-semibold text-gray-900 text-start">{t('vendor')}</th>
-                        <th className="py-3 px-6 font-semibold text-gray-900 text-center">{t('price')}</th>
-                        <th className="py-3 px-6 font-semibold text-gray-900 text-center">{t('stock')}</th>
-                        <th className="py-3 px-6 font-semibold text-gray-900 text-end">{t('actions')}</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {productsLoading ? (
-                        Array.from({ length: 5 }).map((_, i) => (
-                          <tr key={i} className="border-b border-gray-100">
-                            <td className="py-3 px-6"><Skeleton className="h-4 w-48" /></td>
-                            <td className="py-3 px-6"><Skeleton className="h-4 w-32" /></td>
-                            <td className="py-3 px-6"><Skeleton className="h-4 w-20" /></td>
-                            <td className="py-3 px-6"><Skeleton className="h-4 w-12" /></td>
-                            <td className="py-3 px-6"><Skeleton className="h-8 w-16" /></td>
-                          </tr>
-                        ))
-                      ) : (
-                        products?.map((product: any) => (
-                          <tr key={product.id} className="border-b border-gray-200 hover:bg-gray-50">
-                            <td className="py-3 px-6 text-gray-900 font-medium text-start">
-                              {product.nameAr} / {product.nameEn}
-                            </td>
-                            <td className="py-3 px-6 text-gray-600 text-start">
-                              {vendors?.find((v: any) => v.id === product.vendorId)?.storeNameAr || t('never')}
-                            </td>
-                            <td className="py-3 px-6 text-gray-900 text-center font-bold">{Number(product.price).toFixed(2)} {t('currency')}</td>
-                            <td className="py-3 px-6 text-gray-900 text-center font-medium">{product.stock}</td>
-                            <td className="py-3 px-6 text-end">
-                              <Link href={`/products/${product.id}`}>
-                                <Button variant="outline" size="sm" className="font-bold">{t('viewDetails')}</Button>
-                              </Link>
-                            </td>
-                          </tr>
-                        ))
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
+                  <div className="overflow-x-auto text-start" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+                    <table className="w-full">
+                      <thead>
+                        <tr className="border-b border-gray-200">
+                          <th className="py-3 px-6 font-semibold text-gray-900 text-start">{t('productName')}</th>
+                          <th className="py-3 px-6 font-semibold text-gray-900 text-start">{t('vendor')}</th>
+                          <th className="py-3 px-6 font-semibold text-gray-900 text-center">{t('price')}</th>
+                          <th className="py-3 px-6 font-semibold text-gray-900 text-center">{t('stock')}</th>
+                          <th className="py-3 px-6 font-semibold text-gray-900 text-end">{t('actions')}</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {productsLoading ? (
+                          Array.from({ length: 5 }).map((_, i) => (
+                            <tr key={i} className="border-b border-gray-100">
+                              <td className="py-3 px-6"><Skeleton className="h-4 w-48" /></td>
+                              <td className="py-3 px-6"><Skeleton className="h-4 w-32" /></td>
+                              <td className="py-3 px-6"><Skeleton className="h-4 w-20" /></td>
+                              <td className="py-3 px-6"><Skeleton className="h-4 w-12" /></td>
+                              <td className="py-3 px-6"><Skeleton className="h-8 w-16" /></td>
+                            </tr>
+                          ))
+                        ) : (
+                          products?.map((product: any) => (
+                            <tr key={product.id} className="border-b border-gray-200 hover:bg-gray-50">
+                              <td className="py-3 px-6 text-gray-900 font-medium text-start">
+                                {product.nameAr} / {product.nameEn}
+                              </td>
+                              <td className="py-3 px-6 text-gray-600 text-start">
+                                {vendors?.find((v: any) => v.id === product.vendorId)?.storeNameAr || t('never')}
+                              </td>
+                              <td className="py-3 px-6 text-gray-900 text-center font-bold">{Number(product.price).toFixed(2)} {t('currency')}</td>
+                              <td className="py-3 px-6 text-gray-900 text-center font-medium">{product.stock}</td>
+                              <td className="py-3 px-6 text-end">
+                                <Link href={`/products/${product.id}`}>
+                                  <Button variant="outline" size="sm" className="font-bold">{t('viewDetails')}</Button>
+                                </Link>
+                              </td>
+                            </tr>
+                          ))
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )
+        }
 
         {/* Orders Tab */}
-        {activeTab === "orders" && (
-          <div>
-            <h2 className="text-2xl font-black text-gray-900 mb-6 flex items-center gap-3">
-              <div className="w-10 h-10 bg-rose-50 rounded-xl flex items-center justify-center">
-                <ShoppingCart className="w-6 h-6 text-rose-600" />
-              </div>
-              {t('adminPaidOrders')}
-            </h2>
+        {
+          activeTab === "orders" && (
+            <div>
+              <h2 className="text-2xl font-black text-gray-900 mb-6 flex items-center gap-3">
+                <div className="w-10 h-10 bg-rose-50 rounded-xl flex items-center justify-center">
+                  <ShoppingCart className="w-6 h-6 text-rose-600" />
+                </div>
+                {t('adminPaidOrders')}
+              </h2>
 
-            <Card className="border-0 shadow-sm overflow-hidden">
-              <div className="bg-rose-50/50 px-6 py-3 border-b border-rose-100">
-                <p className="text-xs font-bold text-rose-600">{t('paidOrdersDesc')}</p>
-              </div>
-              <CardContent className="p-0">
-                <div className="overflow-x-auto text-start" dir={language === 'ar' ? 'rtl' : 'ltr'}>
-                  <table className="w-full">
-                    <thead>
-                      <tr className="border-b border-gray-200 bg-slate-50/50">
-                        <th className="py-4 px-6 font-black text-slate-900 text-start">{t('orderNumber')}</th>
-                        <th className="py-4 px-6 font-black text-slate-900 text-start">{t('customer')}</th>
-                        <th className="py-4 px-6 font-black text-slate-900 text-center">{t('amount')}</th>
-                        <th className="py-4 px-6 font-black text-slate-900 text-center">{t('deliveryStatus')}</th>
-                        <th className="py-4 px-6 font-black text-slate-900 text-end">{t('actions')}</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {adminOrders?.filter((o: any) => o.paymentStatus === 'paid').map((order: any) => (
-                        <tr key={order.id} className="border-b border-slate-50 hover:bg-slate-50/50 transition-colors">
-                          <td className="py-4 px-6 font-bold text-slate-900 text-start">{order.orderNumber}</td>
-                          <td className="py-4 px-6 text-slate-600 font-medium text-start">{order.customerName || `${t('customer')} #${order.customerId}`}</td>
-                          <td className="py-4 px-6 font-black text-slate-900 text-center">{Number(order.total).toFixed(2)} {t('currency')}</td>
-                          <td className="py-4 px-6 text-center">
-                            <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${order.status === 'delivered' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'
-                              }`}>
-                              {order.status === 'delivered' ? t('delivered') : t('processing')}
-                            </span>
-                          </td>
-                          <td className="py-4 px-6 text-end">
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="text-rose-600 font-bold hover:bg-rose-50"
-                              onClick={() => {
-                                setSelectedOrder(order);
-                                setIsAdminOrderModalOpen(true);
-                              }}
-                            >
-                              {t('viewDetails')}
-                            </Button>
-                          </td>
+              <Card className="border-0 shadow-sm overflow-hidden">
+                <div className="bg-rose-50/50 px-6 py-3 border-b border-rose-100">
+                  <p className="text-xs font-bold text-rose-600">{t('paidOrdersDesc')}</p>
+                </div>
+                <CardContent className="p-0">
+                  <div className="overflow-x-auto text-start" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+                    <table className="w-full">
+                      <thead>
+                        <tr className="border-b border-gray-200 bg-slate-50/50">
+                          <th className="py-4 px-6 font-black text-slate-900 text-start">{t('orderNumber')}</th>
+                          <th className="py-4 px-6 font-black text-slate-900 text-start">{t('customer')}</th>
+                          <th className="py-4 px-6 font-black text-slate-900 text-center">{t('amount')}</th>
+                          <th className="py-4 px-6 font-black text-slate-900 text-center">{t('deliveryStatus')}</th>
+                          <th className="py-4 px-6 font-black text-slate-900 text-end">{t('actions')}</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
-
-        {/* Customers Tab */}
-        {activeTab === "customers" && (
-          <div>
-            <h2 className="text-2xl font-black text-gray-900 mb-6 flex items-center gap-3">
-              <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center">
-                <UserCheck className="w-6 h-6 text-blue-600" />
-              </div>
-              {t('manageCustomers')}
-            </h2>
-
-            <Card className="border-0 shadow-sm overflow-hidden">
-              <CardContent className="p-0">
-                <div className="p-6 border-b border-gray-100">
-                  <div className="relative w-full max-w-md">
-                    <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                    <Input
-                      placeholder={t('searchCustomerAdmin')}
-                      className="pr-10 border-slate-100 focus:ring-blue-500 rounded-xl h-11"
-                      value={customerSearch}
-                      onChange={(e) => setCustomerSearch(e.target.value)}
-                    />
-                  </div>
-                </div>
-
-                <div className="overflow-x-auto text-start" dir={language === 'ar' ? 'rtl' : 'ltr'}>
-                  <table className="w-full">
-                    <thead>
-                      <tr className="border-b border-gray-100">
-                        <th className="py-4 px-6 font-black text-slate-900 text-start">{t('customer')}</th>
-                        <th className="py-4 px-6 font-black text-slate-900 text-start">{t('emailContact')}</th>
-                        <th className="py-4 px-6 font-black text-slate-900 text-center">{t('lastSeen')}</th>
-                        <th className="py-4 px-6 font-black text-slate-900 text-center">{t('mobileNumber')}</th>
-                        <th className="py-4 px-6 font-black text-slate-900 text-end">{t('startChat')}</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {customersLoading ? (
-                        Array.from({ length: 5 }).map((_, i) => (
-                          <tr key={i} className="border-b border-gray-100">
-                            <td className="py-4 px-6"><div className="flex items-center gap-3"><Skeleton className="w-8 h-8 rounded-full" /><Skeleton className="h-4 w-32" /></div></td>
-                            <td className="py-4 px-6"><Skeleton className="h-4 w-40" /></td>
-                            <td className="py-4 px-6"><Skeleton className="h-4 w-24" /></td>
-                            <td className="py-4 px-6"><Skeleton className="h-4 w-24" /></td>
-                            <td className="py-4 px-6"><Skeleton className="h-8 w-8 rounded-lg" /></td>
-                          </tr>
-                        ))
-                      ) : (
-                        customers?.filter((c: any) =>
-                          c.name?.toLowerCase().includes(customerSearch.toLowerCase()) ||
-                          c.email?.toLowerCase().includes(customerSearch.toLowerCase()) ||
-                          (c.phone && c.phone.includes(customerSearch))
-                        ).map((c: any) => (
-                          <tr key={c.id} className="border-b border-slate-50 hover:bg-slate-50/50">
-                            <td className="py-4 px-6 font-bold text-slate-900 text-start">
-                              <div className="flex items-center gap-3">
-                                <div className="relative">
-                                  <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 font-black text-[10px] uppercase shadow-sm border border-slate-200">
-                                    {(c.name || 'C').substring(0, 2)}
-                                  </div>
-                                  {isUserOnline(c.id) && (
-                                    <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full animate-pulse shadow-sm"></span>
-                                  )}
-                                </div>
-                                <span>{c.name || t('customerUnknown')}</span>
-                              </div>
+                      </thead>
+                      <tbody>
+                        {adminOrders?.filter((o: any) => o.paymentStatus === 'paid').map((order: any) => (
+                          <tr key={order.id} className="border-b border-slate-50 hover:bg-slate-50/50 transition-colors">
+                            <td className="py-4 px-6 font-bold text-slate-900 text-start">{order.orderNumber}</td>
+                            <td className="py-4 px-6 text-slate-600 font-medium text-start">{order.customerName || `${t('customer')} #${order.customerId}`}</td>
+                            <td className="py-4 px-6 font-black text-slate-900 text-center">{Number(order.total).toFixed(2)} {t('currency')}</td>
+                            <td className="py-4 px-6 text-center">
+                              <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${order.status === 'delivered' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'
+                                }`}>
+                                {order.status === 'delivered' ? t('delivered') : t('processing')}
+                              </span>
                             </td>
-                            <td className="py-4 px-6 text-slate-600 text-start">{c.email}</td>
-                            <td className="py-4 px-6 text-slate-400 text-xs text-center">{c.lastSignedIn ? new Date(c.lastSignedIn).toLocaleDateString() : t('never')}</td>
-                            <td className="py-4 px-6 text-slate-600 text-center">{c.phone || '-'}</td>
                             <td className="py-4 px-6 text-end">
                               <Button
                                 variant="ghost"
-                                size="icon"
-                                className="text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 rounded-lg"
+                                size="sm"
+                                className="text-rose-600 font-bold hover:bg-rose-50"
                                 onClick={() => {
-                                  openAdminChat({
-                                    vendorId: c.id, // Using Customer ID as vendorId key for now (safe if no collision with real vendors, or we need a type)
-                                    recipientId: c.id,
-                                    name: c.name || t('customer'),
-                                    logo: c.avatar
-                                  });
+                                  setSelectedOrder(order);
+                                  setIsAdminOrderModalOpen(true);
                                 }}
                               >
-                                <MessageSquare className="w-4 h-4" />
+                                {t('viewDetails')}
                               </Button>
                             </td>
                           </tr>
-                        ))
-                      )}
-                    </tbody>
-                  </table>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )
+        }
+
+        {/* Customers Tab */}
+        {
+          activeTab === "customers" && (
+            <div>
+              <h2 className="text-2xl font-black text-gray-900 mb-6 flex items-center gap-3">
+                <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center">
+                  <UserCheck className="w-6 h-6 text-blue-600" />
                 </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
+                {t('manageCustomers')}
+              </h2>
+
+              <Card className="border-0 shadow-sm overflow-hidden">
+                <CardContent className="p-0">
+                  <div className="p-6 border-b border-gray-100">
+                    <div className="relative w-full max-w-md">
+                      <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                      <Input
+                        placeholder={t('searchCustomerAdmin')}
+                        className="pr-10 border-slate-100 focus:ring-blue-500 rounded-xl h-11"
+                        value={customerSearch}
+                        onChange={(e) => setCustomerSearch(e.target.value)}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="overflow-x-auto text-start" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+                    <table className="w-full">
+                      <thead>
+                        <tr className="border-b border-gray-100">
+                          <th className="py-4 px-6 font-black text-slate-900 text-start">{t('customer')}</th>
+                          <th className="py-4 px-6 font-black text-slate-900 text-start">{t('emailContact')}</th>
+                          <th className="py-4 px-6 font-black text-slate-900 text-center">{t('lastSeen')}</th>
+                          <th className="py-4 px-6 font-black text-slate-900 text-center">{t('mobileNumber')}</th>
+                          <th className="py-4 px-6 font-black text-slate-900 text-end">{t('startChat')}</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {customersLoading ? (
+                          Array.from({ length: 5 }).map((_, i) => (
+                            <tr key={i} className="border-b border-gray-100">
+                              <td className="py-4 px-6"><div className="flex items-center gap-3"><Skeleton className="w-8 h-8 rounded-full" /><Skeleton className="h-4 w-32" /></div></td>
+                              <td className="py-4 px-6"><Skeleton className="h-4 w-40" /></td>
+                              <td className="py-4 px-6"><Skeleton className="h-4 w-24" /></td>
+                              <td className="py-4 px-6"><Skeleton className="h-4 w-24" /></td>
+                              <td className="py-4 px-6"><Skeleton className="h-8 w-8 rounded-lg" /></td>
+                            </tr>
+                          ))
+                        ) : (
+                          customers?.filter((c: any) =>
+                            c.name?.toLowerCase().includes(customerSearch.toLowerCase()) ||
+                            c.email?.toLowerCase().includes(customerSearch.toLowerCase()) ||
+                            (c.phone && c.phone.includes(customerSearch))
+                          ).map((c: any) => (
+                            <tr key={c.id} className="border-b border-slate-50 hover:bg-slate-50/50">
+                              <td className="py-4 px-6 font-bold text-slate-900 text-start">
+                                <div className="flex items-center gap-3">
+                                  <div className="relative">
+                                    <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 font-black text-[10px] uppercase shadow-sm border border-slate-200">
+                                      {(c.name || 'C').substring(0, 2)}
+                                    </div>
+                                    {isUserOnline(c.id) && (
+                                      <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full animate-pulse shadow-sm"></span>
+                                    )}
+                                  </div>
+                                  <span>{c.name || t('customerUnknown')}</span>
+                                </div>
+                              </td>
+                              <td className="py-4 px-6 text-slate-600 text-start">{c.email}</td>
+                              <td className="py-4 px-6 text-slate-400 text-xs text-center">{c.lastSignedIn ? new Date(c.lastSignedIn).toLocaleDateString() : t('never')}</td>
+                              <td className="py-4 px-6 text-slate-600 text-center">{c.phone || '-'}</td>
+                              <td className="py-4 px-6 text-end">
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 rounded-lg"
+                                  onClick={() => {
+                                    openAdminChat({
+                                      vendorId: c.id, // Using Customer ID as vendorId key for now (safe if no collision with real vendors, or we need a type)
+                                      recipientId: c.id,
+                                      name: c.name || t('customer'),
+                                      logo: c.avatar
+                                    });
+                                  }}
+                                >
+                                  <MessageSquare className="w-4 h-4" />
+                                </Button>
+                              </td>
+                            </tr>
+                          ))
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )
+        }
 
         {/* Chat Tab */}
-        {activeTab === "chat" && (
-          <div>
-            <h2 className="text-2xl font-black text-gray-900 mb-6 flex items-center gap-3">
-              <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center">
-                <MessageSquare className="w-6 h-6 text-indigo-600" />
-              </div>
-              {t('manageConversations')}
-            </h2>
-
-            <Card className="border-0 shadow-sm overflow-hidden">
-              <div className="bg-indigo-50/50 px-6 py-4 border-b border-indigo-100 flex items-center justify-between">
-                <p className="text-sm font-bold text-indigo-600">{t('activeConversationsDesc')}</p>
-                <span className="bg-white px-3 py-1 rounded-lg border border-indigo-100 text-indigo-700 text-xs font-black">
-                  {adminConversations?.length || 0} {t('conversationCount')}
-                </span>
-              </div>
-              <CardContent className="p-0">
-                <div className="divide-y divide-slate-50">
-                  {adminConversations?.map((conv: any) => (
-                    <div key={conv.id} className="p-4 flex items-center justify-between hover:bg-slate-50 transition-colors cursor-pointer group">
-                      <div className="flex items-center gap-4">
-                        <div className="flex -space-x-3 rtl:space-x-reverse">
-                          <div className="w-10 h-10 rounded-full border-2 border-white bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-xs ring-2 ring-blue-50 overflow-hidden">
-                            {conv.customerAvatar ? <img src={conv.customerAvatar} alt="" className="w-full h-full object-cover" /> : (conv.customerName || 'C').substring(0, 1)}
-                          </div>
-                          <div className="w-10 h-10 rounded-full border-2 border-white bg-rose-100 flex items-center justify-center text-rose-600 font-bold text-xs ring-2 ring-rose-50 overflow-hidden">
-                            {conv.storeLogo ? <img src={conv.storeLogo} alt="" className="w-full h-full object-cover" /> : (conv.storeNameAr || conv.storeNameEn || 'S').substring(0, 1)}
-                          </div>
-                        </div>
-                        <div className="text-right" dir="rtl">
-                          <h4 className="font-bold text-slate-900 text-sm">
-                            {conv.customerName || t('customer')} <span className="text-slate-400 font-normal mx-1">{t('with')}</span> {conv.storeNameAr || conv.storeNameEn || t('vendor')}
-                          </h4>
-                          <p className="text-xs text-slate-400 mt-1">
-                            {conv.lastMessage ? conv.lastMessage.substring(0, 50) : t('noMessages')}...
-                          </p>
-                        </div>
-                      </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="text-indigo-600 font-bold gap-2"
-                        onClick={() => {
-                          // Logic to open chat history or view details
-                          // For now, let's trigger the chat history panel with this conversation
-                          // We don't have a direct "Open as Admin" for 3rd party chat yet, 
-                          // but we can at least show it exists.
-                          // Ideally, we'd open a modal reading the messages.
-                          toast.info(t('chatDetailsComingSoon'));
-                        }}
-                      >
-                        {t('viewConversationDetails')} <ChevronRight size={14} />
-                      </Button>
-                    </div>
-                  ))}
-                  {(!adminConversations || adminConversations.length === 0) && (
-                    <div className="p-12 text-center text-slate-400 font-medium">{t('noActiveConversations')}</div>
-                  )}
+        {
+          activeTab === "chat" && (
+            <div>
+              <h2 className="text-2xl font-black text-gray-900 mb-6 flex items-center gap-3">
+                <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center">
+                  <MessageSquare className="w-6 h-6 text-indigo-600" />
                 </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
+                {t('manageConversations')}
+              </h2>
+
+              <Card className="border-0 shadow-sm overflow-hidden">
+                <div className="bg-indigo-50/50 px-6 py-4 border-b border-indigo-100 flex items-center justify-between">
+                  <p className="text-sm font-bold text-indigo-600">{t('activeConversationsDesc')}</p>
+                  <span className="bg-white px-3 py-1 rounded-lg border border-indigo-100 text-indigo-700 text-xs font-black">
+                    {adminConversations?.length || 0} {t('conversationCount')}
+                  </span>
+                </div>
+                <CardContent className="p-0">
+                  <div className="divide-y divide-slate-50">
+                    {adminConversations?.map((conv: any) => (
+                      <div key={conv.id} className="p-4 flex items-center justify-between hover:bg-slate-50 transition-colors cursor-pointer group">
+                        <div className="flex items-center gap-4">
+                          <div className="flex -space-x-3 rtl:space-x-reverse">
+                            <div className="w-10 h-10 rounded-full border-2 border-white bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-xs ring-2 ring-blue-50 overflow-hidden">
+                              {conv.customerAvatar ? <img src={conv.customerAvatar} alt="" className="w-full h-full object-cover" /> : (conv.customerName || 'C').substring(0, 1)}
+                            </div>
+                            <div className="w-10 h-10 rounded-full border-2 border-white bg-rose-100 flex items-center justify-center text-rose-600 font-bold text-xs ring-2 ring-rose-50 overflow-hidden">
+                              {conv.storeLogo ? <img src={conv.storeLogo} alt="" className="w-full h-full object-cover" /> : (conv.storeNameAr || conv.storeNameEn || 'S').substring(0, 1)}
+                            </div>
+                          </div>
+                          <div className="text-right" dir="rtl">
+                            <h4 className="font-bold text-slate-900 text-sm">
+                              {conv.customerName || t('customer')} <span className="text-slate-400 font-normal mx-1">{t('with')}</span> {conv.storeNameAr || conv.storeNameEn || t('vendor')}
+                            </h4>
+                            <p className="text-xs text-slate-400 mt-1">
+                              {conv.lastMessage ? conv.lastMessage.substring(0, 50) : t('noMessages')}...
+                            </p>
+                          </div>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-indigo-600 font-bold gap-2"
+                          onClick={() => {
+                            // Logic to open chat history or view details
+                            // For now, let's trigger the chat history panel with this conversation
+                            // We don't have a direct "Open as Admin" for 3rd party chat yet, 
+                            // but we can at least show it exists.
+                            // Ideally, we'd open a modal reading the messages.
+                            toast.info(t('chatDetailsComingSoon'));
+                          }}
+                        >
+                          {t('viewConversationDetails')} <ChevronRight size={14} />
+                        </Button>
+                      </div>
+                    ))}
+                    {(!adminConversations || adminConversations.length === 0) && (
+                      <div className="p-12 text-center text-slate-400 font-medium">{t('noActiveConversations')}</div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )
+        }
 
         {/* Categories Tab */}
-        {activeTab === "categories" && (
-          <CategoriesTab
-            showConfirm={showConfirm}
-            initialAddOpen={autoOpenAddCategory}
-            onModalClose={() => setAutoOpenAddCategory(false)}
-          />
-        )}
+        {
+          activeTab === "categories" && (
+            <CategoriesTab
+              showConfirm={showConfirm}
+              initialAddOpen={autoOpenAddCategory}
+              onModalClose={() => setAutoOpenAddCategory(false)}
+            />
+          )
+        }
 
 
         {/* Edit Commission Dialog */}
