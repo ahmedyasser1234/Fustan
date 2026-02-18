@@ -18,12 +18,24 @@ export const useSocket = () => {
         }
 
         if (!socketRef.current) {
-            // Use Environment Variable for connection (e.g. Ngrok or VPS URL)
-            const SOCKET_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+            // Priority: 1. VITE_SOCKET_URL, 2. VITE_API_URL, 3. Hardcoded Fallback
+            const SOCKET_URL = import.meta.env.VITE_SOCKET_URL ||
+                import.meta.env.VITE_API_URL ||
+                'http://localhost:3001';
+
+            // Prevent connecting to self (Netlify) if URL is relative or missing
+            if (!SOCKET_URL || SOCKET_URL.startsWith('/')) {
+                console.error('Socket URL is missing or relative. Please set VITE_SOCKET_URL in your environment variables.');
+                return;
+            }
+
             socketRef.current = io(SOCKET_URL, {
                 path: '/socket.io',
                 withCredentials: true,
                 transports: ['websocket', 'polling'],
+                reconnection: true,
+                reconnectionAttempts: 5, // Stop after 5 failed attempts to save bandwidth
+                reconnectionDelay: 5000, // Wait 5 seconds between retries
             });
 
             socketRef.current.on('connect', () => {
