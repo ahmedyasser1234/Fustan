@@ -136,6 +136,12 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Force Cairo font for Arabic language */
+:lang(ar),
+[dir="rtl"] {
+  font-family: "Cairo", system-ui, sans-serif !important;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

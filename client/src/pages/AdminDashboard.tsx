@@ -536,7 +536,7 @@ export default function AdminDashboard() {
       </header>
 
       {/* Navigation Tabs */}
-      <div className="bg-white border-b border-gray-200 sticky top-20 z-20">
+      <div className="bg-white border-b border-gray-200 relative">
         <div className="container mx-auto px-4 py-3">
           <div className="flex gap-2 md:gap-3 overflow-x-auto pb-2 scrollbar-hide -mx-2 px-2 lg:flex-wrap lg:overflow-visible lg:pb-0">
             {tabs.map((tab) => (
