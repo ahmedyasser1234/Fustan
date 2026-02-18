@@ -1,7 +1,7 @@
 import { scrypt, randomBytes } from 'node:crypto';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { DatabaseService } from '../database/database.service';
-import { vendors, users, orders, products, conversations, messages, cartItems, wishlist, notifications } from '../database/schema';
+import { vendors, users, orders, products, conversations, messages, cartItems, wishlist, notifications, productColors, reviews, shipping, offerItems, collections, coupons, offers, vendorReviews, vendorPayouts, vendorWallets } from '../database/schema';
 import { eq, and, desc, sql } from 'drizzle-orm';
 
 @Injectable()
@@ -198,12 +198,85 @@ export class AdminService {
         const vendor = await this.databaseService.db.select().from(vendors).where(eq(vendors.id, vendorId)).limit(1);
         if (vendor.length === 0) return { success: false, message: 'Vendor not found' };
 
+        const userId = vendor[0].userId;
+
         return await this.databaseService.db.transaction(async (tx) => {
-            // Delete vendor profile
+            // --- A. DELETE PRODUCTS & RELATED ENTITIES ---
+            const vendorProducts = await tx
+                .select({ id: products.id })
+                .from(products)
+                .where(eq(products.vendorId, vendorId));
+
+            const productIds = vendorProducts.map(p => p.id);
+
+            if (productIds.length > 0) {
+                // 1. Delete Product Colors
+                await tx.delete(productColors).where(sql`${productColors.productId} IN ${productIds}`);
+
+                // 2. Delete Product Reviews
+                await tx.delete(reviews).where(sql`${reviews.productId} IN ${productIds}`);
+
+                // 3. Delete Cart Items with these products
+                await tx.delete(cartItems).where(sql`${cartItems.productId} IN ${productIds}`);
+
+                // 4. Delete Wishlist items
+                await tx.delete(wishlist).where(sql`${wishlist.productId} IN ${productIds}`);
+
+                // 5. Delete Shipping rules for products
+                await tx.delete(shipping).where(sql`${shipping.productId} IN ${productIds}`);
+
+                // 6. Delete Offer Items
+                await tx.delete(offerItems).where(sql`${offerItems.productId} IN ${productIds}`);
+
+                // 7. FINALLY DELETE PRODUCTS
+                await tx.delete(products).where(eq(products.vendorId, vendorId));
+            }
+
+            // --- B. DELETE COLLECTIONS ---
+            await tx.delete(collections).where(eq(collections.vendorId, vendorId));
+
+            // --- C. DELETE COUPONS ---
+            await tx.delete(coupons).where(eq(coupons.vendorId, vendorId));
+
+            // --- D. DELETE OFFERS ---
+            // First delete offer items linked to vendor's offers (if not covered above)
+            const vendorOffers = await tx.select({ id: offers.id }).from(offers).where(eq(offers.vendorId, vendorId));
+            const offerIds = vendorOffers.map(o => o.id);
+            if (offerIds.length > 0) {
+                await tx.delete(offerItems).where(sql`${offerItems.offerId} IN ${offerIds}`);
+                await tx.delete(offers).where(eq(offers.vendorId, vendorId));
+            }
+
+            // --- E. DELETE SHIPPING RULES (Vendor Level) ---
+            await tx.delete(shipping).where(eq(shipping.vendorId, vendorId));
+
+            // --- F. DELETE REVIEWS & RATINGS ---
+            await tx.delete(vendorReviews).where(eq(vendorReviews.vendorId, vendorId));
+
+            // --- G. DELETE WALLET & PAYOUTS ---
+            await tx.delete(vendorPayouts).where(eq(vendorPayouts.vendorId, vendorId));
+            // Wallet needs to be found first or deleted by vendorId if unique
+            await tx.delete(vendorWallets).where(eq(vendorWallets.vendorId, vendorId));
+
+            // --- H. DELETE CHAT CONVERSATIONS ---
+            const vendorConversations = await tx
+                .select({ id: conversations.id })
+                .from(conversations)
+                .where(eq(conversations.vendorId, vendorId));
+
+            const conversationIds = vendorConversations.map(c => c.id);
+            if (conversationIds.length > 0) {
+                await tx.delete(messages).where(sql`${messages.conversationId} IN ${conversationIds}`);
+                await tx.delete(conversations).where(eq(conversations.vendorId, vendorId));
+            }
+
+            // --- I. DELETE VENDOR PROFILE ---
             await tx.delete(vendors).where(eq(vendors.id, vendorId));
-            // Optionally delete user or just deactivate? Admin requested "Delete vendor info"
-            // We'll just delete the vendor profile for now.
-            return { success: true };
+
+            // --- J. DELETE USER ACCOUNT ---
+            await tx.delete(users).where(eq(users.id, userId));
+
+            return { success: true, message: 'Vendor and all related data deleted successfully' };
         });
     }
 
