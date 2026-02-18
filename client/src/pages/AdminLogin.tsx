@@ -40,30 +40,34 @@ export default function AdminLogin() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(30,58,138,0.2),transparent_70%)]"></div>
+        <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 relative overflow-hidden" dir="ltr">
+            {/* Background Pattern */}
+            <div className="absolute inset-0 z-0">
+                <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_0%_0%,rgba(225,29,72,0.05),transparent_50%),radial-gradient(circle_at_100%_100%,rgba(225,29,72,0.05),transparent_50%)]"></div>
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-3xl opacity-50"></div>
+            </div>
 
-            <Card className="w-full max-w-md bg-white border-none shadow-2xl relative z-10 overflow-hidden">
-                <div className="h-2 bg-gradient-to-r from-blue-600 to-indigo-600"></div>
-                <CardHeader className="space-y-1 text-center pb-8 pt-6">
-                    <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-blue-100 ring-8 ring-blue-50/50">
-                        <ShieldCheck className="w-8 h-8 text-blue-600" />
+            <Card className="w-full max-w-md bg-white/80 backdrop-blur-xl border border-white/20 shadow-2xl relative z-10 overflow-hidden rounded-3xl ring-1 ring-slate-100">
+                <div className="h-1.5 bg-gradient-to-r from-primary via-rose-400 to-primary"></div>
+                <CardHeader className="space-y-2 text-center pb-8 pt-8">
+                    <div className="w-20 h-20 bg-gradient-to-br from-primary/10 to-primary/5 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-primary/10 ring-8 ring-primary/5 shadow-inner rotate-3 transition-transform hover:rotate-6 duration-500">
+                        <ShieldCheck className="w-10 h-10 text-primary" />
                     </div>
-                    <CardTitle className="text-2xl font-black text-slate-900 tracking-tight">Super Admin Portal</CardTitle>
-                    <CardDescription className="text-slate-500 font-medium tracking-wide">Enter your administrative credentials</CardDescription>
+                    <CardTitle className="text-3xl font-black text-slate-900 tracking-tight">Fustan Admin</CardTitle>
+                    <CardDescription className="text-slate-500 font-medium text-base">Secure Gateway for Administrators</CardDescription>
                 </CardHeader>
-                <CardContent>
-                    <form onSubmit={handleSubmit} className="space-y-4">
+                <CardContent className="px-8 pb-10">
+                    <form onSubmit={handleSubmit} className="space-y-5">
                         <div className="space-y-2">
                             <label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">Email Address</label>
                             <div className="relative group">
-                                <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-slate-400 group-focus-within:text-blue-500 transition-colors">
-                                    <Lock className="w-4 h-4" />
+                                <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-primary transition-colors">
+                                    <Lock className="w-5 h-5" />
                                 </div>
                                 <Input
                                     type="email"
                                     placeholder="admin@fustan.com"
-                                    className="pl-10 h-12 bg-slate-50 border-slate-100 focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all rounded-xl"
+                                    className="pl-12 h-14 bg-slate-50 border-slate-200 focus:ring-4 focus:ring-primary/10 focus:border-primary/30 focus:bg-white transition-all rounded-2xl text-base"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     required
@@ -73,13 +77,13 @@ export default function AdminLogin() {
                         <div className="space-y-2">
                             <label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">Password</label>
                             <div className="relative group">
-                                <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-slate-400 group-focus-within:text-blue-500 transition-colors">
-                                    <ShieldCheck className="w-4 h-4" />
+                                <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-primary transition-colors">
+                                    <ShieldCheck className="w-5 h-5" />
                                 </div>
                                 <Input
                                     type="password"
                                     placeholder="••••••••"
-                                    className="pl-10 h-12 bg-slate-50 border-slate-100 focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all rounded-xl"
+                                    className="pl-12 h-14 bg-slate-50 border-slate-200 focus:ring-4 focus:ring-primary/10 focus:border-primary/30 focus:bg-white transition-all rounded-2xl text-base"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     required
@@ -87,16 +91,16 @@ export default function AdminLogin() {
                             </div>
                         </div>
                         <Button
-                            className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg shadow-blue-200 transition-all hover:scale-[1.02] active:scale-95"
+                            className="w-full h-14 bg-primary hover:bg-primary/90 text-white font-bold text-lg rounded-2xl shadow-lg shadow-primary/25 transition-all hover:scale-[1.02] active:scale-95 mt-4"
                             disabled={isLoading}
                         >
-                            {isLoading ? "Verifying Authority..." : "Access Administrator Dashboard"}
+                            {isLoading ? "Verifying..." : "Access Dashboard"}
                         </Button>
                     </form>
 
-                    <div className="mt-8 flex items-center justify-center gap-2 text-slate-400">
+                    <div className="mt-8 flex items-center justify-center gap-2 text-slate-400 opacity-60 hover:opacity-100 transition-opacity cursor-default">
                         <AlertCircle size={14} />
-                        <span className="text-[10px] uppercase font-black tracking-widest">Secure Access Only</span>
+                        <span className="text-[10px] uppercase font-black tracking-widest">Restricted Area</span>
                     </div>
                 </CardContent>
             </Card>
