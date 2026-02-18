@@ -1221,19 +1221,79 @@ export default function AdminDashboard() {
 
               <Card className="border-0 shadow-sm overflow-hidden">
                 <CardContent className="p-0">
-                  <div className="p-6 border-b border-gray-100">
-                    <div className="relative w-full max-w-md">
-                      <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                  <div className="p-4 md:p-6 border-b border-gray-100 flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div className="relative w-full md:w-72">
+                      <Search className={`absolute ${language === 'ar' ? 'right-3' : 'left-3'} top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400`} />
                       <Input
                         placeholder={t('searchCustomerAdmin')}
-                        className="pr-10 border-slate-100 focus:ring-blue-500 rounded-xl h-11"
+                        className={`rounded-xl border-slate-200 focus:ring-blue-500 h-10 md:h-11 ${language === 'ar' ? 'pr-10' : 'pl-10'}`}
                         value={customerSearch}
                         onChange={(e) => setCustomerSearch(e.target.value)}
                       />
                     </div>
                   </div>
 
-                  <div className="overflow-x-auto text-start" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+                  {/* Mobile Customer Cards */}
+                  <div className="md:hidden space-y-4 p-4">
+                    {customersLoading ? (
+                      Array.from({ length: 3 }).map((_, i) => (
+                        <Skeleton key={i} className="h-32 w-full rounded-2xl" />
+                      ))
+                    ) : (
+                      customers?.filter((c: any) =>
+                        c.name?.toLowerCase().includes(customerSearch.toLowerCase()) ||
+                        c.email?.toLowerCase().includes(customerSearch.toLowerCase()) ||
+                        (c.phone && c.phone.includes(customerSearch))
+                      ).map((c: any) => (
+                        <Card key={c.id} className="border border-gray-100 shadow-sm rounded-2xl overflow-hidden bg-white">
+                          <CardContent className="p-4 space-y-4">
+                            <div className="flex items-center gap-4">
+                              <div className="relative">
+                                <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 font-black text-sm uppercase shadow-sm border border-slate-200">
+                                  {(c.name || 'C').substring(0, 2)}
+                                </div>
+                                {isUserOnline(c.id) && (
+                                  <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full animate-pulse shadow-sm"></span>
+                                )}
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <h4 className="font-bold text-gray-900 truncate text-base">{c.name || t('customerUnknown')}</h4>
+                                <p className="text-xs text-gray-400 mt-1 truncate font-medium">{c.email}</p>
+                              </div>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-3 text-sm border-t border-gray-50 pt-3">
+                              <div>
+                                <span className="block text-xs text-gray-400 font-medium mb-1">{t('mobileNumber')}</span>
+                                <span className="font-bold text-gray-700">{c.phone || '-'}</span>
+                              </div>
+                              <div>
+                                <span className="block text-xs text-gray-400 font-medium mb-1">{t('lastSeen')}</span>
+                                <span className="font-bold text-gray-700">{c.lastSignedIn ? new Date(c.lastSignedIn).toLocaleDateString() : t('never')}</span>
+                              </div>
+                            </div>
+
+                            <Button
+                              className="w-full bg-indigo-50 text-indigo-600 hover:bg-indigo-100 hover:text-indigo-700 h-10 font-bold rounded-xl gap-2 mt-2"
+                              onClick={() => {
+                                openAdminChat({
+                                  vendorId: c.id,
+                                  recipientId: c.id,
+                                  name: c.name || t('customer'),
+                                  logo: c.avatar
+                                });
+                              }}
+                            >
+                              <MessageSquare className="w-4 h-4" /> {t('startChat')}
+                            </Button>
+                          </CardContent>
+                        </Card>
+                      ))
+                    )}
+                  </div>
+
+                  {/* Desktop Table View */}
+                  <div className="hidden md:block overflow-x-auto text-start" dir={language === 'ar' ? 'rtl' : 'ltr'}>
                     <table className="w-full">
                       <thead>
                         <tr className="border-b border-gray-100">
