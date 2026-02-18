@@ -14,6 +14,7 @@ export default function VendorLogin() {
     const { t, language } = useLanguage();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [, setLocation] = useLocation();
     const { refresh } = useAuth();

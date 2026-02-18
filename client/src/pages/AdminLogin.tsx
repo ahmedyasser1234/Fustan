@@ -4,7 +4,7 @@ import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { AlertCircle, Lock, ShieldCheck } from "lucide-react";
+import { AlertCircle, Lock, ShieldCheck, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 import api from "@/lib/api";
 
@@ -14,6 +14,8 @@ export default function AdminLogin() {
     const [isLoading, setIsLoading] = useState(false);
     const { refresh } = useAuth();
     const [, setLocation] = useLocation();
+
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -81,13 +83,20 @@ export default function AdminLogin() {
                                     <ShieldCheck className="w-5 h-5" />
                                 </div>
                                 <Input
-                                    type="password"
+                                    type={showPassword ? "text" : "password"}
                                     placeholder="••••••••"
-                                    className="pl-12 h-14 bg-slate-50 border-slate-200 focus:ring-4 focus:ring-primary/10 focus:border-primary/30 focus:bg-white transition-all rounded-2xl text-base"
+                                    className="pl-12 pr-12 h-14 bg-slate-50 border-slate-200 focus:ring-4 focus:ring-primary/10 focus:border-primary/30 focus:bg-white transition-all rounded-2xl text-base"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     required
                                 />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    className="absolute inset-y-0 right-4 flex items-center text-slate-400 hover:text-primary transition-colors focus:outline-none"
+                                >
+                                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                                </button>
                             </div>
                         </div>
                         <Button

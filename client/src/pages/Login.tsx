@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { useLanguage } from "@/lib/i18n";
 import api from "@/lib/api";
-import { Loader2 } from "lucide-react";
+import { Loader2, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 import { GoogleLogin } from "@react-oauth/google";
 
@@ -15,7 +15,9 @@ export default function Login() {
     const { t, language } = useLanguage();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+
     const [, setLocation] = useLocation();
     const { refresh } = useAuth();
 
@@ -103,14 +105,23 @@ export default function Login() {
                         </div>
                         <div className={`space-y-2 text-${language === 'ar' ? 'right' : 'left'}`}>
                             <Label htmlFor="password">{language === 'ar' ? 'كلمة المرور' : 'Password'}</Label>
-                            <Input
-                                id="password"
-                                type="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                required
-                                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-rose-500 focus:ring-rose-500"
-                            />
+                            <div className="relative">
+                                <Input
+                                    id="password"
+                                    type={showPassword ? "text" : "password"}
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    required
+                                    className={`block w-full rounded-md border-gray-300 shadow-sm focus:border-rose-500 focus:ring-rose-500 ${language === 'ar' ? 'pl-10' : 'pr-10'}`}
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    className={`absolute inset-y-0 ${language === 'ar' ? 'left-3' : 'right-3'} flex items-center text-gray-500 hover:text-gray-700 focus:outline-none`}
+                                >
+                                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                </button>
+                            </div>
                         </div>
 
                         <Button

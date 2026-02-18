@@ -12,6 +12,7 @@ import { toast } from "sonner";
 
 export default function VendorRegister() {
     const { language } = useLanguage();
+    const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [, setLocation] = useLocation();
     const { refresh } = useAuth();

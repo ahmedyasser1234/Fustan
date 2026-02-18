@@ -13,6 +13,7 @@ import { GoogleLogin } from "@react-oauth/google";
 
 export default function Register() {
     const { language } = useLanguage();
+    const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [, setLocation] = useLocation();
     const { refresh } = useAuth();
