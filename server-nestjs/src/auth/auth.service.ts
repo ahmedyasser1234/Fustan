@@ -23,13 +23,14 @@ export class AuthService {
         this.appId = this.configService.get<string>('VITE_APP_ID', 'fustan-app');
     }
 
-    async createSessionToken(id: number, openId: string, name: string, role: string): Promise<string> {
+    async createSessionToken(id: number, openId: string, name: string, role: string, email?: string): Promise<string> {
         const payload: SessionPayload = {
             id,
             openId,
             appId: this.appId,
             name,
             role,
+            email,
         };
 
         return await new SignJWT(payload as any)
@@ -144,7 +145,7 @@ export class AuthService {
             }
 
             // Create session
-            const token = await this.createSessionToken(newUser.id, openId, data.name, data.role || 'customer');
+            const token = await this.createSessionToken(newUser.id, openId, data.name, data.role || 'customer', email);
             return { token, user: { email: email, name: data.name, role: data.role } };
         });
     }
@@ -181,7 +182,7 @@ export class AuthService {
             throw new UnauthorizedException('Invalid credentials');
         }
 
-        const token = await this.createSessionToken(user.id, user.openId as string, (user.name || 'User') as string, (user.role || 'customer') as string);
+        const token = await this.createSessionToken(user.id, user.openId as string, (user.name || 'User') as string, (user.role || 'customer') as string, user.email || undefined);
         return { token, user: user };
     }
 
@@ -238,7 +239,7 @@ export class AuthService {
                     .where(eq(users.id, userId));
             }
 
-            const sessionToken = await this.createSessionToken(userId, userOpenId, userName, userRole);
+            const sessionToken = await this.createSessionToken(userId, userOpenId, userName, userRole, email);
             return { token: sessionToken, user: user[0] };
 
         } catch (error) {
@@ -276,7 +277,7 @@ export class AuthService {
             .where(eq(users.openId, devOpenId))
             .limit(1);
 
-        const token = await this.createSessionToken(user[0].id, devOpenId, 'Developer Admin', 'admin');
+        const token = await this.createSessionToken(user[0].id, devOpenId, 'Developer Admin', 'admin', user[0].email || undefined);
         return { token, user: user[0] };
     }
     async updateProfile(userId: number, data: any) {

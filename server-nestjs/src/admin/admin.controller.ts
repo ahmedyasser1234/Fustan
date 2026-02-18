@@ -85,6 +85,18 @@ export class AdminController {
         return this.adminService.updateVendorCommission(+id, commissionRate);
     }
 
+    @Get('customers/:id')
+    async getCustomer(@Req() req: Request, @Param('id') id: string) {
+        await this.checkAdmin(req);
+        return this.adminService.getCustomerDetails(+id);
+    }
+
+    @Delete('customers/:id')
+    async deleteCustomer(@Req() req: Request, @Param('id') id: string) {
+        const adminPayload = await this.checkAdmin(req);
+        return this.adminService.deleteCustomer(+id, adminPayload.email);
+    }
+
     @Get('search')
     async search(@Req() req: Request, @Query('q') q: string) {
         await this.checkAdmin(req);

@@ -38,8 +38,6 @@ export default function CustomersTab({ vendorId }: CustomersTabProps) {
 
         setSending(true);
         try {
-            // Use the universal message endpoint
-            // If we are a vendor, we pass the customer's User ID as 'userId' to start/continue chat
             await api.post('/chat/messages', {
                 userId: selectedCustomer.id,
                 content: messageContent
@@ -68,7 +66,6 @@ export default function CustomersTab({ vendorId }: CustomersTabProps) {
 
     return (
         <div className="space-y-6">
-            {/* Header & Search */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
                     <h2 className="text-2xl font-black text-gray-900">{t('customers')}</h2>
@@ -85,9 +82,7 @@ export default function CustomersTab({ vendorId }: CustomersTabProps) {
                 </div>
             </div>
 
-            {/* Customers List / Table */}
             <div className="bg-white rounded-[2rem] border border-gray-100 shadow-sm overflow-hidden">
-                {/* Desktop Table */}
                 <div className="hidden md:block overflow-x-auto">
                     <table className="w-full min-w-[800px]">
                         <thead className="bg-gray-50/50 border-b border-gray-100">
@@ -162,7 +157,6 @@ export default function CustomersTab({ vendorId }: CustomersTabProps) {
                     </table>
                 </div>
 
-                {/* Mobile List View */}
                 <div className="md:hidden space-y-4 p-4">
                     {filteredCustomers.length > 0 ? (
                         filteredCustomers.map((customer: any) => (
@@ -219,7 +213,6 @@ export default function CustomersTab({ vendorId }: CustomersTabProps) {
                 </div>
             </div>
 
-            {/* Message Modal */}
             <Dialog open={messageOpen} onOpenChange={setMessageOpen}>
                 <DialogContent className="max-w-md rounded-[2rem] bg-white border-0 shadow-2xl p-6">
                     <DialogHeader>

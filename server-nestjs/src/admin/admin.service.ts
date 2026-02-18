@@ -1,7 +1,7 @@
 import { scrypt, randomBytes } from 'node:crypto';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { DatabaseService } from '../database/database.service';
-import { vendors, users, orders, products, conversations, messages } from '../database/schema';
+import { vendors, users, orders, products, conversations, messages, cartItems, wishlist, notifications } from '../database/schema';
 import { eq, and, desc, sql } from 'drizzle-orm';
 
 @Injectable()
@@ -242,6 +242,85 @@ export class AdminService {
             `);
 
             return updated;
+        });
+    }
+
+    async getCustomerDetails(id: number) {
+        const customer = await this.databaseService.db
+            .select()
+            .from(users)
+            .where(eq(users.id, id))
+            .limit(1);
+
+        if (customer.length === 0) {
+            throw new UnauthorizedException('Customer not found');
+        }
+
+        const customerOrders = await this.databaseService.db
+            .select({
+                id: orders.id,
+                orderNumber: orders.orderNumber,
+                total: orders.total,
+                status: orders.status,
+                paymentStatus: orders.paymentStatus,
+                createdAt: orders.createdAt,
+            })
+            .from(orders)
+            .where(eq(orders.customerId, id))
+            .orderBy(desc(orders.createdAt));
+
+        return {
+            ...customer[0],
+            orders: customerOrders
+        };
+    }
+
+    async deleteCustomer(id: number, adminEmail: string) {
+        // Strict check: Only main admin can delete
+        // Hardcoded for now as per plan. 
+        // In production, this should likely be an env var or a database flag 'isSuperAdmin'
+        const MAIN_ADMIN_EMAIL = 'admin@fustan.com';
+
+        if (adminEmail !== MAIN_ADMIN_EMAIL) {
+            throw new UnauthorizedException('Only the main admin can delete customers.');
+        }
+
+        const customer = await this.databaseService.db
+            .select()
+            .from(users)
+            .where(eq(users.id, id))
+            .limit(1);
+
+        if (customer.length === 0) {
+            // Return success even if not found to be idempotent, or throw error? 
+            // Throwing error is better for UI feedback.
+            throw new UnauthorizedException('Customer not found');
+        }
+
+        return await this.databaseService.db.transaction(async (tx) => {
+            // 1. Delete Cart Items
+            await tx.delete(cartItems).where(eq(cartItems.customerId, id));
+
+            // 2. Delete Wishlist
+            await tx.delete(wishlist).where(eq(wishlist.customerId, id));
+
+            // 3. Delete Notifications
+            await tx.delete(notifications).where(eq(notifications.userId, id));
+
+            // 4. Delete Messages/Conversations logic?
+            // Conversations have customerId. Messages have senderId.
+            // If we delete the user, we should probably keep messages for record but they won't link to a name.
+            // Or we delete them. Let's keep them for now as they might be relevant for vendors.
+            // But we might want to anonymize? 
+            // For now, simple deletion of the user record is requested. 
+            // If there are foreign key constraints, this will fail. 
+            // Schema shows 'customerId' integer but no explicit foreign keys defined in Drizzle schema for 'conversations', 'orders', etc.
+            // So deletion of user row should usually work unless DB level constraints exist.
+
+            // 5. Delete the User
+            await tx.delete(users).where(eq(users.id, id));
+
+            return { success: true, message: 'Customer deleted successfully' };
         });
     }
 

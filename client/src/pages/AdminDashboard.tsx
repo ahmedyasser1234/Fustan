@@ -88,6 +88,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -295,6 +296,13 @@ export default function AdminDashboard() {
   const queryClient = useQueryClient();
   const [location, setLocation] = useLocation();
 
+  // MOVED STATE TO TOP FOR DEBUGGING
+  const [deleteCustomerOpen, setDeleteCustomerOpen] = useState(false);
+  const [customerToDelete, setCustomerToDelete] = useState<any>(null);
+  const [customerDetailsOpen, setCustomerDetailsOpen] = useState(false);
+  const [customerDetails, setCustomerDetails] = useState<any>(null);
+  const [detailsCustomerId, setDetailsCustomerId] = useState<number | null>(null);
+
   const [activeTab, setActiveTabInternal] = useState<"overview" | "vendors" | "requests" | "reports" | "analytics" | "products" | "categories" | "orders" | "customers" | "chat" | "content" | "settings">(() => {
     const params = new URLSearchParams(window.location.search);
     return (params.get("tab") as any) || "overview";
@@ -359,6 +367,39 @@ export default function AdminDashboard() {
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
   const [isAdminOrderModalOpen, setIsAdminOrderModalOpen] = useState(false);
   const [showProfilePassword, setShowProfilePassword] = useState(false);
+
+  // Fetch customer details when detailsCustomerId changes
+  const { data: fetchedCustomerDetails, isLoading: detailsLoading } = useQuery({
+    queryKey: ['admin', 'customer', detailsCustomerId],
+    queryFn: async () => {
+      if (!detailsCustomerId) return null;
+      return await api.get(`/admin/customers/${detailsCustomerId}`).then(res => res.data);
+    },
+    enabled: !!detailsCustomerId
+  });
+
+  // Sync fetched details to local state
+  useEffect(() => {
+    if (fetchedCustomerDetails) {
+      setCustomerDetails(fetchedCustomerDetails);
+    }
+  }, [fetchedCustomerDetails]);
+
+
+  const handleDeleteCustomer = async () => {
+    if (!customerToDelete) return;
+    try {
+      await api.delete(`/admin/customers/${customerToDelete.id}`);
+      toast.success('Customer deleted successfully');
+      setDeleteCustomerOpen(false);
+      setCustomerToDelete(null);
+      queryClient.invalidateQueries({ queryKey: ['admin', 'customers'] });
+    } catch (error) {
+      console.error(error);
+      toast.error('Failed to delete customer');
+    }
+  };
+
   const { openChat, isUserOnline } = useChat(); // Use global chat context
 
   // Add Vendor Modal State
@@ -1248,7 +1289,14 @@ export default function AdminDashboard() {
                         <Card key={c.id} className="border border-gray-100 shadow-sm rounded-2xl overflow-hidden bg-white">
                           <CardContent className="p-4 space-y-4">
                             <div className="flex items-center gap-4">
-                              <div className="relative">
+                              <div className="relative cursor-pointer" onClick={() => {
+                                setCustomerDetails(null);
+                                setCustomerDetailsOpen(true);
+                                // Fetch details logic triggered by state or effect?
+                                // We should fetch details here or inside the Sheet
+                                // For now, let's open the sheet and fetch there
+                                setDetailsCustomerId(c.id);
+                              }}>
                                 <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 font-black text-sm uppercase shadow-sm border border-slate-200">
                                   {(c.name || 'C').substring(0, 2)}
                                 </div>
@@ -1256,10 +1304,25 @@ export default function AdminDashboard() {
                                   <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full animate-pulse shadow-sm"></span>
                                 )}
                               </div>
-                              <div className="flex-1 min-w-0">
+                              <div className="flex-1 min-w-0 cursor-pointer" onClick={() => { setDetailsCustomerId(c.id); setCustomerDetailsOpen(true); }}>
                                 <h4 className="font-bold text-gray-900 truncate text-base">{c.name || t('customerUnknown')}</h4>
                                 <p className="text-xs text-gray-400 mt-1 truncate font-medium">{c.email}</p>
                               </div>
+                              {/* Delete Button for Main Admin */}
+                              {user?.email === 'admin@fustan.com' && (
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="text-red-400 hover:text-red-500 hover:bg-red-50"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setCustomerToDelete(c);
+                                    setDeleteCustomerOpen(true);
+                                  }}
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </Button>
+                              )}
                             </div>
 
                             <div className="grid grid-cols-2 gap-3 text-sm border-t border-gray-50 pt-3">
@@ -1301,7 +1364,7 @@ export default function AdminDashboard() {
                           <th className="py-4 px-6 font-black text-slate-900 text-start">{t('emailContact')}</th>
                           <th className="py-4 px-6 font-black text-slate-900 text-center">{t('lastSeen')}</th>
                           <th className="py-4 px-6 font-black text-slate-900 text-center">{t('mobileNumber')}</th>
-                          <th className="py-4 px-6 font-black text-slate-900 text-end">{t('startChat')}</th>
+                          <th className="py-4 px-6 font-black text-slate-900 text-end">{t('actions')}</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -1321,7 +1384,10 @@ export default function AdminDashboard() {
                             c.email?.toLowerCase().includes(customerSearch.toLowerCase()) ||
                             (c.phone && c.phone.includes(customerSearch))
                           ).map((c: any) => (
-                            <tr key={c.id} className="border-b border-slate-50 hover:bg-slate-50/50">
+                            <tr key={c.id}
+                              className="border-b border-slate-50 hover:bg-slate-50/50 cursor-pointer transition-colors"
+                              onClick={() => { setDetailsCustomerId(c.id); setCustomerDetailsOpen(true); }}
+                            >
                               <td className="py-4 px-6 font-bold text-slate-900 text-start">
                                 <div className="flex items-center gap-3">
                                   <div className="relative">
@@ -1339,21 +1405,38 @@ export default function AdminDashboard() {
                               <td className="py-4 px-6 text-slate-400 text-xs text-center">{c.lastSignedIn ? new Date(c.lastSignedIn).toLocaleDateString() : t('never')}</td>
                               <td className="py-4 px-6 text-slate-600 text-center">{c.phone || '-'}</td>
                               <td className="py-4 px-6 text-end">
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  className="text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 rounded-lg"
-                                  onClick={() => {
-                                    openAdminChat({
-                                      vendorId: c.id, // Using Customer ID as vendorId key for now (safe if no collision with real vendors, or we need a type)
-                                      recipientId: c.id,
-                                      name: c.name || t('customer'),
-                                      logo: c.avatar
-                                    });
-                                  }}
-                                >
-                                  <MessageSquare className="w-4 h-4" />
-                                </Button>
+                                <div className="flex items-center justify-end gap-2" onClick={(e) => e.stopPropagation()}>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 rounded-lg"
+                                    onClick={() => {
+                                      openAdminChat({
+                                        vendorId: c.id,
+                                        recipientId: c.id,
+                                        name: c.name || t('customer'),
+                                        logo: c.avatar
+                                      });
+                                    }}
+                                  >
+                                    <MessageSquare className="w-4 h-4" />
+                                  </Button>
+
+                                  {/* Delete Button for Main Admin */}
+                                  {user?.email === 'admin@fustan.com' && (
+                                    <Button
+                                      variant="ghost"
+                                      size="icon"
+                                      className="text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg"
+                                      onClick={() => {
+                                        setCustomerToDelete(c);
+                                        setDeleteCustomerOpen(true);
+                                      }}
+                                    >
+                                      <Trash2 className="w-4 h-4" />
+                                    </Button>
+                                  )}
+                                </div>
                               </td>
                             </tr>
                           ))
@@ -1700,6 +1783,92 @@ export default function AdminDashboard() {
           </DialogContent>
         </Dialog>
       </main >
+
+      {/* Client Side Dialogs for Customers */}
+      <AlertDialog open={deleteCustomerOpen} onOpenChange={setDeleteCustomerOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently delete the customer account including all their data. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteCustomer} className="bg-red-600 hover:bg-red-700">Delete</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <Sheet open={customerDetailsOpen} onOpenChange={setCustomerDetailsOpen}>
+        <SheetContent className="w-[400px] sm:w-[540px] overflow-y-auto">
+          <SheetHeader>
+            <SheetTitle>Customer Details</SheetTitle>
+            <SheetDescription>Detailed view of customer profile and orders.</SheetDescription>
+          </SheetHeader>
+
+          {detailsLoading ? (
+            <div className="space-y-4 py-6">
+              <Skeleton className="h-20 w-full rounded-xl" />
+              <Skeleton className="h-6 w-1/2" />
+              <Skeleton className="h-40 w-full rounded-xl" />
+            </div>
+          ) : customerDetails ? (
+            <div className="space-y-6 py-6">
+              <div className="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl">
+                <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-black text-xl">
+                  {(customerDetails.name || 'C').substring(0, 2).toUpperCase()}
+                </div>
+                <div>
+                  <h3 className="font-bold text-lg text-gray-900">{customerDetails.name}</h3>
+                  <p className="text-sm text-gray-500">{customerDetails.email}</p>
+                  <p className="text-xs text-slate-400 mt-1">Joined {new Date(customerDetails.createdAt).toLocaleDateString()}</p>
+                </div>
+              </div>
+
+              <div>
+                <h4 className="font-bold text-gray-900 mb-2">{t('contactInfo')}</h4>
+                <div className="bg-white border border-gray-100 rounded-xl p-4 space-y-3">
+                  <div className="flex justify-between">
+                    <span className="text-sm text-gray-500">{t('mobileNumber')}</span>
+                    <span className="text-sm font-medium">{customerDetails.phone || '-'}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-gray-500">{t('address')}</span>
+                    <span className="text-sm font-medium max-w-[200px] text-right truncate">{customerDetails.address || '-'}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <h4 className="font-bold text-gray-900 mb-2">{t('orders')}</h4>
+                {customerDetails.orders && customerDetails.orders.length > 0 ? (
+                  <div className="space-y-3">
+                    {customerDetails.orders.map((order: any) => (
+                      <div key={order.id} className="border border-gray-100 rounded-xl p-4 flex items-center justify-between">
+                        <div>
+                          <p className="font-bold text-sm text-gray-900">{order.orderNumber}</p>
+                          <p className="text-xs text-gray-400">{new Date(order.createdAt).toLocaleDateString()}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-black text-sm text-blue-600">{order.total?.toLocaleString()} {t('currency')}</p>
+                          <span className={`inline-block px-2 py-0.5 rounded text-[10px] font-bold mt-1 ${order.status === 'completed' ? 'bg-green-100 text-green-700' :
+                            order.status === 'cancelled' ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700'
+                            }`}>
+                            {order.status}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-sm text-gray-500 italic">No orders found.</p>
+                )}
+              </div>
+            </div>
+          ) : null}
+        </SheetContent>
+      </Sheet>
       <AdminSearchModal />
     </div >
   );
@@ -2151,7 +2320,10 @@ function CategoriesTab({
           </div>
         )
       }
-    </div >
+
+
+      <AdminSearchModal />
+    </div>
   );
 }
 

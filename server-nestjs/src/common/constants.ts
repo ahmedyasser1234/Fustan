@@ -7,4 +7,5 @@ export interface SessionPayload {
     appId: string;
     name: string;
     role: string;
+    email?: string; // Added for easier access
 }
