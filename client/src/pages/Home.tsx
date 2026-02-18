@@ -413,7 +413,7 @@ export default function Home() {
               viewport={{ once: true }}
               className="w-full lg:w-1/2 text-center lg:text-left rtl:lg:text-right"
             >
-              <span className="font-serif italic text-3xl text-rose-500 mb-4 block">Timeless Charm</span>
+              <span className="font-serif text-3xl text-rose-500 mb-4 block">{language === 'ar' ? "أناقة خالدة" : "Timeless Charm"}</span>
               <h2 className="text-5xl lg:text-7xl font-serif text-gray-900 mb-6 leading-tight">
                 {t('classicStyles')}
               </h2>
@@ -434,7 +434,7 @@ export default function Home() {
       < section className="py-24 bg-white" >
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <span className="font-serif italic text-2xl text-rose-500 mb-2 block">Shop the Latest</span>
+            <span className="font-serif text-2xl text-rose-500 mb-2 block">{language === 'ar' ? "أحدث الصيحات" : "Shop the Latest"}</span>
             <h2 className="text-4xl md:text-5xl font-black text-gray-900">{t('trendingProducts')}</h2>
           </div>
 

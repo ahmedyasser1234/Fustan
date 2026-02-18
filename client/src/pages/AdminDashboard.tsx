@@ -302,18 +302,18 @@ export default function AdminDashboard() {
 
   /* Define tabs with distinct gradient colors */
   const tabs = useMemo<{ id: string; label: string; icon: any; color?: string; badge?: number }[]>(() => [
-    { id: "overview", label: t('overview'), icon: LayoutDashboard },
-    { id: "vendors", label: t('vendors'), icon: Store },
-    { id: "requests", label: t('vendorRequests'), icon: List },
-    { id: "analytics", label: t('analytics'), icon: BarChart3 },
-    { id: "reports", label: t('commissionReports'), icon: DollarSign },
-    { id: "content", label: t('contentManagement'), icon: Edit },
-    { id: "products", label: t('products'), icon: Package },
-    { id: "categories", label: t('categories'), icon: Layers },
-    { id: "orders", label: t('orders'), icon: ShoppingCart },
-    { id: "customers", label: t('customers'), icon: Users },
-    { id: "chat", label: t('chat'), icon: MessageSquare, badge: unreadCount },
-    { id: "settings", label: t('settings'), icon: Settings },
+    { id: "overview", label: t('overview'), icon: LayoutDashboard, color: "from-purple-600 to-pink-600 shadow-purple-500/30" },
+    { id: "vendors", label: t('vendors'), icon: Store, color: "from-cyan-500 to-blue-600 shadow-cyan-500/30" },
+    { id: "requests", label: t('vendorRequests'), icon: List, color: "from-amber-400 to-orange-600 shadow-orange-500/30" },
+    { id: "analytics", label: t('analytics'), icon: BarChart3, color: "from-emerald-400 to-teal-600 shadow-emerald-500/30" },
+    { id: "reports", label: t('commissionReports'), icon: DollarSign, color: "from-blue-600 to-indigo-700 shadow-indigo-500/30" },
+    { id: "content", label: t('contentManagement'), icon: Edit, color: "from-rose-500 to-red-600 shadow-rose-500/30" },
+    { id: "products", label: t('products'), icon: Package, color: "from-fuchsia-500 to-purple-600 shadow-fuchsia-500/30" },
+    { id: "categories", label: t('categories'), icon: Layers, color: "from-teal-400 to-emerald-600 shadow-teal-500/30" },
+    { id: "orders", label: t('orders'), icon: ShoppingCart, color: "from-orange-500 to-red-600 shadow-orange-500/30" },
+    { id: "customers", label: t('customers'), icon: Users, color: "from-sky-500 to-blue-600 shadow-sky-500/30" },
+    { id: "chat", label: t('chat'), icon: MessageSquare, badge: unreadCount, color: "from-pink-500 to-rose-600 shadow-pink-500/30" },
+    { id: "settings", label: t('settings'), icon: Settings, color: "from-slate-700 to-slate-900 shadow-slate-500/30" },
   ], [t, unreadCount]);
 
   const setActiveTab = (tab: typeof activeTab) => {
