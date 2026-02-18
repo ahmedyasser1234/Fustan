@@ -172,7 +172,7 @@ export default function OrdersTab({ vendorId, onCustomerClick }: OrdersTabProps)
                             <CardContent className="p-0">
                                 <div className="overflow-x-auto">
                                     <table className="w-full" dir={language === 'ar' ? 'rtl' : 'ltr'}>
-                                        <thead className="bg-white border-b border-slate-50">
+                                        <thead className="hidden md:table-header-group bg-white border-b border-slate-50">
                                             <tr>
                                                 <th className={`py-5 px-8 font-black text-slate-400 text-[10px] uppercase tracking-wider w-[45%] ${language === 'ar' ? 'text-right' : 'text-left'}`}>
                                                     {language === 'ar' ? "المنتج" : "Product"}
@@ -188,11 +188,13 @@ export default function OrdersTab({ vendorId, onCustomerClick }: OrdersTabProps)
                                                 </th>
                                             </tr>
                                         </thead>
-                                        <tbody className="divide-y divide-slate-50">
+                                        <tbody className="divide-y divide-slate-50 block md:table-row-group">
                                             {order.items?.map((item: any, idx: number) => (
-                                                <tr key={idx} className="hover:bg-slate-50/30 transition-colors">
-                                                    <td className="py-6 px-8">
-                                                        <div className={`flex items-center gap-6 ${language === 'ar' ? 'flex-row' : 'flex-row'}`}>
+                                                <tr key={idx} className="block md:table-row hover:bg-slate-50/30 transition-colors p-4 md:p-0 border-b md:border-none last:border-0 relative">
+                                                    <td className="block md:table-cell py-2 md:py-6 px-0 md:px-8">
+                                                        {/* Mobile Label */}
+                                                        <span className="md:hidden text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">{language === 'ar' ? "المنتج" : "Product"}</span>
+                                                        <div className={`flex items-center gap-4 md:gap-6 ${language === 'ar' ? 'flex-row' : 'flex-row'}`}>
                                                             <div className="w-16 h-20 rounded-2xl bg-slate-50 flex-shrink-0 overflow-hidden shadow-sm border border-slate-100">
                                                                 {item.product?.images?.[0] ? (
                                                                     <img src={item.product.images[0]} className="w-full h-full object-cover" alt="product" />
@@ -203,7 +205,7 @@ export default function OrdersTab({ vendorId, onCustomerClick }: OrdersTabProps)
                                                                 )}
                                                             </div>
                                                             <div className={`flex-1 ${language === 'ar' ? 'text-right' : 'text-left'}`}>
-                                                                <p className="font-black text-slate-900 text-lg leading-tight mb-1">
+                                                                <p className="font-black text-slate-900 text-base md:text-lg leading-tight mb-1">
                                                                     {language === 'ar' ? item.product?.nameAr : item.product?.nameEn}
                                                                 </p>
                                                                 <p className="text-xs font-bold text-slate-400">
@@ -212,7 +214,8 @@ export default function OrdersTab({ vendorId, onCustomerClick }: OrdersTabProps)
                                                             </div>
                                                         </div>
                                                     </td>
-                                                    <td className="py-6 px-4 text-center">
+                                                    <td className="block md:table-cell py-2 md:py-6 px-0 md:px-4 text-start md:text-center flex justify-between md:table-cell items-center border-b border-dashed border-slate-100 md:border-none">
+                                                        <span className="md:hidden text-[10px] font-black text-slate-400 uppercase tracking-widest">{language === 'ar' ? "المقاس" : "Size"}</span>
                                                         {item.size ? (
                                                             <span className="inline-flex bg-slate-100 text-slate-600 px-3 py-1 rounded-xl text-xs font-black ring-4 ring-slate-50">
                                                                 {item.size}
@@ -221,10 +224,12 @@ export default function OrdersTab({ vendorId, onCustomerClick }: OrdersTabProps)
                                                             <span className="text-slate-300 font-bold">-</span>
                                                         )}
                                                     </td>
-                                                    <td className="py-6 px-4 text-center font-black text-slate-900">
-                                                        {item.quantity}
+                                                    <td className="block md:table-cell py-2 md:py-6 px-0 md:px-4 text-start md:text-center flex justify-between md:table-cell items-center border-b border-dashed border-slate-100 md:border-none">
+                                                        <span className="md:hidden text-[10px] font-black text-slate-400 uppercase tracking-widest">{language === 'ar' ? "الكمية" : "Qty"}</span>
+                                                        <span className="font-black text-slate-900">{item.quantity}</span>
                                                     </td>
-                                                    <td className={`py-6 px-8 ${language === 'ar' ? 'text-left' : 'text-right'}`}>
+                                                    <td className={`block md:table-cell py-2 md:py-6 px-0 md:px-8 ${language === 'ar' ? 'text-left' : 'text-right'} flex justify-between md:table-cell items-center`}>
+                                                        <span className="md:hidden text-[10px] font-black text-slate-400 uppercase tracking-widest">{language === 'ar' ? "السعر" : "Price"}</span>
                                                         <span className="font-black text-lg text-[#e91e63]">
                                                             {(item.price * item.quantity).toFixed(2)} {t('currency')}
                                                         </span>
@@ -232,13 +237,18 @@ export default function OrdersTab({ vendorId, onCustomerClick }: OrdersTabProps)
                                                 </tr>
                                             ))}
                                         </tbody>
-                                        <tfoot className="bg-slate-50/50">
-                                            <tr>
-                                                <td colSpan={2} className={`py-8 px-8 ${language === 'ar' ? 'text-right' : 'text-left'}`}>
-                                                    <span className="font-black text-slate-400 text-sm">{language === 'ar' ? "إجمالي الطلب" : "Order Total"}</span>
-                                                    <p className="text-[10px] text-slate-400 font-bold mt-1 italic">{language === 'ar' ? "* شامل ضريبة القيمة المضافة والشحن" : "* Incl. VAT & Shipping"}</p>
+                                        <tfoot className="bg-slate-50/50 block md:table-footer-group">
+                                            <tr className="block md:table-row">
+                                                <td colSpan={2} className={`block md:table-cell py-4 md:py-8 px-4 md:px-8 ${language === 'ar' ? 'text-right' : 'text-left'} border-b md:border-none border-slate-100`}>
+                                                    <div className="flex justify-between md:block items-center">
+                                                        <span className="font-black text-slate-400 text-sm">{language === 'ar' ? "إجمالي الطلب" : "Order Total"}</span>
+                                                        <p className="md:hidden font-black text-xl text-slate-900">
+                                                            {Number(order.total).toFixed(2)} <span className="text-sm">{t('currency')}</span>
+                                                        </p>
+                                                    </div>
+                                                    <p className="text-[10px] text-slate-400 font-bold mt-1 italic hidden md:block">{language === 'ar' ? "* شامل ضريبة القيمة المضافة والشحن" : "* Incl. VAT & Shipping"}</p>
                                                 </td>
-                                                <td colSpan={2} className={`py-8 px-8 ${language === 'ar' ? 'text-left' : 'text-right'}`}>
+                                                <td colSpan={2} className={`hidden md:table-cell py-8 px-8 ${language === 'ar' ? 'text-left' : 'text-right'}`}>
                                                     <span className="font-black text-3xl text-slate-900">
                                                         {Number(order.total).toFixed(2)} <span className="text-sm">{t('currency')}</span>
                                                     </span>

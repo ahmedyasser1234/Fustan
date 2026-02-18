@@ -270,13 +270,13 @@ export default function ProductsTab({ vendorId, collectionId, onProductClick, on
 
     return (
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700" dir={language === 'ar' ? 'rtl' : 'ltr'}>
-            <div className="flex items-center justify-between">
-                <div className={language === 'ar' ? 'text-right' : 'text-left'}>
-                    <h2 className="text-3xl font-black text-slate-900 mb-2">{language === 'ar' ? "إدارة المنتجات" : "Product Management"}</h2>
-                    <p className="text-slate-400 font-bold">{language === 'ar' ? "أضف، عدل وأدر مبيعات فساتينك في مكان واحد" : "Add, edit and manage your dress sales in one place"}</p>
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className={`w-full sm:w-auto ${language === 'ar' ? 'text-center sm:text-right' : 'text-center sm:text-left'}`}>
+                    <h2 className="text-2xl sm:text-3xl font-black text-slate-900 mb-2">{language === 'ar' ? "إدارة المنتجات" : "Product Management"}</h2>
+                    <p className="text-slate-400 font-bold text-sm sm:text-base">{language === 'ar' ? "أضف، عدل وأدر مبيعات فساتينك في مكان واحد" : "Add, edit and manage your dress sales in one place"}</p>
                 </div>
-                <Button onClick={() => setIsModalOpen(true)} className="bg-purple-600 hover:bg-purple-700 h-14 px-8 rounded-full text-lg font-black shadow-lg shadow-purple-200 transition-all hover:scale-105 active:scale-95 group">
-                    <Plus className={`w-6 h-6 ${language === 'ar' ? 'ml-2' : 'mr-2'} group-hover:rotate-90 transition-transform`} />
+                <Button onClick={() => setIsModalOpen(true)} className="w-full sm:w-auto bg-purple-600 hover:bg-purple-700 h-12 sm:h-14 px-8 rounded-full text-base sm:text-lg font-black shadow-lg shadow-purple-200 transition-all hover:scale-105 active:scale-95 group">
+                    <Plus className={`w-5 h-5 sm:w-6 sm:h-6 ${language === 'ar' ? 'ml-2' : 'mr-2'} group-hover:rotate-90 transition-transform`} />
                     {language === 'ar' ? "منتج جديد" : "New Product"}
                 </Button>
             </div>
@@ -821,11 +821,11 @@ export default function ProductsTab({ vendorId, collectionId, onProductClick, on
 
                         {/* Sticky Footer */}
                         <div className="bg-white px-4 py-4 md:px-12 md:py-8 flex flex-col-reverse sm:flex-row items-center justify-between border-t border-slate-100 gap-4 sticky bottom-0 z-50 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
-                            <Button variant="ghost" onClick={handleCloseModal} className="h-14 px-8 rounded-full font-black text-slate-400 hover:bg-slate-50">
+                            <Button variant="ghost" onClick={handleCloseModal} className="w-full sm:w-auto h-12 md:h-14 px-8 rounded-full font-black text-slate-400 hover:bg-slate-50">
                                 {language === 'ar' ? "تجاهل" : "Discard"}
                             </Button>
-                            <div className="flex items-center gap-6">
-                                <div className="text-right hidden sm:block">
+                            <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
+                                <div className="text-center sm:text-right hidden sm:block">
                                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{language === 'ar' ? "حالة المنتج" : "Visibility"}</p>
                                     <p className="text-sm font-black text-emerald-500">{language === 'ar' ? "متاح للعرض فوراً" : "Ready for Listing"}</p>
                                 </div>
@@ -840,7 +840,7 @@ export default function ProductsTab({ vendorId, collectionId, onProductClick, on
                                     className="bg-slate-900 hover:bg-black w-full sm:w-auto h-14 md:h-16 px-8 md:px-16 rounded-[20px] md:rounded-[28px] text-base md:text-lg font-black text-white shadow-2xl transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50"
                                 >
                                     {submitMutation.isPending ? (
-                                        <div className="flex items-center gap-3">
+                                        <div className="flex items-center gap-3 justify-center">
                                             <Loader2 className="animate-spin w-5 h-5" />
                                             <span>{language === 'ar' ? "جاري الحفظ..." : "Processing..."}</span>
                                         </div>

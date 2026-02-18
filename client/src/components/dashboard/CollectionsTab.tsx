@@ -114,30 +114,30 @@ export default function CollectionsTab({ vendorId, categoryId, onCollectionClick
 
     return (
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700" dir={language === 'ar' ? 'rtl' : 'ltr'}>
-            <div className="flex items-center justify-between">
-                <div className={language === 'ar' ? 'text-right' : 'text-left'}>
-                    <h2 className="text-3xl font-black text-slate-900 mb-2">{language === 'ar' ? "مجموعات المتجر" : "Brand Collections"}</h2>
-                    <p className="text-slate-400 font-bold">{language === 'ar' ? "نظم منتجاتك في مجموعات موسمية أو مميزة" : "Organize your dresses into seasonal or themed collections"}</p>
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className={`w-full sm:w-auto ${language === 'ar' ? 'text-center sm:text-right' : 'text-center sm:text-left'}`}>
+                    <h2 className="text-2xl sm:text-3xl font-black text-slate-900 mb-2">{language === 'ar' ? "مجموعات المتجر" : "Brand Collections"}</h2>
+                    <p className="text-slate-400 font-bold text-sm sm:text-base">{language === 'ar' ? "نظم منتجاتك في مجموعات موسمية أو مميزة" : "Organize your dresses into seasonal or themed collections"}</p>
                 </div>
                 {!isFormOpen && (
-                    <Button onClick={() => setIsFormOpen(true)} className="bg-slate-900 hover:bg-black h-14 px-8 rounded-full text-lg font-black shadow-lg transition-all hover:scale-105 active:scale-95 group">
-                        <Plus className={`w-6 h-6 ${language === 'ar' ? 'ml-2' : 'mr-2'}`} />
+                    <Button onClick={() => setIsFormOpen(true)} className="w-full sm:w-auto bg-slate-900 hover:bg-black h-12 sm:h-14 px-8 rounded-full text-base sm:text-lg font-black shadow-lg transition-all hover:scale-105 active:scale-95 group">
+                        <Plus className={`w-5 h-5 sm:w-6 sm:h-6 ${language === 'ar' ? 'ml-2' : 'mr-2'}`} />
                         {language === 'ar' ? "مجموعة جديدة" : "New Collection"}
                     </Button>
                 )}
             </div>
 
             {isFormOpen && (
-                <Card className="border-0 shadow-2xl shadow-purple-100/50 rounded-[40px] bg-white overflow-hidden animate-in zoom-in-95 duration-500">
-                    <CardContent className="p-10">
-                        <div className="flex items-center justify-between mb-10">
+                <Card className="border-0 shadow-2xl shadow-purple-100/50 rounded-[24px] md:rounded-[40px] bg-white overflow-hidden animate-in zoom-in-95 duration-500">
+                    <CardContent className="p-6 md:p-10">
+                        <div className="flex flex-col-reverse md:flex-row items-start md:items-center justify-between mb-6 md:mb-10 gap-4">
                             <h3 className="text-xl font-black text-slate-900">{editingCollection ? (language === 'ar' ? 'تعديل المجموعة' : 'Edit Collection') : (language === 'ar' ? 'إنشاء مجموعة جديدة' : 'Add New Collection')}</h3>
-                            <Button variant="ghost" size="icon" onClick={handleResetForm} className="rounded-xl hover:bg-slate-50">
+                            <Button variant="ghost" size="icon" onClick={handleResetForm} className="rounded-xl hover:bg-slate-50 self-end md:self-auto">
                                 <X className="w-5 h-5 text-slate-400" />
                             </Button>
                         </div>
 
-                        <div className="grid lg:grid-cols-12 gap-12">
+                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12">
                             {/* Image Upload */}
                             <div className="lg:col-span-4 space-y-4">
                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{language === 'ar' ? "صورة المجموعة" : "Collection Poster"}</label>
@@ -167,7 +167,7 @@ export default function CollectionsTab({ vendorId, categoryId, onCollectionClick
 
                             {/* Info Fields */}
                             <div className="lg:col-span-8 space-y-8">
-                                <div className="grid md:grid-cols-2 gap-6">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="space-y-2">
                                         <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{language === 'ar' ? "الاسم بالعربية" : "NAME (AR)"}</label>
                                         <Input value={nameAr} onChange={e => setNameAr(e.target.value)} className="h-14 rounded-2xl border-slate-100 bg-slate-50/50 shadow-sm font-bold px-6 focus:ring-4 focus:ring-purple-50" />
@@ -197,12 +197,12 @@ export default function CollectionsTab({ vendorId, categoryId, onCollectionClick
                                     </Select>
                                 </div>
 
-                                <div className="pt-6 flex justify-end gap-4">
-                                    <Button variant="ghost" onClick={handleResetForm} className="h-14 px-8 rounded-2xl font-black text-slate-400">
+                                <div className="pt-6 flex flex-col-reverse sm:flex-row justify-end gap-4">
+                                    <Button variant="ghost" onClick={handleResetForm} className="h-14 px-8 rounded-2xl font-black text-slate-400 w-full sm:w-auto">
                                         {language === 'ar' ? "إلغاء" : "Discard"}
                                     </Button>
                                     <Button
-                                        className="h-14 px-12 rounded-2xl bg-purple-600 hover:bg-purple-700 font-black text-white shadow-xl shadow-purple-100 transition-all hover:scale-105"
+                                        className="h-14 px-12 rounded-2xl bg-purple-600 hover:bg-purple-700 font-black text-white shadow-xl shadow-purple-100 transition-all hover:scale-105 w-full sm:w-auto"
                                         disabled={!nameAr || !nameEn || !categoryIdLocal || createCollection.isPending}
                                         onClick={() => createCollection.mutate({ nameAr, nameEn, image: newCollectionImage, categoryId: parseInt(categoryIdLocal) })}
                                     >
