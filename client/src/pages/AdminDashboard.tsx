@@ -500,7 +500,7 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col" dir={language === 'ar' ? 'rtl' : 'ltr'}>
       {/* Desktop Navbar */}
-      <header className="h-20 bg-white border-b border-gray-100 flex items-center justify-between px-8 sticky top-0 z-40">
+      <header className="h-20 bg-white border-b border-gray-100 flex items-center justify-between px-4 md:px-8 sticky top-0 z-40">
         <div className="flex items-center gap-6">
           <h1 className="text-2xl font-black text-gray-900">
             {tabs.find((t) => t.id === activeTab)?.label}
@@ -531,8 +531,8 @@ export default function AdminDashboard() {
         </div>
         <Link href="/">
           <Button variant="outline" className="rounded-xl border-gray-200 font-bold">
-            {language === 'ar' ? "العودة للمتجر" : "Return to Store"}
-            <ArrowRight className={`mr-2 h-4 w-4 ${language === 'en' ? 'rotate-180' : ''}`} />
+            <span className="hidden sm:inline">{language === 'ar' ? "العودة للمتجر" : "Return to Store"}</span>
+            <ArrowRight className={`mr-0 sm:mr-2 h-4 w-4 ${language === 'en' ? 'rotate-180' : ''}`} />
           </Button>
         </Link>
       </header>
@@ -708,21 +708,21 @@ export default function AdminDashboard() {
             <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('manageVendors')}</h2>
 
             <Card className="border-0 shadow-sm">
-              <CardContent className="p-6">
-                <div className="p-6 border-b border-gray-100 flex items-center justify-between">
+              <CardContent className="p-0 md:p-6">
+                <div className="p-4 md:p-6 border-b border-gray-100 flex flex-col md:flex-row gap-3 md:items-center justify-between">
                   <div className="relative w-full md:w-64">
                     <Search className={`absolute ${language === 'ar' ? 'right-3' : 'left-3'} top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400`} />
                     <Input
                       type="text"
                       placeholder={t('searchVendor')}
-                      className={`${language === 'ar' ? 'pr-10' : 'pl-10'}`}
+                      className={`${language === 'ar' ? 'pr-10' : 'pl-10'} w-full`}
                       value={vendorSearch}
                       onChange={(e) => setVendorSearch(e.target.value)}
                     />
                   </div>
                   <Button
                     onClick={() => setIsAddVendorModalOpen(true)}
-                    className="bg-rose-600 hover:bg-rose-700 font-bold gap-2"
+                    className="bg-rose-600 hover:bg-rose-700 font-bold gap-2 w-full md:w-auto"
                   >
                     <UserPlus size={18} />
                     {language === 'ar' ? "إضافة بائع" : "Add Vendor"}
@@ -856,7 +856,7 @@ export default function AdminDashboard() {
                   </div>
 
                   {/* Mobile Card View */}
-                  <div className="md:hidden grid grid-cols-1 gap-4 p-4 bg-gray-50">
+                  <div className="md:hidden grid grid-cols-1 gap-3 p-2 bg-gray-50">
                     {vendorsLoading ? (
                       Array.from({ length: 3 }).map((_, i) => (
                         <div key={i} className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
@@ -881,38 +881,38 @@ export default function AdminDashboard() {
                           v.email?.toLowerCase().includes(vendorSearch.toLowerCase())
                         )
                         .map((v: any) => (
-                          <div key={v.id} className="bg-white rounded-2xl p-5 shadow-sm border border-dashed border-gray-200">
-                            <div className="flex items-start justify-between mb-4">
-                              <div className="flex items-center gap-3">
-                                <div className="relative">
-                                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-50 to-pink-50 flex items-center justify-center text-slate-700 font-black text-sm uppercase shadow-inner border border-white">
+                          <div key={v.id} className="bg-white rounded-2xl p-3 sm:p-5 shadow-sm border border-dashed border-gray-200">
+                            <div className="flex items-start justify-between mb-3">
+                              <div className="flex items-center gap-3 overflow-hidden">
+                                <div className="relative flex-shrink-0">
+                                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-br from-purple-50 to-pink-50 flex items-center justify-center text-slate-700 font-black text-xs sm:text-sm uppercase shadow-inner border border-white">
                                     {(v.storeNameAr || v.storeNameEn || 'S').substring(0, 2)}
                                   </div>
                                   {isUserOnline(v.userId) && (
-                                    <span className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 border-2 border-white rounded-full animate-pulse shadow-sm"></span>
+                                    <span className="absolute -bottom-1 -right-1 w-2.5 h-2.5 sm:w-3 sm:h-3 bg-green-500 border-2 border-white rounded-full animate-pulse shadow-sm"></span>
                                   )}
                                 </div>
-                                <div>
-                                  <h3 className="text-gray-900 font-bold text-lg leading-tight">{v.storeNameAr || v.storeNameEn}</h3>
-                                  <p className="text-xs text-gray-400 font-medium mt-0.5">@{v.storeSlug}</p>
+                                <div className="min-w-0">
+                                  <h3 className="text-gray-900 font-bold text-base sm:text-lg leading-tight truncate">{v.storeNameAr || v.storeNameEn}</h3>
+                                  <p className="text-[10px] sm:text-xs text-gray-400 font-medium mt-0.5 truncate">@{v.storeSlug}</p>
                                 </div>
                               </div>
-                              <div className="flex flex-col items-end gap-1">
-                                <div className="bg-yellow-50 text-yellow-600 px-2 py-1 rounded-lg text-xs font-bold flex items-center gap-1 border border-yellow-100">
+                              <div className="flex flex-col items-end gap-1 flex-shrink-0">
+                                <div className="bg-yellow-50 text-yellow-600 px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-lg text-[10px] sm:text-xs font-bold flex items-center gap-1 border border-yellow-100">
                                   {v.rating} <span className="text-[10px]">⭐</span>
                                 </div>
-                                <span className="text-[10px] text-gray-400">{v.city}</span>
+                                <span className="text-[10px] text-gray-400 max-w-[80px] truncate">{v.city}</span>
                               </div>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-3 mb-4 text-sm">
-                              <div className="bg-gray-50 rounded-xl p-3 flex flex-col items-center justify-center text-center border border-gray-100">
-                                <span className="text-xs text-gray-400 font-bold mb-1">{t('commission')}</span>
-                                <span className="font-black text-gray-900 text-lg">{v.commissionRate}%</span>
+                            <div className="grid grid-cols-2 gap-2 mb-3 text-sm">
+                              <div className="bg-gray-50 rounded-xl p-2 sm:p-3 flex flex-col items-center justify-center text-center border border-gray-100">
+                                <span className="text-[10px] sm:text-xs text-gray-400 font-bold mb-1">{t('commission')}</span>
+                                <span className="font-black text-gray-900 text-base sm:text-lg">{v.commissionRate}%</span>
                               </div>
-                              <div className="bg-gray-50 rounded-xl p-3 flex flex-col items-center justify-center text-center border border-gray-100">
-                                <span className="text-xs text-gray-400 font-bold mb-1">{t('emailContact')}</span>
-                                <span className="font-bold text-gray-700 text-xs truncate w-full">{v.email}</span>
+                              <div className="bg-gray-50 rounded-xl p-2 sm:p-3 flex flex-col items-center justify-center text-center border border-gray-100">
+                                <span className="text-[10px] sm:text-xs text-gray-400 font-bold mb-1">{t('emailContact')}</span>
+                                <span className="font-bold text-gray-700 text-[10px] sm:text-xs truncate w-full px-1">{v.email}</span>
                               </div>
                             </div>
 
