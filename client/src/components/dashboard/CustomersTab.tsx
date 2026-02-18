@@ -87,7 +87,8 @@ export default function CustomersTab({ vendorId }: CustomersTabProps) {
 
             {/* Customers List / Table */}
             <div className="bg-white rounded-[2rem] border border-gray-100 shadow-sm overflow-hidden">
-                <div className="overflow-x-auto">
+                {/* Desktop Table */}
+                <div className="hidden md:block overflow-x-auto">
                     <table className="w-full min-w-[800px]">
                         <thead className="bg-gray-50/50 border-b border-gray-100">
                             <tr>
@@ -159,6 +160,62 @@ export default function CustomersTab({ vendorId }: CustomersTabProps) {
                             )}
                         </tbody>
                     </table>
+                </div>
+
+                {/* Mobile List View */}
+                <div className="md:hidden space-y-4 p-4">
+                    {filteredCustomers.length > 0 ? (
+                        filteredCustomers.map((customer: any) => (
+                            <div key={customer.id} className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm space-y-4 relative overflow-hidden">
+                                <div className="flex items-center gap-4 relative z-10">
+                                    <div className="w-12 h-12 rounded-full bg-purple-50 flex items-center justify-center text-purple-600 font-black text-lg shrink-0">
+                                        {customer.name?.charAt(0).toUpperCase() || 'U'}
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                        <p className="font-black text-gray-900 truncate">{customer.name || t('guest')}</p>
+                                        <p className="text-xs text-gray-400 truncate flex items-center gap-1.5 mt-0.5">
+                                            <Mail className="w-3 h-3" />
+                                            {customer.email}
+                                        </p>
+                                        {customer.phone && (
+                                            <p className="text-xs text-gray-400 dir-ltr text-right mt-0.5">{customer.phone}</p>
+                                        )}
+                                    </div>
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className="w-10 h-10 rounded-full text-purple-600 bg-purple-50 hover:bg-purple-100"
+                                        onClick={() => {
+                                            setSelectedCustomer(customer);
+                                            setMessageOpen(true);
+                                        }}
+                                    >
+                                        <MessageSquare className="w-5 h-5" />
+                                    </Button>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-4 py-3 border-t border-b border-gray-50 relative z-10">
+                                    <div className="text-center">
+                                        <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">{t('totalOrders')}</p>
+                                        <span className="inline-flex items-center px-3 py-1 rounded-full bg-blue-50 text-blue-600 font-black text-xs">
+                                            {customer.totalOrders} {t('orders')}
+                                        </span>
+                                    </div>
+                                    <div className="text-center border-l border-gray-50 border-r-0 rtl:border-r rtl:border-l-0">
+                                        <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">{t('totalSpent')}</p>
+                                        <p className="font-black text-gray-900">
+                                            {Math.round(customer.totalSpent).toLocaleString()} <span className="text-xs font-medium text-gray-400">{t('currency')}</span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="absolute -right-6 -bottom-6 w-24 h-24 bg-purple-50 rounded-full opacity-50 z-0 pointer-events-none" />
+                            </div>
+                        ))
+                    ) : (
+                        <div className="py-12 text-center text-gray-400 font-bold bg-gray-50 rounded-2xl border border-dashed border-gray-200">
+                            {t('noCustomersFound')}
+                        </div>
+                    )}
                 </div>
             </div>
 

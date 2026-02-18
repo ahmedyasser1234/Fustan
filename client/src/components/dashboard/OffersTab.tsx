@@ -178,22 +178,22 @@ export default function OffersTab({ vendorId }: OffersTabProps) {
                 </div>
                 <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
                     <DialogTrigger asChild>
-                        <Button onClick={handleOpenCreate} className="bg-pink-600 hover:bg-pink-700 h-12 px-8 rounded-2xl font-black text-lg gap-2 shadow-xl shadow-pink-100 transition-all active:scale-95">
+                        <Button onClick={handleOpenCreate} className="w-full md:w-auto bg-pink-600 hover:bg-pink-700 h-12 px-8 rounded-2xl font-black text-lg gap-2 shadow-xl shadow-pink-100 transition-all active:scale-95">
                             <Plus className="w-6 h-6" />
                             {t('addOffer')}
                         </Button>
                     </DialogTrigger>
-                    <DialogContent className="max-w-2xl bg-white/95 backdrop-blur-xl border-0 shadow-2xl rounded-3xl overflow-hidden p-0">
-                        <div className="bg-gradient-to-r from-pink-600 to-purple-600 p-8 text-white" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+                    <DialogContent className="max-w-2xl w-[95%] bg-white/95 backdrop-blur-xl border-0 shadow-2xl rounded-[24px] md:rounded-3xl overflow-hidden p-0">
+                        <div className="bg-gradient-to-r from-pink-600 to-purple-600 p-6 md:p-8 text-white" dir={language === 'ar' ? 'rtl' : 'ltr'}>
                             <DialogHeader className={language === 'ar' ? 'text-right' : 'text-left'}>
-                                <DialogTitle className="text-2xl font-black text-white">
+                                <DialogTitle className="text-xl md:text-2xl font-black text-white">
                                     {editingOffer ? t('editOffer') : t('createOfferTitle')}
                                 </DialogTitle>
-                                <p className="text-white/80 text-sm">{language === 'ar' ? "حدد تفاصيل العرض والمنتجات المشمولة لتجذب أكبر عدد من العملاء" : "Set offer details and included products to attract more customers"}</p>
+                                <p className="text-white/80 text-xs md:text-sm">{language === 'ar' ? "حدد تفاصيل العرض والمنتجات المشمولة لتجذب أكبر عدد من العملاء" : "Set offer details and included products to attract more customers"}</p>
                             </DialogHeader>
                         </div>
 
-                        <div className="p-8 space-y-6 max-h-[70vh] overflow-y-auto custom-scrollbar" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+                        <div className="p-4 md:p-8 space-y-6 max-h-[70vh] overflow-y-auto custom-scrollbar" dir={language === 'ar' ? 'rtl' : 'ltr'}>
                             {/* Offer Type Selector */}
                             <div className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100">
                                 <div className="flex items-center gap-3">
@@ -208,7 +208,7 @@ export default function OffersTab({ vendorId }: OffersTabProps) {
                                 <Switch checked={isFlashSale} onCheckedChange={setIsFlashSale} className="data-[state=checked]:bg-amber-500" />
                             </div>
 
-                            <div className="grid md:grid-cols-2 gap-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                                 <div className="space-y-2">
                                     <Label className="font-black text-slate-700">{t('offerNameAr')}</Label>
                                     <Input placeholder="مثال: خصم الجمعة البيضاء" value={nameAr} onChange={(e) => setNameAr(e.target.value)} className="h-12 rounded-xl border-slate-200" />
@@ -219,7 +219,7 @@ export default function OffersTab({ vendorId }: OffersTabProps) {
                                 </div>
                             </div>
 
-                            <div className="grid md:grid-cols-3 gap-6">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
                                 <div className="space-y-2">
                                     <Label className="font-black text-slate-700">{t('discountPercent')}</Label>
                                     <div className="relative">
@@ -237,7 +237,7 @@ export default function OffersTab({ vendorId }: OffersTabProps) {
                                 </div>
                             </div>
 
-                            <div className="grid md:grid-cols-2 gap-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                                 <div className="space-y-2">
                                     <Label className="font-black text-slate-700">{t('startDate')}</Label>
                                     <Input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="h-12 rounded-xl border-slate-200 font-bold" />

@@ -100,17 +100,17 @@ export default function CategoriesTab({ onCategoryClick }: CategoriesTabProps) {
                 )}
             </div>
 
-            <div className="bg-slate-900 rounded-[40px] p-10 text-white relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8">
-                <div className={`relative z-10 max-w-lg ${language === 'ar' ? 'text-right' : 'text-left'}`}>
-                    <h4 className="text-2xl font-black mb-2">{language === 'ar' ? "ملحوظة للبائعين" : "Vendor Notice"}</h4>
-                    <p className="text-slate-400 font-bold leading-relaxed">{language === 'ar' ? "الأقسام يتم إدارتها من قبل إدارة المنصة لضمان تجربة مستخدم موحدة. يمكنك إنشاء مجموعاتك الخاصة داخل هذه الأقسام." : "Categories are managed by the platform administration to ensure a unified user experience. You can create your own collections within these categories."}</p>
+            <div className="bg-slate-900 rounded-[24px] md:rounded-[40px] p-6 md:p-10 text-white relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6 md:gap-8">
+                <div className={`relative z-10 max-w-lg ${language === 'ar' ? 'text-center md:text-right' : 'text-center md:text-left'}`}>
+                    <h4 className="text-xl md:text-2xl font-black mb-2">{language === 'ar' ? "ملحوظة للبائعين" : "Vendor Notice"}</h4>
+                    <p className="text-slate-400 font-bold text-sm md:text-base leading-relaxed">{language === 'ar' ? "الأقسام يتم إدارتها من قبل إدارة المنصة لضمان تجربة مستخدم موحدة. يمكنك إنشاء مجموعاتك الخاصة داخل هذه الأقسام." : "Categories are managed by the platform administration to ensure a unified user experience. You can create your own collections within these categories."}</p>
                 </div>
-                <div className="relative z-10">
-                    <Button variant="outline" className="h-14 px-8 rounded-2xl bg-white/5 border-white/10 text-white hover:bg-white/10 font-black">
+                <div className="relative z-10 w-full md:w-auto">
+                    <Button variant="outline" className="w-full md:w-auto h-12 md:h-14 px-8 rounded-2xl bg-white/5 border-white/10 text-white hover:bg-white/10 font-black">
                         {language === 'ar' ? "طلب قسم جديد" : "Request New Category"}
                     </Button>
                 </div>
-                <Layers className="absolute -right-16 -bottom-16 w-64 h-64 text-white/5 -rotate-12" />
+                <Layers className="absolute -right-16 -bottom-16 w-48 h-48 md:w-64 md:h-64 text-white/5 -rotate-12" />
             </div>
         </div>
     );

@@ -195,7 +195,8 @@ export function CouponsTab({ vendorId }: { vendorId: number }) {
             </div>
 
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                <div className="overflow-x-auto">
+                {/* Desktop Table */}
+                <div className="hidden md:block overflow-x-auto">
                     <table className={`w-full ${language === 'ar' ? 'text-right' : 'text-left'}`}>
                         <thead>
                             <tr className="bg-gray-50/50 border-b border-gray-100">
@@ -312,6 +313,106 @@ export function CouponsTab({ vendorId }: { vendorId: number }) {
                             )}
                         </tbody>
                     </table>
+                </div>
+
+                {/* Mobile List View */}
+                <div className="md:hidden space-y-4 p-4">
+                    {isLoading ? (
+                        <div className="flex flex-col items-center gap-3 py-10">
+                            <Loader2 className="w-8 h-8 text-purple-600 animate-spin" />
+                            <p className="text-sm font-bold text-gray-400">{t('fetchingCoupons')}</p>
+                        </div>
+                    ) : coupons?.length === 0 ? (
+                        <div className="flex flex-col items-center gap-4 py-10 grayscale opacity-50 text-center">
+                            <Ticket className="w-12 h-12 text-purple-200" />
+                            <div className="space-y-1">
+                                <p className="font-black text-gray-500">{t('noCoupons')}</p>
+                                <p className="text-xs text-gray-400">{t('noCouponsDesc')}</p>
+                            </div>
+                        </div>
+                    ) : (
+                        coupons?.map((coupon: any) => {
+                            const status = getStatus(coupon);
+                            return (
+                                <div key={coupon.id} className="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm space-y-4">
+                                    <div className="flex justify-between items-start">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-10 h-10 bg-purple-50 rounded-lg flex items-center justify-center shrink-0">
+                                                <Ticket className="w-5 h-5 text-purple-600" />
+                                            </div>
+                                            <div>
+                                                <div className="flex items-center gap-2">
+                                                    <span className="font-black text-gray-900 text-lg tracking-wider">
+                                                        {coupon.code}
+                                                    </span>
+                                                    <button
+                                                        onClick={() => handleCopy(coupon.code)}
+                                                        className="text-gray-300 hover:text-purple-600 transition-colors p-1"
+                                                    >
+                                                        {copiedCode === coupon.code ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
+                                                    </button>
+                                                </div>
+                                                <span className="text-[10px] text-gray-400 font-medium block">
+                                                    {language === 'ar' ? `أنشئ في ${format(new Date(coupon.createdAt), 'dd MMMM yyyy', { locale: ar })}` : `Created at ${format(new Date(coupon.createdAt), 'dd MMMM yyyy')}`}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <Badge variant={status.variant} className="font-bold px-2 py-1 rounded-lg text-[10px]">
+                                            {status.label}
+                                        </Badge>
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-4 py-2 border-t border-b border-gray-50">
+                                        <div className="text-center">
+                                            <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">{t('tableDiscount')}</p>
+                                            <span className="inline-flex items-center px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded-md font-black text-sm">
+                                                %{coupon.discountPercent}
+                                            </span>
+                                        </div>
+                                        <div className="text-center border-l border-gray-50 border-r-0 rtl:border-r rtl:border-l-0">
+                                            <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">{t('tableUsage')}</p>
+                                            <div className="flex flex-col items-center gap-1">
+                                                <span className="text-sm font-black text-gray-900">
+                                                    {coupon.usedCount || 0} <span className="text-gray-400 font-medium">/ {coupon.maxUses || '∞'}</span>
+                                                </span>
+                                                {coupon.maxUses && (
+                                                    <div className="w-16 h-1 bg-gray-100 rounded-full overflow-hidden">
+                                                        <div
+                                                            className="h-full bg-purple-500 transition-all"
+                                                            style={{ width: `${Math.min(((coupon.usedCount || 0) / coupon.maxUses) * 100, 100)}%` }}
+                                                        />
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex gap-2">
+                                        <Button
+                                            className="flex-1 h-10 rounded-xl font-bold bg-blue-50 text-blue-600 hover:bg-blue-100 border-0"
+                                            variant="outline"
+                                            onClick={() => handleOpenEdit(coupon)}
+                                        >
+                                            <Edit className="w-4 h-4 mr-2" />
+                                            {language === 'ar' ? "تعديل" : "Edit"}
+                                        </Button>
+                                        <Button
+                                            className="flex-1 h-10 rounded-xl font-bold bg-red-50 text-red-600 hover:bg-red-100 border-0"
+                                            variant="outline"
+                                            onClick={() => {
+                                                if (confirm(t('deleteCouponConfirm'))) {
+                                                    deleteCoupon.mutate(coupon.id);
+                                                }
+                                            }}
+                                        >
+                                            <Trash2 className="w-4 h-4 mr-2" />
+                                            {language === 'ar' ? "حذف" : "Delete"}
+                                        </Button>
+                                    </div>
+                                </div>
+                            );
+                        })
+                    )}
                 </div>
             </div>
 
