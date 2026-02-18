@@ -12,35 +12,26 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-    // Default to Arabic
-    const [language, setLanguageState] = useState<Language>('ar');
+    // Initialize from localStorage or default to Arabic
+    const [language, setLanguageState] = useState<Language>(() => {
+        if (typeof window !== 'undefined') {
+            const saved = localStorage.getItem('language');
+            return (saved === 'ar' || saved === 'en') ? (saved as Language) : 'ar';
+        }
+        return 'ar';
+    });
 
     useEffect(() => {
         // Update HTML attributes dynamically
         const dir = language === 'ar' ? 'rtl' : 'ltr';
         document.documentElement.lang = language;
         document.documentElement.dir = dir;
-
-        // Update fonts based on language
-        if (language === 'ar') {
-            document.body.style.fontFamily = '"Cairo", system-ui, sans-serif';
-        } else {
-            document.body.style.fontFamily = '"Inter", system-ui, sans-serif'; // Or any other EN font
-        }
     }, [language]);
 
     const setLanguage = (lang: Language) => {
         setLanguageState(lang);
         localStorage.setItem('language', lang);
     };
-
-    // Load saved language on mount
-    useEffect(() => {
-        const savedLang = localStorage.getItem('language') as Language;
-        if (savedLang && (savedLang === 'ar' || savedLang === 'en')) {
-            setLanguageState(savedLang);
-        }
-    }, []);
 
     const t = (key: TranslationKey) => {
         return (translations[language] as any)[key] || key;
