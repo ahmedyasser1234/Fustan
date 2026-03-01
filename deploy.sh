@@ -3,7 +3,7 @@
 # Fustan Deployment Script for AlmaLinux 10
 # This script automates the build and restart process
 
-PROJECT_ROOT="/root/Fustan"
+PROJECT_ROOT="/var/www/fustan"
 BACKEND_DIR="$PROJECT_ROOT/server-nestjs"
 
 echo "🚀 Starting deployment..."

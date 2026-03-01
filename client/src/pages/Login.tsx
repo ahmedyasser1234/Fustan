@@ -71,7 +71,7 @@ export default function Login() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 py-6 md:py-12 px-4 sm:px-6 lg:px-8">
             <Card className="w-full max-w-md shadow-xl border-0 bg-white/80 backdrop-blur-xl overflow-hidden focus-within:ring-2 ring-rose-500/20 transition-all">
                 <div className="flex w-full border-b border-gray-100">
                     <Link href="/login" className="flex-1 py-4 text-center text-sm font-bold bg-white text-rose-600 border-b-2 border-rose-600 transition-all">
@@ -82,10 +82,10 @@ export default function Login() {
                     </Link>
                 </div>
                 <CardHeader className="space-y-1 text-center pt-8">
-                    <CardTitle className="text-2xl font-bold tracking-tight text-gray-900">
+                    <CardTitle className="text-xl md:text-2xl font-bold tracking-tight text-gray-900">
                         {language === 'ar' ? 'تسجيل الدخول' : 'Sign in to your account'}
                     </CardTitle>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-xs md:text-sm text-gray-500">
                         {language === 'ar' ? 'أهلا بك مجددا! الرجاء ادخال بياناتك' : 'Welcome back! Please enter your details'}
                     </p>
                 </CardHeader>

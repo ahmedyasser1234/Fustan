@@ -152,7 +152,7 @@ function Navigation({ isChatHistoryOpen, setIsChatHistoryOpen, unreadCount, syst
               <img
                 src={(!isScrolled && isHeroPage) ? "/logo-white.png" : "/12345.png"}
                 alt="Fustan Logo"
-                className={`w-auto object-contain transition-all duration-500 ${isScrolled || !isHeroPage ? 'h-12' : 'h-16 drop-shadow-lg'}`}
+                className={`w-auto object-contain transition-all duration-500 ${isScrolled || !isHeroPage ? 'h-10 md:h-12' : 'h-12 md:h-16 drop-shadow-lg'}`}
               />
             </div>
           </Link>
@@ -183,7 +183,7 @@ function Navigation({ isChatHistoryOpen, setIsChatHistoryOpen, unreadCount, syst
           </div>
 
           {/* Right Side: Tools & Search */}
-          <div className="flex items-center gap-1.5 md:gap-3">
+          <div className="flex items-center gap-1 md:gap-3">
             {/* Search Input (Hidden on extra small) */}
             {/* Search Input (Hidden on mobile) */}
             <form onSubmit={handleSearch} className="hidden lg:flex relative items-center group">
@@ -204,23 +204,23 @@ function Navigation({ isChatHistoryOpen, setIsChatHistoryOpen, unreadCount, syst
 
             <button
               onClick={() => setLanguage(language === 'ar' ? 'en' : 'ar')}
-              className={`flex items-center justify-center w-9 h-9 md:w-11 md:h-11 rounded-full font-bold shadow-sm transition-all border ${isScrolled || !isHeroPage
+              className={`flex items-center justify-center w-8 h-8 md:w-11 md:h-11 rounded-full font-bold shadow-sm transition-all border ${isScrolled || !isHeroPage
                 ? 'bg-gray-50 text-gray-900 border-gray-100 hover:bg-gray-100'
                 : 'bg-transparent text-white border-transparent hover:bg-white/5'
                 }`}
             >
-              <span className="text-xs md:text-sm">{language === 'ar' ? 'En' : 'ع'}</span>
+              <span className="text-[10px] md:text-sm">{language === 'ar' ? 'En' : 'ع'}</span>
             </button>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-1.5 md:gap-3">
               <Link href="/cart">
-                <button className="w-9 h-9 md:w-11 md:h-11 rounded-full bg-gray-900 text-white flex items-center justify-center hover:bg-gray-800 transition-all relative shadow-lg">
-                  <ShoppingCart className="w-4 h-4 md:w-[18px] md:h-[18px]" />
+                <button className="w-8 h-8 md:w-11 md:h-11 rounded-full bg-gray-900 text-white flex items-center justify-center hover:bg-gray-800 transition-all relative shadow-lg">
+                  <ShoppingCart className="w-3.5 h-3.5 md:w-[18px] md:h-[18px]" />
                   {cartCount > 0 && (
                     <motion.span
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
-                      className="absolute -top-1 -right-1 flex h-5 w-5 md:h-6 md:w-6 items-center justify-center rounded-full bg-rose-500 text-[10px] md:text-xs font-black text-white ring-2 ring-white shadow-lg"
+                      className="absolute -top-1 -right-1 flex h-4 w-4 md:h-6 md:w-6 items-center justify-center rounded-full bg-rose-500 text-[8px] md:text-xs font-black text-white ring-2 ring-white shadow-lg"
                     >
                       {cartCount}
                     </motion.span>
@@ -233,8 +233,8 @@ function Navigation({ isChatHistoryOpen, setIsChatHistoryOpen, unreadCount, syst
                   {user.role !== 'admin' && user.role !== 'vendor' && (
                     <>
                       <Link href="/wishlist">
-                        <button className="w-9 h-9 md:w-11 md:h-11 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center shadow-inner hover:bg-rose-100 transition-all">
-                          <Heart className="w-4.5 h-4.5 md:w-5 md:h-5" />
+                        <button className="w-8 h-8 md:w-11 md:h-11 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center shadow-inner hover:bg-rose-100 transition-all">
+                          <Heart className="w-4 h-4 md:w-5 md:h-5" />
                         </button>
                       </Link>
 
@@ -245,9 +245,9 @@ function Navigation({ isChatHistoryOpen, setIsChatHistoryOpen, unreadCount, syst
                   <div className="relative user-menu-container" ref={userMenuRef}>
                     <button
                       onClick={() => setUserMenuOpen(!userMenuOpen)}
-                      className="w-9 h-9 md:w-11 md:h-11 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center shadow-inner hover:bg-rose-200 transition-all"
+                      className="w-8 h-8 md:w-11 md:h-11 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center shadow-inner hover:bg-rose-200 transition-all"
                     >
-                      <User className="w-4.5 h-4.5 md:w-5 md:h-5" />
+                      <User className="w-4 h-4 md:w-5 md:h-5" />
                     </button>
 
                     <AnimatePresence>
@@ -328,8 +328,8 @@ function Navigation({ isChatHistoryOpen, setIsChatHistoryOpen, unreadCount, syst
                   </div>
                 </>
               ) : (
-                <a href={getLoginUrl()}>
-                  <Button className={`h-11 px-8 rounded-full text-base font-bold shadow-xl transition-all ${isScrolled || !isHeroPage
+                <a href={getLoginUrl()} className="hidden xs:block">
+                  <Button className={`h-9 md:h-11 px-4 md:px-8 rounded-full text-xs md:text-base font-bold shadow-xl transition-all ${isScrolled || !isHeroPage
                     ? 'bg-rose-600 hover:bg-rose-700 text-white shadow-rose-200'
                     : 'bg-white text-gray-900 hover:bg-gray-50'
                     }`}>
@@ -340,9 +340,9 @@ function Navigation({ isChatHistoryOpen, setIsChatHistoryOpen, unreadCount, syst
 
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="lg:hidden w-9 h-9 md:w-11 md:h-11 rounded-full bg-white border border-gray-100 flex items-center justify-center text-gray-900 shadow-sm"
+                className="lg:hidden w-8 h-8 md:w-11 md:h-11 rounded-full bg-white border border-gray-100 flex items-center justify-center text-gray-900 shadow-sm transition-all"
               >
-                {mobileMenuOpen ? <X className="w-4.5 h-4.5 md:w-5 md:h-5" /> : <Menu className="w-4.5 h-4.5 md:w-5 md:h-5" />}
+                {mobileMenuOpen ? <X className="w-4 h-4 md:w-5 md:h-5" /> : <Menu className="w-4 h-4 md:w-5 md:h-5" />}
               </button>
             </div>
           </div>
@@ -388,6 +388,14 @@ function Navigation({ isChatHistoryOpen, setIsChatHistoryOpen, unreadCount, syst
                       </span>
                     </Link>
                   ))}
+
+                  {!user && (
+                    <a href={getLoginUrl()} className="block pt-4">
+                      <Button className="w-full h-14 rounded-2xl text-lg font-bold bg-rose-600 text-white shadow-xl shadow-rose-100">
+                        {t('startNow')}
+                      </Button>
+                    </a>
+                  )}
                 </div>
               </div>
             </motion.div>

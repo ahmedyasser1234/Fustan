@@ -206,22 +206,22 @@ export default function Home() {
           >
             <div className="flex flex-col items-start space-y-6">
               <h2 className="text-white leading-tight drop-shadow-2xl font-black w-full">
-                <span className="text-2xl sm:text-4xl lg:text-6xl block mb-1 lg:mb-2">{t('heroTitlePart1')}</span>
-                <span className="text-4xl sm:text-6xl lg:text-8xl text-white/90 leading-[1.1] sm:leading-tight">{t('heroTitlePart2')}</span>
+                <span className="text-xl sm:text-4xl lg:text-6xl block mb-1 lg:mb-2">{t('heroTitlePart1')}</span>
+                <span className="text-3xl sm:text-6xl lg:text-8xl text-white/90 leading-[1.1] sm:leading-tight">{t('heroTitlePart2')}</span>
               </h2>
 
-              <p className="hidden sm:block text-xl lg:text-2xl text-white/95 max-w-xl leading-relaxed font-bold drop-shadow-md">
+              <p className="hidden sm:block text-lg lg:text-2xl text-white/95 max-w-xl leading-relaxed font-bold drop-shadow-md">
                 {t('heroDesc')}
               </p>
 
-              <div className="flex gap-4 sm:gap-6 flex-wrap justify-start pt-4 sm:pt-8 w-full">
+              <div className="flex gap-3 sm:gap-6 flex-wrap justify-start pt-4 sm:pt-8 w-full">
                 <Link href="/products">
-                  <Button size="lg" className="h-12 sm:h-16 px-8 sm:px-12 rounded-full bg-[oklch(58.6%_0.253_17.585)] hover:bg-[oklch(58.6%_0.253_17.585)]/90 text-white text-base sm:text-xl font-black shadow-2xl transition-all hover:scale-105 active:scale-95">
+                  <Button size="lg" className="h-12 sm:h-16 px-6 sm:px-12 rounded-full bg-[oklch(58.6%_0.253_17.585)] hover:bg-[oklch(58.6%_0.253_17.585)]/90 text-white text-sm sm:text-xl font-black shadow-2xl transition-all hover:scale-105 active:scale-95">
                     {t('shopNow')}
                   </Button>
                 </Link>
                 <Link href="/products?sort=newest">
-                  <Button size="lg" variant="outline" className="h-12 sm:h-16 px-8 sm:px-12 rounded-full border-2 border-white/30 text-white backdrop-blur-md text-base sm:text-xl font-black hover:bg-white/10 transition-all hover:scale-105 active:scale-95">
+                  <Button size="lg" variant="outline" className="h-12 sm:h-16 px-6 sm:px-12 rounded-full border-2 border-white/30 text-white backdrop-blur-md text-sm sm:text-xl font-black hover:bg-white/10 transition-all hover:scale-105 active:scale-95">
                     {t('newCollection')}
                   </Button>
                 </Link>
@@ -234,7 +234,7 @@ export default function Home() {
       {/* Features / Trust Signals Section */}
       < section className="bg-white py-12 border-b border-gray-50 relative z-20" >
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-4 gap-8">
             {[
               { icon: Truck, titleAr: "شحن سريع ومجاني", titleEn: "Fast & Free Shipping", descAr: "للطلبات فوق 500 ر.س", descEn: "Orders over 500 SAR" },
               { icon: ShieldCheck, titleAr: "ضمان الجودة", titleEn: "Quality Guarantee", descAr: "منتجات أصلية 100%", descEn: "100% Authentic" },
@@ -261,10 +261,10 @@ export default function Home() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-16 pt-20"
+            className="text-center mb-10 md:mb-16 pt-10 md:pt-20"
           >
-            <h2 className="text-4xl md:text-5xl font-black mb-4">{t('mostFeatured')}</h2>
-            <p className="text-slate-500 text-lg font-bold">{t('mostFeaturedDesc')}</p>
+            <h2 className="text-3xl md:text-5xl font-black mb-4">{t('mostFeatured')}</h2>
+            <p className="text-slate-500 text-base md:text-lg font-bold">{t('mostFeaturedDesc')}</p>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
@@ -337,10 +337,10 @@ export default function Home() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-16 pt-20"
+            className="text-center mb-10 md:mb-16 pt-10 md:pt-20"
           >
-            <h2 className="text-4xl md:text-5xl font-black mb-4">{t('shopByOccasion')}</h2>
-            <p className="text-slate-500 text-lg font-bold">{t('shopByOccasionDesc')}</p>
+            <h2 className="text-3xl md:text-5xl font-black mb-4">{t('shopByOccasion')}</h2>
+            <p className="text-slate-500 text-base md:text-lg font-bold">{t('shopByOccasionDesc')}</p>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
@@ -432,11 +432,11 @@ export default function Home() {
               viewport={{ once: true }}
               className="w-full lg:w-1/2 text-center lg:text-left rtl:lg:text-right"
             >
-              <span className="text-3xl text-rose-500 mb-4 block font-bold">{language === 'ar' ? "أناقة خالدة" : "Timeless Charm"}</span>
-              <h2 className="text-5xl lg:text-7xl text-gray-900 mb-6 leading-tight font-black">
+              <span className="text-xl md:text-3xl text-rose-500 mb-4 block font-bold">{language === 'ar' ? "أناقة خالدة" : "Timeless Charm"}</span>
+              <h2 className="text-4xl lg:text-7xl text-gray-900 mb-6 leading-tight font-black">
                 {t('classicStyles')}
               </h2>
-              <p className="text-gray-600 text-lg mb-8 leading-relaxed max-w-lg mx-auto lg:mx-0">
+              <p className="text-gray-600 text-base md:text-lg mb-8 leading-relaxed max-w-lg mx-auto lg:mx-0">
                 {t('classicStylesDesc')}
               </p>
               <Link href="/products">

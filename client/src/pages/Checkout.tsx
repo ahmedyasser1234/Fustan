@@ -176,9 +176,9 @@ export default function Checkout() {
   return (
     <div className="min-h-screen bg-[#fafafa] pb-32">
       {/* Premium Header */}
-      <header className="bg-white border-b border-gray-100 pt-32 pb-16">
+      <header className="bg-white border-b border-gray-100 pt-16 md:pt-32 pb-8 md:pb-16">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="text-5xl font-black text-gray-900 mb-6 font-arabic">إتمام الطلب</h1>
+          <h1 className="text-3xl md:text-5xl font-black text-gray-900 mb-4 md:mb-6 font-arabic">إتمام الطلب</h1>
 
           {/* Progress Indicator */}
           <div className="flex items-center justify-center gap-4 md:gap-12 mt-12 overflow-x-auto pb-4 scrollbar-hide">
@@ -188,17 +188,17 @@ export default function Checkout() {
               const isCompleted = steps.findIndex(x => x.id === step) > idx;
 
               return (
-                <div key={s.id} className="flex items-center gap-4 shrink-0">
-                  <div className={`flex flex-col items-center gap-2 ${isActive || isCompleted ? 'text-rose-600' : 'text-gray-300'}`}>
-                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-500 shadow-lg ${isActive ? 'bg-rose-600 text-white scale-110 shadow-rose-200' :
+                <div key={s.id} className="flex items-center gap-2 md:gap-4 shrink-0">
+                  <div className={`flex flex-col items-center gap-1 md:gap-2 ${isActive || isCompleted ? 'text-rose-600' : 'text-gray-300'}`}>
+                    <div className={`w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl flex items-center justify-center transition-all duration-500 shadow-lg ${isActive ? 'bg-rose-600 text-white scale-110 shadow-rose-200' :
                       isCompleted ? 'bg-rose-100 text-rose-600' : 'bg-white text-gray-300 border border-gray-100'
                       }`}>
-                      <Icon size={24} />
+                      <Icon size={isActive ? 20 : 18} className="md:w-6 md:h-6" />
                     </div>
-                    <span className="font-bold text-sm tracking-wide">{s.label}</span>
+                    <span className="font-bold text-[10px] md:text-sm tracking-wide">{s.label}</span>
                   </div>
                   {idx < steps.length - 1 && (
-                    <div className={`h-0.5 w-12 md:w-24 rounded-full ${isCompleted ? 'bg-rose-600' : 'bg-gray-100'}`} />
+                    <div className={`h-0.5 w-8 md:w-24 rounded-full ${isCompleted ? 'bg-rose-600' : 'bg-gray-100'}`} />
                   )}
                 </div>
               )
@@ -220,9 +220,9 @@ export default function Checkout() {
                   exit={{ opacity: 0, x: -20 }}
                   className="space-y-8"
                 >
-                  <div className="bg-white p-10 rounded-[3rem] shadow-xl border border-gray-50">
-                    <h2 className="text-3xl font-black text-gray-900 mb-8 text-right flex items-center justify-end gap-3">
-                      بيانات التوصيل <MapPin className="text-rose-500" />
+                  <div className="bg-white p-6 md:p-10 rounded-[2rem] md:rounded-[3rem] shadow-xl border border-gray-50">
+                    <h2 className="text-2xl md:text-3xl font-black text-gray-900 mb-6 md:mb-8 text-right flex items-center justify-end gap-3">
+                      بيانات التوصيل <MapPin className="w-6 h-6 md:w-8 md:h-8 text-rose-500" />
                     </h2>
 
                     <div className="grid md:grid-cols-2 gap-8 text-right">
@@ -300,48 +300,48 @@ export default function Checkout() {
                   exit={{ opacity: 0, x: -20 }}
                   className="space-y-8"
                 >
-                  <div className="bg-white p-10 rounded-[3rem] shadow-xl border border-gray-50">
-                    <h2 className="text-3xl font-black text-gray-900 mb-8 text-right flex items-center justify-end gap-3">
-                      بيانات الدفع <CreditCard className="text-rose-500" />
+                  <div className="bg-white p-6 md:p-10 rounded-[2rem] md:rounded-[3rem] shadow-xl border border-gray-50">
+                    <h2 className="text-2xl md:text-3xl font-black text-gray-900 mb-6 md:mb-8 text-right flex items-center justify-end gap-3">
+                      بيانات الدفع <CreditCard className="w-6 h-6 md:w-8 md:h-8 text-rose-500" />
                     </h2>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 mb-8 md:mb-12">
                       <button
                         onClick={() => setFormData(prev => ({ ...prev, paymentMethod: 'card' }))}
-                        className={`p-6 rounded-[2rem] border-2 transition-all flex flex-col items-center gap-4 ${formData.paymentMethod === 'card' ? 'border-rose-600 bg-rose-50/50 shadow-lg shadow-rose-100' : 'border-gray-100 hover:border-rose-200 bg-white'}`}
+                        className={`p-4 md:p-6 rounded-2xl md:rounded-[2rem] border-2 transition-all flex flex-col items-center gap-3 md:gap-4 ${formData.paymentMethod === 'card' ? 'border-rose-600 bg-rose-50/50 shadow-lg shadow-rose-100' : 'border-gray-100 hover:border-rose-200 bg-white'}`}
                       >
-                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${formData.paymentMethod === 'card' ? 'bg-rose-600 text-white' : 'bg-gray-50 text-gray-400'}`}>
-                          <CreditCard size={24} />
+                        <div className={`w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center ${formData.paymentMethod === 'card' ? 'bg-rose-600 text-white' : 'bg-gray-50 text-gray-400'}`}>
+                          <CreditCard size={20} className="md:w-6 md:h-6" />
                         </div>
                         <div className="text-center">
-                          <p className="font-black text-gray-900">{language === 'ar' ? "بطاقة بنكية" : "Credit Card"}</p>
-                          <p className="text-xs text-gray-400 mt-1">Visa / Master Card</p>
+                          <p className="font-black text-sm md:text-base text-gray-900">{language === 'ar' ? "بطاقة بنكية" : "Credit Card"}</p>
+                          <p className="text-[10px] md:text-xs text-gray-400 mt-1">Visa / Master Card</p>
                         </div>
                       </button>
 
                       <button
                         onClick={() => setFormData(prev => ({ ...prev, paymentMethod: 'tabby' }))}
-                        className={`p-6 rounded-[2rem] border-2 transition-all flex flex-col items-center gap-4 ${formData.paymentMethod === 'tabby' ? 'border-[#00D3C3] bg-[#00D3C3]/5 shadow-lg shadow-[#00D3C3]/10' : 'border-gray-100 hover:border-[#00D3C3]/30 bg-white'}`}
+                        className={`p-4 md:p-6 rounded-2xl md:rounded-[2rem] border-2 transition-all flex flex-col items-center gap-3 md:gap-4 ${formData.paymentMethod === 'tabby' ? 'border-[#00D3C3] bg-[#00D3C3]/5 shadow-lg shadow-[#00D3C3]/10' : 'border-gray-100 hover:border-[#00D3C3]/30 bg-white'}`}
                       >
-                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${formData.paymentMethod === 'tabby' ? 'bg-[#00D3C3] text-black' : 'bg-gray-50 text-gray-400'}`}>
-                          <span className="font-black italic text-lg">tabby</span>
+                        <div className={`w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center ${formData.paymentMethod === 'tabby' ? 'bg-[#00D3C3] text-black' : 'bg-gray-50 text-gray-400'}`}>
+                          <span className="font-black italic text-base md:text-lg">tabby</span>
                         </div>
                         <div className="text-center">
-                          <p className="font-black text-gray-900">{language === 'ar' ? "تابي" : "Tabby"}</p>
-                          <p className="text-xs text-gray-400 mt-1">{language === 'ar' ? "قسّمها على 4 دفعات" : "Split in 4 payments"}</p>
+                          <p className="font-black text-sm md:text-base text-gray-900">{language === 'ar' ? "تابي" : "Tabby"}</p>
+                          <p className="text-[10px] md:text-xs text-gray-400 mt-1">{language === 'ar' ? "قسّمها على 4 دفعات" : "Split in 4 payments"}</p>
                         </div>
                       </button>
 
                       <button
                         onClick={() => setFormData(prev => ({ ...prev, paymentMethod: 'tamara' }))}
-                        className={`p-6 rounded-[2rem] border-2 transition-all flex flex-col items-center gap-4 ${formData.paymentMethod === 'tamara' ? 'border-[#FFB703] bg-[#FFB703]/5 shadow-lg shadow-[#FFB703]/10' : 'border-gray-100 hover:border-[#FFB703]/30 bg-white'}`}
+                        className={`p-4 md:p-6 rounded-2xl md:rounded-[2rem] border-2 transition-all flex flex-col items-center gap-3 md:gap-4 ${formData.paymentMethod === 'tamara' ? 'border-[#FFB703] bg-[#FFB703]/5 shadow-lg shadow-[#FFB703]/10' : 'border-gray-100 hover:border-[#FFB703]/30 bg-white'}`}
                       >
-                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${formData.paymentMethod === 'tamara' ? 'bg-[#FFB703] text-black' : 'bg-gray-50 text-gray-400'}`}>
-                          <span className="font-black italic text-lg">tamara</span>
+                        <div className={`w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center ${formData.paymentMethod === 'tamara' ? 'bg-[#FFB703] text-black' : 'bg-gray-50 text-gray-400'}`}>
+                          <span className="font-black italic text-base md:text-lg">tamara</span>
                         </div>
                         <div className="text-center">
-                          <p className="font-black text-gray-900">{language === 'ar' ? "تمارا" : "Tamara"}</p>
-                          <p className="text-xs text-gray-400 mt-1">{language === 'ar' ? "اشترِ الآن وادفع لاحقاً" : "Buy now, pay later"}</p>
+                          <p className="font-black text-sm md:text-base text-gray-900">{language === 'ar' ? "تمارا" : "Tamara"}</p>
+                          <p className="text-[10px] md:text-xs text-gray-400 mt-1">{language === 'ar' ? "اشترِ الآن وادفع لاحقاً" : "Buy now, pay later"}</p>
                         </div>
                       </button>
                     </div>

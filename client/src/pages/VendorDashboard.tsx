@@ -152,63 +152,67 @@ export default function VendorDashboard() {
           {/* Top Section: Vendor Info + Quick Stats */}
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 mb-8">
             {/* Vendor Info */}
-            <div className="flex items-center gap-6">
-              <div className="relative">
-                <div className="w-20 h-20 rounded-[28px] bg-gradient-to-br from-purple-100 to-pink-100 overflow-hidden border-4 border-white shadow-lg">
-                  {dashboard?.vendor.logo ? (
-                    <img src={dashboard.vendor.logo} className="w-full h-full object-cover" alt="Vendor Logo" />
-                  ) : <User className="w-full h-full p-5 text-purple-400" />}
+            <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-6">
+              <div className="flex items-center gap-4 md:gap-6">
+                <div className="relative shrink-0">
+                  <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl md:rounded-[28px] bg-gradient-to-br from-purple-100 to-pink-100 overflow-hidden border-2 md:border-4 border-white shadow-lg">
+                    {dashboard?.vendor.logo ? (
+                      <img src={dashboard.vendor.logo} className="w-full h-full object-cover" alt="Vendor Logo" />
+                    ) : <User className="w-full h-full p-4 md:p-5 text-purple-400" />}
+                  </div>
+                  <div className="absolute -bottom-1 -right-1 w-5 h-5 md:w-7 md:h-7 bg-emerald-500 rounded-full border-2 md:border-4 border-white flex items-center justify-center">
+                    <div className="w-1.5 h-1.5 md:w-2 md:h-2 bg-white rounded-full animate-pulse" />
+                  </div>
                 </div>
-                <div className="absolute -bottom-1 -right-1 w-7 h-7 bg-emerald-500 rounded-full border-4 border-white flex items-center justify-center">
-                  <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
+                <div>
+                  <h1 className="text-2xl md:text-4xl font-black text-slate-900 tracking-tight mb-0.5 md:mb-1 bg-gradient-to-l from-slate-900 to-purple-900 bg-clip-text text-transparent">
+                    {t('dashboardTitle')}
+                  </h1>
+                  <p className="text-slate-500 font-bold flex flex-wrap items-center gap-1 md:gap-2 text-sm md:text-lg">
+                    {t('welcomeBack')}
+                    <span className="text-purple-600 font-black">{language === 'ar' ? (dashboard?.vendor?.storeNameAr || user?.name) : (dashboard?.vendor?.storeNameEn || user?.name)}</span>
+                  </p>
                 </div>
               </div>
-              <div>
-                <h1 className="text-4xl font-black text-slate-900 tracking-tight mb-1 bg-gradient-to-l from-slate-900 to-purple-900 bg-clip-text text-transparent">
-                  {t('dashboardTitle')}
-                </h1>
-                <p className="text-slate-500 font-bold flex items-center gap-2 text-lg">
-                  {t('welcomeBack')}
-                  <span className="text-purple-600 font-black">{language === 'ar' ? (dashboard?.vendor?.storeNameAr || user?.name) : (dashboard?.vendor?.storeNameEn || user?.name)}</span>
-                </p>
+              <div className="hidden md:block h-12 w-px bg-slate-200 mx-2" />
+              <div className="absolute top-4 left-4 md:static md:block">
+                <NotificationBell />
               </div>
-              <div className="h-12 w-px bg-slate-200 mx-2" />
-              <NotificationBell />
             </div>
 
             {/* Quick Stats */}
             {dashboard && (
-              <div className="grid grid-cols-3 gap-4">
-                <div className="bg-white/80 backdrop-blur-sm p-4 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-                      <Package className="w-6 h-6 text-purple-600" />
+              <div className="grid grid-cols-3 gap-2 md:gap-4 mt-2 md:mt-0">
+                <div className="bg-white/80 backdrop-blur-sm p-3 md:p-4 rounded-xl md:rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all">
+                  <div className="flex flex-col md:flex-row items-center md:items-center gap-1 md:gap-3 text-center md:text-right">
+                    <div className="w-8 h-8 md:w-12 md:h-12 bg-purple-100 rounded-lg md:rounded-xl flex items-center justify-center shrink-0">
+                      <Package className="w-4 h-4 md:w-6 md:h-6 text-purple-600" />
                     </div>
                     <div>
-                      <p className="text-2xl font-black text-slate-900">{dashboard.stats?.totalProducts || 0}</p>
-                      <p className="text-xs font-bold text-slate-400">{t('statsProducts')}</p>
+                      <p className="text-base md:text-2xl font-black text-slate-900 leading-none">{dashboard.stats?.totalProducts || 0}</p>
+                      <p className="text-[8px] md:text-xs font-bold text-slate-400 mt-0.5 md:mt-1">{t('statsProducts')}</p>
                     </div>
                   </div>
                 </div>
-                <div className="bg-white/80 backdrop-blur-sm p-4 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                      <ShoppingCart className="w-6 h-6 text-blue-600" />
+                <div className="bg-white/80 backdrop-blur-sm p-3 md:p-4 rounded-xl md:rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all">
+                  <div className="flex flex-col md:flex-row items-center md:items-center gap-1 md:gap-3 text-center md:text-right">
+                    <div className="w-8 h-8 md:w-12 md:h-12 bg-blue-100 rounded-lg md:rounded-xl flex items-center justify-center shrink-0">
+                      <ShoppingCart className="w-4 h-4 md:w-6 md:h-6 text-blue-600" />
                     </div>
                     <div>
-                      <p className="text-2xl font-black text-slate-900">{dashboard.stats?.totalOrders || 0}</p>
-                      <p className="text-xs font-bold text-slate-400">{t('statsOrders')}</p>
+                      <p className="text-base md:text-2xl font-black text-slate-900 leading-none">{dashboard.stats?.totalOrders || 0}</p>
+                      <p className="text-[8px] md:text-xs font-bold text-slate-400 mt-0.5 md:mt-1">{t('statsOrders')}</p>
                     </div>
                   </div>
                 </div>
-                <div className="bg-white/80 backdrop-blur-sm p-4 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center">
-                      <TrendingUp className="w-6 h-6 text-emerald-600" />
+                <div className="bg-white/80 backdrop-blur-sm p-3 md:p-4 rounded-xl md:rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all">
+                  <div className="flex flex-col md:flex-row items-center md:items-center gap-1 md:gap-3 text-center md:text-right">
+                    <div className="w-8 h-8 md:w-12 md:h-12 bg-emerald-100 rounded-lg md:rounded-xl flex items-center justify-center shrink-0">
+                      <TrendingUp className="w-4 h-4 md:w-6 md:h-6 text-emerald-600" />
                     </div>
                     <div>
-                      <p className="text-2xl font-black text-slate-900">{dashboard.stats?.totalRevenue ? `${Math.round(dashboard.stats.totalRevenue)}` : '0'}</p>
-                      <p className="text-xs font-bold text-slate-400">{t('currency')}</p>
+                      <p className="text-base md:text-2xl font-black text-slate-900 leading-none">{dashboard.stats?.totalRevenue ? `${Math.round(dashboard.stats.totalRevenue)}` : '0'}</p>
+                      <p className="text-[8px] md:text-xs font-bold text-slate-400 mt-0.5 md:mt-1">{t('currency')}</p>
                     </div>
                   </div>
                 </div>
@@ -258,7 +262,7 @@ export default function VendorDashboard() {
       </header>
 
       {/* Main Content Area */}
-      <main className="container mx-auto px-6 mt-8">
+      <main className="container mx-auto px-4 md:px-6 mt-6 md:mt-8">
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
           {activeTab === "overview" && (
             <OverviewTab

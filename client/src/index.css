@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&family=Inter:wght@100..900&display=swap');
 @import "tailwindcss";
 
 @theme {
@@ -138,15 +139,15 @@ html {
 
 :root {
   /* Default Fonts (English/LTR) */
-  --font-family-sans: "Montserrat", system-ui, sans-serif;
-  --font-family-heading: "Montserrat", system-ui, sans-serif;
+  --font-family-sans: "Inter", system-ui, sans-serif;
+  --font-family-heading: "Inter", system-ui, sans-serif;
 }
 
 /* Arabic/RTL Fonts */
 :root[lang="ar"],
 :root[dir="rtl"] {
-  --font-family-sans: "Cairo", "Montserrat", system-ui, sans-serif;
-  --font-family-heading: "Cairo", "Montserrat", system-ui, sans-serif;
+  --font-family-sans: "Cairo", system-ui, sans-serif;
+  --font-family-heading: "Cairo", system-ui, sans-serif;
 }
 
 @layer base {

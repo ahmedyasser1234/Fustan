@@ -36,11 +36,11 @@ export default function AboutUs() {
                             <Badge className="bg-white/20 text-white hover:bg-white/30 backdrop-blur-md mb-6 border-white/30 px-6 py-2 text-sm font-bold uppercase tracking-[0.2em]">
                                 {language === 'ar' ? "قصتنا" : "Our Story"}
                             </Badge>
-                            <h1 className="text-5xl md:text-7xl font-black mb-6 leading-tight">
+                            <h1 className="text-3xl md:text-7xl font-black mb-4 md:mb-6 leading-tight">
                                 {language === 'ar' ? "حيث تلتقي الفخامة" : "Where Luxury Meets"} <br />
                                 <span className="text-rose-200">{language === 'ar' ? "بالتقاليد العريقة" : "Timeless Traditions"}</span>
                             </h1>
-                            <p className="text-xl md:text-2xl text-white/90 max-w-2xl mx-auto leading-relaxed font-bold">
+                            <p className="text-lg md:text-2xl text-white/90 max-w-2xl mx-auto leading-relaxed font-bold px-4">
                                 {language === 'ar'
                                     ? "رحلة في عالم الأزياء الراقية، ننسج فيها خيوط الإبداع لنصنع لكِ إطلالة تخلد في الذاكرة."
                                     : "A journey into the world of haute couture, weaving threads of creativity to craft a look preserved in memory."}
@@ -56,12 +56,12 @@ export default function AboutUs() {
 
                     {/* Text Content */}
                     <motion.div
-                        className="bg-white p-10 md:p-14 rounded-[3rem] shadow-xl border border-gray-100"
+                        className="bg-white p-8 md:p-14 rounded-[2.5rem] md:rounded-[3rem] shadow-xl border border-gray-100"
                         initial={{ opacity: 0, x: 50 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
                     >
-                        <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-8 leading-tight">
+                        <h2 className="text-2xl md:text-4xl font-black text-gray-900 mb-6 md:mb-8 leading-tight">
                             {language === 'ar' ? "أتيليه فستان: رؤية جديدة للأناقة" : "Atelier Fustan: A New Vision of Elegance"}
                         </h2>
                         <div className="space-y-6 text-gray-500 text-lg leading-relaxed font-medium text-justify" dir={language === 'ar' ? "rtl" : "ltr"}>
@@ -94,32 +94,31 @@ export default function AboutUs() {
                         </div>
                     </motion.div>
 
-                    {/* Image Grid */}
                     <motion.div
-                        className="grid grid-cols-2 gap-6"
+                        className="grid grid-cols-2 gap-4 md:gap-6"
                         initial={{ opacity: 0, x: -50 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
                     >
-                        <div className="space-y-6 mt-12">
+                        <div className="space-y-4 md:space-y-6 mt-6 md:mt-12">
                             <img
                                 src="https://images.unsplash.com/photo-1546193430-c2d207739ed7?q=80&w=1966&auto=format&fit=crop"
-                                className="w-full aspect-[3/4] object-cover rounded-[2.5rem] shadow-lg hover:scale-[1.02] transition-transform duration-500"
+                                className="w-full aspect-[3/4] object-cover rounded-3xl md:rounded-[2.5rem] shadow-lg hover:scale-[1.02] transition-transform duration-500"
                                 alt="Detail 1"
                             />
-                            <div className="bg-rose-600 p-8 rounded-[2.5rem] text-white text-center shadow-lg shadow-rose-200">
-                                <span className="block text-4xl font-black mb-1">+15</span>
-                                <span className="text-sm font-bold opacity-90">{language === 'ar' ? "عاماً من الخبرة" : "Years Experience"}</span>
+                            <div className="bg-rose-600 p-4 md:p-8 rounded-3xl md:rounded-[2.5rem] text-white text-center shadow-lg shadow-rose-200">
+                                <span className="block text-2xl md:text-4xl font-black mb-1">+15</span>
+                                <span className="text-[10px] md:text-sm font-bold opacity-90">{language === 'ar' ? "عاماً من الخبرة" : "Years Experience"}</span>
                             </div>
                         </div>
-                        <div className="space-y-6">
-                            <div className="bg-gray-900 p-8 rounded-[2.5rem] text-white text-center shadow-xl">
-                                <span className="block text-4xl font-black mb-1">5000+</span>
-                                <span className="text-sm font-bold opacity-90">{language === 'ar' ? "عميلة سعيدة" : "Happy Clients"}</span>
+                        <div className="space-y-4 md:space-y-6">
+                            <div className="bg-gray-900 p-4 md:p-8 rounded-3xl md:rounded-[2.5rem] text-white text-center shadow-xl">
+                                <span className="block text-2xl md:text-4xl font-black mb-1">5000+</span>
+                                <span className="text-[10px] md:text-sm font-bold opacity-90">{language === 'ar' ? "عميلة سعيدة" : "Happy Clients"}</span>
                             </div>
                             <img
                                 src="https://images.unsplash.com/photo-1566174053879-31528523f8ae?q=80&w=1908&auto=format&fit=crop"
-                                className="w-full aspect-[3/4] object-cover rounded-[2.5rem] shadow-lg hover:scale-[1.02] transition-transform duration-500"
+                                className="w-full aspect-[3/4] object-cover rounded-3xl md:rounded-[2.5rem] shadow-lg hover:scale-[1.02] transition-transform duration-500"
                                 alt="Detail 2"
                             />
                         </div>

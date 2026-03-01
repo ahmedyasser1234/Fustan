@@ -55,7 +55,7 @@ export default function Register() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 py-6 md:py-12 px-4 sm:px-6 lg:px-8">
             <Card className="w-full max-w-md shadow-xl border-0 bg-white/80 backdrop-blur-xl overflow-hidden focus-within:ring-2 ring-rose-500/20 transition-all">
                 <div className="flex w-full border-b border-gray-100">
                     <Link href="/register" className="flex-1 py-4 text-center text-sm font-bold bg-white text-rose-600 border-b-2 border-rose-600 transition-all">
@@ -66,13 +66,13 @@ export default function Register() {
                     </Link>
                 </div>
                 <CardHeader className="space-y-1 text-center pt-8">
-                    <div className="w-16 h-16 bg-rose-50 rounded-2xl flex items-center justify-center mx-auto mb-2 border border-rose-100 ring-8 ring-rose-50/50">
-                        <UserPlus className="w-8 h-8 text-rose-600" />
+                    <div className="w-12 h-12 md:w-16 md:h-16 bg-rose-50 rounded-2xl flex items-center justify-center mx-auto mb-2 border border-rose-100 ring-4 md:ring-8 ring-rose-50/50">
+                        <UserPlus className="w-6 h-6 md:w-8 md:h-8 text-rose-600" />
                     </div>
-                    <CardTitle className="text-2xl font-bold tracking-tight text-gray-900">
+                    <CardTitle className="text-xl md:text-2xl font-bold tracking-tight text-gray-900">
                         {language === 'ar' ? 'إنشاء حساب جديد' : 'Create an account'}
                     </CardTitle>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-xs md:text-sm text-gray-500">
                         {language === 'ar' ? 'أهلاً بكِ في عائلة فستان' : 'Join the Fustan family today'}
                     </p>
                 </CardHeader>

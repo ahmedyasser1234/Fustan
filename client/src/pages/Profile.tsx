@@ -109,32 +109,32 @@ export default function Profile() {
         <div className="min-h-screen bg-gray-50 pt-32 pb-20 px-4">
             <div className="max-w-4xl mx-auto">
                 {/* Header */}
-                <header className={`mb-12 flex flex-col md:flex-row items-center gap-8 ${language === 'ar' ? 'md:text-right text-center' : 'md:text-left text-center'}`} dir={language === 'ar' ? 'rtl' : 'ltr'}>
+                <header className={`mb-12 flex flex-col md:flex-row items-center gap-6 md:gap-8 ${language === 'ar' ? 'md:text-right text-center' : 'md:text-left text-center'}`} dir={language === 'ar' ? 'rtl' : 'ltr'}>
                     <div className="relative group">
-                        <div className="w-32 h-32 rounded-[2.5rem] bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center border-4 border-white shadow-xl overflow-hidden">
+                        <div className="w-28 h-28 md:w-32 md:h-32 rounded-3xl md:rounded-[2.5rem] bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center border-4 border-white shadow-xl overflow-hidden">
                             {user.avatar ? (
                                 <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
                             ) : (
-                                <User size={60} className="text-gray-400" />
+                                <User size={48} className="md:w-14 md:h-14 text-gray-400" />
                             )}
                         </div>
                         <div
                             onClick={() => setIsEditModalOpen(true)}
-                            className={`absolute -bottom-2 ${language === 'ar' ? '-right-2' : '-left-2'} w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center border-2 border-gray-50 text-gray-400 hover:text-rose-500 cursor-pointer transition-colors z-10`}
+                            className={`absolute -bottom-1 md:-bottom-2 ${language === 'ar' ? '-right-1 md:-right-2' : '-left-1 md:-left-2'} w-8 h-8 md:w-10 md:h-10 bg-white rounded-full shadow-lg flex items-center justify-center border-2 border-gray-50 text-gray-400 hover:text-rose-500 cursor-pointer transition-colors z-10`}
                         >
-                            {user.role === 'admin' ? <Settings size={20} /> : <Camera size={20} />}
+                            {user.role === 'admin' ? <Settings size={16} className="md:w-5 md:h-5" /> : <Camera size={16} className="md:w-5 md:h-5" />}
                         </div>
                     </div>
                     <div className="flex-1">
-                        <h1 className="text-4xl md:text-5xl font-black text-gray-900 mb-2 tracking-tight">{user.name}</h1>
-                        <p className="text-gray-500 text-lg font-medium">{user.email}</p>
-                        <div className={`mt-6 flex flex-wrap justify-center md:justify-start gap-3`}>
+                        <h1 className="text-3xl md:text-5xl font-black text-gray-900 mb-2 tracking-tight">{user.name}</h1>
+                        <p className="text-gray-500 text-base md:text-lg font-medium">{user.email}</p>
+                        <div className={`mt-4 md:mt-6 flex flex-wrap justify-center md:justify-start gap-3`}>
                             <Button
                                 variant="outline"
-                                className="rounded-full h-12 px-6 font-bold border-gray-200 hover:bg-gray-100 transition-all"
+                                className="rounded-full h-10 md:h-12 px-4 md:px-6 font-bold border-gray-200 hover:bg-gray-100 transition-all text-sm md:text-base"
                                 onClick={() => logout()}
                             >
-                                <LogOut size={18} className={language === 'ar' ? 'ml-2' : 'mr-2'} />
+                                <LogOut size={16} className={`md:w-5 md:h-5 ${language === 'ar' ? 'ml-2' : 'mr-2'}`} />
                                 {t('logout')}
                             </Button>
                         </div>
@@ -479,33 +479,32 @@ function EditProfileModal({ isOpen, onClose, user, vendor, language, queryClient
             >
                 <div className="flex flex-col md:flex-row h-full overflow-hidden">
                     {/* Sidebar Tabs */}
-                    <div className={`w-full md:w-80 bg-gray-50/50 p-8 border-e border-gray-100 overflow-y-auto`}>
-                        <DialogHeader className="mb-10 text-start">
-                            <DialogTitle className="text-3xl font-black text-gray-900 tracking-tight">
+                    <div className={`w-full md:w-80 bg-gray-50/50 p-4 md:p-8 border-b md:border-b-0 md:border-e border-gray-100 overflow-x-auto md:overflow-y-auto shrink-0 no-scrollbar`}>
+                        <DialogHeader className="mb-6 md:mb-10 text-start hidden md:block">
+                            <DialogTitle className="text-2xl md:text-3xl font-black text-gray-900 tracking-tight">
                                 {language === 'ar' ? "إعدادات الحساب" : "Account Settings"}
                             </DialogTitle>
                         </DialogHeader>
 
-                        <div className="space-y-3">
+                        <div className="flex md:flex-col gap-2 md:space-y-3">
                             {tabs.map((tab) => (
                                 <button
                                     key={tab.id}
                                     type="button"
                                     onClick={() => setActiveTab(tab.id)}
-                                    className={`w-full flex items-center gap-4 px-6 py-5 rounded-2xl font-black transition-all text-start group ${activeTab === tab.id
-                                        ? "bg-rose-600 text-white shadow-xl shadow-rose-200 scale-[1.02]"
-                                        : "text-gray-500 hover:bg-white hover:text-gray-900"
+                                    className={`flex items-center gap-3 md:gap-4 px-4 md:px-6 py-3 md:py-5 rounded-xl md:rounded-2xl font-black transition-all text-start group shrink-0 ${activeTab === tab.id
+                                        ? "bg-rose-600 text-white shadow-lg md:shadow-xl shadow-rose-200 scale-100 md:scale-[1.02]"
+                                        : "text-gray-500 hover:bg-white hover:text-gray-900 bg-white md:bg-transparent"
                                         }`}
                                 >
-                                    <tab.icon size={22} className={`${activeTab === tab.id ? 'text-white' : 'text-gray-400 group-hover:text-rose-500'} transition-colors`} />
-                                    <span className="text-lg">{tab.label}</span>
+                                    <tab.icon size={18} className={`md:w-5 md:h-5 ${activeTab === tab.id ? 'text-white' : 'text-gray-400 group-hover:text-rose-500'} transition-colors`} />
+                                    <span className="text-sm md:text-lg whitespace-nowrap">{tab.label}</span>
                                 </button>
                             ))}
                         </div>
                     </div>
 
-                    {/* Content Area */}
-                    <div className="flex-1 overflow-y-auto p-12 bg-white scrollbar-hide">
+                    <div className="flex-1 overflow-y-auto p-6 md:p-12 bg-white scrollbar-hide">
                         <form id="profile-form" onSubmit={handleSubmit} className="space-y-10 max-w-4xl mx-auto">
                             <AnimatePresence mode="wait">
                                 {/* Personal Information Tab */}

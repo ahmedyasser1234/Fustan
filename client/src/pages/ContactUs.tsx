@@ -42,13 +42,13 @@ export default function ContactUs() {
                         transition={{ duration: 0.8 }}
                     >
                         <div className="flex flex-col items-center space-y-6">
-                            <Badge className="bg-white/20 text-white hover:bg-white/30 backdrop-blur-md mb-6 border-white/30 px-6 py-2 text-sm font-bold uppercase tracking-[0.2em]">
+                            <Badge className="bg-white/20 text-white hover:bg-white/30 backdrop-blur-md mb-4 border-white/30 px-6 py-2 text-xs font-bold uppercase tracking-[0.2em]">
                                 {language === 'ar' ? "تواصل معنا" : "Contact Us"}
                             </Badge>
-                            <h1 className="text-5xl md:text-7xl font-black mb-6 leading-tight">
+                            <h1 className="text-4xl md:text-7xl font-black mb-6 leading-tight">
                                 {language === 'ar' ? "نحن هنا لمساعدتك" : "We're Here to Help"}
                             </h1>
-                            <p className="text-xl md:text-2xl text-white/90 max-w-2xl mx-auto leading-relaxed font-bold">
+                            <p className="text-lg md:text-2xl text-white/90 max-w-2xl mx-auto leading-relaxed font-bold">
                                 {language === 'ar'
                                     ? "لديك استفسار عن فستان معين أو تريدين حجز موعد للقياس؟ لا تترددي في التواصل معنا."
                                     : "Have a question about a specific dress or want to book a fitting appointment? Don't hesitate to reach out."}
@@ -58,17 +58,17 @@ export default function ContactUs() {
                 </div>
             </section>
 
-            <div className="container mx-auto px-4 -mt-20 relative z-20">
+            <div className="container mx-auto px-4 -mt-12 md:-mt-20 relative z-20">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
                     {/* Contact Info Cards */}
                     <motion.div
-                        className="space-y-6 lg:col-span-1"
+                        className="space-y-4 md:space-y-6 lg:col-span-1"
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2 }}
                     >
-                        <div className="bg-white p-8 rounded-[2rem] shadow-xl border border-gray-100 hover:shadow-2xl transition-all">
+                        <div className="bg-white p-6 md:p-8 rounded-[2rem] shadow-xl border border-gray-100 hover:shadow-2xl transition-all">
                             <div className="w-12 h-12 rounded-2xl bg-rose-50 flex items-center justify-center text-rose-600 mb-6">
                                 <MapPin size={24} />
                             </div>
@@ -77,9 +77,8 @@ export default function ContactUs() {
                                 {language === 'ar' ? "شارع التحلية، جدة، المملكة العربية السعودية" : "Tahlia Street, Jeddah, KSA"}
                             </p>
                         </div>
-                        ... (rest of the cards)
 
-                        <div className="bg-white p-8 rounded-[2rem] shadow-sm border border-gray-100 hover:shadow-md transition-all">
+                        <div className="bg-white p-6 md:p-8 rounded-[2rem] shadow-sm border border-gray-100 hover:shadow-md transition-all">
                             <div className="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center text-blue-600 mb-6">
                                 <Phone size={24} />
                             </div>
@@ -88,7 +87,7 @@ export default function ContactUs() {
                             <p className="text-gray-400 text-sm mt-1">{language === 'ar' ? "متاح واتساب أيضاً" : "WhatsApp available"}</p>
                         </div>
 
-                        <div className="bg-white p-8 rounded-[2rem] shadow-sm border border-gray-100 hover:shadow-md transition-all">
+                        <div className="bg-white p-6 md:p-8 rounded-[2rem] shadow-sm border border-gray-100 hover:shadow-md transition-all">
                             <div className="w-12 h-12 rounded-2xl bg-amber-50 flex items-center justify-center text-amber-600 mb-6">
                                 <Clock size={24} />
                             </div>
@@ -99,7 +98,7 @@ export default function ContactUs() {
 
                     {/* Contact Form */}
                     <motion.div
-                        className="lg:col-span-2 bg-white p-8 md:p-12 rounded-[3rem] shadow-xl border border-gray-100"
+                        className="lg:col-span-2 bg-white p-6 md:p-12 rounded-[2rem] md:rounded-[3rem] shadow-xl border border-gray-100"
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: 0.3 }}
@@ -127,17 +126,17 @@ export default function ContactUs() {
                                 <Textarea required className="min-h-[150px] rounded-2xl bg-gray-50 border-gray-200 focus:border-rose-300 p-4" placeholder={language === 'ar' ? "اكتبي رسالتك هنا..." : "Type your message here..."} />
                             </div>
 
-                            <div className="pt-4 text-right">
+                            <div className="pt-4 text-start md:text-right">
                                 <Button
                                     type="submit"
                                     disabled={isSubmitting}
-                                    className="h-14 px-10 rounded-full bg-rose-600 hover:bg-rose-700 text-white font-bold text-lg shadow-lg shadow-rose-200"
+                                    className="w-full md:w-auto h-14 px-10 rounded-full bg-rose-600 hover:bg-rose-700 text-white font-bold text-lg shadow-lg shadow-rose-200"
                                 >
                                     {isSubmitting ? (language === 'ar' ? "جاري الإرسال..." : "Sending...") : (
-                                        <>
+                                        <div className="flex items-center justify-center gap-2">
                                             {language === 'ar' ? "إرسال الرسالة" : "Send Message"}
-                                            <Send size={18} className="mr-2 rtl:ml-2 rtl:mr-0" />
-                                        </>
+                                            <Send size={18} className="rtl:rotate-180" />
+                                        </div>
                                     )}
                                 </Button>
                             </div>

@@ -12,17 +12,17 @@ export default function TermsOfService() {
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-8 md:p-12"
+                    className="bg-white rounded-3xl md:rounded-[2rem] shadow-sm border border-gray-100 p-6 md:p-12"
                 >
-                    <div className="flex items-center gap-4 mb-8 border-b border-gray-100 pb-8">
-                        <div className="w-16 h-16 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600">
-                            <FileSignature size={32} />
+                    <div className="flex flex-col md:flex-row items-center md:items-start gap-4 mb-8 border-b border-gray-100 pb-8 text-center md:text-right">
+                        <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600 shrink-0">
+                            <FileSignature className="w-8 h-8 md:w-10 md:h-10" />
                         </div>
                         <div>
-                            <h1 className="text-3xl font-black text-gray-900">
+                            <h1 className="text-2xl md:text-3xl font-black text-gray-900">
                                 {isAr ? 'الشروط والأحكام' : 'Terms of Service'}
                             </h1>
-                            <p className="text-gray-500 font-bold mt-2">
+                            <p className="text-sm md:text-base text-gray-500 font-bold mt-1 md:mt-2">
                                 {isAr ? 'آخر تحديث: فبراير 2026' : 'Last Updated: February 2026'}
                             </p>
                         </div>

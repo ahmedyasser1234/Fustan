@@ -121,17 +121,17 @@ export function ProductCard({ product, index = 0, loading = false, onQuickView }
 
                 <div className={`px-2 ${language === 'ar' ? 'text-right' : 'text-left'}`}>
                     <Link href={`/products/${product.id}`}>
-                        <h3 className="text-lg font-black text-gray-900 mb-1 truncate hover:text-rose-600 transition-colors">{name}</h3>
+                        <h3 className="text-base md:text-lg font-black text-gray-900 mb-1 truncate hover:text-rose-600 transition-colors">{name}</h3>
                     </Link>
-                    <div className={`flex items-center ${language === 'ar' ? 'justify-end' : 'justify-start'} gap-2 mb-2`}>
-                        <div className={`flex items-center gap-1 ${language === 'ar' ? 'ml-auto' : 'mr-auto'}`}>
-                            <Star size={14} className="fill-yellow-400 text-yellow-400" />
-                            <span className="font-bold text-gray-600 text-sm">{Number(product.rating || 0).toFixed(1)}</span>
+                    <div className={`flex flex-wrap items-center ${language === 'ar' ? 'justify-end' : 'justify-start'} gap-1.5 md:gap-2 mb-2`}>
+                        <div className={`flex items-center gap-1 ${language === 'ar' ? 'order-last' : 'order-first'}`}>
+                            <Star size={12} className="fill-yellow-400 text-yellow-400" />
+                            <span className="font-bold text-gray-600 text-[10px] md:text-sm">{Number(product.rating || 0).toFixed(1)}</span>
                         </div>
                         {product.originalPrice && (
-                            <span className="text-gray-400 font-medium line-through text-xs">{formatPrice(product.originalPrice)}</span>
+                            <span className="text-gray-400 font-medium line-through text-[10px] md:text-xs">{formatPrice(product.originalPrice)}</span>
                         )}
-                        <span className="text-lg font-black text-rose-600">{formatPrice(product.price)}</span>
+                        <span className="text-base md:text-lg font-black text-rose-600">{formatPrice(product.price)}</span>
                     </div>
 
                     {/* Color Swatches */}

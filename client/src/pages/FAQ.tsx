@@ -37,14 +37,14 @@ export default function FAQ() {
     return (
         <div className="min-h-screen bg-white pt-32 pb-20" dir={isAr ? 'rtl' : 'ltr'}>
             <div className="container mx-auto px-4 max-w-3xl">
-                <header className="text-center mb-16">
-                    <div className="w-20 h-20 bg-rose-50 rounded-3xl flex items-center justify-center text-rose-600 mx-auto mb-6">
-                        <HelpCircle size={40} />
+                <header className="text-center mb-10 md:mb-16">
+                    <div className="w-16 h-16 md:w-20 md:h-20 bg-rose-50 rounded-2xl md:rounded-3xl flex items-center justify-center text-rose-600 mx-auto mb-6">
+                        <HelpCircle className="w-8 h-8 md:w-10 md:h-10" />
                     </div>
-                    <h1 className="text-4xl md:text-5xl font-black text-gray-900 mb-4">
+                    <h1 className="text-3xl md:text-5xl font-black text-gray-900 mb-3 md:mb-4">
                         {isAr ? 'الأسئلة الشائعة' : 'Frequently Asked Questions'}
                     </h1>
-                    <p className="text-gray-500 text-lg font-bold">
+                    <p className="text-gray-500 text-base md:text-lg font-bold px-4">
                         {isAr ? 'كل ما تودين معرفته عن رحلة تسوقكِ في فستان' : 'Everything you need to know about your shopping journey at Fustan'}
                     </p>
                 </header>
@@ -66,11 +66,11 @@ function FAQItem({ question, answer }: { question: string, answer: string }) {
         <div className={`border rounded-[2rem] transition-all duration-300 ${isOpen ? 'border-rose-200 bg-rose-50/20 shadow-lg shadow-rose-100' : 'border-gray-100 bg-white hover:border-gray-200'}`}>
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="w-full px-8 py-6 flex items-center justify-between text-right"
+                className="w-full px-6 md:px-8 py-5 md:py-6 flex items-center justify-between text-right gap-4"
             >
-                <span className="text-lg font-black text-gray-900">{question}</span>
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${isOpen ? 'bg-rose-500 text-white' : 'bg-gray-100 text-gray-400'}`}>
-                    {isOpen ? <Minus size={18} /> : <Plus size={18} />}
+                <span className="text-base md:text-lg font-black text-gray-900 text-start">{question}</span>
+                <div className={`w-7 h-7 md:w-8 md:h-8 rounded-full flex items-center justify-center transition-colors shrink-0 ${isOpen ? 'bg-rose-500 text-white' : 'bg-gray-100 text-gray-400'}`}>
+                    {isOpen ? <Minus size={16} className="md:w-[18px] md:h-[18px]" /> : <Plus size={16} className="md:w-[18px] md:h-[18px]" />}
                 </div>
             </button>
             <AnimatePresence>
