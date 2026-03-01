@@ -14,7 +14,10 @@ export class AdminController {
 
 
     private async checkAdmin(req: Request) {
-        const token = req.cookies?.[COOKIE_NAME];
+        const token = req.headers.authorization?.startsWith('Bearer ')
+            ? req.headers.authorization.split(' ')[1]
+            : req.cookies?.[COOKIE_NAME];
+
         if (!token) throw new UnauthorizedException('No token');
 
         const payload = await this.authService.verifySession(token);
