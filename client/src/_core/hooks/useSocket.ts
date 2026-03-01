@@ -21,7 +21,7 @@ export const useSocket = () => {
             // Priority: 1. VITE_SOCKET_URL, 2. VITE_API_URL, 3. Hardcoded Fallback
             const SOCKET_URL = import.meta.env.VITE_SOCKET_URL ||
                 import.meta.env.VITE_API_URL ||
-                'http://localhost:3001';
+                window.location.origin;
 
             // Prevent connecting to self (Netlify) if URL is relative or missing
             if (!SOCKET_URL || SOCKET_URL.startsWith('/')) {

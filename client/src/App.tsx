@@ -25,6 +25,7 @@ import AboutUs from "@/pages/AboutUs";
 import ContactUs from "@/pages/ContactUs";
 import VendorLogin from "@/pages/VendorLogin.tsx";
 import VendorRegister from "@/pages/VendorRegister.tsx";
+import PendingApproval from "@/pages/vendor/PendingApproval";
 import AdminRegister from "@/pages/AdminRegister.tsx";
 import Wishlist from "@/pages/Wishlist";
 import Profile from "@/pages/Profile";
@@ -519,9 +520,9 @@ function Router() {
       <Route path={"/wishlist"} component={Wishlist} />
       <Route path={"/wishlist/shared/:token"} component={SharedWishlist} />
       <Route path={"/notifications"} component={Notifications} />
-      {/* Vendor Auth */}
       <Route path="/vendor/login" component={VendorLogin} />
       <Route path="/vendor/register" component={VendorRegister} />
+      <Route path="/vendor/pending" component={PendingApproval} />
 
       {/* Admin Auth */}
       <Route path="/admin/login" component={AdminLogin} />

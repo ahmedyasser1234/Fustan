@@ -48,32 +48,32 @@ export default function VendorRequestsTab() {
                         <p className="text-slate-500 font-bold">{t('noPendingRequests')}</p>
                     </div>
                 ) : (
-                    pendingVendors?.map((item: any) => (
-                        <Card key={item.vendor.id} className="border-0 shadow-sm hover:shadow-md transition-shadow">
+                    pendingVendors?.map((vendor: any) => (
+                        <Card key={vendor.id} className="border-0 shadow-sm hover:shadow-md transition-shadow">
                             <CardContent className="p-6">
                                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                                     <div className="flex items-start gap-4">
                                         <div className="w-16 h-16 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-500 font-black text-xl">
-                                            {(item.vendor.storeNameAr || 'S').substring(0, 1)}
+                                            {(vendor.storeNameAr || 'S').substring(0, 1)}
                                         </div>
                                         <div>
-                                            <h3 className="text-lg font-black text-slate-900 mb-1">{language === 'ar' ? (item.vendor.storeNameAr || item.vendor.storeNameEn) : (item.vendor.storeNameEn || item.vendor.storeNameAr)}</h3>
+                                            <h3 className="text-lg font-black text-slate-900 mb-1">{language === 'ar' ? (vendor.storeNameAr || vendor.storeNameEn) : (vendor.storeNameEn || vendor.storeNameAr)}</h3>
                                             <div className="flex flex-wrap gap-4 text-sm text-slate-500 font-medium">
                                                 <div className="flex items-center gap-1">
                                                     <Mail className="w-4 h-4" />
-                                                    {item.vendor.email}
+                                                    {vendor.email}
                                                 </div>
                                                 <div className="flex items-center gap-1">
                                                     <Phone className="w-4 h-4" />
-                                                    {item.vendor.phone || item.user.phone || t('notAvailable')}
+                                                    {vendor.phone || vendor.user?.phone || t('notAvailable')}
                                                 </div>
                                                 <div className="flex items-center gap-1">
                                                     <Calendar className="w-4 h-4" />
-                                                    {format(new Date(item.vendor.createdAt), "dd MMMM yyyy", { locale: language === 'ar' ? ar : undefined })}
+                                                    {format(new Date(vendor.createdAt), "dd MMMM yyyy", { locale: language === 'ar' ? ar : undefined })}
                                                 </div>
                                             </div>
                                             <div className="mt-2 text-sm text-slate-600">
-                                                <span className="font-bold">{t('applicant')}:</span> {item.user.name}
+                                                <span className="font-bold">{t('applicant')}:</span> {vendor.user?.name}
                                             </div>
                                         </div>
                                     </div>
@@ -82,7 +82,7 @@ export default function VendorRequestsTab() {
                                         <Button
                                             variant="outline"
                                             className="bg-red-50 text-red-600 border-red-100 hover:bg-red-100 hover:text-red-700 font-bold gap-2"
-                                            onClick={() => updateStatusMutation.mutate({ id: item.vendor.id, status: 'rejected' })}
+                                            onClick={() => updateStatusMutation.mutate({ id: vendor.id, status: 'rejected' })}
                                             disabled={updateStatusMutation.isPending}
                                         >
                                             <X className="w-4 h-4" />
@@ -90,7 +90,7 @@ export default function VendorRequestsTab() {
                                         </Button>
                                         <Button
                                             className="bg-green-600 hover:bg-green-700 text-white font-bold gap-2 shadow-lg shadow-green-200"
-                                            onClick={() => updateStatusMutation.mutate({ id: item.vendor.id, status: 'approved' })}
+                                            onClick={() => updateStatusMutation.mutate({ id: vendor.id, status: 'approved' })}
                                             disabled={updateStatusMutation.isPending}
                                         >
                                             <Check className="w-4 h-4" />

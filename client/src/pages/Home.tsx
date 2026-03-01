@@ -49,7 +49,11 @@ export default function Home() {
   const tabsRef = useRef<HTMLDivElement>(null);
   const productsPerPage = 4;
 
-  const videos = ["/132.mp4"];
+  const videos = [
+    "/hero-video-1.mp4",
+    "/hero-video-2.mp4",
+    "/hero-video-3.mp4"
+  ];
 
   // Fetch Categories
   const { data: categories } = useQuery({
@@ -101,7 +105,7 @@ export default function Home() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setCurrentVideo((prev) => (prev + 1) % videos.length);
-    }, 10000);
+    }, 12000);
     return () => clearTimeout(timer);
   }, [currentVideo, videos.length]);
 
@@ -157,7 +161,22 @@ export default function Home() {
             </motion.video>
           </AnimatePresence>
           <div className="absolute inset-0 bg-black/40"></div>
-        </div >
+
+          {/* Video Navigation Dots */}
+          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30 flex gap-3">
+            {videos.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentVideo(index)}
+                className={`w-3 h-3 rounded-full transition-all duration-300 ${currentVideo === index
+                  ? "bg-white scale-125 shadow-[0_0_10px_rgba(255,255,255,0.8)]"
+                  : "bg-white/40 hover:bg-white/60"
+                  }`}
+                aria-label={`Go to video ${index + 1}`}
+              />
+            ))}
+          </div>
+        </div>
 
 
         {/* Logo at Bottom Side */}

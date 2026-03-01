@@ -38,7 +38,12 @@ export default function VendorLogin() {
             setLocation("/vendor-dashboard");
         } catch (error: any) {
             const message = error.response?.data?.message || (language === 'ar' ? 'فشل تسجيل الدخول' : 'Login failed');
-            toast.error(message);
+
+            if (message.includes('pending') || message.includes('قيد المراجعة')) {
+                setLocation("/vendor/pending");
+            } else {
+                toast.error(message);
+            }
             console.error(error);
         } finally {
             setIsLoading(false);

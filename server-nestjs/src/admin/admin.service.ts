@@ -4,15 +4,79 @@ import { DatabaseService } from '../database/database.service';
 import { vendors, users, orders, products, conversations, messages, cartItems, wishlist, notifications, productColors, reviews, shipping, offerItems, collections, coupons, offers, vendorReviews, vendorPayouts, vendorWallets } from '../database/schema';
 import { eq, and, desc, sql } from 'drizzle-orm';
 
+import { NotificationsService } from '../notifications/notifications.service';
+
 @Injectable()
 export class AdminService {
-    constructor(private databaseService: DatabaseService) { }
+    constructor(
+        private databaseService: DatabaseService,
+        private notificationsService: NotificationsService
+    ) { }
+
+    // ... (rest of the file until updateVendorStatus)
+
+    async updateVendorStatus(vendorId: number, status: 'approved' | 'rejected') {
+        const vendor = await this.databaseService.db.select().from(vendors).where(eq(vendors.id, vendorId)).limit(1);
+        if (vendor.length === 0) return { success: false, message: 'Vendor not found' };
+
+        return await this.databaseService.db.transaction(async (tx) => {
+            const [updatedVendor] = await tx
+                .update(vendors)
+                .set({
+                    status: status,
+                    isActive: status === 'approved', // Only active if approved
+                    isVerified: status === 'approved', // Verified if approved
+                    updatedAt: new Date(),
+                })
+                .where(eq(vendors.id, vendorId))
+                .returning();
+
+            // Notify vendor
+            if (status === 'approved') {
+                await this.notificationsService.notify(
+                    vendor[0].userId,
+                    'vendor_status',
+                    'تمت الموافقة على حسابك ✅',
+                    'مبروك! تم تفعيل حساب البائع الخاص بك. يمكنك الآن الدخول إلى لوحة التحكم.',
+                    vendorId
+                );
+            } else if (status === 'rejected') {
+                await this.notificationsService.notify(
+                    vendor[0].userId,
+                    'vendor_status',
+                    'تم رفض طلبك ❌',
+                    'عذراً، لم يتم قبول طلبك للانضمام كبائع. يرجى التواصل مع الإدارة لمزيد من التفاصيل.',
+                    vendorId
+                );
+            }
+
+            return { success: true, vendor: updatedVendor };
+        });
+    }
 
     async getAllVendors() {
         return await this.databaseService.db
             .select()
             .from(vendors)
             .orderBy(desc(vendors.createdAt));
+    }
+
+    async getPendingVendors() {
+        return await this.databaseService.db.query.vendors.findMany({
+            where: eq(vendors.status, 'pending'),
+            with: {
+                user: {
+                    columns: {
+                        id: true,
+                        email: true,
+                        name: true,
+                        role: true,
+                        phone: true,
+                    },
+                },
+            },
+            orderBy: desc(vendors.createdAt),
+        });
     }
 
     async getAllCustomers() {
@@ -317,6 +381,8 @@ export class AdminService {
             return updated;
         });
     }
+
+
 
     async getCustomerDetails(id: number) {
         const customer = await this.databaseService.db

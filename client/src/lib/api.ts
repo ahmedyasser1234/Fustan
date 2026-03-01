@@ -154,8 +154,8 @@ export const endpoints = {
         deleteVendor: (id: number) => api.delete(`/admin/vendors/${id}`).then(res => res.data),
         updateVendorCommission: (id: number, rate: number) => api.patch(`/admin/vendors/${id}/commission`, { commissionRate: rate }).then(res => res.data),
         vendors: {
-            listPending: () => api.get('/vendors/pending').then(res => res.data),
-            updateStatus: (id: number, status: string) => api.patch(`/vendors/${id}/status`, { status }).then(res => res.data),
+            listPending: () => api.get('/admin/vendors/pending').then(res => res.data),
+            updateStatus: (id: number, status: string) => api.patch(`/admin/vendors/${id}/status`, { status }).then(res => res.data),
             updateCommission: (id: number, commissionRate: number) => api.patch(`/admin/vendors/${id}/commission`, { commissionRate }).then(res => res.data),
         },
         reports: {

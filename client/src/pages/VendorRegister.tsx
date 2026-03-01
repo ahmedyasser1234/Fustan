@@ -61,11 +61,15 @@ export default function VendorRegister() {
 
             if (response.data.token) {
                 localStorage.setItem('app_token', response.data.token);
+                await refresh();
+                toast.success(language === 'ar' ? 'تم إنشاء متجركِ بنجاح! أهلاً بكِ في عائلة فستان' : 'Store created successfully! Welcome to Fustan family');
+                setLocation("/vendor-dashboard");
+            } else if (response.data.message && response.data.message.includes('pending')) {
+                // Handle pending approval case
+                toast.success(language === 'ar' ? 'تم استلام طلبك بنجاح' : 'Registration successful');
+                setLocation("/vendor/pending");
             }
 
-            await refresh();
-            toast.success(language === 'ar' ? 'تم إنشاء متجركِ بنجاح! أهلاً بكِ في عائلة فستان' : 'Store created successfully! Welcome to Fustan family');
-            setLocation("/vendor-dashboard");
         } catch (error: any) {
             const msg = error.response?.data?.message || (language === 'ar' ? 'فشل التسجيل. يرجى مراجعة البيانات' : 'Registration failed. Please check your data.');
             toast.error(msg);

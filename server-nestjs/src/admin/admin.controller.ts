@@ -30,6 +30,12 @@ export class AdminController {
         return this.adminService.getAllVendors();
     }
 
+    @Get('vendors/pending')
+    async getPendingVendors(@Req() req: Request) {
+        await this.checkAdmin(req);
+        return this.adminService.getPendingVendors();
+    }
+
     @Post('vendors')
     async createVendor(@Req() req: Request, @Body() body: any) {
         await this.checkAdmin(req);
@@ -83,6 +89,19 @@ export class AdminController {
     ) {
         await this.checkAdmin(req);
         return this.adminService.updateVendorCommission(+id, commissionRate);
+    }
+
+    @Patch('vendors/:id/status')
+    async updateVendorStatus(
+        @Req() req: Request,
+        @Param('id') id: string,
+        @Body('status') status: 'approved' | 'rejected'
+    ) {
+        await this.checkAdmin(req);
+        if (!['approved', 'rejected'].includes(status)) {
+            throw new UnauthorizedException('Invalid status');
+        }
+        return this.adminService.updateVendorStatus(+id, status);
     }
 
     @Get('customers/:id')
