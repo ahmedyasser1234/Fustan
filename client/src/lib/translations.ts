@@ -530,6 +530,8 @@ export const translations = {
         send: "إرسال",
         messageSent: "تم إرسال الرسالة بنجاح",
         errorSendingMessage: "حدث خطأ أثناء إرسال الرسالة",
+        errorCreating: "حدث خطأ أثناء إضافة البيانات",
+        errorUpdating: "حدث خطأ أثناء تحديث البيانات",
     },
     en: {
         // Navbar
@@ -1065,6 +1067,8 @@ export const translations = {
         send: "Send",
         messageSent: "Message sent successfully",
         errorSendingMessage: "Error sending message",
+        errorCreating: "Error creating item",
+        errorUpdating: "Error updating item",
         deleteProductConfirm: "Are you sure you want to delete this product?",
         productDeleted: "Product deleted successfully",
         errorDeleting: "Error deleting item",

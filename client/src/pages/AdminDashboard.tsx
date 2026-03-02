@@ -1941,6 +1941,11 @@ function CategoriesTab({
       resetForm();
       toast.success(t('categoryCreated'));
     },
+    onError: (error: any) => {
+      console.error("❌ [Frontend] Create Category Mutation Failed:", error);
+      const message = error.response?.data?.message || error.message || t('errorCreating');
+      toast.error(message);
+    }
   });
 
   const updateCategory = useMutation({
@@ -1951,11 +1956,12 @@ function CategoriesTab({
       resetForm();
       toast.success(t('categoryUpdated'));
     },
+    onError: (error: any) => {
+      console.error("❌ [Frontend] Update Category Mutation Failed:", error);
+      const message = error.response?.data?.message || error.message || t('errorUpdating');
+      toast.error(message);
+    }
   });
-
-
-
-
 
   const deleteCategory = useMutation({
     mutationFn: (id: number) => endpoints.categories.delete(id),
@@ -1963,6 +1969,9 @@ function CategoriesTab({
       queryClient.invalidateQueries({ queryKey: ['categories'] });
       toast.success(t('categoryDeleted'));
     },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message || t('errorDeleting'));
+    }
   });
 
   const resetForm = () => {
@@ -1982,14 +1991,25 @@ function CategoriesTab({
     formData.append("nameEn", nameEn);
     formData.append("descriptionAr", descriptionAr);
     formData.append("descriptionEn", descriptionEn);
-    formData.append("image", image); // Manual URL fallback
+
+    // Only append if we have a value. Order matters for Multer if using specific fields,
+    // but AnyFilesInterceptor is flexible.
     if (imageFile) {
-      formData.append("image", imageFile); // Actual file upload (prioritized by backend)
+      console.log("   - Appending image file to FormData");
+      formData.append("image", imageFile);
+    } else if (image) {
+      console.log("   - Appending image URL to FormData");
+      formData.append("image", image);
     }
 
     // Debug FormData
+    console.log("   - FormData Preview:");
     formData.forEach((value, key) => {
-      console.log(`📦 [FormData] ${key}:`, value);
+      if (value instanceof File) {
+        console.log(`     📦 ${key}: [File] ${value.name} (${value.size} bytes)`);
+      } else {
+        console.log(`     📦 ${key}:`, value);
+      }
     });
 
     if (editingCategory) {
