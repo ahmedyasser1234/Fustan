@@ -62,21 +62,29 @@ export class AdminService {
     }
 
     async getPendingVendors() {
-        return await this.databaseService.db.query.vendors.findMany({
-            where: eq(vendors.status, 'pending'),
-            with: {
+        return await this.databaseService.db
+            .select({
+                id: vendors.id,
+                userId: vendors.userId,
+                status: vendors.status,
+                storeNameAr: vendors.storeNameAr,
+                storeNameEn: vendors.storeNameEn,
+                storeSlug: vendors.storeSlug,
+                email: vendors.email,
+                phone: vendors.phone,
+                createdAt: vendors.createdAt,
                 user: {
-                    columns: {
-                        id: true,
-                        email: true,
-                        name: true,
-                        role: true,
-                        phone: true,
-                    },
+                    id: users.id,
+                    email: users.email,
+                    name: users.name,
+                    role: users.role,
+                    phone: users.phone,
                 },
-            },
-            orderBy: desc(vendors.createdAt),
-        });
+            })
+            .from(vendors)
+            .leftJoin(users, eq(vendors.userId, users.id))
+            .where(eq(vendors.status, 'pending'))
+            .orderBy(desc(vendors.createdAt));
     }
 
     async getAllCustomers() {
