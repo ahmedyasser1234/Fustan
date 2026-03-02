@@ -11,49 +11,49 @@ interface ProtectedRouteProps {
     redirectPath?: string;
 }
 
-export function ProtectedRoute({ path, component: Component, role, redirectPath }: ProtectedRouteProps) {
+export function ProtectedRoute({ path, component: Component, role: propRole, redirectPath }: ProtectedRouteProps) {
     const { user, loading, isAuthenticated } = useAuth();
     const { language } = useLanguage();
     const [, setLocation] = useLocation();
 
+    // Aggressively determine if we are a guest
+    const token = typeof window !== 'undefined' ? localStorage.getItem('app_token') : null;
+    const isGuest = !isAuthenticated && !token;
+
+    // Guess role from path if not provided
+    const role = propRole || (path.startsWith('/admin') ? 'admin' : (path.startsWith('/vendor') ? 'vendor' : 'customer'));
+
     useEffect(() => {
-        const token = localStorage.getItem('app_token');
-        console.log(`[ProtectedRoute] Path: ${path}, Loading: ${loading}, Auth: ${isAuthenticated}, Token: ${!!token}, Role Required: ${role || 'none'}`);
-
-        // If NO token and NOT authenticated, redirect IMMEDIATELY without waiting for loading
-        if (!isAuthenticated && !token) {
-            console.warn(`[ProtectedRoute] Immediate redirection: No token/auth found. Redirecting to ${role === 'admin' ? '/admin/login' : (role === 'vendor' ? '/vendor/login' : '/login')}`);
-            if (role === 'admin') setLocation(redirectPath || "/admin/login");
-            else if (role === 'vendor') setLocation(redirectPath || "/vendor/login");
-            else setLocation(redirectPath || "/login");
-            return;
-        }
-
-        // For role mismatch, we wait until loading is finished to be sure of the user's role
-        if (!loading && isAuthenticated && role && user?.role !== role) {
-            console.warn(`[ProtectedRoute] Redirection triggered: Role mismatch. Required: ${role}, Got: ${user?.role}. Redirecting to /`);
+        if (isGuest) {
+            const loginPath = role === 'admin' ? "/admin/login" : (role === 'vendor' ? "/vendor/login" : "/login");
+            console.warn(`[ProtectedRoute] GUEST detected on ${path}. Redirecting to ${loginPath}`);
+            setLocation(redirectPath || loginPath);
+        } else if (!loading && isAuthenticated && propRole && user?.role !== propRole) {
+            console.warn(`[ProtectedRoute] ROLE MISMATCH on ${path}. Expected ${propRole}, got ${user?.role}. Redirecting to /`);
             setLocation("/");
         }
-    }, [loading, isAuthenticated, role, user, setLocation, redirectPath, path]);
+    }, [isGuest, loading, isAuthenticated, propRole, user, setLocation, redirectPath, path, role]);
 
-    // Added a fail-safe: if it stays loading too long, check if we really have auth
+    // IF GUEST, DO NOT SHOW LOADER. REDIRECT IMMEDIATELY.
+    if (isGuest) {
+        return null;
+    }
+
     if (loading) {
         return (
             <div className="flex flex-col items-center justify-center min-h-screen bg-slate-50">
                 <div className="relative">
                     <div className="w-20 h-20 border-4 border-rose-100 border-t-rose-600 rounded-full animate-spin"></div>
-                    <img src="/logo-small.png" alt="Loading..." className="absolute inset-0 m-auto w-10 h-10 object-contain" onError={(e) => (e.currentTarget.style.display = 'none')} />
+                    <img src="/logo-small.png" alt="Fustan" className="absolute inset-0 m-auto w-10 h-10 object-contain opacity-50" onError={(e) => (e.currentTarget.style.display = 'none')} />
                 </div>
                 <p className="mt-4 text-slate-500 font-bold animate-pulse">
-                    {language === 'ar' ? 'جاري التحقق...' : 'Verifying Access...'}
+                    {language === 'ar' ? 'جاري التحقق من الهوية...' : 'Verifying Identity...'}
                 </p>
             </div>
         );
     }
 
-    if (!isAuthenticated && !localStorage.getItem('app_token')) {
-        return null;
-    }
+    if (!isAuthenticated) return null;
 
     return <Route path={path} component={Component} />;
 }
