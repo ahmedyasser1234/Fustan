@@ -537,28 +537,7 @@ export default function AdminDashboard() {
     onError: (error: any) => toast.error(error.response?.data?.message || (language === 'ar' ? "فشل في إضافة البائع" : "Failed to add vendor")),
   });
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <Loader2 className="w-10 h-10 text-purple-600 animate-spin" />
-      </div>
-    );
-  }
-
-  if (!user || user.role !== "admin") {
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center" dir={language === 'ar' ? 'rtl' : 'ltr'}>
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">
-            {t('mustBeAdmin')}
-          </h1>
-          <Link href="/">
-            <Button>{t('returnHome')}</Button>
-          </Link>
-        </div>
-      </div>
-    );
-  }
+  if (!user) return null;
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col" dir={language === 'ar' ? 'rtl' : 'ltr'}>

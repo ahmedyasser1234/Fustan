@@ -122,27 +122,7 @@ export default function VendorDashboard() {
     staleTime: 1000 * 60 * 2,
   });
 
-  if (authLoading) return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center pt-28">
-      <Loader2 className="w-12 h-12 animate-spin text-purple-600" />
-    </div>
-  );
-
-  if (!user || user.role !== "vendor") return (
-    <div className="min-h-screen bg-white flex items-center justify-center p-8">
-      <div className="text-center max-w-sm">
-        <div className="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-6">
-          <User className="w-10 h-10 text-red-400" />
-        </div>
-        <h1 className="text-2xl font-black text-slate-900 mb-4">
-          {t('unauthorizedAccess')}
-        </h1>
-        <Link href="/">
-          <Button className="w-full h-12 rounded-2xl bg-slate-900 font-bold">{t('returnHome')}</Button>
-        </Link>
-      </div>
-    </div>
-  );
+  if (!user) return null;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50/30 text-right pb-20" dir={language === 'ar' ? 'rtl' : 'ltr'}>

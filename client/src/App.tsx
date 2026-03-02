@@ -34,6 +34,7 @@ import FAQ from "@/pages/FAQ";
 import SearchResults from "@/pages/SearchResults";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { endpoints } from "@/lib/api";
+import { ProtectedRoute } from "./components/ProtectedRoute";
 import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query";
 import { io } from "socket.io-client";
 import { Button } from "@/components/ui/button";
@@ -522,15 +523,18 @@ function Router() {
       <Route path={"/products"} component={Products} />
       <Route path={"/products/:id"} component={ProductDetail} />
       <Route path={"/cart"} component={Cart} />
-      <Route path={"/checkout"} component={Checkout} />
-      <Route path={"/orders"} component={Orders} />
-      <Route path={"/orders/:id"} component={OrderDetails} />
-      <Route path={"/wishlist"} component={Wishlist} />
+      {/* Protected User Routes */}
+      <ProtectedRoute path={"/checkout"} component={Checkout} />
+      <ProtectedRoute path={"/orders"} component={Orders} />
+      <ProtectedRoute path={"/orders/:id"} component={OrderDetails} />
+      <ProtectedRoute path={"/wishlist"} component={Wishlist} />
+      <ProtectedRoute path={"/notifications"} component={Notifications} />
       <Route path={"/wishlist/shared/:token"} component={SharedWishlist} />
-      <Route path={"/notifications"} component={Notifications} />
+      <ProtectedRoute path={"/profile"} component={Profile} />
+
       <Route path="/vendor/login" component={VendorLogin} />
       <Route path="/vendor/register" component={VendorRegister} />
-      <Route path="/vendor/pending" component={PendingApproval} />
+      <ProtectedRoute path="/vendor/pending" component={PendingApproval} />
 
       {/* Admin Auth */}
       <Route path="/admin/login" component={AdminLogin} />
@@ -539,9 +543,8 @@ function Router() {
 
       {/* Profile & Dashboard Routes */}
       <Route path={"/vendor/:slug"} component={VendorProfile} />
-      <Route path="/vendor-dashboard" component={VendorDashboard} />
-      <Route path="/admin-dashboard" component={AdminDashboard} />
-      <Route path={"/profile"} component={Profile} />
+      <ProtectedRoute path="/vendor-dashboard" component={VendorDashboard} role="vendor" />
+      <ProtectedRoute path="/admin-dashboard" component={AdminDashboard} role="admin" />
 
       {/* Legal & Static Routes */}
       <Route path={"/privacy"} component={PrivacyPolicy} />
