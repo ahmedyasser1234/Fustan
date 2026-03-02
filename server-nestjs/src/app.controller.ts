@@ -9,5 +9,14 @@ export class AppController {
   getHello(): string {
     return this.appService.getHello();
   }
+
+  @Get('debug/headers')
+  debugHeaders(@Req() req: any) {
+    return {
+      headers: req.headers,
+      cookies: req.cookies,
+      env: process.env.NODE_ENV,
+    };
+  }
 }
 

@@ -14,17 +14,29 @@ export class AdminController {
 
 
     private async checkAdmin(req: Request) {
-        const token = req.headers.authorization?.startsWith('Bearer ')
-            ? req.headers.authorization.split(' ')[1]
-            : req.cookies?.[COOKIE_NAME];
+        const authHeader = req.headers.authorization;
+        const cookieToken = req.cookies?.[COOKIE_NAME];
 
-        if (!token) throw new UnauthorizedException('No token');
+        const token = authHeader?.startsWith('Bearer ')
+            ? authHeader.split(' ')[1]
+            : cookieToken;
 
-        const payload = await this.authService.verifySession(token);
-        if (!payload || payload.role !== 'admin') {
-            throw new UnauthorizedException('Not an admin');
+        if (!token) {
+            console.error('[AdminAuth] Manual check failed: No token found in headers or cookies');
+            throw new UnauthorizedException('Authentication required (No token)');
         }
-        return payload;
+
+        try {
+            const payload = await this.authService.verifySession(token);
+            if (!payload || payload.role !== 'admin') {
+                console.error(`[AdminAuth] Manual check failed: Invalid role or session. Payload: ${JSON.stringify(payload)}`);
+                throw new UnauthorizedException('Not an admin or invalid session');
+            }
+            return payload;
+        } catch (err) {
+            console.error('[AdminAuth] Verification error:', err);
+            throw new UnauthorizedException('Invalid token session');
+        }
     }
 
     @Get('vendors')
