@@ -229,44 +229,32 @@ function Navigation({ isChatHistoryOpen, setIsChatHistoryOpen, unreadCount, syst
                 </button>
               </Link>
 
-              {user ? (
-                <>
-                  {user.role !== 'admin' && user.role !== 'vendor' && (
-                    <>
-                      <Link href="/wishlist">
-                        <button className="w-8 h-8 md:w-11 md:h-11 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center shadow-inner hover:bg-rose-100 transition-all">
-                          <Heart className="w-4 h-4 md:w-5 md:h-5" />
-                        </button>
-                      </Link>
+              <div className="relative user-menu-container" ref={userMenuRef}>
+                <button
+                  onClick={() => setUserMenuOpen(!userMenuOpen)}
+                  className={`w-8 h-8 md:w-11 md:h-11 rounded-full flex items-center justify-center shadow-inner transition-all ${user ? 'bg-rose-100 text-rose-600 hover:bg-rose-200 ring-2 ring-rose-500/20' : (isScrolled || !isHeroPage ? 'bg-gray-100 text-gray-500 hover:bg-gray-200' : 'bg-white/10 text-white hover:bg-white/20 backdrop-blur-md')}`}
+                >
+                  <User className="w-4 h-4 md:w-5 md:h-5" />
+                </button>
 
-                      <NotificationDropdown unreadCount={systemUnreadCount} />
-                    </>
-                  )}
-
-                  <div className="relative user-menu-container" ref={userMenuRef}>
-                    <button
-                      onClick={() => setUserMenuOpen(!userMenuOpen)}
-                      className="w-8 h-8 md:w-11 md:h-11 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center shadow-inner hover:bg-rose-200 transition-all"
+                <AnimatePresence>
+                  {userMenuOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 15, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                      transition={{ duration: 0.2 }}
+                      className="absolute end-0 mt-4 w-72 bg-white rounded-[2.5rem] shadow-2xl border border-gray-100 p-5 z-50 overflow-hidden text-start"
                     >
-                      <User className="w-4 h-4 md:w-5 md:h-5" />
-                    </button>
-
-                    <AnimatePresence>
-                      {userMenuOpen && (
-                        <motion.div
-                          initial={{ opacity: 0, y: 15, scale: 0.95 }}
-                          animate={{ opacity: 1, y: 0, scale: 1 }}
-                          exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                          transition={{ duration: 0.2 }}
-                          className="absolute end-0 mt-4 w-72 bg-white rounded-[2rem] shadow-2xl border border-gray-100 p-5 z-50 overflow-hidden text-start"
-                        >
+                      {user ? (
+                        <>
                           <div className="flex items-center gap-4 p-2 mb-4">
                             <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center text-xl font-bold text-gray-500">
                               {user.name.charAt(0).toUpperCase()}
                             </div>
-                            <div>
-                              <p className="font-bold text-gray-900 text-lg">{user.name}</p>
-                              <p className="text-xs text-gray-400 font-medium">{user.email}</p>
+                            <div className="overflow-hidden">
+                              <p className="font-bold text-gray-900 text-lg truncate">{user.name}</p>
+                              <p className="text-xs text-gray-400 font-medium truncate">{user.email}</p>
                             </div>
                           </div>
 
@@ -323,22 +311,57 @@ function Navigation({ isChatHistoryOpen, setIsChatHistoryOpen, unreadCount, syst
                               {t('logout')}
                             </button>
                           </div>
-                        </motion.div>
+                        </>
+                      ) : (
+                        <div className="space-y-4">
+                          <div className="p-2">
+                            <h4 className="font-black text-gray-900 text-lg mb-1">{language === 'ar' ? "أهلاً بكِ في فستان" : "Welcome to Fustan"}</h4>
+                            <p className="text-xs text-gray-400 font-medium">{language === 'ar' ? "سجلي الدخول لتجربة تسوق أفضل" : "Sign in for a better shopping experience"}</p>
+                          </div>
+
+                          <div className="space-y-1">
+                            <Link href="/login">
+                              <button onClick={() => setUserMenuOpen(false)} className="w-full text-start px-4 py-3.5 rounded-2xl bg-rose-600 text-white hover:bg-rose-700 transition-all font-bold flex items-center gap-3 shadow-lg shadow-rose-100">
+                                <User size={18} />
+                                {language === 'ar' ? "دخول العميلة" : "Customer Login"}
+                              </button>
+                            </Link>
+
+                            <Link href="/vendor/login">
+                              <button onClick={() => setUserMenuOpen(false)} className="w-full text-start px-4 py-3.5 rounded-2xl hover:bg-rose-50 hover:text-rose-600 transition-colors font-bold text-gray-600 flex items-center gap-3">
+                                <ShoppingBag size={18} />
+                                {language === 'ar' ? "لوحة التاجر" : "Vendor Portal"}
+                              </button>
+                            </Link>
+
+                            <div className="h-px bg-gray-50 my-2" />
+
+                            <Link href="/admin/login">
+                              <button onClick={() => setUserMenuOpen(false)} className="w-full text-start px-4 py-3.5 rounded-2xl hover:bg-slate-50 text-slate-500 transition-colors font-bold flex items-center gap-3">
+                                <LayoutDashboard size={18} />
+                                {language === 'ar' ? "بوابة المدير" : "Admin Portal"}
+                              </button>
+                            </Link>
+                          </div>
+                        </div>
                       )}
-                    </AnimatePresence>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              {user && user.role !== 'admin' && user.role !== 'vendor' && (
+                <>
+                  <Link href="/wishlist">
+                    <button className="hidden md:flex w-8 h-8 md:w-11 md:h-11 rounded-full bg-rose-50 text-rose-600 items-center justify-center shadow-inner hover:bg-rose-100 transition-all">
+                      <Heart className="w-4 h-4 md:w-5 md:h-5" />
+                    </button>
+                  </Link>
+                  <div className="hidden md:block">
+                    <NotificationDropdown unreadCount={systemUnreadCount} />
                   </div>
                 </>
-              ) : (
-                <a href={getLoginUrl()} className="hidden xs:block">
-                  <Button className={`h-9 md:h-11 px-4 md:px-8 rounded-full text-xs md:text-base font-bold shadow-xl transition-all ${isScrolled || !isHeroPage
-                    ? 'bg-rose-600 hover:bg-rose-700 text-white shadow-rose-200'
-                    : 'bg-white text-gray-900 hover:bg-gray-50'
-                    }`}>
-                    {t('startNow')}
-                  </Button>
-                </a>
               )}
-
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 className="lg:hidden w-8 h-8 md:w-11 md:h-11 rounded-full bg-white border border-gray-100 flex items-center justify-center text-gray-900 shadow-sm transition-all"
@@ -390,13 +413,42 @@ function Navigation({ isChatHistoryOpen, setIsChatHistoryOpen, unreadCount, syst
                     </Link>
                   ))}
 
-                  {!user && (
-                    <a href={getLoginUrl()} className="block pt-4">
-                      <Button className="w-full h-14 rounded-2xl text-lg font-bold bg-rose-600 text-white shadow-xl shadow-rose-100">
-                        {t('startNow')}
-                      </Button>
-                    </a>
-                  )}
+                  <div className="pt-4 space-y-3">
+                    {user ? (
+                      <button
+                        onClick={() => {
+                          setMobileMenuOpen(false);
+                          logout();
+                        }}
+                        className="w-full h-14 rounded-2xl text-lg font-bold bg-red-50 text-red-500 transition-colors"
+                      >
+                        {t('logout')}
+                      </button>
+                    ) : (
+                      <>
+                        <Link href="/login">
+                          <button onClick={() => setMobileMenuOpen(false)} className="w-full h-14 rounded-2xl text-lg font-bold bg-rose-600 text-white shadow-xl shadow-rose-100 flex items-center justify-center gap-3">
+                            <User size={20} />
+                            {language === 'ar' ? "دخول العميلة" : "Customer Login"}
+                          </button>
+                        </Link>
+                        <div className="grid grid-cols-2 gap-3">
+                          <Link href="/vendor/login">
+                            <button onClick={() => setMobileMenuOpen(false)} className="w-full h-12 rounded-xl text-sm font-bold bg-gray-50 text-gray-600 flex items-center justify-center gap-2">
+                              <ShoppingBag size={16} />
+                              {language === 'ar' ? "التاجر" : "Vendor"}
+                            </button>
+                          </Link>
+                          <Link href="/admin/login">
+                            <button onClick={() => setMobileMenuOpen(false)} className="w-full h-12 rounded-xl text-sm font-bold bg-slate-100 text-slate-600 flex items-center justify-center gap-2">
+                              <LayoutDashboard size={16} />
+                              {language === 'ar' ? "المدير" : "Admin"}
+                            </button>
+                          </Link>
+                        </div>
+                      </>
+                    )}
+                  </div>
                 </div>
               </div>
             </motion.div>
