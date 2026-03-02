@@ -20,16 +20,19 @@ export function ProtectedRoute({ path, component: Component, role, redirectPath 
         const token = localStorage.getItem('app_token');
         console.log(`[ProtectedRoute] Path: ${path}, Loading: ${loading}, Auth: ${isAuthenticated}, Token: ${!!token}, Role Required: ${role || 'none'}`);
 
-        if (!loading) {
-            if (!isAuthenticated && !token) {
-                console.warn(`[ProtectedRoute] Redirection triggered: No token/auth found. Redirecting to ${role === 'admin' ? '/admin/login' : (role === 'vendor' ? '/vendor/login' : '/login')}`);
-                if (role === 'admin') setLocation(redirectPath || "/admin/login");
-                else if (role === 'vendor') setLocation(redirectPath || "/vendor/login");
-                else setLocation(redirectPath || "/login");
-            } else if (isAuthenticated && role && user?.role !== role) {
-                console.warn(`[ProtectedRoute] Redirection triggered: Role mismatch. Required: ${role}, Got: ${user?.role}. Redirecting to /`);
-                setLocation("/");
-            }
+        // If NO token and NOT authenticated, redirect IMMEDIATELY without waiting for loading
+        if (!isAuthenticated && !token) {
+            console.warn(`[ProtectedRoute] Immediate redirection: No token/auth found. Redirecting to ${role === 'admin' ? '/admin/login' : (role === 'vendor' ? '/vendor/login' : '/login')}`);
+            if (role === 'admin') setLocation(redirectPath || "/admin/login");
+            else if (role === 'vendor') setLocation(redirectPath || "/vendor/login");
+            else setLocation(redirectPath || "/login");
+            return;
+        }
+
+        // For role mismatch, we wait until loading is finished to be sure of the user's role
+        if (!loading && isAuthenticated && role && user?.role !== role) {
+            console.warn(`[ProtectedRoute] Redirection triggered: Role mismatch. Required: ${role}, Got: ${user?.role}. Redirecting to /`);
+            setLocation("/");
         }
     }, [loading, isAuthenticated, role, user, setLocation, redirectPath, path]);
 
