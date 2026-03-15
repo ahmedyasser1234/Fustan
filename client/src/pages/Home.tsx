@@ -76,7 +76,12 @@ export default function Home() {
 
   const getCategoryLink = (categoryArName: string) => {
     const collection = collections?.find((c: any) => c.nameAr === categoryArName);
-    return collection ? `/products?collection=${collection.id}` : "/products";
+    if (collection) return `/products?collection=${collection.id}`;
+
+    const category = categories?.find((c: any) => c.nameAr === categoryArName);
+    if (category) return `/products?category=${category.id}`;
+
+    return "/products";
   };
 
   // Fetch Categories

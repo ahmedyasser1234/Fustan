@@ -15,8 +15,17 @@ import { SEO } from "@/components/SEO";
 
 export default function Products() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<number | undefined>();
-  const [selectedCollection, setSelectedCollection] = useState<number | undefined>();
+  // Read parameters from URL initial state
+  const [selectedCategory, setSelectedCategory] = useState<number | undefined>(() => {
+    const params = new URLSearchParams(window.location.search);
+    const catId = params.get('category');
+    return catId ? Number(catId) : undefined;
+  });
+  const [selectedCollection, setSelectedCollection] = useState<number | undefined>(() => {
+    const params = new URLSearchParams(window.location.search);
+    const collId = params.get('collection');
+    return collId ? Number(collId) : undefined;
+  });
   const [showFilters, setShowFilters] = useState(false); // Mobile toggle
   const [sortBy, setSortBy] = useState<"newest" | "price-low" | "price-high" | "rating">("newest");
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 30000]);
@@ -24,15 +33,6 @@ export default function Products() {
   const [quickViewProduct, setQuickViewProduct] = useState<any>(null);
 
   const { language, t } = useLanguage();
-
-  // Read collection from URL params
-  useState(() => {
-    const params = new URLSearchParams(window.location.search);
-    const collectionId = params.get('collection');
-    if (collectionId) {
-      setSelectedCollection(Number(collectionId));
-    }
-  });
 
   const { data: categories } = useQuery({
     queryKey: ['categories'],
