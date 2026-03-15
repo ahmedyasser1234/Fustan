@@ -987,11 +987,11 @@ export default function ProductsTab({ vendorId, collectionId, onProductClick, on
                                                 const sizeInfo = SIZE_DATA.find(d => d[selectedSystem] === s.size);
                                                 return (
                                                     <div key={idx} className="flex flex-col gap-3 bg-white/5 p-4 rounded-3xl border border-white/10 group/item relative transition-all hover:bg-white/10">
-                                                        <div className="flex items-center gap-3">
+                                                        <div className="flex items-end gap-2 px-1">
                                                             <div className="flex-1 space-y-1">
-                                                                <label className="text-[10px] font-black text-white/40 uppercase">{language === 'ar' ? "المقاس" : "Size"}</label>
+                                                                <label className="text-[10px] font-black text-white/40 uppercase leading-none">{language === 'ar' ? "المقاس" : "Size"}</label>
                                                                 <Select value={s.size} onValueChange={(val) => handleSizeChange(idx, 'size', val)}>
-                                                                    <SelectTrigger className="h-10 bg-transparent border-white/10 text-white font-black">
+                                                                    <SelectTrigger className="h-10 bg-transparent border-white/10 text-white font-black w-full rounded-xl">
                                                                         <SelectValue placeholder={language === 'ar' ? "اختر المقاس" : "Select Size"} />
                                                                     </SelectTrigger>
                                                                     <SelectContent className="rounded-xl border-slate-800 bg-slate-900 text-white font-bold">
@@ -1003,12 +1003,25 @@ export default function ProductsTab({ vendorId, collectionId, onProductClick, on
                                                                     </SelectContent>
                                                                 </Select>
                                                             </div>
-                                                            <div className="flex-1 min-w-[120px] space-y-1">
-                                                                <label className="text-[10px] font-black text-white/40 uppercase">{language === 'ar' ? "الكمية" : "Qty"}</label>
-                                                                <Input type="number" placeholder="0" value={s.quantity} onChange={e => handleSizeChange(idx, 'quantity', parseInt(e.target.value))} className="h-10 bg-transparent border-white/10 text-white font-black text-center" />
+
+                                                            <div className="w-24 space-y-1">
+                                                                <label className="text-[10px] font-black text-white/40 uppercase leading-none">{language === 'ar' ? "الكمية" : "Qty"}</label>
+                                                                <Input 
+                                                                    type="number" 
+                                                                    placeholder="0" 
+                                                                    value={s.quantity} 
+                                                                    onChange={e => handleSizeChange(idx, 'quantity', parseInt(e.target.value))} 
+                                                                    className="h-10 bg-transparent border-white/10 text-white font-black text-center w-full rounded-xl" 
+                                                                />
                                                             </div>
+
                                                             {sizes.length > 1 && (
-                                                                <Button variant="ghost" size="icon" className="h-10 w-10 text-white/40 hover:text-red-400 hover:bg-red-400/10 mt-5" onClick={() => handleRemoveSize(idx)}>
+                                                                <Button 
+                                                                    variant="ghost" 
+                                                                    size="icon" 
+                                                                    className="h-10 w-10 text-white/40 hover:text-red-400 hover:bg-red-400/10 shrink-0" 
+                                                                    onClick={() => handleRemoveSize(idx)}
+                                                                >
                                                                     <Trash2 className="w-4 h-4" />
                                                                 </Button>
                                                             )}
@@ -1096,6 +1109,6 @@ export default function ProductsTab({ vendorId, collectionId, onProductClick, on
                     </div>
                 </DialogContent>
             </Dialog>
-        </div >
+        </div>
     );
 }

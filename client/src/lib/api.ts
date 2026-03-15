@@ -185,5 +185,9 @@ export const endpoints = {
     },
     points: {
         getMyPoints: () => api.get('/points/my-points').then(res => res.data),
+    },
+    vendorRequests: {
+        create: (data: any) => api.post('/vendor-requests', data).then(res => res.data),
+        myRequests: () => api.get('/vendor-requests/my-requests').then(res => res.data),
     }
 };

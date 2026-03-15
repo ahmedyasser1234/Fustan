@@ -1,12 +1,16 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { Loader2, Layers, Search, ArrowLeft } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { endpoints } from "@/lib/api";
-import { useLanguage } from "@/lib/i18n";
+import { Card, CardContent } from "../../components/ui/card";
+import { Button } from "../../components/ui/button";
+import { Input } from "../../components/ui/input";
+import { endpoints } from "../../lib/api";
+import { useLanguage } from "../../lib/i18n";
 import { useState } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "../../lib/utils";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../components/ui/dialog";
+import { toast } from "sonner";
+import { Textarea } from "../../components/ui/textarea";
+import React from "react";
 
 interface CategoriesTabProps {
     onCategoryClick?: (id: number) => void;
@@ -15,6 +19,38 @@ interface CategoriesTabProps {
 export default function CategoriesTab({ onCategoryClick }: CategoriesTabProps) {
     const { language } = useLanguage();
     const [search, setSearch] = useState("");
+    const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
+    const [requestNameAr, setRequestNameAr] = useState("");
+    const [requestNameEn, setRequestNameEn] = useState("");
+    const [requestDescAr, setRequestDescAr] = useState("");
+    const [requestDescEn, setRequestDescEn] = useState("");
+
+    const submitRequest = useMutation({
+        mutationFn: (data: any) => endpoints.vendorRequests.create(data),
+        onSuccess: () => {
+            toast.success(language === 'ar' ? "تم إرسال طلبك بنجاح" : "Request sent successfully");
+            setIsRequestModalOpen(false);
+            setRequestNameAr("");
+            setRequestNameEn("");
+            setRequestDescAr("");
+            setRequestDescEn("");
+        },
+        onError: () => {
+            toast.error(language === 'ar' ? "فشل إرسال الطلب" : "Failed to send request");
+        }
+    });
+
+    const handleRequestSubmit = () => {
+        if (!requestNameAr || !requestNameEn) {
+            return toast.error(language === 'ar' ? "يرجى إدخال اسم القسم بالعربية والإنجليزية" : "Please enter category name in both Arabic and English");
+        }
+        submitRequest.mutate({
+            nameAr: requestNameAr,
+            nameEn: requestNameEn,
+            descriptionAr: requestDescAr,
+            descriptionEn: requestDescEn
+        });
+    };
 
     const { data: categories, isLoading } = useQuery({
         queryKey: ['categories'],
@@ -46,7 +82,7 @@ export default function CategoriesTab({ onCategoryClick }: CategoriesTabProps) {
                         placeholder={language === 'ar' ? "ابحث عن قسم..." : "Search categories..."}
                         className={`h-14 ${language === 'ar' ? 'pr-12' : 'pl-12'} rounded-2xl border-slate-100 bg-white shadow-sm font-bold focus:ring-4 focus:ring-purple-50`}
                         value={search}
-                        onChange={(e) => setSearch(e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)}
                     />
                 </div>
             </div>
@@ -106,10 +142,85 @@ export default function CategoriesTab({ onCategoryClick }: CategoriesTabProps) {
                     <p className="text-slate-400 font-bold text-sm md:text-base leading-relaxed">{language === 'ar' ? "الأقسام يتم إدارتها من قبل إدارة المنصة لضمان تجربة مستخدم موحدة. يمكنك إنشاء مجموعاتك الخاصة داخل هذه الأقسام." : "Categories are managed by the platform administration to ensure a unified user experience. You can create your own collections within these categories."}</p>
                 </div>
                 <div className="relative z-10 w-full md:w-auto">
-                    <Button variant="outline" className="w-full md:w-auto h-12 md:h-14 px-8 rounded-2xl bg-white/5 border-white/10 text-white hover:bg-white/10 font-black">
+                    <Button 
+                        variant="outline" 
+                        className="w-full md:w-auto h-12 md:h-14 px-8 rounded-2xl bg-white/5 border-white/10 text-white hover:bg-white/10 font-black"
+                        onClick={() => setIsRequestModalOpen(true)}
+                    >
                         {language === 'ar' ? "طلب قسم جديد" : "Request New Category"}
                     </Button>
                 </div>
+
+                <Dialog open={isRequestModalOpen} onOpenChange={setIsRequestModalOpen}>
+                    <DialogContent className="max-w-2xl rounded-[32px] p-0 overflow-hidden border-0 bg-white">
+                        <DialogHeader className="p-8 pb-4 bg-slate-50">
+                            <DialogTitle className="text-2xl font-black text-slate-900">
+                                {language === 'ar' ? "طلب قسم جديد" : "Request New Category"}
+                            </DialogTitle>
+                            <p className="text-sm font-bold text-slate-400 mt-2">
+                                {language === 'ar' ? "سيتم مراجعة طلبك من قبل المشرفين وإضافته في أقرب وقت" : "Your request will be reviewed by admins and added soon"}
+                            </p>
+                        </DialogHeader>
+                        <div className="p-8 space-y-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="space-y-2">
+                                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest">{language === 'ar' ? "اسم القسم (بالعربية)" : "NAME (ARABIC)"}</label>
+                                    <Input 
+                                        className="h-12 rounded-xl bg-slate-50 border-transparent focus:bg-white focus:ring-4 focus:ring-purple-50 font-bold"
+                                        placeholder="مثال: فساتين دانتيل"
+                                        value={requestNameAr}
+                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setRequestNameAr(e.target.value)}
+                                        dir="rtl"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest">{language === 'ar' ? "NAME (ENGLISH)" : "NAME (ENGLISH)"}</label>
+                                    <Input 
+                                        className="h-12 rounded-xl bg-slate-50 border-transparent focus:bg-white focus:ring-4 focus:ring-purple-50 font-bold"
+                                        placeholder="Example: Lace Dresses"
+                                        value={requestNameEn}
+                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setRequestNameEn(e.target.value)}
+                                        dir="ltr"
+                                    />
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="space-y-2">
+                                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest">{language === 'ar' ? "وصف القسم (بالعربية)" : "DESCRIPTION (ARABIC)"}</label>
+                                    <Textarea 
+                                        className="min-h-[100px] rounded-xl bg-slate-50 border-transparent focus:bg-white focus:ring-4 focus:ring-purple-50 font-bold p-4"
+                                        placeholder="صِف هذا القسم وكيف يساعد المتسوقين..."
+                                        value={requestDescAr}
+                                        onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setRequestDescAr(e.target.value)}
+                                        dir="rtl"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest">{language === 'ar' ? "DESCRIPTION (ENGLISH)" : "DESCRIPTION (ENGLISH)"}</label>
+                                    <Textarea 
+                                        className="min-h-[100px] rounded-xl bg-slate-50 border-transparent focus:bg-white focus:ring-4 focus:ring-purple-50 font-bold p-4"
+                                        placeholder="Describe this category and how it helps shoppers..."
+                                        value={requestDescEn}
+                                        onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setRequestDescEn(e.target.value)}
+                                        dir="ltr"
+                                    />
+                                </div>
+                            </div>
+                            <div className="flex justify-end gap-3 pt-4">
+                                <Button variant="ghost" onClick={() => setIsRequestModalOpen(false)} className="h-12 px-8 rounded-xl font-bold text-slate-400">
+                                    {language === 'ar' ? "تراجع" : "Cancel"}
+                                </Button>
+                                <Button 
+                                    className="h-12 px-10 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-black shadow-lg shadow-purple-100"
+                                    onClick={handleRequestSubmit}
+                                    disabled={submitRequest.isPending}
+                                >
+                                    {submitRequest.isPending ? <Loader2 className="w-5 h-5 animate-spin" /> : (language === 'ar' ? "إرسال الطلب" : "Send Request")}
+                                </Button>
+                            </div>
+                        </div>
+                    </DialogContent>
+                </Dialog>
                 <Layers className="absolute -right-16 -bottom-16 w-48 h-48 md:w-64 md:h-64 text-white/5 -rotate-12" />
             </div>
         </div>

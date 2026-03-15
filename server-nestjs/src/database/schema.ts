@@ -609,3 +609,21 @@ export const wishlistSettings = pgTable(
         userIdIdx: index("wishlistSettings_userId_idx").on(table.userId),
     })
 );
+
+export const vendorRequests = pgTable(
+    "vendorRequests",
+    {
+        id: serial("id").primaryKey(),
+        vendorId: integer("vendorId").notNull(),
+        type: text("type").notNull(), // 'category_request', etc.
+        data: jsonb("data").$type<any>().notNull(), // Form data like { nameAr, nameEn, descriptionAr, descriptionEn }
+        status: text("status").default("pending").notNull(), // pending, approved, rejected
+        adminNotes: text("adminNotes"),
+        createdAt: timestamp("createdAt").defaultNow().notNull(),
+        updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+    },
+    (table) => ({
+        vendorIdIdx: index("vendorRequests_vendorId_idx").on(table.vendorId),
+        statusIdx: index("vendorRequests_status_idx").on(table.status),
+    })
+);

@@ -29,6 +29,7 @@ import { StoreReviewsModule } from './store-reviews/store-reviews.module';
 import { WishlistModule } from './wishlist/wishlist.module';
 import { WalletsModule } from './wallets/wallets.module';
 import { PointsModule } from './points/points.module';
+import { VendorRequestsModule } from './vendor-requests/vendor-requests.module';
 
 @Module({
   imports: [
@@ -60,6 +61,7 @@ import { PointsModule } from './points/points.module';
     StoreReviewsModule,
     WalletsModule,
     PointsModule,
+    VendorRequestsModule,
 
     ScheduleModule.forRoot(),
     ThrottlerModule.forRoot([{
