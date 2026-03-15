@@ -35,10 +35,10 @@ export function VendorsSection() {
                     <h2 className="text-3xl md:text-5xl font-black text-gray-900">{language === 'ar' ? "بيوت الأزياء" : "Fashion Houses"}</h2>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div className="flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 overflow-x-auto no-scrollbar pb-8 md:pb-0 px-4 md:px-0 -mx-4 md:mx-0">
                     {isLoading ? (
                         Array(4).fill({}).map((_, i) => (
-                            <div key={i} className="bg-white rounded-[2rem] p-6 shadow-xl border border-gray-100 h-full flex flex-col items-center">
+                            <div key={i} className="bg-white rounded-[2rem] p-6 shadow-xl border border-gray-100 h-full flex flex-col items-center w-72 flex-shrink-0 md:w-auto">
                                 <Skeleton className="w-24 h-24 rounded-full mb-6" />
                                 <Skeleton className="h-6 w-3/4 mb-4" />
                                 <Skeleton className="h-4 w-full mb-2" />
@@ -50,7 +50,7 @@ export function VendorsSection() {
                             <Link href={`/vendor/${vendor.storeSlug}`} key={vendor.id}>
                                 <motion.div
                                     whileHover={{ y: -10 }}
-                                    className="bg-white rounded-[2rem] p-6 shadow-xl border border-gray-100 cursor-pointer h-full flex flex-col items-center text-center group transition-all hover:shadow-2xl hover:border-rose-100"
+                                    className="bg-white rounded-[2rem] p-6 shadow-xl border border-gray-100 cursor-pointer h-full flex flex-col items-center text-center group transition-all hover:shadow-2xl hover:border-rose-100 w-72 flex-shrink-0 md:w-auto"
                                 >
                                     <div className="w-24 h-24 rounded-full bg-gray-50 border-2 border-gray-100 mb-6 overflow-hidden relative group-hover:border-rose-200 transition-colors">
                                         {vendor.logo ? (

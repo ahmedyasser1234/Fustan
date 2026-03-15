@@ -9,14 +9,11 @@ import { endpoints } from "@/lib/api";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/lib/i18n";
 import { ProductCard } from "@/components/ProductCard";
-import { TryOnSection } from "@/components/product/TryOnSection";
-import { VendorsSection } from "@/components/home/VendorsSection";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ReviewModal } from "@/components/home/ReviewModal";
 import { QuickViewModal } from "@/components/home/QuickViewModal";
 import { FlashSalesSection } from "@/components/home/FlashSalesSection";
-import { AppointmentSection } from "@/components/home/AppointmentSection";
 import { HomeFAQ } from "@/components/home/HomeFAQ";
 import { SEO } from "@/components/SEO";
 import { BackToTop } from "@/components/ui/BackToTop";
@@ -49,11 +46,34 @@ export default function Home() {
   const tabsRef = useRef<HTMLDivElement>(null);
   const productsPerPage = 4;
 
-  const videos = [
-    "/hero-video-1.mp4",
-    "/hero-video-2.mp4",
-    "/hero-video-3.mp4"
+  const heroSlides = [
+    {
+      video: "/hero-video-1.mp4",
+      title1: 'heroWeddingTitle1',
+      title2: 'heroWeddingTitle2',
+      desc: 'heroWeddingDesc',
+      categoryName: 'فساتين زفاف'
+    },
+    {
+      video: "/hero-video-2.mp4",
+      title1: 'heroEveningTitle1',
+      title2: 'heroEveningTitle2',
+      desc: 'heroEveningDesc',
+      categoryName: 'فساتين سهرة'
+    },
+    {
+      video: "/hero-video-3.mp4",
+      title1: 'heroGhamraTitle1',
+      title2: 'heroGhamraTitle2',
+      desc: 'heroGhamraDesc',
+      categoryName: 'فساتين غمرة'
+    }
   ];
+
+  const getCategoryLink = (categoryArName: string) => {
+    const collection = collections?.find((c: any) => c.nameAr === categoryArName);
+    return collection ? `/products?collection=${collection.id}` : "/products";
+  };
 
   // Fetch Categories
   const { data: categories } = useQuery({
@@ -104,10 +124,10 @@ export default function Home() {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setCurrentVideo((prev) => (prev + 1) % videos.length);
+      setCurrentVideo((prev) => (prev + 1) % heroSlides.length);
     }, 12000);
     return () => clearTimeout(timer);
-  }, [currentVideo, videos.length]);
+  }, [currentVideo, heroSlides.length]);
 
   const handleNextProduct = () => {
     if (!featuredProducts) return;
@@ -141,12 +161,12 @@ export default function Home() {
     <div className={`min-h-screen bg-[#fafafa] pb-24 ${language === 'ar' ? 'text-right' : 'text-left'}`} dir={dir}>
       <SEO />
       {/* Ultra-Premium Hero Section */}
-      <section className="relative min-h-[90vh] flex items-center overflow-hidden">
+      <section className="relative min-h-[50vh] md:min-h-[90vh] flex items-center overflow-hidden">
         {/* Main Background Video */}
         <div className="absolute inset-0 z-0">
           <AnimatePresence mode="wait">
             <motion.video
-              key={videos[currentVideo]}
+              key={heroSlides[currentVideo].video}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -157,14 +177,14 @@ export default function Home() {
               playsInline
               className="w-full h-full object-cover object-center absolute inset-0"
             >
-              <source src={videos[currentVideo]} type="video/mp4" />
+              <source src={heroSlides[currentVideo].video} type="video/mp4" />
             </motion.video>
           </AnimatePresence>
           <div className="absolute inset-0 bg-black/40"></div>
 
           {/* Video Navigation Dots */}
-          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30 flex gap-3">
-            {videos.map((_, index) => (
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 flex gap-3">
+            {heroSlides.map((_, index) => (
               <button
                 key={index}
                 onClick={() => setCurrentVideo(index)}
@@ -172,7 +192,7 @@ export default function Home() {
                   ? "bg-white scale-125 shadow-[0_0_10px_rgba(255,255,255,0.8)]"
                   : "bg-white/40 hover:bg-white/60"
                   }`}
-                aria-label={`Go to video ${index + 1}`}
+                aria-label={`Go to slide ${index + 1}`}
               />
             ))}
           </div>
@@ -199,30 +219,25 @@ export default function Home() {
             initial={{ opacity: 0, x: language === 'ar' ? 50 : -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
-            className={`max-w-3xl ${language === 'ar'
+            className={`max-w-3xl w-full ${language === 'ar'
               ? 'mr-auto lg:mr-[40%] text-right lg:-translate-x-[300px]'
               : 'ml-auto lg:ml-[40%] text-left lg:translate-x-[300px]'
               }`}
           >
             <div className="flex flex-col items-start space-y-6">
-              <h2 className="text-white leading-tight drop-shadow-2xl font-black w-full">
-                <span className="text-xl sm:text-4xl lg:text-6xl block mb-1 lg:mb-2">{t('heroTitlePart1')}</span>
-                <span className="text-3xl sm:text-6xl lg:text-8xl text-white/90 leading-[1.1] sm:leading-tight">{t('heroTitlePart2')}</span>
+              <h2 className="text-white leading-tight drop-shadow-2xl font-black w-full text-center sm:text-start">
+                <span className="text-xl sm:text-4xl lg:text-6xl block mb-1 lg:mb-2">{t(heroSlides[currentVideo].title1 as any)}</span>
+                <span className="text-3xl sm:text-6xl lg:text-8xl text-white/90 leading-[1.1] sm:leading-tight">{t(heroSlides[currentVideo].title2 as any)}</span>
               </h2>
 
               <p className="hidden sm:block text-lg lg:text-2xl text-white/95 max-w-xl leading-relaxed font-bold drop-shadow-md">
-                {t('heroDesc')}
+                {t(heroSlides[currentVideo].desc as any)}
               </p>
 
-              <div className="flex gap-3 sm:gap-6 flex-wrap justify-start pt-4 sm:pt-8 w-full">
-                <Link href="/products">
-                  <Button size="lg" className="h-12 sm:h-16 px-6 sm:px-12 rounded-full bg-[oklch(58.6%_0.253_17.585)] hover:bg-[oklch(58.6%_0.253_17.585)]/90 text-white text-sm sm:text-xl font-black shadow-2xl transition-all hover:scale-105 active:scale-95">
+              <div className="flex justify-center sm:justify-start pt-4 sm:pt-8 pb-12 sm:pb-0 w-full">
+                <Link href={getCategoryLink(heroSlides[currentVideo].categoryName)}>
+                  <Button size="lg" className="h-10 sm:h-16 px-8 sm:px-14 rounded-full bg-[oklch(58.6%_0.253_17.585)] hover:bg-[oklch(58.6%_0.253_17.585)]/90 text-white text-xs sm:text-xl font-black shadow-2xl transition-all hover:scale-110 active:scale-95">
                     {t('shopNow')}
-                  </Button>
-                </Link>
-                <Link href="/products?sort=newest">
-                  <Button size="lg" variant="outline" className="h-12 sm:h-16 px-6 sm:px-12 rounded-full border-2 border-white/30 text-white backdrop-blur-md text-sm sm:text-xl font-black hover:bg-white/10 transition-all hover:scale-105 active:scale-95">
-                    {t('newCollection')}
                   </Button>
                 </Link>
               </div>
@@ -231,27 +246,6 @@ export default function Home() {
         </div>
       </section >
 
-      {/* Features / Trust Signals Section */}
-      < section className="bg-white py-12 border-b border-gray-50 relative z-20" >
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-4 gap-8">
-            {[
-              { icon: Truck, titleAr: "شحن سريع ومجاني", titleEn: "Fast & Free Shipping", descAr: "للطلبات فوق 500 ر.س", descEn: "Orders over 500 SAR" },
-              { icon: ShieldCheck, titleAr: "ضمان الجودة", titleEn: "Quality Guarantee", descAr: "منتجات أصلية 100%", descEn: "100% Authentic" },
-              { icon: RefreshCw, titleAr: "استبدال سهل", titleEn: "Easy Returns", descAr: "خلال 14 يوم", descEn: "Within 14 days" },
-              { icon: Headset, titleAr: "دعم 24/7", titleEn: "24/7 Support", descAr: "نحن هنا لمساعدتك", descEn: "Here to help you" },
-            ].map((feature, i) => (
-              <div key={i} className="flex flex-col items-center text-center group">
-                <div className="w-16 h-16 rounded-full bg-rose-50 flex items-center justify-center text-rose-600 mb-4 group-hover:scale-110 transition-transform duration-300 shadow-sm">
-                  <feature.icon size={28} />
-                </div>
-                <h3 className="font-black text-gray-900 text-lg mb-2">{language === 'ar' ? feature.titleAr : feature.titleEn}</h3>
-                <p className="text-gray-500 font-bold text-sm">{language === 'ar' ? feature.descAr : feature.descEn}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section >
 
       {/* Featured Products */}
       < section className="pt-20 pb-0 relative z-20" >
@@ -267,10 +261,10 @@ export default function Home() {
             <p className="text-slate-500 text-base md:text-lg font-bold">{t('mostFeaturedDesc')}</p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+          <div className="flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-10 overflow-x-auto no-scrollbar pb-8 md:pb-0 px-4 md:px-0 -mx-4 md:mx-0 items-stretch">
             {(featuredLoading ? Array(4).fill({}) : (featuredProducts as any[] || [])).map((product: any, i: number) => (
               featuredLoading ? (
-                <div key={i} className="space-y-6">
+                <div key={i} className="space-y-6 w-72 flex-shrink-0 md:w-auto">
                   <Skeleton className="aspect-[2/3] w-full rounded-[40px]" />
                   <div className="space-y-3 px-4">
                     <Skeleton className="h-6 w-3/4 mr-auto" />
@@ -284,7 +278,7 @@ export default function Home() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1, duration: 0.5 }}
-                  className="group relative w-full aspect-[2/3]"
+                  className="group relative w-72 flex-shrink-0 md:w-auto aspect-[2/3]"
                 >
 
                   {/* Product Content 'Capsule' */}
@@ -343,48 +337,39 @@ export default function Home() {
             <p className="text-slate-500 text-base md:text-lg font-bold">{t('shopByOccasionDesc')}</p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-            {(collectionsLoading ? Array(3).fill({}) : (collections as any[] || [])).map((collection: any, i: number) => (
-              collectionsLoading ? (
-                <Skeleton key={i} className="aspect-[2/3] w-full rounded-[40px]" />
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-10">
+            {((!categories || (categories as any[]).length === 0) ? Array(3).fill({}) : (categories as any[]).filter(cat => ['فساتين زفاف', 'فساتين سهرة', 'فساتين غمرة'].includes(cat.nameAr)).slice(0, 4)).map((category: any, i: number) => (
+              (!categories || (categories as any[]).length === 0) ? (
+                <Skeleton key={i} className="aspect-[3/4] md:aspect-[2/3] w-full rounded-[20px] md:rounded-[40px]" />
               ) : (
                 <motion.div
-                  key={collection.id}
-                  initial={{ opacity: 0, y: 50 }}
-                  whileInView={{ opacity: 1, y: 0 }}
+                  key={category.id}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1, duration: 0.5 }}
-                  className="group relative w-full aspect-[2/3]"
+                  className="group relative aspect-[3/4] md:aspect-[2/3] rounded-[20px] md:rounded-[40px] overflow-hidden shadow-lg"
                 >
-                  {/* Collection Card */}
-                  <Link href={`/products?collection=${collection.id}`}>
-                    <div className="relative z-10 h-full w-full rounded-[40px] overflow-hidden shadow-2xl hover:shadow-purple-200/50 transition-all duration-500 bg-white">
-                      <div className="h-full w-full relative flex flex-col">
-                        {/* Collection Image */}
-                        <div className="flex-grow w-full relative h-full overflow-hidden">
-                          <img
-                            src={collection.coverImage || "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=800&q=80"}
-                            alt={language === 'ar' ? collection.nameAr : collection.nameEn}
-                            className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-110"
-                          />
-                        </div>
-
-                        {/* Purple Bottom Overlay */}
-                        <div className="absolute bottom-0 left-0 right-0 h-0 opacity-0 bg-[oklch(58.6%_0.253_17.585)]/10 backdrop-blur-md flex flex-col items-center justify-center text-center p-6 transition-all duration-300 group-hover:h-[45%] group-hover:opacity-100 overflow-hidden">
-                          <h3 className="text-2xl md:text-3xl font-black text-white mb-2 leading-tight opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100">
-                            {language === 'ar' ? collection.nameAr : collection.nameEn}
-                          </h3>
-
-                          <div className="flex items-center gap-2 mb-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-150">
-                            <div className="h-1 w-12 bg-white rounded-full" />
-                            <p className="text-white/90 text-lg font-bold">
-                              {collection.productsCount || 0} {language === 'ar' ? 'منتج' : 'Products'}
-                            </p>
-                          </div>
-
-                          <Button className="bg-white text-[oklch(58.6%_0.253_17.585)] hover:bg-white/90 rounded-full px-8 py-1 h-8 text-sm font-black shadow-sm transition-transform hover:scale-105 opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-200">
-                            {t('shopNow')}
-                          </Button>
+                  {/* Category Card */}
+                  <Link href={`/products?category=${category.id}`}>
+                    <div className="relative h-full w-full cursor-pointer overflow-hidden">
+                      {/* Category Image */}
+                      <img
+                        src={category.image || `https://images.unsplash.com/photo-${i === 0 ? '1511795409834-ef04bbd61622' : i === 1 ? '1566174053879-31528523f8ae' : '1533035353820-28b3a027964b'}?auto=format&fit=crop&q=80`}
+                        alt={language === 'ar' ? category.nameAr : category.nameEn}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      />
+                      
+                      {/* Glassy Overlay */}
+                      <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors duration-500" />
+                      
+                      {/* Name Overlay - Centered for Luxury Look */}
+                      <div className="absolute inset-0 flex flex-col items-center justify-center p-4 text-center">
+                        <h3 className="text-white text-xl md:text-3xl lg:text-4xl font-black drop-shadow-lg tracking-tight transition-transform duration-500 group-hover:scale-110">
+                          {language === 'ar' ? category.nameAr : category.nameEn}
+                        </h3>
+                        <div className="mt-2 text-white/80 text-xs md:text-base font-bold opacity-0 group-hover:opacity-100 transition-opacity duration-500 translate-y-2 group-hover:translate-y-0">
+                          {t('shopNow')}
                         </div>
                       </div>
                     </div>
@@ -498,9 +483,11 @@ export default function Home() {
             </div>
 
             <TabsContent value={selectedCategory === null ? "all" : selectedCategory.toString()} className="mt-0">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              <div className="flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 overflow-x-auto no-scrollbar pb-8 md:pb-0 px-4 md:px-0 -mx-4 md:mx-0">
                 {(productsLoading ? Array(8).fill({}) : (products as any[] || [])).map((product: any, i: number) => (
-                  <ProductCard key={i} product={product} loading={productsLoading} onQuickView={setQuickViewProduct} />
+                  <div key={i} className="w-72 flex-shrink-0 md:w-auto">
+                    <ProductCard product={product} loading={productsLoading} onQuickView={setQuickViewProduct} />
+                  </div>
                 ))}
               </div>
               {!productsLoading && (!products || products.length === 0) && (
@@ -516,11 +503,7 @@ export default function Home() {
       {/* Flash Sales Section */}
       <FlashSalesSection onQuickView={setQuickViewProduct} />
 
-      {/* Vendors Section (Already a component, will check later) */}
-      < VendorsSection />
 
-      {/* Appointment Booking Section */}
-      <AppointmentSection />
 
       {/* New Arrivals Section */}
       < section className="bg-white relative overflow-hidden pb-32 z-10 pt-0" >
@@ -537,10 +520,10 @@ export default function Home() {
 
           {/* New Arrivals Grid / Slider */}
           <div className="relative">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+            <div className="flex md:grid md:grid-cols-3 gap-8 md:gap-10 overflow-x-auto no-scrollbar pb-8 md:pb-0 px-4 md:px-0 -mx-4 md:mx-0">
               {newArrivalsLoading ? (
                 Array(3).fill({}).map((_, i) => (
-                  <Skeleton key={i} className="aspect-[3/4] w-full rounded-[45px]" />
+                  <Skeleton key={i} className="aspect-[3/4] w-72 flex-shrink-0 md:w-auto rounded-[45px]" />
                 ))
               ) : (
                 (() => {
@@ -557,7 +540,7 @@ export default function Home() {
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true }}
                       transition={{ delay: i * 0.1, duration: 0.5 }}
-                      className="flex flex-col drop-shadow-2xl"
+                      className="flex flex-col drop-shadow-2xl w-72 flex-shrink-0 md:w-auto"
                     >
                       <Link href={`/products/${product.id}`}>
                         <div className="relative group cursor-pointer h-full flex flex-col shadow-2xl rounded-[45px] overflow-hidden">
@@ -604,10 +587,10 @@ export default function Home() {
             <p className="text-slate-500 text-lg font-bold">{t('bestSellersDesc')}</p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+          <div className="flex md:grid md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10 overflow-x-auto no-scrollbar pb-8 md:pb-0 px-4 md:px-0 -mx-4 md:mx-0">
             {(bestSellersLoading ? Array(3).fill({}) : (bestSellers as any[] || []).slice(0, 3)).map((product: any, i: number) => (
               bestSellersLoading ? (
-                <Skeleton key={i} className="aspect-[2/3] w-full rounded-[40px]" />
+                <Skeleton key={i} className="aspect-[2/3] w-72 flex-shrink-0 md:w-auto rounded-[40px]" />
               ) : (
                 <motion.div
                   key={product.id}
@@ -615,7 +598,7 @@ export default function Home() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1, duration: 0.5 }}
-                  className="group relative w-full aspect-[2/3]"
+                  className="group relative w-72 flex-shrink-0 md:w-auto aspect-[2/3]"
                 >
                   <Link href={`/products/${product.id}`}>
                     <div className="relative z-10 h-full w-full rounded-[40px] overflow-hidden shadow-2xl hover:shadow-purple-200/50 transition-all duration-500 bg-white">
@@ -648,16 +631,6 @@ export default function Home() {
         </div>
       </section >
 
-      {/* AI Try-On Teaser Section */}
-      < section className="py-16 bg-[#f2f2f2] w-full" >
-        <div className="w-full">
-          <TryOnSection
-            productName={language === 'ar' ? "فستان سهرة فاخر" : "Luxury Evening Dress"}
-            productImage="https://res.cloudinary.com/dk3wwuy5d/image/upload/v1770928546/idnbgdxs68lv6abaqh94.png"
-            productDescription={language === 'ar' ? "فستان سهرة أنيق باللون الأحمر" : "Elegant red evening dress"}
-          />
-        </div>
-      </section >
 
       {/* Luxury Collection Banner */}
       <section className="py-12 md:py-24 bg-white container mx-auto px-4 max-w-7xl">

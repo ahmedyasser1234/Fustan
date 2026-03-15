@@ -86,14 +86,14 @@ export function FlashSalesSection({ onQuickView }: FlashSalesSectionProps) {
                     </Link>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div className="flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 overflow-x-auto no-scrollbar pb-8 md:pb-0 px-4 md:px-0 -mx-4 md:mx-0">
                     {isLoading ? (
                         Array(4).fill({}).map((_, i) => (
-                            <Skeleton key={i} className="aspect-[2/3] w-full rounded-[30px] bg-white/5" />
+                            <Skeleton key={i} className="aspect-[2/3] w-72 flex-shrink-0 md:w-auto rounded-[30px] bg-white/5" />
                         ))
                     ) : (
                         products?.map((product: any, i: number) => (
-                            <div key={i} className="bg-white rounded-[2rem] p-3 shadow-2xl shadow-black/20">
+                            <div key={i} className="bg-white rounded-[2rem] p-3 shadow-2xl shadow-black/20 w-72 flex-shrink-0 md:w-auto">
                                 <ProductCard
                                     product={{ ...product, discount: 30 }} // Mocking high discount 
                                     index={i}

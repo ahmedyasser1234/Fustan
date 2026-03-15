@@ -37,6 +37,19 @@ export const translations = {
         newCollection: "المجموعة الجديدة",
         positiveReviews: "تقييم إيجابي من عملائنا",
 
+        // Specific Category Hero Translations
+        heroWeddingTitle1: "فساتين زفاف",
+        heroWeddingTitle2: "إطلالة ملكية ساحرة",
+        heroWeddingDesc: "اكتشفي تشكيلتنا الحصرية من فساتين الزفاف التي تجمع بين الفخامة والنعومة لتكوني ملكة في ليلة العمر.",
+        
+        heroEveningTitle1: "فساتين سهرة",
+        heroEveningTitle2: "أناقة تخطف الأنظار",
+        heroEveningDesc: "تألقي في مناسباتك مع مجموعة فساتين السهرة الراقية المصممة لتمنحكِ حضوراً طاغياً وجاذبية لا تُنسى.",
+
+        heroGhamraTitle1: "فساتين غمرة",
+        heroGhamraTitle2: "تراث بلمسة عصرية",
+        heroGhamraDesc: "احتفلي بليلة الغمرة بأجمل التصاميم التي تمزج بين الأصالة والحداثة لتعبر عن شخصيتك المتفردة.",
+
         // Trust Bar
         fastShipping: "شحن سريع",
         fastShippingDesc: "توصيل لباب بيتك بأمان",
@@ -570,6 +583,19 @@ export const translations = {
         shopNow: "Shop Now",
         newCollection: "New Collection",
         positiveReviews: "Positive Customer Reviews",
+
+        // Specific Category Hero Translations
+        heroWeddingTitle1: "Wedding Dresses",
+        heroWeddingTitle2: "Charming Royal Look",
+        heroWeddingDesc: "Discover our exclusive collection of wedding dresses that combine luxury and softness to make you a queen on your big night.",
+
+        heroEveningTitle1: "Evening Dresses",
+        heroEveningTitle2: "Eye-Catching Elegance",
+        heroEveningDesc: "Shine in your occasions with our sophisticated evening dresses designed to give you a dominant presence and unforgettable charm.",
+
+        heroGhamraTitle1: "Ghamra Dresses",
+        heroGhamraTitle2: "Heritage with a Modern Touch",
+        heroGhamraDesc: "Celebrate your Ghamra night with the most beautiful designs that blend authenticity and modernity to express your unique personality.",
 
         // Trust Bar
         fastShipping: "Fast Shipping",
