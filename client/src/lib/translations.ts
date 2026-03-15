@@ -125,7 +125,7 @@ export const translations = {
         // Home Sections
         shopByOccasion: "تسوقي حسب المناسبة",
         shopByOccasionDesc: "اختياري المجموعة المناسبة لمناسبتك الخاصة",
-        newArrivals: "أحدث الوصول",
+        newArrivals: "وصلنا حديثاً",
         newArrivalsDesc: "اكتشفي أحدث إضافاتنا من الفساتين الفاخرة",
         bestSellers: "الأكثر مبيعاً",
         bestSellersDesc: "الفساتين الأكثر طلباً من عملائنا المميزين",

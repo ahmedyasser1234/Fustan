@@ -95,7 +95,7 @@ export function FlashSalesSection({ onQuickView }: FlashSalesSectionProps) {
                                 container.scrollBy({ left: language === 'ar' ? amount : -amount, behavior: 'smooth' });
                             }
                         }}
-                        className={`absolute top-1/2 -translate-y-1/2 z-30 w-8 h-8 flex items-center justify-center bg-white/10 backdrop-blur-md rounded-full shadow-lg border border-white/10 ${language === 'ar' ? '-right-2' : '-left-2'} md:flex hover:bg-white/20 transition-colors text-white`}
+                        className={`absolute top-1/2 -translate-y-1/2 z-30 w-8 h-8 flex items-center justify-center bg-white/10 backdrop-blur-md rounded-full shadow-lg border border-white/10 ${language === 'ar' ? '-right-2' : '-left-2'} md:hidden hover:bg-white/20 transition-colors text-white`}
                     >
                         <ChevronLeft size={16} />
                     </button>
@@ -107,7 +107,7 @@ export function FlashSalesSection({ onQuickView }: FlashSalesSectionProps) {
                                 container.scrollBy({ left: language === 'ar' ? -amount : amount, behavior: 'smooth' });
                             }
                         }}
-                        className={`absolute top-1/2 -translate-y-1/2 z-30 w-8 h-8 flex items-center justify-center bg-white/10 backdrop-blur-md rounded-full shadow-lg border border-white/10 ${language === 'ar' ? '-left-2' : '-right-2'} md:flex hover:bg-white/20 transition-colors text-white`}
+                        className={`absolute top-1/2 -translate-y-1/2 z-30 w-8 h-8 flex items-center justify-center bg-white/10 backdrop-blur-md rounded-full shadow-lg border border-white/10 ${language === 'ar' ? '-left-2' : '-right-2'} md:hidden hover:bg-white/20 transition-colors text-white`}
                     >
                         <ChevronRight size={16} />
                     </button>
