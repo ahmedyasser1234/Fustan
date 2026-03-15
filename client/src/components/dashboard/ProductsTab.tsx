@@ -28,6 +28,63 @@ const SIZE_DATA = [
     { us: "18", eu: "48", uk: "22", chest: "112", waist: "91", hips: "119" },
 ];
 
+const SILHOUETTE_DATA = {
+    "Ball Gown": {
+        ar: "الأميرات (Ball Gown)",
+        bodyShapeAr: "الكبمثري، المستطيل، والنحيفات",
+        bodyShapeEn: "Pear, Rectangle, and Slender",
+        vibeAr: "فخم وملكي: يمنحك إطلالة سندريلا التقليدية.",
+        vibeEn: "Luxurious and Royal: Gives you the traditional Cinderella look.",
+        venueAr: "القاعات الكبيرة والفنادق الفخمة",
+        venueEn: "Large halls and luxury hotels"
+    },
+    "A-Line": {
+        ar: "A-Line الـ",
+        bodyShapeAr: "مثالي لجميع الأجسام (خاصة المثلث المقلوب)",
+        bodyShapeEn: "Ideal for all bodies (especially inverted triangle)",
+        vibeAr: "كلاسيكي وراقي: يجمع بين الأناقة والراحة في الحركة.",
+        vibeEn: "Classic and Sophisticated: Combines elegance with comfort in movement.",
+        venueAr: "كافة أنواع الحفلات (داخلية أو خارجية)",
+        venueEn: "All types of parties (indoor or outdoor)"
+    },
+    "Mermaid": {
+        ar: "حورية البحر (Mermaid)",
+        bodyShapeAr: "الساعة الرملية (Hourglass)",
+        bodyShapeEn: "Hourglass",
+        vibeAr: "جذاب وعصري: يبرز منحنيات الجسم بشكل جريء وواضح.",
+        vibeEn: "Attractive and Modern: Highlights body curves boldly and clearly.",
+        venueAr: "القاعات الحديثة وحفلات العشاء",
+        venueEn: "Modern halls and dinner parties"
+    },
+    "Sheath": {
+        ar: "الغمد (Sheath)",
+        bodyShapeAr: "النحيفات، القوام الممشوق، والطويلات",
+        bodyShapeEn: "Slender, lean, and tall",
+        vibeAr: "بسيط وناعم: يركز على الجمال الطبيعي الهادئ دون تكلف.",
+        vibeEn: "Simple and Soft: Focuses on calm natural beauty without pretension.",
+        venueAr: "حفلات الشاطئ، الحدائق، أو الزواج المدني",
+        venueEn: "Beach parties, gardens, or civil marriage"
+    },
+    "Empire": {
+        ar: "الخصر العالي (Empire)",
+        bodyShapeAr: "القصيرات، وصاحبات الصدر الصغير",
+        bodyShapeEn: "Petite, and those with small busts",
+        vibeAr: "رومانسي وحالم: يعطي إيحاء بالطول ومستوحى من الأساطير.",
+        vibeEn: "Romantic and Dreamy: Gives an illusion of length and inspired by myths.",
+        venueAr: "الحفلات البسيطة أو التراثية",
+        venueEn: "Simple or traditional parties"
+    },
+    "Trumpet": {
+        ar: "البوق (Trumpet)",
+        bodyShapeAr: "الساعة الرملية والمستطيل",
+        bodyShapeEn: "Hourglass and Rectangle",
+        vibeAr: "انيق وحيوي: نسخة مريحة من \"حورية البحر\" تسمح بحركة أفضل.",
+        vibeEn: "Elegant and Lively: A comfortable version of \"Mermaid\" that allows better movement.",
+        venueAr: "حفلات الزفاف العصرية",
+        venueEn: "Modern wedding parties"
+    }
+};
+
 interface ProductsTabProps {
     vendorId: number;
     collectionId?: number | null;
@@ -258,6 +315,16 @@ export default function ProductsTab({ vendorId, collectionId, onProductClick, on
         // @ts-ignore
         newSizes[index][field] = value;
         setSizes(newSizes);
+    };
+
+    const handleSilhouetteChange = (val: string) => {
+        setSilhouette(val);
+        const data = SILHOUETTE_DATA[val as keyof typeof SILHOUETTE_DATA];
+        if (data) {
+            setBodyShape(language === 'ar' ? data.bodyShapeAr : data.bodyShapeEn);
+            setImpression(language === 'ar' ? data.vibeAr : data.vibeEn);
+            setOccasion(language === 'ar' ? data.venueAr : data.venueEn);
+        }
     };
 
     if (isLoading) return (
@@ -610,7 +677,18 @@ export default function ProductsTab({ vendorId, collectionId, onProductClick, on
                                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                                             <div className="space-y-2">
                                                 <label className="text-[10px] font-black text-slate-500">{language === 'ar' ? "نوع القصة (Silhouette)" : "SILHOUETTE"}</label>
-                                                <Input className="h-12 rounded-2xl border-white bg-white shadow-sm font-bold focus:ring-4 focus:ring-purple-100" value={silhouette} onChange={e => setSilhouette(e.target.value)} placeholder={language === 'ar' ? "A-Line, Mermaid..." : "A-Line, Mermaid..."} />
+                                                <Select value={silhouette} onValueChange={handleSilhouetteChange}>
+                                                    <SelectTrigger className="h-12 rounded-2xl border-white bg-white shadow-sm font-bold focus:ring-4 focus:ring-purple-100">
+                                                        <SelectValue placeholder={language === 'ar' ? "اختر القصة" : "Select Silhouette"} />
+                                                    </SelectTrigger>
+                                                    <SelectContent className="rounded-xl border-slate-200 bg-white font-bold">
+                                                        {Object.keys(SILHOUETTE_DATA).map((key) => (
+                                                            <SelectItem key={key} value={key}>
+                                                                {language === 'ar' ? SILHOUETTE_DATA[key as keyof typeof SILHOUETTE_DATA].ar : key}
+                                                            </SelectItem>
+                                                        ))}
+                                                    </SelectContent>
+                                                </Select>
                                             </div>
                                             <div className="space-y-2">
                                                 <label className="text-[10px] font-black text-slate-500">{language === 'ar' ? "نوع القص" : "CUT TYPE"}</label>
@@ -837,7 +915,7 @@ export default function ProductsTab({ vendorId, collectionId, onProductClick, on
                                                                     </SelectContent>
                                                                 </Select>
                                                             </div>
-                                                            <div className="w-20 space-y-1">
+                                                            <div className="w-28 space-y-1">
                                                                 <label className="text-[10px] font-black text-white/40 uppercase">{language === 'ar' ? "الكمية" : "Qty"}</label>
                                                                 <Input type="number" placeholder="0" value={s.quantity} onChange={e => handleSizeChange(idx, 'quantity', parseInt(e.target.value))} className="h-10 bg-transparent border-white/10 text-white font-black text-center" />
                                                             </div>
