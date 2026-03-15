@@ -84,9 +84,17 @@ export class ProductsService {
             where: eq(vendors.id, vendorId),
         });
 
-        const commissionRate = vendor?.commissionRate || 10; // Default to 10 if not found (should be found)
-        const vendorPrice = parseFloat(data.price); // The price sent by vendor is the base price
+        const commissionRate = vendor?.commissionRate || 15;
+        const vendorPrice = parseFloat(data.price || '0');
         const finalPrice = vendorPrice * (1 + commissionRate / 100);
+
+        const rentPrice = parseFloat(data.rentPrice || '0');
+        const salePrice = parseFloat(data.salePrice || '0');
+
+        const finalRentPrice = rentPrice * (1 + commissionRate / 100);
+        const finalSalePrice = salePrice * (1 + commissionRate / 100);
+
+        const usagePricesArr = typeof data.usagePrices === 'string' ? JSON.parse(data.usagePrices) : data.usagePrices;
 
         return await this.databaseService.db.transaction(async (tx) => {
             const [newProduct] = await tx.insert(products).values({
@@ -104,10 +112,16 @@ export class ProductsService {
                 images: imageUrls,
                 aiQualifiedImage: aiQualifiedImageUrl,
                 discount: parseFloat(data.discount || '0'),
-                vendorPrice: vendorPrice, // Store vendor's base price
-                vendorOriginalPrice: parseFloat(data.originalPrice || vendorPrice.toString()), // Store vendor's base original price
-                price: finalPrice, // Store final customer price
-                originalPrice: parseFloat(data.originalPrice || vendorPrice.toString()) * (1 + commissionRate / 100), // Customer price including commission
+                vendorPrice: vendorPrice,
+                vendorOriginalPrice: parseFloat(data.originalPrice || vendorPrice.toString()),
+                price: finalPrice,
+                originalPrice: parseFloat(data.originalPrice || vendorPrice.toString()) * (1 + commissionRate / 100),
+                rentPrice: finalRentPrice,
+                salePrice: finalSalePrice,
+                availability: data.availability || 'sale',
+                condition: data.condition || 'new',
+                usageCount: parseInt(data.usageCount || '0'),
+                usagePrices: usagePricesArr,
                 stock: totalStock,
                 sizes: sizesArr,
             }).returning();
@@ -328,9 +342,17 @@ export class ProductsService {
         const colorVariantsArr = typeof data.colorVariants === 'string' ? JSON.parse(data.colorVariants) : data.colorVariants;
 
         // Calculate Price with Commission
-        const commissionRate = vendor?.commissionRate || 10;
-        const vendorPrice = parseFloat(data.price);
+        const commissionRate = vendor?.commissionRate || 15;
+        const vendorPrice = parseFloat(data.price || product.vendorPrice?.toString() || '0');
         const finalPrice = vendorPrice * (1 + commissionRate / 100);
+
+        const rentPrice = parseFloat(data.rentPrice || '0');
+        const salePrice = parseFloat(data.salePrice || '0');
+
+        const finalRentPrice = rentPrice * (1 + commissionRate / 100);
+        const finalSalePrice = salePrice * (1 + commissionRate / 100);
+
+        const usagePricesArr = typeof data.usagePrices === 'string' ? JSON.parse(data.usagePrices) : data.usagePrices;
 
         return await this.databaseService.db.transaction(async (tx) => {
             const [updatedProduct] = await tx
@@ -351,6 +373,12 @@ export class ProductsService {
                     vendorOriginalPrice: parseFloat(data.originalPrice || vendorPrice.toString()),
                     price: finalPrice,
                     originalPrice: parseFloat(data.originalPrice || vendorPrice.toString()) * (1 + commissionRate / 100),
+                    rentPrice: finalRentPrice,
+                    salePrice: finalSalePrice,
+                    availability: data.availability || product.availability,
+                    condition: data.condition || product.condition,
+                    usageCount: parseInt(data.usageCount || product.usageCount?.toString() || '0'),
+                    usagePrices: usagePricesArr || product.usagePrices,
                     updatedAt: new Date(),
                 })
                 .where(eq(products.id, id))

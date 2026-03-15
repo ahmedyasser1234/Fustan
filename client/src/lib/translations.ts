@@ -557,6 +557,16 @@ export const translations = {
         sizeGuide: "دليل المقاسات",
         sizeGuideDesc: "استخدمي شريط القياس بالسنتيمتر (cm) للتأكد من اختيار المقاس الأمثل لكِ.",
         measurements: "القياسات",
+        availability: "الإتاحة",
+        rent: "إيجار",
+        sale: "بيع",
+        both: "كلاهما",
+        condition: "حالة الفستان",
+        new: "جديد",
+        used: "مستعمل",
+        usageCount: "عدد مرات الاستخدام",
+        rentPrice: "سعر الإيجار",
+        salePrice: "سعر البيع",
     },
     en: {
         // Navbar
@@ -1122,6 +1132,16 @@ export const translations = {
         deleteProductConfirm: "Are you sure you want to delete this product?",
         productDeleted: "Product deleted successfully",
         errorDeleting: "Error deleting item",
+        availability: "Availability",
+        rent: "Rent",
+        sale: "Sale",
+        both: "Both",
+        condition: "Condition",
+        new: "New",
+        used: "Used",
+        usageCount: "Usage Count",
+        rentPrice: "Rent Price",
+        salePrice: "Sale Price",
     }
 };
 

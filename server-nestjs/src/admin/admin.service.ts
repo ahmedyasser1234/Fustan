@@ -257,7 +257,7 @@ export class AdminService {
                 phone: data.phone,
                 cityAr: data.city,
                 cityEn: data.city,
-                commissionRate: data.commissionRate || 10,
+                commissionRate: data.commissionRate || 15,
                 status: 'approved', // Auto-approve admin-created vendors
             }).returning();
 

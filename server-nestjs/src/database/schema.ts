@@ -67,7 +67,7 @@ export const vendors = pgTable(
         gallery: text("gallery").array(),
         isVerified: boolean("isVerified").default(false),
         isActive: boolean("isActive").default(true),
-        commissionRate: doublePrecision("commissionRate").default(10),
+        commissionRate: doublePrecision("commissionRate").default(15),
         rating: doublePrecision("rating").default(0),
         totalReviews: integer("totalReviews").default(0),
         shippingCost: doublePrecision("shippingCost").default(0).notNull(),
@@ -146,6 +146,12 @@ export const products = pgTable(
         stock: integer("stock").default(0),
         images: jsonb("images").$type<string[]>(),
         specifications: jsonb("specifications").$type<Record<string, string>>(),
+        availability: text("availability").default("sale").notNull(), // 'rent', 'sale', 'both'
+        condition: text("condition").default("new").notNull(), // 'new', 'used'
+        usageCount: integer("usageCount").default(0),
+        rentPrice: doublePrecision("rentPrice"),
+        salePrice: doublePrecision("salePrice"),
+        usagePrices: jsonb("usagePrices").$type<{ count: number; price: number }[]>(),
         cutType: text("cutType"),
         bodyShape: text("bodyShape"),
         impression: text("impression"),

@@ -106,6 +106,11 @@ export default function ProductsTab({ vendorId, collectionId, onProductClick, on
     const [nameEn, setNameEn] = useState("");
     const [descriptionAr, setDescriptionAr] = useState("");
     const [descriptionEn, setDescriptionEn] = useState("");
+    const [availability, setAvailability] = useState<"rent" | "sale" | "both">("sale");
+    const [condition, setCondition] = useState<"new" | "used">("new");
+    const [usageCount, setUsageCount] = useState<number>(0);
+    const [rentPrice, setRentPrice] = useState("");
+    const [salePrice, setSalePrice] = useState("");
     const [price, setPrice] = useState("");
     const [discount, setDiscount] = useState("0");
     const [collectionIdState, setCollectionId] = useState("");
@@ -184,6 +189,11 @@ export default function ProductsTab({ vendorId, collectionId, onProductClick, on
             formData.append("occasion", occasion);
             formData.append("silhouette", silhouette);
             formData.append("sku", sku);
+            formData.append("availability", availability);
+            formData.append("condition", condition);
+            formData.append("usageCount", usageCount.toString());
+            formData.append("rentPrice", rentPrice);
+            formData.append("salePrice", salePrice);
             // Convert tags string to array before sending
             const tagsArray = tags.split(',').map(t => t.trim()).filter(t => t !== "");
             formData.append("tags", JSON.stringify(tagsArray));
@@ -249,6 +259,11 @@ export default function ProductsTab({ vendorId, collectionId, onProductClick, on
         setDescriptionEn(product.descriptionEn);
         setPrice(product.originalPrice?.toString() || product.price.toString());
         setDiscount(product.discount?.toString() || "0");
+        setAvailability(product.availability || "sale");
+        setCondition(product.condition || "new");
+        setUsageCount(product.usageCount || 0);
+        setRentPrice(product.rentPrice?.toString() || "");
+        setSalePrice(product.salePrice?.toString() || "");
         setCollectionId(product.collectionId?.toString() || "");
         setCategoryId(product.categoryId?.toString() || "");
         setSizes(product.sizes || [{ size: "", quantity: 0 }]);
@@ -293,6 +308,7 @@ export default function ProductsTab({ vendorId, collectionId, onProductClick, on
         setEditingProduct(null);
         setNameAr(""); setNameEn(""); setDescriptionAr(""); setDescriptionEn("");
         setPrice(""); setDiscount("0"); setImages([]); setAiQualifiedImage(null); setSizes([{ size: "", quantity: 0 }]);
+        setAvailability("sale"); setCondition("new"); setUsageCount(0); setRentPrice(""); setSalePrice("");
         setCategoryId(""); setCollectionId("");
         setCutType(""); setBodyShape(""); setImpression(""); setOccasion(""); setSilhouette("");
         setSku(""); setTags("");
@@ -597,22 +613,83 @@ export default function ProductsTab({ vendorId, collectionId, onProductClick, on
                                             </div>
                                         </div>
 
-                                        {/* Pricing */}
+                                        {/* Pricing System */}
                                         <div className="space-y-6">
                                             <div className="flex items-center gap-3">
                                                 <div className="h-2 w-8 bg-[#e91e63] rounded-full" />
-                                                <h4 className="font-black text-slate-900 uppercase tracking-widest text-xs">{language === 'ar' ? "التسعير والخصم" : "Pricing System"}</h4>
+                                                <h4 className="font-black text-slate-900 uppercase tracking-widest text-xs">{language === 'ar' ? "نظام التسعير والحالة" : "Pricing & Condition"}</h4>
                                             </div>
 
-                                            <div className="bg-slate-50 p-6 rounded-[32px] border border-slate-100 grid grid-cols-2 gap-6 relative overflow-hidden">
-                                                <div className="space-y-2 relative z-10">
-                                                    <label className="text-[10px] font-black text-slate-400">{language === 'ar' ? "السعر الأصلي" : "BASE PRICE"}</label>
-                                                    <div className="relative">
-                                                        <Input type="number" value={price} onChange={e => setPrice(e.target.value)} className="h-14 rounded-2xl border-white shadow-sm font-black text-xl px-6 pr-14 focus:ring-4 focus:ring-pink-50" />
-                                                        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-black text-slate-300 pointer-events-none">{t('currency')}</span>
+                                            <div className="bg-slate-50 p-6 rounded-[32px] border border-slate-100 space-y-6 relative overflow-hidden">
+                                                <div className="grid grid-cols-2 gap-6">
+                                                    <div className="space-y-2">
+                                                        <label className="text-[10px] font-black text-slate-400">{t('availability')}</label>
+                                                        <Select value={availability} onValueChange={(val: any) => setAvailability(val)}>
+                                                            <SelectTrigger className="h-12 rounded-xl bg-white border-slate-100 font-bold">
+                                                                <SelectValue />
+                                                            </SelectTrigger>
+                                                            <SelectContent className="rounded-xl font-bold">
+                                                                <SelectItem value="sale">{t('sale')}</SelectItem>
+                                                                <SelectItem value="rent">{t('rent')}</SelectItem>
+                                                                <SelectItem value="both">{t('both')}</SelectItem>
+                                                            </SelectContent>
+                                                        </Select>
+                                                    </div>
+                                                    <div className="space-y-2">
+                                                        <label className="text-[10px] font-black text-slate-400">{t('condition')}</label>
+                                                        <Select value={condition} onValueChange={(val: any) => setCondition(val)}>
+                                                            <SelectTrigger className="h-12 rounded-xl bg-white border-slate-100 font-bold">
+                                                                <SelectValue />
+                                                            </SelectTrigger>
+                                                            <SelectContent className="rounded-xl font-bold">
+                                                                <SelectItem value="new">{t('new')}</SelectItem>
+                                                                <SelectItem value="used">{t('used')}</SelectItem>
+                                                            </SelectContent>
+                                                        </Select>
                                                     </div>
                                                 </div>
-                                                <div className="space-y-2 relative z-10">
+
+                                                {condition === 'used' && (
+                                                    <div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-300">
+                                                        <label className="text-[10px] font-black text-slate-400">{t('usageCount')}</label>
+                                                        <Select value={usageCount.toString()} onValueChange={(val) => setUsageCount(parseInt(val))}>
+                                                            <SelectTrigger className="h-12 rounded-xl bg-white border-slate-100 font-bold">
+                                                                <SelectValue />
+                                                            </SelectTrigger>
+                                                            <SelectContent className="rounded-xl font-bold">
+                                                                {[1, 2, 3, 4, 5].map(n => (
+                                                                    <SelectItem key={n} value={n.toString()}>{n}</SelectItem>
+                                                                ))}
+                                                            </SelectContent>
+                                                        </Select>
+                                                        <p className="text-[9px] font-bold text-[#e91e63] mt-1 italic">
+                                                            {language === 'ar' ? "* الأسعار قد تختلف بناءً على عدد مرات الاستخدام" : "* Prices may vary based on usage count"}
+                                                        </p>
+                                                    </div>
+                                                )}
+
+                                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                                    {(availability === 'sale' || availability === 'both') && (
+                                                        <div className="space-y-2">
+                                                            <label className="text-[10px] font-black text-slate-400">{t('salePrice')}</label>
+                                                            <div className="relative">
+                                                                <Input type="number" value={salePrice} onChange={e => setSalePrice(e.target.value)} className="h-14 rounded-2xl border-white shadow-sm font-black text-xl px-6 pr-14 focus:ring-4 focus:ring-pink-50" />
+                                                                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-black text-slate-300 pointer-events-none">{t('sar')}</span>
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                    {(availability === 'rent' || availability === 'both') && (
+                                                        <div className="space-y-2">
+                                                            <label className="text-[10px] font-black text-slate-400">{t('rentPrice')}</label>
+                                                            <div className="relative">
+                                                                <Input type="number" value={rentPrice} onChange={e => setRentPrice(e.target.value)} className="h-14 rounded-2xl border-white shadow-sm font-black text-xl px-6 pr-14 focus:ring-4 focus:ring-blue-50" />
+                                                                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-black text-slate-300 pointer-events-none">{t('sar')}</span>
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                </div>
+
+                                                <div className="space-y-2">
                                                     <label className="text-[10px] font-black text-slate-400">{language === 'ar' ? "الخصم %" : "DISCOUNT %"}</label>
                                                     <div className="relative">
                                                         <Input type="number" value={discount} onChange={e => setDiscount(e.target.value)} className="h-14 rounded-2xl border-white shadow-sm font-black text-xl px-6 pr-14 focus:ring-4 focus:ring-pink-50" />
@@ -620,9 +697,24 @@ export default function ProductsTab({ vendorId, collectionId, onProductClick, on
                                                     </div>
                                                 </div>
 
-                                                <div className="col-span-2 mt-4 pt-6 border-t border-slate-200/50 flex items-center justify-between">
-                                                    <span className="text-sm font-black text-slate-500">{language === 'ar' ? "السعر النهائي للمشتري:" : "Final Listing Price:"}</span>
-                                                    <span className="text-3xl font-black text-[#e91e63]">{calculateFinalPrice()} <span className="text-xs">{t('currency')}</span></span>
+                                                <div className="col-span-2 mt-4 pt-6 border-t border-slate-200/50">
+                                                    <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-4">
+                                                        {language === 'ar' ? "السعر النهائي للمشتري (يشمل 15% عمولة):" : "Final Price (Includes 15% Commission):"}
+                                                    </span>
+                                                    <div className="space-y-3">
+                                                        {(availability === 'sale' || availability === 'both') && (
+                                                            <div className="flex items-center justify-between bg-white p-4 rounded-2xl border border-slate-100">
+                                                                <span className="font-bold text-slate-500">{t('sale')}</span>
+                                                                <span className="text-2xl font-black text-[#e91e63]">{(parseFloat(salePrice || "0") * (1 - parseFloat(discount || "0") / 100) * 1.15).toFixed(2)} <span className="text-xs">{t('sar')}</span></span>
+                                                            </div>
+                                                        )}
+                                                        {(availability === 'rent' || availability === 'both') && (
+                                                            <div className="flex items-center justify-between bg-white p-4 rounded-2xl border border-slate-100">
+                                                                <span className="font-bold text-slate-500">{t('rent')}</span>
+                                                                <span className="text-2xl font-black text-blue-600">{(parseFloat(rentPrice || "0") * (1 - parseFloat(discount || "0") / 100) * 1.15).toFixed(2)} <span className="text-xs">{t('sar')}</span></span>
+                                                            </div>
+                                                        )}
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -689,10 +781,6 @@ export default function ProductsTab({ vendorId, collectionId, onProductClick, on
                                                         ))}
                                                     </SelectContent>
                                                 </Select>
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-[10px] font-black text-slate-500">{language === 'ar' ? "نوع القص" : "CUT TYPE"}</label>
-                                                <Input className="h-12 rounded-2xl border-white bg-white shadow-sm font-bold focus:ring-4 focus:ring-purple-100" value={cutType} onChange={e => setCutType(e.target.value)} placeholder={language === 'ar' ? "V-Neck, Off-Shoulder..." : "V-Neck, Off-Shoulder..."} />
                                             </div>
                                             <div className="space-y-2">
                                                 <label className="text-[10px] font-black text-slate-500">{language === 'ar' ? "شكل الجسم المناسب" : "BODY SHAPE"}</label>
@@ -915,7 +1003,7 @@ export default function ProductsTab({ vendorId, collectionId, onProductClick, on
                                                                     </SelectContent>
                                                                 </Select>
                                                             </div>
-                                                            <div className="w-28 space-y-1">
+                                                            <div className="flex-1 min-w-[120px] space-y-1">
                                                                 <label className="text-[10px] font-black text-white/40 uppercase">{language === 'ar' ? "الكمية" : "Qty"}</label>
                                                                 <Input type="number" placeholder="0" value={s.quantity} onChange={e => handleSizeChange(idx, 'quantity', parseInt(e.target.value))} className="h-10 bg-transparent border-white/10 text-white font-black text-center" />
                                                             </div>
