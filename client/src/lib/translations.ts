@@ -545,6 +545,18 @@ export const translations = {
         errorSendingMessage: "حدث خطأ أثناء إرسال الرسالة",
         errorCreating: "حدث خطأ أثناء إضافة البيانات",
         errorUpdating: "حدث خطأ أثناء تحديث البيانات",
+
+        // Size Guide
+        sizeSystem: "نظام المقاسات",
+        usSystem: "الأمريكي (US)",
+        euSystem: "الأوروبي (EU)",
+        ukSystem: "البريطاني (UK)",
+        chest: "الصدر",
+        waist: "الخصر",
+        hips: "الأرداف",
+        sizeGuide: "دليل المقاسات",
+        sizeGuideDesc: "استخدمي شريط القياس بالسنتيمتر (cm) للتأكد من اختيار المقاس الأمثل لكِ.",
+        measurements: "القياسات",
     },
     en: {
         // Navbar
@@ -756,6 +768,18 @@ export const translations = {
         updateSocialLinks: "Update social media links",
         brandingShipping: "Branding & Shipping",
         updateBrandingShipping: "Update images and shipping settings",
+
+        // Size Guide
+        sizeSystem: "Size System",
+        usSystem: "US System",
+        euSystem: "EU System",
+        ukSystem: "UK System",
+        chest: "Chest",
+        waist: "Waist",
+        hips: "Hips",
+        sizeGuide: "Size Guide",
+        sizeGuideDesc: "Use a measuring tape in centimeters (cm) to ensure you choose the perfect size for you.",
+        measurements: "Measurements",
         storeNameAr: "Store Name (Arabic)",
         storeNameEn: "Store Name (English)",
         descriptionAr: "Description (Arabic)",

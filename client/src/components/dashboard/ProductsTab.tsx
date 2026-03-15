@@ -13,6 +13,20 @@ import { useLanguage } from "@/lib/i18n";
 import api from "@/lib/api";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
+import { HelpCircle, Info } from "lucide-react";
+
+const SIZE_DATA = [
+    { us: "0", eu: "30", uk: "4", chest: "82", waist: "62", hips: "89" },
+    { us: "2", eu: "32", uk: "6", chest: "84", waist: "64", hips: "91" },
+    { us: "4", eu: "34", uk: "8", chest: "86", waist: "66", hips: "94" },
+    { us: "6", eu: "36", uk: "10", chest: "89", waist: "69", hips: "97" },
+    { us: "8", eu: "38", uk: "12", chest: "91", waist: "71", hips: "99" },
+    { us: "10", eu: "40", uk: "14", chest: "94", waist: "74", hips: "102" },
+    { us: "12", eu: "42", uk: "16", chest: "98", waist: "77", hips: "105" },
+    { us: "14", eu: "44", uk: "18", chest: "102", waist: "81", hips: "109" },
+    { us: "16", eu: "46", uk: "20", chest: "107", waist: "86", hips: "114" },
+    { us: "18", eu: "48", uk: "22", chest: "112", waist: "91", hips: "119" },
+];
 
 interface ProductsTabProps {
     vendorId: number;
@@ -42,6 +56,7 @@ export default function ProductsTab({ vendorId, collectionId, onProductClick, on
     const [images, setImages] = useState<File[]>([]);
     const [aiQualifiedImage, setAiQualifiedImage] = useState<File | null>(null);
     const [sizes, setSizes] = useState<{ size: string; quantity: number }[]>([{ size: "", quantity: 0 }]);
+    const [selectedSystem, setSelectedSystem] = useState<"us" | "eu" | "uk">("us");
     const [cutType, setCutType] = useState("");
     const [bodyShape, setBodyShape] = useState("");
     const [impression, setImpression] = useState("");
@@ -225,6 +240,7 @@ export default function ProductsTab({ vendorId, collectionId, onProductClick, on
         setCutType(""); setBodyShape(""); setImpression(""); setOccasion(""); setSilhouette("");
         setSku(""); setTags("");
         setColorVariants([]);
+        setSelectedSystem("us");
     };
 
     const handleAddSize = () => {
@@ -765,36 +781,97 @@ export default function ProductsTab({ vendorId, collectionId, onProductClick, on
 
                                     {/* Inventory (Sizes) Section */}
                                     <div className="space-y-6 bg-slate-900 p-6 md:p-12 rounded-[24px] md:rounded-[40px] text-white">
-                                        <div className="flex items-center justify-between">
                                             <div className="flex items-center gap-3">
                                                 <div className="h-2 w-8 bg-amber-500 rounded-full" />
                                                 <h4 className="font-black text-white uppercase tracking-widest text-xs">{language === 'ar' ? "المخزون والمقاسات" : "Stock & Inventory"}</h4>
                                             </div>
+
+                                            <div className="flex flex-wrap items-center gap-4 bg-white/5 p-4 rounded-3xl border border-white/10">
+                                                <div className="space-y-1">
+                                                    <label className="text-[10px] font-black text-white/40 uppercase tracking-widest flex items-center gap-1">
+                                                        {t('sizeSystem')}
+                                                    </label>
+                                                    <Select value={selectedSystem} onValueChange={(val: any) => setSelectedSystem(val)}>
+                                                        <SelectTrigger className="h-10 w-40 bg-transparent border-white/10 text-white font-black rounded-xl">
+                                                            <SelectValue />
+                                                        </SelectTrigger>
+                                                        <SelectContent className="rounded-xl border-slate-800 bg-slate-900 text-white font-bold">
+                                                            <SelectItem value="us">{t('usSystem')}</SelectItem>
+                                                            <SelectItem value="eu">{t('euSystem')}</SelectItem>
+                                                            <SelectItem value="uk">{t('ukSystem')}</SelectItem>
+                                                        </SelectContent>
+                                                    </Select>
+                                                </div>
+
+                                                <div className="flex-1 min-w-[200px] p-3 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-start gap-3">
+                                                    <HelpCircle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
+                                                    <div className="space-y-1">
+                                                        <p className="text-xs font-black text-amber-500 uppercase tracking-tight">{t('sizeGuide')}</p>
+                                                        <p className="text-[10px] font-bold text-white/60 leading-relaxed">{t('sizeGuideDesc')}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+
                                             <Button variant="outline" size="sm" onClick={handleAddSize} className="rounded-xl bg-white/5 border-white/10 text-white hover:bg-white/10 h-10 px-4">
                                                 <Plus className="w-4 h-4 ml-2" /> {language === 'ar' ? "إضافة مقاس جديد" : "Add Size Variant"}
                                             </Button>
-                                        </div>
 
                                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                                            {sizes.map((s, idx) => (
-                                                <div key={idx} className="flex flex-col gap-3 bg-white/5 p-4 rounded-3xl border border-white/10 group/item relative transition-all hover:bg-white/10">
-                                                    <div className="flex items-center gap-3">
-                                                        <div className="flex-1 space-y-1">
-                                                            <label className="text-[10px] font-black text-white/40 uppercase">{language === 'ar' ? "المقاس" : "Size"}</label>
-                                                            <Input placeholder="S, M, 38..." value={s.size} onChange={e => handleSizeChange(idx, 'size', e.target.value)} className="h-10 bg-transparent border-white/10 text-white font-black" />
+                                            {sizes.map((s, idx) => {
+                                                const sizeInfo = SIZE_DATA.find(d => d[selectedSystem] === s.size);
+                                                return (
+                                                    <div key={idx} className="flex flex-col gap-3 bg-white/5 p-4 rounded-3xl border border-white/10 group/item relative transition-all hover:bg-white/10">
+                                                        <div className="flex items-center gap-3">
+                                                            <div className="flex-1 space-y-1">
+                                                                <label className="text-[10px] font-black text-white/40 uppercase">{language === 'ar' ? "المقاس" : "Size"}</label>
+                                                                <Select value={s.size} onValueChange={(val) => handleSizeChange(idx, 'size', val)}>
+                                                                    <SelectTrigger className="h-10 bg-transparent border-white/10 text-white font-black">
+                                                                        <SelectValue placeholder={language === 'ar' ? "اختر المقاس" : "Select Size"} />
+                                                                    </SelectTrigger>
+                                                                    <SelectContent className="rounded-xl border-slate-800 bg-slate-900 text-white font-bold">
+                                                                        {SIZE_DATA.map((d, dIdx) => (
+                                                                            <SelectItem key={dIdx} value={d[selectedSystem]}>
+                                                                                {selectedSystem.toUpperCase()} {d[selectedSystem]}
+                                                                            </SelectItem>
+                                                                        ))}
+                                                                    </SelectContent>
+                                                                </Select>
+                                                            </div>
+                                                            <div className="w-20 space-y-1">
+                                                                <label className="text-[10px] font-black text-white/40 uppercase">{language === 'ar' ? "الكمية" : "Qty"}</label>
+                                                                <Input type="number" placeholder="0" value={s.quantity} onChange={e => handleSizeChange(idx, 'quantity', parseInt(e.target.value))} className="h-10 bg-transparent border-white/10 text-white font-black text-center" />
+                                                            </div>
+                                                            {sizes.length > 1 && (
+                                                                <Button variant="ghost" size="icon" className="h-10 w-10 text-white/40 hover:text-red-400 hover:bg-red-400/10 mt-5" onClick={() => handleRemoveSize(idx)}>
+                                                                    <Trash2 className="w-4 h-4" />
+                                                                </Button>
+                                                            )}
                                                         </div>
-                                                        <div className="w-20 space-y-1">
-                                                            <label className="text-[10px] font-black text-white/40 uppercase">{language === 'ar' ? "الكمية" : "Qty"}</label>
-                                                            <Input type="number" placeholder="0" value={s.quantity} onChange={e => handleSizeChange(idx, 'quantity', parseInt(e.target.value))} className="h-10 bg-transparent border-white/10 text-white font-black text-center" />
-                                                        </div>
-                                                        {sizes.length > 1 && (
-                                                            <Button variant="ghost" size="icon" className="h-10 w-10 text-white/40 hover:text-red-400 hover:bg-red-400/10 mt-5" onClick={() => handleRemoveSize(idx)}>
-                                                                <Trash2 className="w-4 h-4" />
-                                                            </Button>
+
+                                                        {sizeInfo && (
+                                                            <div className="mt-1 pt-3 border-t border-white/5 flex items-center justify-between px-1">
+                                                                <div className="flex items-center gap-2">
+                                                                    <div className="flex flex-col">
+                                                                        <span className="text-[8px] font-black text-white/30 uppercase leading-none">{t('chest')}</span>
+                                                                        <span className="text-xs font-black text-amber-500">{sizeInfo.chest}</span>
+                                                                    </div>
+                                                                    <div className="w-[1px] h-4 bg-white/10 mx-1" />
+                                                                    <div className="flex flex-col">
+                                                                        <span className="text-[8px] font-black text-white/30 uppercase leading-none">{t('waist')}</span>
+                                                                        <span className="text-xs font-black text-amber-500">{sizeInfo.waist}</span>
+                                                                    </div>
+                                                                    <div className="w-[1px] h-4 bg-white/10 mx-1" />
+                                                                    <div className="flex flex-col">
+                                                                        <span className="text-[8px] font-black text-white/30 uppercase leading-none">{t('hips')}</span>
+                                                                        <span className="text-xs font-black text-amber-500">{sizeInfo.hips}</span>
+                                                                    </div>
+                                                                </div>
+                                                                <span className="text-[9px] font-black text-white/20 uppercase tracking-widest">{t('measurements')} (CM)</span>
+                                                            </div>
                                                         )}
                                                     </div>
-                                                </div>
-                                            ))}
+                                                );
+                                            })}
                                         </div>
                                     </div>
 
