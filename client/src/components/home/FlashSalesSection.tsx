@@ -5,7 +5,7 @@ import { useLanguage } from "@/lib/i18n";
 import { ProductCard } from "@/components/ProductCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useEffect, useState } from "react";
-import { Clock } from "lucide-react";
+import { Clock, ChevronLeft, ChevronRight } from "lucide-react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 
@@ -86,22 +86,52 @@ export function FlashSalesSection({ onQuickView }: FlashSalesSectionProps) {
                     </Link>
                 </div>
 
-                <div className="flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 overflow-x-auto no-scrollbar pb-8 md:pb-0 px-4 md:px-0 -mx-4 md:mx-0">
-                    {isLoading ? (
-                        Array(4).fill({}).map((_, i) => (
-                            <Skeleton key={i} className="aspect-[2/3] w-72 flex-shrink-0 md:w-auto rounded-[30px] bg-white/5" />
-                        ))
-                    ) : (
-                        products?.map((product: any, i: number) => (
-                            <div key={i} className="bg-white rounded-[2rem] p-3 shadow-2xl shadow-black/20 w-72 flex-shrink-0 md:w-auto">
-                                <ProductCard
-                                    product={{ ...product, discount: 30 }} // Mocking high discount 
-                                    index={i}
-                                    onQuickView={onQuickView}
-                                />
-                            </div>
-                        ))
-                    )}
+                <div className="relative group/scroll">
+                    <button 
+                        onClick={() => {
+                            const container = document.getElementById('flash-sales-scroll');
+                            if (container) {
+                                const amount = container.clientWidth * 0.8;
+                                container.scrollBy({ left: language === 'ar' ? amount : -amount, behavior: 'smooth' });
+                            }
+                        }}
+                        className={`absolute top-1/2 -translate-y-1/2 z-30 w-8 h-8 flex items-center justify-center bg-white/10 backdrop-blur-md rounded-full shadow-lg border border-white/10 ${language === 'ar' ? '-right-2' : '-left-2'} md:flex hover:bg-white/20 transition-colors text-white`}
+                    >
+                        <ChevronLeft size={16} />
+                    </button>
+                    <button 
+                        onClick={() => {
+                            const container = document.getElementById('flash-sales-scroll');
+                            if (container) {
+                                const amount = container.clientWidth * 0.8;
+                                container.scrollBy({ left: language === 'ar' ? -amount : amount, behavior: 'smooth' });
+                            }
+                        }}
+                        className={`absolute top-1/2 -translate-y-1/2 z-30 w-8 h-8 flex items-center justify-center bg-white/10 backdrop-blur-md rounded-full shadow-lg border border-white/10 ${language === 'ar' ? '-left-2' : '-right-2'} md:flex hover:bg-white/20 transition-colors text-white`}
+                    >
+                        <ChevronRight size={16} />
+                    </button>
+
+                    <div 
+                        id="flash-sales-scroll"
+                        className="flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8 overflow-x-auto no-scrollbar pb-8 md:pb-0 px-2 md:px-0 -mx-2 md:mx-0 scroll-smooth"
+                    >
+                        {isLoading ? (
+                            Array(4).fill({}).map((_, i) => (
+                                <Skeleton key={i} className="aspect-[2/3] w-[46%] sm:w-72 flex-shrink-0 md:w-auto rounded-[30px] bg-white/5" />
+                            ))
+                        ) : (
+                            products?.map((product: any, i: number) => (
+                                <div key={i} className="bg-white rounded-[2rem] p-3 shadow-2xl shadow-black/20 w-[46%] sm:w-72 flex-shrink-0 md:w-auto">
+                                    <ProductCard
+                                        product={{ ...product, discount: 30 }} // Mocking high discount 
+                                        index={i}
+                                        onQuickView={onQuickView}
+                                    />
+                                </div>
+                            ))
+                        )}
+                    </div>
                 </div>
             </div>
         </section>

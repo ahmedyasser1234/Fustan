@@ -44,6 +44,10 @@ export default function Home() {
   const [currentArchedIndex, setCurrentArchedIndex] = useState(0);
   const [quickViewProduct, setQuickViewProduct] = useState<any>(null);
   const tabsRef = useRef<HTMLDivElement>(null);
+  const featuredRef = useRef<HTMLDivElement>(null);
+  const trendingRef = useRef<HTMLDivElement>(null);
+  const newArrivalsRef = useRef<HTMLDivElement>(null);
+  const bestSellersRef = useRef<HTMLDivElement>(null);
   const productsPerPage = 4;
 
   const heroSlides = [
@@ -142,15 +146,25 @@ export default function Home() {
   const scrollTabs = (direction: 'left' | 'right') => {
     if (tabsRef.current) {
       const scrollAmount = 200;
-      const currentScroll = tabsRef.current.scrollLeft;
-      // For RTL, scroll direction might be inverted depending on browser implementation,
-      // but standard scrollTo handles this if dir="rtl" is set on parent.
-      // We use a safe approach for both LTR/RTL.
       const isRTL = language === 'ar';
       let offset = direction === 'right' ? scrollAmount : -scrollAmount;
       if (isRTL) offset = -offset;
 
       tabsRef.current.scrollBy({
+        left: offset,
+        behavior: 'smooth'
+      });
+    }
+  };
+
+  const handleHorizontalScroll = (ref: React.RefObject<HTMLDivElement | null>, direction: 'left' | 'right') => {
+    if (ref.current) {
+      const scrollAmount = ref.current.clientWidth * 0.8;
+      const isRTL = language === 'ar';
+      let offset = direction === 'right' ? scrollAmount : -scrollAmount;
+      if (isRTL) offset = -offset;
+
+      ref.current.scrollBy({
         left: offset,
         behavior: 'smooth'
       });
@@ -261,10 +275,28 @@ export default function Home() {
             <p className="text-slate-500 text-base md:text-lg font-bold">{t('mostFeaturedDesc')}</p>
           </motion.div>
 
-          <div className="flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-10 overflow-x-auto no-scrollbar pb-8 md:pb-0 px-4 md:px-0 -mx-4 md:mx-0 items-stretch">
+          <div className="relative group/scroll">
+            {/* Scroll Buttons - Mobile Focus */}
+            <button 
+              onClick={() => handleHorizontalScroll(featuredRef, 'left')}
+              className={`absolute top-1/2 -translate-y-1/2 z-30 w-8 h-8 flex items-center justify-center bg-white/90 backdrop-blur-md rounded-full shadow-lg border border-gray-100 ${language === 'ar' ? '-right-2' : '-left-2'} md:flex hover:bg-rose-50 transition-colors text-gray-600`}
+            >
+              <ChevronLeft size={16} />
+            </button>
+            <button 
+              onClick={() => handleHorizontalScroll(featuredRef, 'right')}
+              className={`absolute top-1/2 -translate-y-1/2 z-30 w-8 h-8 flex items-center justify-center bg-white/90 backdrop-blur-md rounded-full shadow-lg border border-gray-100 ${language === 'ar' ? '-left-2' : '-right-2'} md:flex hover:bg-rose-50 transition-colors text-gray-600`}
+            >
+              <ChevronRight size={16} />
+            </button>
+
+            <div 
+              ref={featuredRef}
+              className="flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-10 overflow-x-auto no-scrollbar pb-8 md:pb-0 px-2 md:px-0 -mx-2 md:mx-0 items-stretch scroll-smooth"
+            >
             {(featuredLoading ? Array(4).fill({}) : (featuredProducts as any[] || [])).map((product: any, i: number) => (
               featuredLoading ? (
-                <div key={i} className="space-y-6 w-72 flex-shrink-0 md:w-auto">
+                <div key={i} className="space-y-6 w-[46%] flex-shrink-0 md:w-auto">
                   <Skeleton className="aspect-[2/3] w-full rounded-[40px]" />
                   <div className="space-y-3 px-4">
                     <Skeleton className="h-6 w-3/4 mr-auto" />
@@ -278,7 +310,7 @@ export default function Home() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1, duration: 0.5 }}
-                  className="group relative w-72 flex-shrink-0 md:w-auto aspect-[2/3]"
+                  className="group relative w-[46%] flex-shrink-0 md:w-auto aspect-[2/3]"
                 >
 
                   {/* Product Content 'Capsule' */}
@@ -317,6 +349,7 @@ export default function Home() {
                 </motion.div>
               )
             ))}
+            </div>
           </div>
         </div>
       </section >
@@ -483,12 +516,30 @@ export default function Home() {
             </div>
 
             <TabsContent value={selectedCategory === null ? "all" : selectedCategory.toString()} className="mt-0">
-              <div className="flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 overflow-x-auto no-scrollbar pb-8 md:pb-0 px-4 md:px-0 -mx-4 md:mx-0">
-                {(productsLoading ? Array(8).fill({}) : (products as any[] || [])).map((product: any, i: number) => (
-                  <div key={i} className="w-72 flex-shrink-0 md:w-auto">
-                    <ProductCard product={product} loading={productsLoading} onQuickView={setQuickViewProduct} />
-                  </div>
-                ))}
+              <div className="relative group/scroll">
+                <button 
+                  onClick={() => handleHorizontalScroll(trendingRef, 'left')}
+                  className={`absolute top-1/2 -translate-y-1/2 z-30 w-8 h-8 flex items-center justify-center bg-white/90 backdrop-blur-md rounded-full shadow-lg border border-gray-100 ${language === 'ar' ? '-right-2' : '-left-2'} md:flex hover:bg-rose-50 transition-colors text-gray-600`}
+                >
+                  <ChevronLeft size={16} />
+                </button>
+                <button 
+                  onClick={() => handleHorizontalScroll(trendingRef, 'right')}
+                  className={`absolute top-1/2 -translate-y-1/2 z-30 w-8 h-8 flex items-center justify-center bg-white/90 backdrop-blur-md rounded-full shadow-lg border border-gray-100 ${language === 'ar' ? '-left-2' : '-right-2'} md:flex hover:bg-rose-50 transition-colors text-gray-600`}
+                >
+                  <ChevronRight size={16} />
+                </button>
+
+                <div 
+                  ref={trendingRef}
+                  className="flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-8 overflow-x-auto no-scrollbar pb-8 md:pb-0 px-2 md:px-0 -mx-2 md:mx-0 scroll-smooth"
+                >
+                  {(productsLoading ? Array(8).fill({}) : (products as any[] || [])).map((product: any, i: number) => (
+                    <div key={i} className="w-[46%] flex-shrink-0 md:w-auto">
+                      <ProductCard product={product} loading={productsLoading} onQuickView={setQuickViewProduct} />
+                    </div>
+                  ))}
+                </div>
               </div>
               {!productsLoading && (!products || products.length === 0) && (
                 <div className="w-full py-20 text-center text-gray-400 bg-gray-50 rounded-[3rem]">
@@ -519,11 +570,27 @@ export default function Home() {
           </motion.div>
 
           {/* New Arrivals Grid / Slider */}
-          <div className="relative">
-            <div className="flex md:grid md:grid-cols-3 gap-8 md:gap-10 overflow-x-auto no-scrollbar pb-8 md:pb-0 px-4 md:px-0 -mx-4 md:mx-0">
+          <div className="relative group/scroll">
+            <button 
+              onClick={() => handleHorizontalScroll(newArrivalsRef, 'left')}
+              className={`absolute top-1/2 -translate-y-1/2 z-30 w-10 h-10 flex items-center justify-center bg-white/90 backdrop-blur-md rounded-full shadow-lg border border-gray-200 ${language === 'ar' ? '-right-2' : '-left-2'} md:flex hover:bg-rose-50 transition-colors text-rose-600`}
+            >
+              <ChevronLeft size={20} />
+            </button>
+            <button 
+              onClick={() => handleHorizontalScroll(newArrivalsRef, 'right')}
+              className={`absolute top-1/2 -translate-y-1/2 z-30 w-10 h-10 flex items-center justify-center bg-white/90 backdrop-blur-md rounded-full shadow-lg border border-gray-200 ${language === 'ar' ? '-left-2' : '-right-2'} md:flex hover:bg-rose-50 transition-colors text-rose-600`}
+            >
+              <ChevronRight size={20} />
+            </button>
+
+            <div 
+              ref={newArrivalsRef}
+              className="flex md:grid md:grid-cols-3 gap-4 md:gap-10 overflow-x-auto no-scrollbar pb-8 md:pb-0 px-2 md:px-0 -mx-2 md:mx-0 scroll-smooth"
+            >
               {newArrivalsLoading ? (
                 Array(3).fill({}).map((_, i) => (
-                  <Skeleton key={i} className="aspect-[3/4] w-72 flex-shrink-0 md:w-auto rounded-[45px]" />
+                  <Skeleton key={i} className="aspect-[3/4] w-[46%] sm:w-72 flex-shrink-0 md:w-auto rounded-[45px]" />
                 ))
               ) : (
                 (() => {
@@ -540,7 +607,7 @@ export default function Home() {
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true }}
                       transition={{ delay: i * 0.1, duration: 0.5 }}
-                      className="flex flex-col drop-shadow-2xl w-72 flex-shrink-0 md:w-auto"
+                      className="flex flex-col drop-shadow-2xl w-[46%] sm:w-72 flex-shrink-0 md:w-auto"
                     >
                       <Link href={`/products/${product.id}`}>
                         <div className="relative group cursor-pointer h-full flex flex-col shadow-2xl rounded-[45px] overflow-hidden">
@@ -587,46 +654,64 @@ export default function Home() {
             <p className="text-slate-500 text-lg font-bold">{t('bestSellersDesc')}</p>
           </motion.div>
 
-          <div className="flex md:grid md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10 overflow-x-auto no-scrollbar pb-8 md:pb-0 px-4 md:px-0 -mx-4 md:mx-0">
-            {(bestSellersLoading ? Array(3).fill({}) : (bestSellers as any[] || []).slice(0, 3)).map((product: any, i: number) => (
-              bestSellersLoading ? (
-                <Skeleton key={i} className="aspect-[2/3] w-72 flex-shrink-0 md:w-auto rounded-[40px]" />
-              ) : (
-                <motion.div
-                  key={product.id}
-                  initial={{ opacity: 0, y: 50 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1, duration: 0.5 }}
-                  className="group relative w-72 flex-shrink-0 md:w-auto aspect-[2/3]"
-                >
-                  <Link href={`/products/${product.id}`}>
-                    <div className="relative z-10 h-full w-full rounded-[40px] overflow-hidden shadow-2xl hover:shadow-purple-200/50 transition-all duration-500 bg-white">
-                      <div className="h-full w-full relative flex flex-col">
-                        <div className="flex-grow w-full relative h-full overflow-hidden">
-                          <img
-                            src={product.images?.[0]}
-                            alt={language === 'ar' ? product.nameAr : product.nameEn}
-                            className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-110"
-                          />
-                        </div>
-                        <div className="absolute bottom-0 left-0 right-0 h-0 opacity-0 bg-[oklch(58.6%_0.253_17.585)]/10 backdrop-blur-md flex flex-col items-center justify-center text-center p-6 transition-all duration-300 group-hover:h-[45%] group-hover:opacity-100 overflow-hidden">
-                          <h3 className="text-2xl md:text-3xl font-black text-white mb-2">
-                            {language === 'ar' ? product.nameAr : product.nameEn}
-                          </h3>
-                          <p className="text-white/90 text-lg font-bold mb-4">
-                            {formatPrice(product.price)}
-                          </p>
-                          <Button className="bg-white text-[oklch(58.6%_0.253_17.585)] hover:bg-white/90 rounded-full px-8 py-1 h-8 text-sm font-black shadow-sm transition-transform hover:scale-105">
-                            {t('more')}
-                          </Button>
+          <div className="relative group/scroll">
+            <button 
+              onClick={() => handleHorizontalScroll(bestSellersRef, 'left')}
+              className={`absolute top-1/2 -translate-y-1/2 z-30 w-8 h-8 flex items-center justify-center bg-white/90 backdrop-blur-md rounded-full shadow-lg border border-gray-100 ${language === 'ar' ? '-right-2' : '-left-2'} md:flex hover:bg-rose-50 transition-colors text-gray-600`}
+            >
+              <ChevronLeft size={16} />
+            </button>
+            <button 
+              onClick={() => handleHorizontalScroll(bestSellersRef, 'right')}
+              className={`absolute top-1/2 -translate-y-1/2 z-30 w-8 h-8 flex items-center justify-center bg-white/90 backdrop-blur-md rounded-full shadow-lg border border-gray-100 ${language === 'ar' ? '-left-2' : '-right-2'} md:flex hover:bg-rose-50 transition-colors text-gray-600`}
+            >
+              <ChevronRight size={16} />
+            </button>
+
+            <div 
+              ref={bestSellersRef}
+              className="flex md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-10 overflow-x-auto no-scrollbar pb-8 md:pb-0 px-2 md:px-0 -mx-2 md:mx-0 scroll-smooth"
+            >
+              {(bestSellersLoading ? Array(3).fill({}) : (bestSellers as any[] || []).slice(0, 3)).map((product: any, i: number) => (
+                bestSellersLoading ? (
+                  <Skeleton key={i} className="aspect-[2/3] w-[46%] sm:w-72 flex-shrink-0 md:w-auto rounded-[40px]" />
+                ) : (
+                  <motion.div
+                    key={product.id}
+                    initial={{ opacity: 0, y: 50 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.1, duration: 0.5 }}
+                    className="group relative w-[46%] sm:w-72 flex-shrink-0 md:w-auto aspect-[2/3]"
+                  >
+                    <Link href={`/products/${product.id}`}>
+                      <div className="relative z-10 h-full w-full rounded-[40px] overflow-hidden shadow-2xl hover:shadow-purple-200/50 transition-all duration-500 bg-white">
+                        <div className="h-full w-full relative flex flex-col">
+                          <div className="flex-grow w-full relative h-full overflow-hidden">
+                            <img
+                              src={product.images?.[0]}
+                              alt={language === 'ar' ? product.nameAr : product.nameEn}
+                              className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-110"
+                            />
+                          </div>
+                          <div className="absolute bottom-0 left-0 right-0 h-0 opacity-0 bg-[oklch(58.6%_0.253_17.585)]/10 backdrop-blur-md flex flex-col items-center justify-center text-center p-6 transition-all duration-300 group-hover:h-[45%] group-hover:opacity-100 overflow-hidden">
+                            <h3 className="text-2xl md:text-3xl font-black text-white mb-2">
+                              {language === 'ar' ? product.nameAr : product.nameEn}
+                            </h3>
+                            <p className="text-white/90 text-lg font-bold mb-4">
+                              {formatPrice(product.price)}
+                            </p>
+                            <Button className="bg-white text-[oklch(58.6%_0.253_17.585)] hover:bg-white/90 rounded-full px-8 py-1 h-8 text-sm font-black shadow-sm transition-transform hover:scale-105">
+                              {t('more')}
+                            </Button>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </Link>
-                </motion.div>
-              )
-            ))}
+                    </Link>
+                  </motion.div>
+                )
+              ))}
+            </div>
           </div>
         </div>
       </section >
