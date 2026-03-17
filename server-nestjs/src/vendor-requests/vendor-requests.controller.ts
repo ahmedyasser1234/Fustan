@@ -61,14 +61,18 @@ export class VendorRequestsController {
         // When using multipart/form-data, NestJS might not auto-parse JSON fields in Body
         // if they are strings. We need to check and parse if needed.
         let type = body.type || 'category_request';
-        let data = body.data;
+        let data = body.data || {};
+        
         if (typeof data === 'string') {
             try {
                 data = JSON.parse(data);
             } catch (e) {
-                // Ignore if not JSON
+                console.error("Failed to parse request data JSON:", body.data);
+                data = {};
             }
         }
+        
+        console.log("Creating Vendor Request:", { vendorId: vendor.id, type, data });
         
         const scheduledAt = body.scheduledAt ? new Date(body.scheduledAt) : undefined;
         const file = files?.find(f => f.fieldname === 'image' || f.fieldname === 'file');

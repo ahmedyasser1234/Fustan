@@ -630,7 +630,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Content */}
-      <main className="flex-1 overflow-auto p-8">
+      <main className="flex-1 overflow-y-auto p-4 md:p-8 scroll-smooth">
         {/* Overview Tab */}
         {activeTab === "overview" && (
           <div className="space-y-8">

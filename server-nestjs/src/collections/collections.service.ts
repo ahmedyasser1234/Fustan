@@ -68,7 +68,8 @@ export class CollectionsService {
     }
 
     async findAll(vendorId?: number, categoryId?: number) {
-        const productsCountSubquery = this.db.db
+        // Subquery to count products per collection
+        const pc = this.db.db
             .select({
                 collectionId: products.collectionId,
                 count: sql<number>`count(${products.id})`.as('count')
@@ -87,24 +88,27 @@ export class CollectionsService {
                 slug: collections.slug,
                 vendorId: collections.vendorId,
                 categoryId: collections.categoryId,
+                isActive: collections.isActive,
                 createdAt: collections.createdAt,
-                productsCount: sql<number>`coalesce(${productsCountSubquery.count}, 0)`.as('productsCount')
+                productsCount: sql<number>`coalesce(${pc.count}, 0)`.as('productsCount')
             })
             .from(collections)
-            .leftJoin(productsCountSubquery, eq(collections.id, productsCountSubquery.collectionId));
+            .leftJoin(pc, eq(collections.id, pc.collectionId));
 
         const conditions = [];
+        console.log("Collections findAll Params:", { vendorId, categoryId });
 
-        if (vendorId !== undefined) {
-            if (vendorId === 0) {
-                // Admin view or listing all
-            } else {
-                // Vendor view: show their own collections OR global ones (vendorId: 0)
+        // Correctly handle vendorId 0 (Admin) vs specific Vendor
+        if (vendorId !== undefined && vendorId !== null && !isNaN(vendorId)) {
+            if (vendorId !== 0) {
+                // Return vendor's own collections OR global ones (vendorId 0)
                 conditions.push(sql`(${collections.vendorId} = ${vendorId} OR ${collections.vendorId} = 0)`);
+            } else {
+                console.log("   - Admin View (vendorId 0): No vendor filter applied.");
             }
         }
 
-        if (categoryId !== undefined) {
+        if (categoryId !== undefined && categoryId !== null && !isNaN(categoryId) && categoryId !== 0) {
             conditions.push(eq(collections.categoryId, categoryId));
         }
 

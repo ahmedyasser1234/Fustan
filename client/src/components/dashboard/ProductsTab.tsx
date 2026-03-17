@@ -791,8 +791,7 @@ export default function ProductsTab({ vendorId, collectionId, onProductClick, on
                                                     </SelectTrigger>
                                                     <SelectContent className="rounded-2xl shadow-xl border-slate-100">
                                                         {collections
-                                                            ?.filter((c: any) => !categoryId || c.categoryId?.toString() === categoryId)
-                                                            .map((c: any) => (
+                                                            ?.map((c: any) => (
                                                                 <SelectItem key={c.id} value={c.id.toString()} className="font-bold py-3">
                                                                     {language === 'ar' ? c.nameAr : c.nameEn}
                                                                 </SelectItem>
