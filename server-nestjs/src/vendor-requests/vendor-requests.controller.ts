@@ -1,9 +1,10 @@
-import { Controller, Post, Get, Req, Body, UnauthorizedException, Param, Patch } from '@nestjs/common';
+import { Controller, Post, Get, Req, Body, UnauthorizedException, Param, Patch, UseInterceptors, UploadedFiles } from '@nestjs/common';
 import { VendorRequestsService } from './vendor-requests.service';
 import { AuthService } from '../auth/auth.service';
 import { VendorsService } from '../vendors/vendors.service';
 import { Request } from 'express';
 import { COOKIE_NAME } from '../common/constants';
+import { AnyFilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('vendor-requests')
 export class VendorRequestsController {
@@ -49,11 +50,30 @@ export class VendorRequestsController {
     }
 
     @Post()
-    async create(@Req() req: Request, @Body() body: { type: string, data: any, scheduledAt?: string }) {
+    @UseInterceptors(AnyFilesInterceptor())
+    async create(
+        @Req() req: Request,
+        @Body() body: any,
+        @UploadedFiles() files: Express.Multer.File[]
+    ) {
         const vendor = await this.getVendor(req);
-        const type = body.type || 'category_request';
+        
+        // When using multipart/form-data, NestJS might not auto-parse JSON fields in Body
+        // if they are strings. We need to check and parse if needed.
+        let type = body.type || 'category_request';
+        let data = body.data;
+        if (typeof data === 'string') {
+            try {
+                data = JSON.parse(data);
+            } catch (e) {
+                // Ignore if not JSON
+            }
+        }
+        
         const scheduledAt = body.scheduledAt ? new Date(body.scheduledAt) : undefined;
-        return this.vendorRequestsService.create(vendor.id, type, body.data, scheduledAt);
+        const file = files?.find(f => f.fieldname === 'image' || f.fieldname === 'file');
+        
+        return this.vendorRequestsService.create(vendor.id, type, data, scheduledAt, file);
     }
 
     @Get('my-requests')
