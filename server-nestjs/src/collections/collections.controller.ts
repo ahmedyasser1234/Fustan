@@ -28,8 +28,14 @@ export class CollectionsController {
     }
 
     @Get()
-    findAll(@Query('vendorId') vendorId?: string) {
-        return this.collectionsService.findAll(vendorId ? +vendorId : undefined);
+    findAll(
+        @Query('vendorId') vendorId?: string,
+        @Query('categoryId') categoryId?: string
+    ) {
+        return this.collectionsService.findAll(
+            vendorId ? +vendorId : undefined,
+            categoryId ? +categoryId : undefined
+        );
     }
 
     @Get(':id')

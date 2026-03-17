@@ -34,7 +34,7 @@ export default function CollectionsTab({ vendorId, categoryId, onCollectionClick
     // Queries
     const { data: collections, isLoading } = useQuery({
         queryKey: ['vendor', 'collections', vendorId, categoryId],
-        queryFn: async () => await endpoints.collections.list(vendorId !== 0 ? vendorId : undefined, categoryId || undefined),
+        queryFn: async () => await endpoints.collections.list(vendorId !== 0 ? vendorId : 0, categoryId || undefined),
         enabled: vendorId !== undefined,
     });
 
@@ -275,14 +275,22 @@ export default function CollectionsTab({ vendorId, categoryId, onCollectionClick
                                     </div>
                                 )}
 
-                                <div className="absolute top-4 left-4 flex gap-2 opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 z-10">
-                                    <Button size="icon" className="h-10 w-10 bg-white/90 rounded-xl shadow-lg border border-slate-100 hover:bg-white active:scale-95" onClick={(e) => handleEdit(e, collection)}>
-                                        <Edit className="w-4 h-4 text-blue-600" />
-                                    </Button>
-                                    <Button size="icon" className="h-10 w-10 bg-white/90 rounded-xl shadow-lg border border-slate-100 hover:bg-red-50 active:scale-95" onClick={(e) => handleDelete(e, collection.id)}>
-                                        <Trash2 className="w-4 h-4 text-red-600" />
-                                    </Button>
-                                </div>
+                                {vendorId !== 0 && collection.vendorId === 0 ? (
+                                    <div className="absolute top-4 left-4 z-10 px-3 py-1 bg-purple-600 rounded-full shadow-lg">
+                                        <span className="text-[10px] font-black text-white uppercase tracking-widest">
+                                            {language === 'ar' ? "مجموعة عالمية" : "Global Collection"}
+                                        </span>
+                                    </div>
+                                ) : (
+                                    <div className="absolute top-4 left-4 flex gap-2 opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 z-10">
+                                        <Button size="icon" className="h-10 w-10 bg-white/90 rounded-xl shadow-lg border border-slate-100 hover:bg-white active:scale-95" onClick={(e) => handleEdit(e, collection)}>
+                                            <Edit className="w-4 h-4 text-blue-600" />
+                                        </Button>
+                                        <Button size="icon" className="h-10 w-10 bg-white/90 rounded-xl shadow-lg border border-slate-100 hover:bg-red-50 active:scale-95" onClick={(e) => handleDelete(e, collection.id)}>
+                                            <Trash2 className="w-4 h-4 text-red-600" />
+                                        </Button>
+                                    </div>
+                                )}
                                 <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                             </div>
                             <CardContent className={`p-6 ${language === 'ar' ? 'text-right' : 'text-left'} relative`}>

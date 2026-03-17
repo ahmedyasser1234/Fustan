@@ -67,7 +67,7 @@ export class CollectionsService {
         }
     }
 
-    async findAll(vendorId?: number) {
+    async findAll(vendorId?: number, categoryId?: number) {
         const query = this.db.db
             .select({
                 id: collections.id,
@@ -77,7 +77,7 @@ export class CollectionsService {
                 coverImage: collections.coverImage,
                 slug: collections.slug,
                 vendorId: collections.vendorId,
-                categoryId: collections.categoryId, // Return categoryId
+                categoryId: collections.categoryId,
                 createdAt: collections.createdAt,
                 productsCount: sql<number>`count(${products.id})`.as('productsCount')
             })
@@ -85,8 +85,23 @@ export class CollectionsService {
             .leftJoin(products, eq(collections.id, products.collectionId))
             .groupBy(collections.id);
 
-        if (vendorId) {
-            return query.where(eq(collections.vendorId, vendorId)).orderBy(desc(collections.createdAt));
+        const conditions = [];
+
+        if (vendorId !== undefined) {
+            if (vendorId === 0) {
+                // Admin view or listing all
+            } else {
+                // Vendor view: show their own collections OR global ones (vendorId: 0)
+                conditions.push(sql`(${collections.vendorId} = ${vendorId} OR ${collections.vendorId} = 0)`);
+            }
+        }
+
+        if (categoryId !== undefined) {
+            conditions.push(eq(collections.categoryId, categoryId));
+        }
+
+        if (conditions.length > 0) {
+            return query.where(and(...conditions)).orderBy(desc(collections.createdAt));
         }
 
         return query.orderBy(desc(collections.createdAt));
