@@ -988,7 +988,7 @@ export default function ProductsTab({ vendorId, collectionId, onProductClick, on
                                                 return (
                                                     <div key={idx} className="flex flex-col gap-3 bg-white/5 p-4 rounded-3xl border border-white/10 group/item relative transition-all hover:bg-white/10">
                                                         <div className="flex items-end gap-2 px-1">
-                                                            <div className="w-40 space-y-1">
+                                                            <div className="flex-1 space-y-1">
                                                                 <label className="text-[10px] font-black text-white/40 uppercase leading-none">{language === 'ar' ? "المقاس" : "Size"}</label>
                                                                 <Select value={s.size} onValueChange={(val) => handleSizeChange(idx, 'size', val)}>
                                                                     <SelectTrigger className="h-10 bg-transparent border-white/10 text-white font-black w-full rounded-xl">
