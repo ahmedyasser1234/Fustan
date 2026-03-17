@@ -33,8 +33,8 @@ export class CollectionsController {
         @Query('categoryId') categoryId?: string
     ) {
         return this.collectionsService.findAll(
-            vendorId ? +vendorId : undefined,
-            categoryId ? +categoryId : undefined
+            vendorId !== undefined ? +vendorId : undefined,
+            categoryId !== undefined ? +categoryId : undefined
         );
     }
 

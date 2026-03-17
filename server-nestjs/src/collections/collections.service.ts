@@ -68,6 +68,15 @@ export class CollectionsService {
     }
 
     async findAll(vendorId?: number, categoryId?: number) {
+        const productsCountSubquery = this.db.db
+            .select({
+                collectionId: products.collectionId,
+                count: sql<number>`count(${products.id})`.as('count')
+            })
+            .from(products)
+            .groupBy(products.collectionId)
+            .as('pc');
+
         const query = this.db.db
             .select({
                 id: collections.id,
@@ -79,11 +88,10 @@ export class CollectionsService {
                 vendorId: collections.vendorId,
                 categoryId: collections.categoryId,
                 createdAt: collections.createdAt,
-                productsCount: sql<number>`count(${products.id})`.as('productsCount')
+                productsCount: sql<number>`coalesce(${productsCountSubquery.count}, 0)`.as('productsCount')
             })
             .from(collections)
-            .leftJoin(products, eq(collections.id, products.collectionId))
-            .groupBy(collections.id);
+            .leftJoin(productsCountSubquery, eq(collections.id, productsCountSubquery.collectionId));
 
         const conditions = [];
 
