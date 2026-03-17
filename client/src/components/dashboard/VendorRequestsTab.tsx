@@ -25,6 +25,11 @@ export default function VendorRequestsTab() {
         queryFn: endpoints.vendorRequests.listAll,
     });
 
+    const { data: categories } = useQuery({
+        queryKey: ['categories'],
+        queryFn: () => endpoints.categories.list(),
+    });
+
     const pendingRequests = allRequests?.filter((r: any) => r.status === 'pending') || [];
 
     const updateVendorStatus = useMutation({
@@ -99,6 +104,7 @@ export default function VendorRequestsTab() {
                             <RequestCard 
                                 key={request.id} 
                                 request={request}
+                                categories={categories}
                                 onApprove={() => updateRequestStatus.mutate({ id: request.id, status: 'approved' })}
                                 onReject={() => updateRequestStatus.mutate({ id: request.id, status: 'rejected' })}
                                 isPending={updateRequestStatus.isPending}
@@ -176,11 +182,13 @@ function VendorCard({ vendor, onApprove, onReject, isPending }: any) {
     );
 }
 
-function RequestCard({ request, onApprove, onReject, isPending }: any) {
+function RequestCard({ request, onApprove, onReject, isPending, categories }: any) {
     const { language } = useLanguage();
     const isSocial = request.type === 'social_post_request';
     const isCollection = request.type === 'collection_request';
     
+    const category = categories?.find((c: any) => c.id.toString() === request.data.categoryId?.toString());
+
     return (
         <Card className="border-0 shadow-sm hover:shadow-md transition-all duration-300 rounded-[32px] overflow-hidden group">
             <CardContent className="p-8">
@@ -216,12 +224,19 @@ function RequestCard({ request, onApprove, onReject, isPending }: any) {
                                 <div className="flex items-center gap-2 text-slate-300 text-[10px] font-black uppercase mb-1">
                                     <Store className="w-3 h-3" />
                                     <span>Vendor ID: {request.vendorId}</span>
+                                    {category && (
+                                        <>
+                                            <span className="mx-2">•</span>
+                                            <Globe className="w-3 h-3 text-indigo-400" />
+                                            <span className="text-indigo-600">{language === 'ar' ? category.nameAr : category.nameEn}</span>
+                                        </>
+                                    )}
                                 </div>
                                 <h3 className="text-lg font-black text-slate-800">
                                     {isSocial 
                                         ? (language === 'ar' ? "منشور ترويجي جديد" : "New Promotional Post") 
                                         : isCollection 
-                                            ? (language === 'ar' ? `طلب مجموعة: ${request.data.nameAr}` : `Collection: ${request.data.nameEn}`)
+                                            ? (language === 'ar' ? request.data.nameAr : request.data.nameEn)
                                             : (request.data.nameAr || request.data.nameEn)}
                                 </h3>
                             </div>

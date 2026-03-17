@@ -7,6 +7,7 @@ import { endpoints } from "../../lib/api";
 import { useLanguage } from "../../lib/i18n";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../components/ui/select";
 import { toast } from "sonner";
 import { Textarea } from "../../components/ui/textarea";
 import { format } from "date-fns";
@@ -27,11 +28,17 @@ export default function CollectionRequestTab() {
     const [imageUrl, setImageUrl] = useState("");
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [uploadMode, setUploadMode] = useState<"file" | "url">("file");
+    const [categoryId, setCategoryId] = useState("");
     const fileInputRef = React.useRef<HTMLInputElement>(null);
 
     const { data: requests, isLoading } = useQuery({
         queryKey: ['vendor', 'collection-requests'],
         queryFn: () => endpoints.vendorRequests.myRequests(),
+    });
+
+    const { data: categories } = useQuery({
+        queryKey: ['categories'],
+        queryFn: () => endpoints.categories.list(),
     });
 
     const collectionRequests = requests?.filter((r: any) => r.type === 'collection_request') || [];
@@ -57,10 +64,11 @@ export default function CollectionRequestTab() {
         setImageUrl("");
         setImageFile(null);
         setUploadMode("file");
+        setCategoryId("");
     };
 
     const handleSubmit = () => {
-        if (!nameAr || !nameEn) {
+        if (!nameAr || !nameEn || !categoryId) {
             return toast.error(language === 'ar' ? "يرجى ملء البيانات المطلوبة" : "Please fill in all required fields");
         }
 
@@ -79,7 +87,8 @@ export default function CollectionRequestTab() {
                 nameAr,
                 nameEn,
                 descriptionAr,
-                descriptionEn
+                descriptionEn,
+                categoryId
             }));
             formData.append("image", imageFile);
             submitRequest.mutate(formData);
@@ -91,7 +100,8 @@ export default function CollectionRequestTab() {
                     nameEn,
                     descriptionAr,
                     descriptionEn,
-                    imageUrl
+                    imageUrl,
+                    categoryId
                 }
             });
         }
@@ -261,6 +271,23 @@ export default function CollectionRequestTab() {
                                     dir="ltr"
                                 />
                             </div>
+                        </div>
+
+                        {/* Category Selection */}
+                        <div className="space-y-2">
+                            <label className="text-xs font-black text-slate-400 uppercase tracking-widest">{language === 'ar' ? "القسم الرئيسي" : "TARGET CATEGORY"}</label>
+                            <Select value={categoryId} onValueChange={setCategoryId}>
+                                <SelectTrigger className="h-14 rounded-2xl bg-slate-50 border-transparent focus:ring-4 focus:ring-indigo-50 font-bold px-6">
+                                    <SelectValue placeholder={language === 'ar' ? "اختر القسم" : "Select Category"} />
+                                </SelectTrigger>
+                                <SelectContent className="rounded-2xl border-slate-100 shadow-2xl p-2">
+                                    {categories?.map((cat: any) => (
+                                        <SelectItem key={cat.id} value={cat.id.toString()} className="rounded-xl font-bold py-3">
+                                            {language === 'ar' ? cat.nameAr : cat.nameEn}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
                         </div>
 
                         {/* Image Input Section */}
