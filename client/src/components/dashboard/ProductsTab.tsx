@@ -152,10 +152,24 @@ export default function ProductsTab({ vendorId, collectionId, onProductClick, on
         if (collectionIdState && collections) {
             const selectedCollection = collections.find((c: any) => c.id.toString() === collectionIdState);
             if (selectedCollection?.categoryId) {
-                setCategoryId(selectedCollection.categoryId.toString());
+                // Only update if different to avoid infinite loops or unnecessary resets
+                const newCatId = selectedCollection.categoryId.toString();
+                if (categoryId !== newCatId) {
+                    setCategoryId(newCatId);
+                }
             }
         }
-    }, [collectionIdState, collections]);
+    }, [collectionIdState, collections, categoryId]);
+
+    // Reset Collection if Category changes and current collection doesn't belong to it
+    useEffect(() => {
+        if (categoryId && collections && collectionIdState) {
+            const selectedCollection = collections.find((c: any) => c.id.toString() === collectionIdState);
+            if (selectedCollection && selectedCollection.categoryId?.toString() !== categoryId) {
+                setCollectionId("");
+            }
+        }
+    }, [categoryId, collections, collectionIdState]);
     
     // Auto-sync internal price state for validation and old calculations
     useEffect(() => {
@@ -776,11 +790,13 @@ export default function ProductsTab({ vendorId, collectionId, onProductClick, on
                                                         <SelectValue placeholder={language === 'ar' ? "اختر مجموعة" : "Select Collection"} />
                                                     </SelectTrigger>
                                                     <SelectContent className="rounded-2xl shadow-xl border-slate-100">
-                                                        {collections?.map((c: any) => (
-                                                            <SelectItem key={c.id} value={c.id.toString()} className="font-bold py-3">
-                                                                {language === 'ar' ? c.nameAr : c.nameEn}
-                                                            </SelectItem>
-                                                        ))}
+                                                        {collections
+                                                            ?.filter((c: any) => !categoryId || c.categoryId?.toString() === categoryId)
+                                                            .map((c: any) => (
+                                                                <SelectItem key={c.id} value={c.id.toString()} className="font-bold py-3">
+                                                                    {language === 'ar' ? c.nameAr : c.nameEn}
+                                                                </SelectItem>
+                                                            ))}
                                                     </SelectContent>
                                                 </Select>
                                             </div>
