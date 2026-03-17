@@ -34,8 +34,8 @@ export default function CollectionsTab({ vendorId, categoryId, onCollectionClick
     // Queries
     const { data: collections, isLoading } = useQuery({
         queryKey: ['vendor', 'collections', vendorId, categoryId],
-        queryFn: async () => await endpoints.collections.list(vendorId, categoryId || undefined),
-        enabled: !!vendorId,
+        queryFn: async () => await endpoints.collections.list(vendorId !== 0 ? vendorId : undefined, categoryId || undefined),
+        enabled: vendorId !== undefined,
     });
 
     const { data: categories } = useQuery({

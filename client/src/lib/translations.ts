@@ -27,6 +27,7 @@ export const translations = {
         orders: "الطلبات",
         customers: "العملاء",
         chat: "المحادثات",
+        collections: "المجموعات",
 
         // Home Hero
         royalCollection: "المجموعة الملكية 2024",
@@ -597,6 +598,7 @@ export const translations = {
         orders: "Orders",
         customers: "Customers",
         chat: "Chat",
+        collections: "Collections",
 
         // Home Hero
         royalCollection: "Royal Collection 2024",

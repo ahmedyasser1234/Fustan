@@ -209,7 +209,6 @@ export default function VendorDashboard() {
                 { id: "overview", icon: TrendingUp, color: "from-purple-500 to-pink-500" },
                 { id: "products", icon: Package, color: "from-blue-500 to-cyan-500" },
                 { id: "orders", icon: ShoppingCart, color: "from-emerald-500 to-teal-500" },
-                { id: "collections", icon: Layers, color: "from-amber-500 to-orange-500" },
                 { id: "categories", icon: Star, color: "from-pink-500 to-rose-500" },
                 { id: "offers", icon: Zap, color: "from-orange-500 to-red-500" },
                 { id: "coupons", icon: Plus, color: "from-violet-500 to-purple-500" },
@@ -272,30 +271,9 @@ export default function VendorDashboard() {
             )
           )}
 
-          {activeTab === "collections" && (
-            dashboard?.vendor?.id && (
-              selectedCollectionId ? (
-                <CollectionProductsView
-                  vendorId={dashboard.vendor.id}
-                  collectionId={selectedCollectionId}
-                  onBack={() => setSelectedCollectionId(null)}
-                  onProductClick={(id) => setSelectedProductId(id)}
-                  onPreview={(id) => setSelectedProductId(id)}
-                />
-              ) : (
-                <CollectionsTab
-                  vendorId={dashboard.vendor.id}
-                  categoryId={selectedCategoryId}
-                  onCollectionClick={(id) => setSelectedCollectionId(id)}
-                  showConfirm={showConfirm}
-                />
-              )
-            )
-          )}
-
           {activeTab === "categories" && (
             <CategoriesTab
-              onCategoryClick={(id) => { setSelectedCategoryId(id); handleTabChange("collections"); }}
+              onCategoryClick={(id) => { setSelectedCategoryId(id); handleTabChange("overview"); }}
             />
           )}
 

@@ -731,21 +731,24 @@ export default function ProductsTab({ vendorId, collectionId, onProductClick, on
                                             <h4 className="font-black text-slate-900 uppercase tracking-widest text-xs">{language === 'ar' ? "التصنيف والذكاء" : "Product Intelligence"}</h4>
                                         </div>
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                                            <div className="space-y-2">
-                                                <label className="text-[10px] font-black text-slate-400">{language === 'ar' ? "المجموعة" : "COLLECTION"}</label>
-                                                <Select value={collectionIdState} onValueChange={setCollectionId}>
-                                                    <SelectTrigger className="h-14 rounded-2xl border-slate-100 shadow-sm font-bold bg-white focus:ring-4 focus:ring-blue-50">
-                                                        <SelectValue placeholder={language === 'ar' ? "اختر مجموعة" : "Select Collection"} />
-                                                    </SelectTrigger>
-                                                    <SelectContent className="rounded-2xl shadow-xl border-slate-100">
-                                                        {collections?.map((c: any) => (
-                                                            <SelectItem key={c.id} value={c.id.toString()} className="font-bold py-3">
-                                                                {language === 'ar' ? c.nameAr : c.nameEn}
-                                                            </SelectItem>
-                                                        ))}
-                                                    </SelectContent>
-                                                </Select>
-                                            </div>
+                                            {/* Hide Collection for vendors as per request */}
+                                            {vendorId === 0 && (
+                                                <div className="space-y-2">
+                                                    <label className="text-[10px] font-black text-slate-400">{language === 'ar' ? "المجموعة" : "COLLECTION"}</label>
+                                                    <Select value={collectionIdState} onValueChange={setCollectionId}>
+                                                        <SelectTrigger className="h-14 rounded-2xl border-slate-100 shadow-sm font-bold bg-white focus:ring-4 focus:ring-blue-50">
+                                                            <SelectValue placeholder={language === 'ar' ? "اختر مجموعة" : "Select Collection"} />
+                                                        </SelectTrigger>
+                                                        <SelectContent className="rounded-2xl shadow-xl border-slate-100">
+                                                            {collections?.map((c: any) => (
+                                                                <SelectItem key={c.id} value={c.id.toString()} className="font-bold py-3">
+                                                                    {language === 'ar' ? c.nameAr : c.nameEn}
+                                                                </SelectItem>
+                                                            ))}
+                                                        </SelectContent>
+                                                    </Select>
+                                                </div>
+                                            )}
                                             <div className="space-y-2">
                                                 <label className="text-[10px] font-black text-slate-400">{language === 'ar' ? "القسم" : "CATEGORY"}</label>
                                                 <Select value={categoryId} onValueChange={setCategoryId}>
@@ -1091,7 +1094,7 @@ export default function ProductsTab({ vendorId, collectionId, onProductClick, on
                                     onClick={() => {
                                         if (!nameAr) return toast.error("يرجى إدخال الاسم بالعربية");
                                         if (!price || parseFloat(price) <= 0) return toast.error("يرجى إدخال سعر صحيح");
-                                        if (!collectionIdState) return toast.error(language === 'ar' ? "يرجى اختيار مجموعة" : "Please select a collection");
+                                        if (vendorId === 0 && !collectionIdState) return toast.error(language === 'ar' ? "يرجى اختيار مجموعة" : "Please select a collection");
                                         submitMutation.mutate();
                                     }}
                                     disabled={submitMutation.isPending}

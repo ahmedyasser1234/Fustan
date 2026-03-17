@@ -99,6 +99,7 @@ import AdminAnalyticsTab from "@/components/dashboard/AdminAnalyticsTab";
 import ContentTab from "@/components/dashboard/ContentTab";
 import { useLanguage } from "@/lib/i18n";
 import AdminSearchModal from "@/components/admin/AdminSearchModal";
+import CollectionsTab from "@/components/dashboard/CollectionsTab";
 
 
 interface CardHeaderProps {
@@ -303,7 +304,7 @@ export default function AdminDashboard() {
   const [customerDetails, setCustomerDetails] = useState<any>(null);
   const [detailsCustomerId, setDetailsCustomerId] = useState<number | null>(null);
 
-  const [activeTab, setActiveTabInternal] = useState<"overview" | "vendors" | "requests" | "reports" | "analytics" | "products" | "categories" | "orders" | "customers" | "chat" | "content" | "settings">(() => {
+  const [activeTab, setActiveTabInternal] = useState<"overview" | "vendors" | "requests" | "reports" | "analytics" | "products" | "collections" | "categories" | "orders" | "customers" | "chat" | "content" | "settings">(() => {
     const params = new URLSearchParams(window.location.search);
     return (params.get("tab") as any) || "overview";
   });
@@ -317,6 +318,7 @@ export default function AdminDashboard() {
     { id: "reports", label: t('commissionReports'), icon: DollarSign, color: "from-blue-600 to-indigo-700 shadow-indigo-500/30" },
     { id: "content", label: t('contentManagement'), icon: Edit, color: "from-rose-500 to-red-600 shadow-rose-500/30" },
     { id: "products", label: t('products'), icon: Package, color: "from-fuchsia-500 to-purple-600 shadow-fuchsia-500/30" },
+    { id: "collections", label: t('collections'), icon: Layers, color: "from-amber-500 to-orange-500 shadow-amber-500/30" },
     { id: "categories", label: t('categories'), icon: Layers, color: "from-teal-400 to-emerald-600 shadow-teal-500/30" },
     { id: "orders", label: t('orders'), icon: ShoppingCart, color: "from-orange-500 to-red-600 shadow-orange-500/30" },
     { id: "customers", label: t('customers'), icon: Users, color: "from-sky-500 to-blue-600 shadow-sky-500/30" },
@@ -1542,6 +1544,17 @@ export default function AdminDashboard() {
             </div>
           )
         }
+
+        {/* Collections Tab */}
+        {activeTab === "collections" && (
+          <CollectionsTab
+            vendorId={0} // Admin managing global/all collections might need a different prop or handling
+            onCollectionClick={(id) => {
+              // Handle collection click in admin context if needed
+            }}
+            showConfirm={showConfirm}
+          />
+        )}
 
         {/* Categories Tab */}
         {
