@@ -20,7 +20,7 @@ export const translations = {
         // Admin Dashboard Tabs
         overview: "نظرة عامة",
         vendors: "البائعين",
-        vendorRequests: "طلبات الانضمام",
+        vendorRequests: "مركز الطلبات",
         analytics: "الإحصائيات",
         commissionReports: "تقارير العمولات",
         contentManagement: "إدارة المحتوى",
@@ -326,7 +326,7 @@ export const translations = {
         adminOverview: "نظرة عامة",
         adminAnalytics: "التحليلات",
         adminVendors: "المتاجر",
-        adminRequests: "الطلبات",
+        adminRequests: "مركز الطلبات",
         adminReports: "التقارير",
         adminCategories: "الأقسام",
         adminCustomers: "العملاء",
@@ -591,7 +591,7 @@ export const translations = {
         // Admin Dashboard Tabs
         overview: "Overview",
         vendors: "Vendors",
-        vendorRequests: "Vendor Requests",
+        vendorRequests: "Request Center",
         analytics: "Analytics",
         commissionReports: "Commission Reports",
         contentManagement: "Content Management",

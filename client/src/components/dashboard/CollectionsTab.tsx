@@ -105,6 +105,14 @@ export default function CollectionsTab({ vendorId, categoryId, onCollectionClick
         setNewCollectionImage(null);
     };
 
+    const { data: allRequests } = useQuery({
+        queryKey: ['admin', 'vendor-requests', 'pending'],
+        queryFn: () => endpoints.vendorRequests.listAll(),
+        enabled: vendorId === 0,
+    });
+
+    const pendingRequests = allRequests?.filter((r: any) => r.status === 'pending' && r.type === 'collection_request') || [];
+
     if (isLoading) return (
         <div className="flex flex-col items-center justify-center p-20 space-y-4">
             <Loader2 className="w-10 h-10 animate-spin text-purple-600" />
@@ -114,6 +122,38 @@ export default function CollectionsTab({ vendorId, categoryId, onCollectionClick
 
     return (
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+            {vendorId === 0 && pendingRequests.length > 0 && (
+                <div className="bg-amber-50 border border-amber-200 rounded-3xl p-6 flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm">
+                    <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-amber-100 rounded-2xl flex items-center justify-center shrink-0">
+                            <Plus className="w-6 h-6 text-amber-600" />
+                        </div>
+                        <div className="text-right">
+                            <h4 className="font-black text-slate-900">
+                                {language === 'ar' ? "لديك طلبات مجموعات جديدة" : "You have new collection requests"}
+                            </h4>
+                            <p className="text-xs text-slate-500 font-bold">
+                                {language === 'ar' 
+                                    ? `هناك ${pendingRequests.length} طلبات بانتظار المراجعة في مركز الطلبات.` 
+                                    : `There are ${pendingRequests.length} requests waiting for review in the Request Center.`}
+                            </p>
+                        </div>
+                    </div>
+                    <Button 
+                        variant="outline" 
+                        className="border-amber-200 text-amber-700 font-black rounded-xl hover:bg-amber-100"
+                        onClick={() => {
+                            // This depends on how we navigate back to the requests tab
+                            // In AdminDashboard, we use window.location.search usually
+                            const params = new URLSearchParams(window.location.search);
+                            params.set("tab", "requests");
+                            window.location.search = params.toString();
+                        }}
+                    >
+                        {language === 'ar' ? "عرض الطلبات" : "View Requests"}
+                    </Button>
+                </div>
+            )}
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div className={`w-full sm:w-auto ${language === 'ar' ? 'text-center sm:text-right' : 'text-center sm:text-left'}`}>
                     <h2 className="text-2xl sm:text-3xl font-black text-slate-900 mb-2">{language === 'ar' ? "مجموعات المتجر" : "Brand Collections"}</h2>

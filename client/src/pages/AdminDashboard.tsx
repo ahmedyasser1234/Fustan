@@ -309,22 +309,44 @@ export default function AdminDashboard() {
     return (params.get("tab") as any) || "overview";
   });
 
+  const { data: pendingVendorsCount } = useQuery({
+    queryKey: ['admin', 'vendors', 'pending', 'count'],
+    queryFn: async () => (await api.get('/admin/vendors/pending')).data.length,
+  });
+
+  const { data: allRequests } = useQuery({
+    queryKey: ['admin', 'vendor-requests', 'count'],
+    queryFn: () => endpoints.vendorRequests.listAll(),
+  });
+
+  const pendingContentRequestsCount = useMemo(() => 
+    allRequests?.filter((r: any) => r.status === 'pending').length || 0
+  , [allRequests]);
+
+  const pendingCollectionsCount = useMemo(() => 
+    allRequests?.filter((r: any) => r.status === 'pending' && r.type === 'collection_request').length || 0
+  , [allRequests]);
+
+  const pendingCategoriesCount = useMemo(() => 
+    allRequests?.filter((r: any) => r.status === 'pending' && r.type === 'category_request').length || 0
+  , [allRequests]);
+
   /* Define tabs with distinct gradient colors */
   const tabs = useMemo<{ id: string; label: string; icon: any; color?: string; badge?: number }[]>(() => [
     { id: "overview", label: t('overview'), icon: LayoutDashboard, color: "from-purple-600 to-pink-600 shadow-purple-500/30" },
     { id: "vendors", label: t('vendors'), icon: Store, color: "from-cyan-500 to-blue-600 shadow-cyan-500/30" },
-    { id: "requests", label: t('vendorRequests'), icon: List, color: "from-amber-400 to-orange-600 shadow-orange-500/30" },
+    { id: "requests", label: t('vendorRequests'), icon: List, color: "from-amber-400 to-orange-600 shadow-orange-500/30", badge: (pendingVendorsCount || 0) + pendingContentRequestsCount },
     { id: "analytics", label: t('analytics'), icon: BarChart3, color: "from-emerald-400 to-teal-600 shadow-emerald-500/30" },
     { id: "reports", label: t('commissionReports'), icon: DollarSign, color: "from-blue-600 to-indigo-700 shadow-indigo-500/30" },
     { id: "content", label: t('contentManagement'), icon: Edit, color: "from-rose-500 to-red-600 shadow-rose-500/30" },
     { id: "products", label: t('products'), icon: Package, color: "from-fuchsia-500 to-purple-600 shadow-fuchsia-500/30" },
-    { id: "collections", label: t('collections'), icon: Layers, color: "from-amber-500 to-orange-500 shadow-amber-500/30" },
-    { id: "categories", label: t('categories'), icon: Layers, color: "from-teal-400 to-emerald-600 shadow-teal-500/30" },
+    { id: "collections", label: t('collections'), icon: Layers, color: "from-amber-500 to-orange-500 shadow-amber-500/30", badge: pendingCollectionsCount },
+    { id: "categories", label: t('categories'), icon: Layers, color: "from-teal-400 to-emerald-600 shadow-teal-500/30", badge: pendingCategoriesCount },
     { id: "orders", label: t('orders'), icon: ShoppingCart, color: "from-orange-500 to-red-600 shadow-orange-500/30" },
     { id: "customers", label: t('customers'), icon: Users, color: "from-sky-500 to-blue-600 shadow-sky-500/30" },
     { id: "chat", label: t('chat'), icon: MessageSquare, badge: unreadCount, color: "from-pink-500 to-rose-600 shadow-pink-500/30" },
     { id: "settings", label: t('settings'), icon: Settings, color: "from-slate-700 to-slate-900 shadow-slate-500/30" },
-  ], [t, unreadCount]);
+  ], [t, unreadCount, pendingVendorsCount, pendingContentRequestsCount, pendingCollectionsCount, pendingCategoriesCount]);
 
   const setActiveTab = (tab: typeof activeTab) => {
     setActiveTabInternal(tab);
@@ -2061,8 +2083,45 @@ function CategoriesTab({
     );
   };
 
+  const { data: allRequests } = useQuery({
+    queryKey: ['admin', 'vendor-requests', 'pending'],
+    queryFn: () => endpoints.vendorRequests.listAll(),
+  });
+
+  const pendingRequests = allRequests?.filter((r: any) => r.status === 'pending' && r.type === 'category_request') || [];
+
   return (
     <div className="p-6">
+      {pendingRequests.length > 0 && (
+        <div className="mb-6 bg-teal-50 border border-teal-200 rounded-3xl p-6 flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm animate-in fade-in slide-in-from-top-4 duration-500">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-teal-100 rounded-2xl flex items-center justify-center shrink-0">
+              <Plus className="w-6 h-6 text-teal-600" />
+            </div>
+            <div className="text-right">
+              <h4 className="font-black text-slate-900">
+                {language === 'ar' ? "لديك طلبات أقسام جديدة" : "You have new category requests"}
+              </h4>
+              <p className="text-xs text-slate-500 font-bold">
+                {language === 'ar'
+                  ? `هناك ${pendingRequests.length} طلبات بانتظار المراجعة في مركز الطلبات.`
+                  : `There are ${pendingRequests.length} requests waiting for review in the Request Center.`}
+              </p>
+            </div>
+          </div>
+          <Button
+            variant="outline"
+            className="border-teal-200 text-teal-700 font-black rounded-xl hover:bg-teal-100"
+            onClick={() => {
+              const params = new URLSearchParams(window.location.search);
+              params.set("tab", "requests");
+              window.location.search = params.toString();
+            }}
+          >
+            {language === 'ar' ? "عرض الطلبات" : "View Requests"}
+          </Button>
+        </div>
+      )}
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold text-gray-900">{t('manageCategories')}</h2>
         <Button
