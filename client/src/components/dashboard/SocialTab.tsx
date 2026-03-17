@@ -167,6 +167,9 @@ export default function SocialTab() {
 
             <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
                 <DialogContent className="max-w-2xl rounded-[32px] p-0 overflow-hidden border-0 bg-white shadow-2xl">
+                    <DialogHeader className="sr-only">
+                        <DialogTitle>Create New Social Post</DialogTitle>
+                    </DialogHeader>
                     <DialogHeader className="p-8 pb-4 bg-slate-50 border-b border-slate-100 flex flex-row items-center justify-between">
                         <div>
                             <DialogTitle className="text-2xl font-black text-slate-900">

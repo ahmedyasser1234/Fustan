@@ -450,6 +450,10 @@ export default function ProductsTab({ vendorId, collectionId, onProductClick, on
             {/* CREATE/EDIT PRODUCT MODAL */}
             <Dialog open={isModalOpen} onOpenChange={handleCloseModal}>
                 <DialogContent className="w-full h-full sm:h-[95vh] sm:max-w-7xl sm:w-[95vw] p-0 overflow-hidden shadow-2xl transition-all duration-700 animate-in zoom-in-95 rounded-none sm:rounded-[40px]">
+                    <DialogHeader className="sr-only">
+                        <DialogTitle>{editingProduct ? "Edit Product" : "Add New Product"}</DialogTitle>
+                        <p className="text-slate-400">Manage dress details and variants</p>
+                    </DialogHeader>
                     <div className="flex flex-col h-full bg-slate-50">
                         {/* Custom Header */}
                         <div className="bg-white px-4 py-4 md:px-8 md:py-6 flex items-center justify-between border-b border-slate-100 sticky top-0 z-50">
@@ -987,8 +991,8 @@ export default function ProductsTab({ vendorId, collectionId, onProductClick, on
                                                 const sizeInfo = SIZE_DATA.find(d => d[selectedSystem] === s.size);
                                                 return (
                                                     <div key={idx} className="flex flex-col gap-3 bg-white/5 p-4 rounded-3xl border border-white/10 group/item relative transition-all hover:bg-white/10">
-                                                        <div className="flex items-end gap-2 px-1">
-                                                            <div className="flex-1 space-y-1">
+                                                        <div className="grid grid-cols-[1fr_1fr_auto] items-end gap-2 px-1">
+                                                            <div className="basis-0 min-w-0 space-y-1">
                                                                 <label className="text-[10px] font-black text-white/40 uppercase leading-none">{language === 'ar' ? "المقاس" : "Size"}</label>
                                                                 <Select value={s.size} onValueChange={(val) => handleSizeChange(idx, 'size', val)}>
                                                                     <SelectTrigger className="h-10 bg-transparent border-white/10 text-white font-black w-full rounded-xl">
@@ -1004,7 +1008,7 @@ export default function ProductsTab({ vendorId, collectionId, onProductClick, on
                                                                 </Select>
                                                             </div>
 
-                                                            <div className="flex-1 space-y-1">
+                                                            <div className="basis-0 min-w-0 space-y-1">
                                                                 <label className="text-[10px] font-black text-white/40 uppercase leading-none">{language === 'ar' ? "الكمية" : "Qty"}</label>
                                                                 <Input 
                                                                     type="number" 
