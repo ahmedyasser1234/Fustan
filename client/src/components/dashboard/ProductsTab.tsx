@@ -990,45 +990,45 @@ export default function ProductsTab({ vendorId, collectionId, onProductClick, on
                                             {sizes.map((s, idx) => {
                                                 const sizeInfo = SIZE_DATA.find(d => d[selectedSystem] === s.size);
                                                 return (
-                                                    <div key={idx} className="flex flex-col gap-5 bg-white/5 p-8 rounded-[32px] border border-white/10 group/item relative transition-all hover:bg-white/10">
-                                                        <div className="grid grid-cols-[1fr_1fr_auto] items-end gap-2 px-1">
-                                                            <div className="basis-0 min-w-0 space-y-2">
-                                                                <label className="text-xs font-black text-white/40 uppercase leading-none tracking-widest">{language === 'ar' ? "المقاس" : "Size"}</label>
+                                                    <div key={idx} className="flex flex-col gap-6 bg-white/5 p-8 rounded-[40px] border border-white/10 group/item relative transition-all hover:bg-white/10">
+                                                        {sizes.length > 1 && (
+                                                            <Button 
+                                                                variant="ghost" 
+                                                                size="icon" 
+                                                                className="absolute top-4 right-4 h-10 w-10 text-white/20 hover:text-red-400 hover:bg-red-400/10 z-10" 
+                                                                onClick={() => handleRemoveSize(idx)}
+                                                            >
+                                                                <Trash2 className="w-5 h-5" />
+                                                            </Button>
+                                                        )}
+
+                                                        <div className="space-y-6 flex flex-col items-center">
+                                                            <div className="w-full space-y-3">
+                                                                <label className="text-sm font-black text-white/40 uppercase tracking-[0.2em] text-center block w-full">{language === 'ar' ? "المقاس" : "Size"}</label>
                                                                 <Select value={s.size} onValueChange={(val) => handleSizeChange(idx, 'size', val)}>
-                                                                    <SelectTrigger className="h-14 bg-transparent border-white/10 text-white font-black w-full rounded-2xl text-lg">
+                                                                    <SelectTrigger className="h-16 bg-white/5 border-white/10 text-white font-black w-full rounded-3xl text-xl text-center">
                                                                         <SelectValue placeholder={language === 'ar' ? "اختر المقاس" : "Select Size"} />
                                                                     </SelectTrigger>
-                                                                    <SelectContent className="rounded-xl border-slate-800 bg-slate-900 text-white font-bold">
+                                                                    <SelectContent className="rounded-3xl border-slate-800 bg-slate-900 text-white font-bold">
                                                                         {SIZE_DATA.map((d, dIdx) => (
-                                                                            <SelectItem key={dIdx} value={d[selectedSystem]}>
+                                                                            <SelectItem key={dIdx} value={d[selectedSystem]} className="text-lg py-3 rounded-2xl">
                                                                                 {selectedSystem.toUpperCase()} {d[selectedSystem]}
                                                                             </SelectItem>
                                                                         ))}
                                                                     </SelectContent>
                                                                 </Select>
                                                             </div>
-
-                                                            <div className="basis-0 min-w-0 space-y-2">
-                                                                <label className="text-xs font-black text-white/40 uppercase leading-none tracking-widest">{language === 'ar' ? "الكمية" : "Qty"}</label>
+                                                            
+                                                            <div className="w-full space-y-3">
+                                                                <label className="text-sm font-black text-white/40 uppercase tracking-[0.2em] text-center block w-full">{language === 'ar' ? "الكمية" : "Qty"}</label>
                                                                 <Input 
                                                                     type="number" 
                                                                     placeholder="0" 
                                                                     value={s.quantity} 
                                                                     onChange={e => handleSizeChange(idx, 'quantity', parseInt(e.target.value))} 
-                                                                    className="h-14 bg-transparent border-white/10 text-white font-black text-center w-full rounded-2xl text-lg" 
+                                                                    className="h-16 bg-white/5 border-white/10 text-white font-black text-center w-full rounded-3xl text-2xl focus:ring-4 focus:ring-amber-500/20" 
                                                                 />
                                                             </div>
-
-                                                            {sizes.length > 1 && (
-                                                                <Button 
-                                                                    variant="ghost" 
-                                                                    size="icon" 
-                                                                    className="h-14 w-14 text-white/40 hover:text-red-400 hover:bg-red-400/10 shrink-0" 
-                                                                    onClick={() => handleRemoveSize(idx)}
-                                                                >
-                                                                    <Trash2 className="w-5 h-5" />
-                                                                </Button>
-                                                            )}
                                                         </div>
 
                                                         {sizeInfo && (
