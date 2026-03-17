@@ -27,4 +27,9 @@ export class AiController {
     async analyzeAnalytics(@Body() body: any) {
         return this.aiService.analyzeAnalytics(body);
     }
+
+    @Post('description')
+    async generateDescription(@Body() body: any) {
+        return this.aiService.generateProductDescription(body);
+    }
 }

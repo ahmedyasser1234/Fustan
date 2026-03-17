@@ -100,6 +100,7 @@ export default function ProductsTab({ vendorId, collectionId, onProductClick, on
     // Modal & Edit State
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingProduct, setEditingProduct] = useState<any>(null);
+    const [isGeneratingAI, setIsGeneratingAI] = useState(false);
 
     // Form State
     const [nameAr, setNameAr] = useState("");
@@ -164,6 +165,34 @@ export default function ProductsTab({ vendorId, collectionId, onProductClick, on
             setPrice(rentPrice);
         }
     }, [availability, salePrice, rentPrice]);
+
+    const handleGenerateAIDescription = async () => {
+        if (!nameAr || !nameEn) {
+            return toast.error(language === 'ar' ? "يرجى إدخال اسم المنتج أولاً" : "Please enter product name first");
+        }
+
+        setIsGeneratingAI(true);
+        try {
+            const result = await endpoints.ai.generateDescription({
+                nameAr,
+                nameEn,
+                categoryName: categories?.find((c: any) => c.id === categoryId)?.nameAr,
+                occasion,
+                availability,
+                price: price || salePrice || rentPrice
+            });
+
+            if (result.descriptionAr) setDescriptionAr(result.descriptionAr);
+            if (result.descriptionEn) setDescriptionEn(result.descriptionEn);
+            
+            toast.success(language === 'ar' ? "تم توليد الوصف بنجاح" : "Description generated successfully");
+        } catch (error) {
+            console.error('AI Generation error:', error);
+            toast.error(language === 'ar' ? "فشل توليد الوصف" : "Failed to generate description");
+        } finally {
+            setIsGeneratingAI(false);
+        }
+    };
 
     const deleteProduct = useMutation({
         mutationFn: async (id: number) => await endpoints.products.delete(id),
@@ -1067,9 +1096,25 @@ export default function ProductsTab({ vendorId, collectionId, onProductClick, on
 
                                     {/* Final Description Section */}
                                     <div className="space-y-6">
-                                        <div className="flex items-center gap-3">
-                                            <div className="h-2 w-8 bg-emerald-600 rounded-full" />
-                                            <h4 className="font-black text-slate-900 uppercase tracking-widest text-xs">{language === 'ar' ? "التفاصيل والوصف" : "Copywriting"}</h4>
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex items-center gap-3">
+                                                <div className="h-2 w-8 bg-emerald-600 rounded-full" />
+                                                <h4 className="font-black text-slate-900 uppercase tracking-widest text-xs">{language === 'ar' ? "التفاصيل والوصف" : "Copywriting"}</h4>
+                                            </div>
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                disabled={isGeneratingAI}
+                                                onClick={handleGenerateAIDescription}
+                                                className="rounded-xl bg-emerald-50 border-emerald-100 text-emerald-700 hover:bg-emerald-100 h-10 px-4 group/ai"
+                                            >
+                                                {isGeneratingAI ? (
+                                                    <Loader2 className="w-4 h-4 ml-2 animate-spin" />
+                                                ) : (
+                                                    <Sparkles className="w-4 h-4 ml-2 text-emerald-500 group-hover/ai:scale-110 transition-transform" />
+                                                )}
+                                                {language === 'ar' ? "توليد بالذكاء الاصطناعي" : "Generate with AI"}
+                                            </Button>
                                         </div>
                                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                                             <div className="space-y-2">

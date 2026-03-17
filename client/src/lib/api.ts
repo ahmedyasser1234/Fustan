@@ -168,6 +168,7 @@ export const endpoints = {
     },
     ai: {
         analyzeAnalytics: (data: any) => api.post('/ai/analyze-analytics', data).then(res => res.data),
+        generateDescription: (data: any) => api.post('/ai/description', data).then(res => res.data),
     },
     wishlist: {
         list: () => api.get('/wishlist').then(res => res.data),

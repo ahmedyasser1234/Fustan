@@ -331,4 +331,73 @@ export class AiService {
             };
         }
     }
+
+    async generateProductDescription(data: {
+        nameAr: string;
+        nameEn: string;
+        categoryName?: string;
+        collectionName?: string;
+        occasion?: string;
+        availability?: string;
+        price?: string;
+    }) {
+        if (!this.gemini) {
+            return {
+                descriptionAr: `هذا الفستان الرائع من ${data.nameAr} مثالي للمناسبات الراقية. يتميز بتصميم فريد يجمع بين الأناقة والراحة.`,
+                descriptionEn: `This stunning ${data.nameEn} dress is perfect for elegant occasions. It features a unique design that combines style and comfort.`,
+                provider: 'mock'
+            };
+        }
+
+        try {
+            const prompt = `
+                You are a high-end fashion copywriter for "Fustan", a premium e-commerce platform for luxury dresses.
+                Your task is to write a poetic, persuasive, and evocative product description for a dress.
+                
+                Product Details:
+                - Name (AR): ${data.nameAr}
+                - Name (EN): ${data.nameEn}
+                - Category: ${data.categoryName || 'Fashion'}
+                - Collection: ${data.collectionName || 'General'}
+                - Occasion: ${data.occasion || 'Special Events'}
+                - Availability: ${data.availability}
+                - Price hint: ${data.price} EGP
+                
+                Guidelines:
+                1. Write one description in ARABIC and one in ENGLISH.
+                2. Use rich, evocative language that makes the customer feel the fabric and the elegance.
+                3. Focus on the "story" and the "feeling" of wearing this dress.
+                4. For the Arabic version, use a sophisticated "Fusha" (Standard Modern Arabic) suitable for luxury fashion.
+                5. Keep each description between 150-300 characters.
+                6. Do NOT use emojis.
+                
+                Respond ONLY with a JSON object in this format:
+                {
+                  "descriptionAr": "...",
+                  "descriptionEn": "..."
+                }
+            `;
+
+            const result = await (this.gemini as any).models.generateContent({
+                model: 'gemini-1.5-flash',
+                contents: [{ role: 'user', parts: [{ text: prompt }] }]
+            });
+
+            const text = result.candidates?.[0]?.content?.parts?.[0]?.text || '';
+            const jsonStr = text.replace(/```json/g, '').replace(/```/g, '').trim();
+            const parsed = JSON.parse(jsonStr);
+
+            return {
+                ...parsed,
+                provider: 'gemini-1.5-flash'
+            };
+        } catch (error) {
+            this.logger.error('Failed to generate product description with AI:', error);
+            return {
+                descriptionAr: `هذا الفستان الرائع من ${data.nameAr} هو الخيار الأمثل لإطلالة متميزة.`,
+                descriptionEn: `This beautiful ${data.nameEn} dress is the perfect choice for a standout look.`,
+                provider: 'error-fallback'
+            };
+        }
+    }
 }
