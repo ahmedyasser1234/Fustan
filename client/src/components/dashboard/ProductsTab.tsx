@@ -1002,16 +1002,16 @@ export default function ProductsTab({ vendorId, collectionId, onProductClick, on
                                                             </Button>
                                                         )}
 
-                                                        <div className="space-y-6 flex flex-col items-center">
-                                                            <div className="w-full space-y-3">
-                                                                <label className="text-sm font-black text-white/40 uppercase tracking-[0.2em] text-center block w-full">{language === 'ar' ? "المقاس" : "Size"}</label>
+                                                        <div className="space-y-4 flex flex-col items-center">
+                                                            <div className="w-full space-y-2">
+                                                                <label className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em] text-center block w-full">{language === 'ar' ? "المقاس" : "Size"}</label>
                                                                 <Select value={s.size} onValueChange={(val) => handleSizeChange(idx, 'size', val)}>
-                                                                    <SelectTrigger className="h-16 bg-white/5 border-white/10 text-white font-black w-full rounded-3xl text-xl text-center">
+                                                                    <SelectTrigger className="h-12 bg-white/5 border-white/10 text-white font-black w-full rounded-2xl text-base text-center">
                                                                         <SelectValue placeholder={language === 'ar' ? "اختر المقاس" : "Select Size"} />
                                                                     </SelectTrigger>
-                                                                    <SelectContent className="rounded-3xl border-slate-800 bg-slate-900 text-white font-bold">
+                                                                    <SelectContent className="rounded-2xl border-slate-800 bg-slate-900 text-white font-bold">
                                                                         {SIZE_DATA.map((d, dIdx) => (
-                                                                            <SelectItem key={dIdx} value={d[selectedSystem]} className="text-lg py-3 rounded-2xl">
+                                                                            <SelectItem key={dIdx} value={d[selectedSystem]} className="text-sm py-2.5 rounded-xl">
                                                                                 {selectedSystem.toUpperCase()} {d[selectedSystem]}
                                                                             </SelectItem>
                                                                         ))}
@@ -1019,37 +1019,37 @@ export default function ProductsTab({ vendorId, collectionId, onProductClick, on
                                                                 </Select>
                                                             </div>
                                                             
-                                                            <div className="w-full space-y-3">
-                                                                <label className="text-sm font-black text-white/40 uppercase tracking-[0.2em] text-center block w-full">{language === 'ar' ? "الكمية" : "Qty"}</label>
+                                                            <div className="w-full space-y-2">
+                                                                <label className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em] text-center block w-full">{language === 'ar' ? "الكمية" : "Qty"}</label>
                                                                 <Input 
                                                                     type="number" 
                                                                     placeholder="0" 
                                                                     value={s.quantity} 
                                                                     onChange={e => handleSizeChange(idx, 'quantity', parseInt(e.target.value))} 
-                                                                    className="h-16 bg-white/5 border-white/10 text-white font-black text-center w-full rounded-3xl text-2xl focus:ring-4 focus:ring-amber-500/20" 
+                                                                    className="h-12 bg-white/5 border-white/10 text-white font-black text-center w-full rounded-2xl text-base focus:ring-4 focus:ring-amber-500/20" 
                                                                 />
                                                             </div>
                                                         </div>
 
                                                         {sizeInfo && (
-                                                            <div className="mt-2 pt-6 border-t border-white/10 flex items-center justify-between px-1">
-                                                                <div className="flex items-center gap-4">
-                                                                    <div className="flex flex-col">
-                                                                        <span className="text-[10px] font-black text-white/30 uppercase leading-none tracking-tight">{t('chest')}</span>
+                                                            <div className="mt-2 pt-4 border-t border-white/10 flex flex-col items-center gap-3 px-1">
+                                                                <span className="text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">{t('measurements')} (CM)</span>
+                                                                <div className="flex items-center justify-center gap-6">
+                                                                    <div className="flex flex-col items-center">
+                                                                        <span className="text-[10px] font-black text-white/30 uppercase leading-none tracking-tight mb-1">{t('chest')}</span>
                                                                         <span className="text-sm font-black text-amber-500">{sizeInfo.chest}</span>
                                                                     </div>
-                                                                    <div className="w-[1px] h-6 bg-white/10 mx-1" />
-                                                                    <div className="flex flex-col">
-                                                                        <span className="text-[10px] font-black text-white/30 uppercase leading-none tracking-tight">{t('waist')}</span>
+                                                                    <div className="w-[1px] h-6 bg-white/10" />
+                                                                    <div className="flex flex-col items-center">
+                                                                        <span className="text-[10px] font-black text-white/30 uppercase leading-none tracking-tight mb-1">{t('waist')}</span>
                                                                         <span className="text-sm font-black text-amber-500">{sizeInfo.waist}</span>
                                                                     </div>
-                                                                    <div className="w-[1px] h-6 bg-white/10 mx-1" />
-                                                                    <div className="flex flex-col">
-                                                                        <span className="text-[10px] font-black text-white/30 uppercase leading-none tracking-tight">{t('hips')}</span>
+                                                                    <div className="w-[1px] h-6 bg-white/10" />
+                                                                    <div className="flex flex-col items-center">
+                                                                        <span className="text-[10px] font-black text-white/30 uppercase leading-none tracking-tight mb-1">{t('hips')}</span>
                                                                         <span className="text-sm font-black text-amber-500">{sizeInfo.hips}</span>
                                                                     </div>
                                                                 </div>
-                                                                <span className="text-[10px] font-black text-white/20 uppercase tracking-widest">{t('measurements')} (CM)</span>
                                                             </div>
                                                         )}
                                                     </div>
