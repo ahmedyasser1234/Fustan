@@ -8,6 +8,7 @@ import { format } from "date-fns";
 import { ar } from "date-fns/locale";
 import { useState } from "react";
 import { useLanguage } from "@/lib/i18n";
+import { cn } from "@/lib/utils";
 
 export default function VendorRequestsTab() {
     const { t, language } = useLanguage();
@@ -178,6 +179,7 @@ function VendorCard({ vendor, onApprove, onReject, isPending }: any) {
 function RequestCard({ request, onApprove, onReject, isPending }: any) {
     const { language } = useLanguage();
     const isSocial = request.type === 'social_post_request';
+    const isCollection = request.type === 'collection_request';
     
     return (
         <Card className="border-0 shadow-sm hover:shadow-md transition-all duration-300 rounded-[32px] overflow-hidden group">
@@ -191,12 +193,18 @@ function RequestCard({ request, onApprove, onReject, isPending }: any) {
                             ) : (
                                 <div className="w-full h-full flex items-center justify-center"><Instagram className="w-10 h-10 text-slate-200" /></div>
                             )
+                        ) : isCollection ? (
+                            request.data.imageUrl ? (
+                                <img src={request.data.imageUrl} alt="Collection" className="w-full h-full object-cover" />
+                            ) : (
+                                <div className="w-full h-full flex items-center justify-center bg-indigo-50"><Layers className="w-10 h-10 text-indigo-200" /></div>
+                            )
                         ) : (
                             <div className="w-full h-full flex items-center justify-center bg-purple-50"><Layers className="w-10 h-10 text-purple-200" /></div>
                         )}
                         <div className="absolute top-3 left-3 px-3 py-1 bg-white/90 backdrop-blur-md rounded-full shadow-sm">
                             <span className="text-[10px] font-black uppercase tracking-wider text-slate-500">
-                                {isSocial ? "SOCIAL POST" : "CATEGORY"}
+                                {isSocial ? "SOCIAL POST" : isCollection ? "COLLECTION" : "CATEGORY"}
                             </span>
                         </div>
                     </div>
@@ -210,7 +218,11 @@ function RequestCard({ request, onApprove, onReject, isPending }: any) {
                                     <span>Vendor ID: {request.vendorId}</span>
                                 </div>
                                 <h3 className="text-lg font-black text-slate-800">
-                                    {isSocial ? (language === 'ar' ? "منشور ترويجي جديد" : "New Promotional Post") : (request.data.nameAr || request.data.nameEn)}
+                                    {isSocial 
+                                        ? (language === 'ar' ? "منشور ترويجي جديد" : "New Promotional Post") 
+                                        : isCollection 
+                                            ? (language === 'ar' ? `طلب مجموعة: ${request.data.nameAr}` : `Collection: ${request.data.nameEn}`)
+                                            : (request.data.nameAr || request.data.nameEn)}
                                 </h3>
                             </div>
                             
@@ -224,7 +236,10 @@ function RequestCard({ request, onApprove, onReject, isPending }: any) {
                                     {language === 'ar' ? "رفض" : "Reject"}
                                 </Button>
                                 <Button
-                                    className="h-10 px-6 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-black shadow-lg shadow-purple-100 text-xs"
+                                    className={cn(
+                                        "h-10 px-6 rounded-xl text-white font-black shadow-lg text-xs",
+                                        isCollection ? "bg-indigo-600 hover:bg-indigo-700 shadow-indigo-100" : "bg-purple-600 hover:bg-purple-700 shadow-purple-100"
+                                    )}
                                     onClick={onApprove}
                                     disabled={isPending}
                                 >
@@ -234,7 +249,11 @@ function RequestCard({ request, onApprove, onReject, isPending }: any) {
                         </div>
 
                         <p className="text-slate-500 font-bold text-sm bg-slate-50/50 p-4 rounded-2xl border border-slate-50">
-                            {isSocial ? request.data.caption : (request.data.descriptionAr || request.data.descriptionEn)}
+                            {isSocial 
+                                ? request.data.caption 
+                                : isCollection 
+                                    ? (language === 'ar' ? request.data.descriptionAr : request.data.descriptionEn)
+                                    : (request.data.descriptionAr || request.data.descriptionEn)}
                         </p>
 
                         <div className="flex flex-wrap gap-4 text-xs font-black text-slate-400">

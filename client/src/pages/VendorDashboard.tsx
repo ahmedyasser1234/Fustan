@@ -60,6 +60,7 @@ import { useChatNotifications } from "@/hooks/useChatNotifications";
 import OverviewTab from "@/components/dashboard/OverviewTab";
 import ProductsTab from "@/components/dashboard/ProductsTab";
 import OrdersTab from "@/components/dashboard/OrdersTab";
+import CollectionRequestTab from "@/components/dashboard/CollectionRequestTab";
 import CollectionsTab from "@/components/dashboard/CollectionsTab";
 import CategoriesTab from "@/components/dashboard/CategoriesTab";
 import ProductPreviewView from "@/components/dashboard/ProductPreviewView";
@@ -209,6 +210,7 @@ export default function VendorDashboard() {
                 { id: "overview", icon: TrendingUp, color: "from-purple-500 to-pink-500" },
                 { id: "products", icon: Package, color: "from-blue-500 to-cyan-500" },
                 { id: "orders", icon: ShoppingCart, color: "from-emerald-500 to-teal-500" },
+                { id: "collections", icon: Layers, color: "from-amber-500 to-orange-500" },
                 { id: "categories", icon: Star, color: "from-pink-500 to-rose-500" },
                 { id: "offers", icon: Zap, color: "from-orange-500 to-red-500" },
                 { id: "coupons", icon: Plus, color: "from-violet-500 to-purple-500" },
@@ -283,6 +285,8 @@ export default function VendorDashboard() {
               onCustomerClick={(order) => { setSelectedCustomer(order); setCustomerInfoOpen(true); }}
             />
           )}
+
+          {activeTab === "collections" && <CollectionRequestTab />}
 
           {activeTab === "messages" && <MessagesTab />}
           {activeTab === "offers" && dashboard?.vendor?.id && <OffersTab vendorId={dashboard.vendor.id} />}
