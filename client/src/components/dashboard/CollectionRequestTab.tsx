@@ -222,155 +222,157 @@ export default function CollectionRequestTab() {
                         </div>
                     </DialogHeader>
                     
-                    <div className="p-8 space-y-6">
-                        <div className="grid grid-cols-2 gap-6">
-                            {/* Name AR */}
-                            <div className="space-y-2">
-                                <label className="text-xs font-black text-slate-400 uppercase tracking-widest">{language === 'ar' ? "الاسم (بالعربية)" : "NAME (AR)"}</label>
-                                <Input 
-                                    className="h-14 rounded-2xl bg-slate-50 border-transparent focus:bg-white focus:ring-4 focus:ring-indigo-50 font-bold"
-                                    placeholder="مثال: تشكيلة الصيف"
-                                    value={nameAr}
-                                    onChange={(e) => setNameAr(e.target.value)}
-                                    dir="rtl"
-                                />
-                            </div>
-                            {/* Name EN */}
-                            <div className="space-y-2">
-                                <label className="text-xs font-black text-slate-400 uppercase tracking-widest">{language === 'ar' ? "NAME (EN)" : "NAME (EN)"}</label>
-                                <Input 
-                                    className="h-14 rounded-2xl bg-slate-50 border-transparent focus:bg-white focus:ring-4 focus:ring-indigo-50 font-bold"
-                                    placeholder="e.g. Summer Collection"
-                                    value={nameEn}
-                                    onChange={(e) => setNameEn(e.target.value)}
-                                    dir="ltr"
-                                />
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-6">
-                            {/* Description AR */}
-                            <div className="space-y-2">
-                                <label className="text-xs font-black text-slate-400 uppercase tracking-widest">{language === 'ar' ? "الوصف (بالعربية)" : "DESCRIPTION (AR)"}</label>
-                                <Textarea 
-                                    className="min-h-[100px] rounded-2xl bg-slate-50 border-transparent focus:bg-white focus:ring-4 focus:ring-indigo-50 font-bold p-4"
-                                    placeholder="وصف مختصر للمجموعة..."
-                                    value={descriptionAr}
-                                    onChange={(e) => setDescriptionAr(e.target.value)}
-                                    dir="rtl"
-                                />
-                            </div>
-                            {/* Description EN */}
-                            <div className="space-y-2">
-                                <label className="text-xs font-black text-slate-400 uppercase tracking-widest">{language === 'ar' ? "DESCRIPTION (EN)" : "DESCRIPTION (EN)"}</label>
-                                <Textarea 
-                                    className="min-h-[100px] rounded-2xl bg-slate-50 border-transparent focus:bg-white focus:ring-4 focus:ring-indigo-50 font-bold p-4"
-                                    placeholder="Short description for the collection..."
-                                    value={descriptionEn}
-                                    onChange={(e) => setDescriptionEn(e.target.value)}
-                                    dir="ltr"
-                                />
-                            </div>
-                        </div>
-
-                        {/* Category Selection */}
-                        <div className="space-y-2">
-                            <label className="text-xs font-black text-slate-400 uppercase tracking-widest">{language === 'ar' ? "القسم الرئيسي" : "TARGET CATEGORY"}</label>
-                            <Select value={categoryId} onValueChange={setCategoryId}>
-                                <SelectTrigger className="h-14 rounded-2xl bg-slate-50 border-transparent focus:ring-4 focus:ring-indigo-50 font-bold px-6">
-                                    <SelectValue placeholder={language === 'ar' ? "اختر القسم" : "Select Category"} />
-                                </SelectTrigger>
-                                <SelectContent className="rounded-2xl border-slate-100 shadow-2xl p-2">
-                                    {categories?.map((cat: any) => (
-                                        <SelectItem key={cat.id} value={cat.id.toString()} className="rounded-xl font-bold py-3">
-                                            {language === 'ar' ? cat.nameAr : cat.nameEn}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
-
-                        {/* Image Input Section */}
-                        <div className="space-y-4">
-                            <div className="flex items-center justify-between">
-                                <label className="text-xs font-black text-slate-400 uppercase tracking-widest">
-                                    {language === 'ar' ? "صورة المجموعة" : "COLLECTION IMAGE"}
-                                </label>
-                                <div className="flex bg-slate-100 p-1 rounded-xl">
-                                    <button 
-                                        onClick={() => setUploadMode("file")}
-                                        className={cn("px-3 py-1 rounded-lg text-[10px] font-black transition-all", uploadMode === 'file' ? "bg-white text-indigo-600 shadow-sm" : "text-slate-400")}
-                                    >
-                                        {language === 'ar' ? "تحميل ملف" : "UPLOAD"}
-                                    </button>
-                                    <button 
-                                        onClick={() => setUploadMode("url")}
-                                        className={cn("px-3 py-1 rounded-lg text-[10px] font-black transition-all", uploadMode === 'url' ? "bg-white text-indigo-600 shadow-sm" : "text-slate-400")}
-                                    >
-                                        {language === 'ar' ? "رابط خارجي" : "URL"}
-                                    </button>
-                                </div>
-                            </div>
-
-                            {uploadMode === 'file' ? (
-                                <div 
-                                    onClick={() => fileInputRef.current?.click()}
-                                    className="aspect-video bg-slate-50 rounded-[24px] border-2 border-dashed border-slate-200 flex flex-col items-center justify-center overflow-hidden relative group transition-all duration-500 hover:border-indigo-300 cursor-pointer"
-                                >
-                                    <input 
-                                        type="file" 
-                                        className="hidden" 
-                                        ref={fileInputRef}
-                                        accept="image/*"
-                                        onChange={(e) => setImageFile(e.target.files?.[0] || null)}
-                                    />
-                                    {imageFile ? (
-                                        <div className="relative w-full h-full">
-                                            <img src={URL.createObjectURL(imageFile)} className="w-full h-full object-cover" />
-                                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                                <Upload className="w-8 h-8 text-white" />
-                                            </div>
-                                        </div>
-                                    ) : (
-                                        <div className="text-center p-8 space-y-4">
-                                            <div className="w-12 h-12 bg-white rounded-2xl shadow-sm flex items-center justify-center mx-auto transition-transform group-hover:translate-y-[-4px]">
-                                                <Upload className="w-6 h-6 text-indigo-600" />
-                                            </div>
-                                            <div className="space-y-1">
-                                                <p className="font-black text-slate-900 text-sm">{language === 'ar' ? "اضغط لتحميل الصورة" : "Click to upload image"}</p>
-                                                <p className="text-[10px] font-bold text-slate-400">{language === 'ar' ? "PNG, JPG حتى 5 ميجابايت" : "PNG, JPG up to 5MB"}</p>
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-                            ) : (
-                                <div className="relative">
-                                    <ImageIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300" />
+                    <div className="p-0 overflow-y-auto max-h-[80vh] scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent">
+                        <div className="p-8 space-y-6">
+                            <div className="grid grid-cols-2 gap-6">
+                                {/* Name AR */}
+                                <div className="space-y-2">
+                                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest">{language === 'ar' ? "الاسم (بالعربية)" : "NAME (AR)"}</label>
                                     <Input 
-                                        className="h-14 pl-12 rounded-2xl bg-slate-50 border-transparent focus:bg-white focus:ring-4 focus:ring-indigo-50 font-bold"
-                                        placeholder="https://example.com/collection.jpg"
-                                        value={imageUrl}
-                                        onChange={(e) => setImageUrl(e.target.value)}
+                                        className="h-14 rounded-2xl bg-slate-50 border-transparent focus:bg-white focus:ring-4 focus:ring-indigo-50 font-bold"
+                                        placeholder="مثال: تشكيلة الصيف"
+                                        value={nameAr}
+                                        onChange={(e) => setNameAr(e.target.value)}
+                                        dir="rtl"
                                     />
                                 </div>
-                            )}
-                        </div>
+                                {/* Name EN */}
+                                <div className="space-y-2">
+                                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest">{language === 'ar' ? "NAME (EN)" : "NAME (EN)"}</label>
+                                    <Input 
+                                        className="h-14 rounded-2xl bg-slate-50 border-transparent focus:bg-white focus:ring-4 focus:ring-indigo-50 font-bold"
+                                        placeholder="e.g. Summer Collection"
+                                        value={nameEn}
+                                        onChange={(e) => setNameEn(e.target.value)}
+                                        dir="ltr"
+                                    />
+                                </div>
+                            </div>
 
-                        <div className="flex gap-4 pt-4">
-                            <Button 
-                                variant="ghost" 
-                                onClick={() => setIsCreateModalOpen(false)}
-                                className="flex-1 h-14 rounded-2xl font-black text-slate-400 hover:bg-slate-50"
-                            >
-                                {language === 'ar' ? "إلغاء" : "Cancel"}
-                            </Button>
-                            <Button 
-                                onClick={handleSubmit}
-                                disabled={submitRequest.isPending}
-                                className="flex-[2] h-14 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-black shadow-lg shadow-indigo-100"
-                            >
-                                {submitRequest.isPending ? <Loader2 className="w-5 h-5 animate-spin" /> : (language === 'ar' ? "إرسال الطلب للمراجعة" : "Submit for Review")}
-                            </Button>
+                            <div className="grid grid-cols-2 gap-6">
+                                {/* Description AR */}
+                                <div className="space-y-2">
+                                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest">{language === 'ar' ? "الوصف (بالعربية)" : "DESCRIPTION (AR)"}</label>
+                                    <Textarea 
+                                        className="min-h-[100px] rounded-2xl bg-slate-50 border-transparent focus:bg-white focus:ring-4 focus:ring-indigo-50 font-bold p-4"
+                                        placeholder="وصف مختصر للمجموعة..."
+                                        value={descriptionAr}
+                                        onChange={(e) => setDescriptionAr(e.target.value)}
+                                        dir="rtl"
+                                    />
+                                </div>
+                                {/* Description EN */}
+                                <div className="space-y-2">
+                                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest">{language === 'ar' ? "DESCRIPTION (EN)" : "DESCRIPTION (EN)"}</label>
+                                    <Textarea 
+                                        className="min-h-[100px] rounded-2xl bg-slate-50 border-transparent focus:bg-white focus:ring-4 focus:ring-indigo-50 font-bold p-4"
+                                        placeholder="Short description for the collection..."
+                                        value={descriptionEn}
+                                        onChange={(e) => setDescriptionEn(e.target.value)}
+                                        dir="ltr"
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Category Selection */}
+                            <div className="space-y-2">
+                                <label className="text-xs font-black text-slate-400 uppercase tracking-widest">{language === 'ar' ? "القسم الرئيسي" : "TARGET CATEGORY"}</label>
+                                <Select value={categoryId} onValueChange={setCategoryId}>
+                                    <SelectTrigger className="h-14 rounded-2xl bg-slate-50 border-transparent focus:ring-4 focus:ring-indigo-50 font-bold px-6">
+                                        <SelectValue placeholder={language === 'ar' ? "اختر القسم" : "Select Category"} />
+                                    </SelectTrigger>
+                                    <SelectContent className="rounded-2xl border-slate-100 shadow-2xl p-2">
+                                        {categories?.map((cat: any) => (
+                                            <SelectItem key={cat.id} value={cat.id.toString()} className="rounded-xl font-bold py-3">
+                                                {language === 'ar' ? cat.nameAr : cat.nameEn}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+
+                            {/* Image Input Section */}
+                            <div className="space-y-4">
+                                <div className="flex items-center justify-between">
+                                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest">
+                                        {language === 'ar' ? "صورة المجموعة" : "COLLECTION IMAGE"}
+                                    </label>
+                                    <div className="flex bg-slate-100 p-1 rounded-xl">
+                                        <button 
+                                            onClick={() => setUploadMode("file")}
+                                            className={cn("px-3 py-1 rounded-lg text-[10px] font-black transition-all", uploadMode === 'file' ? "bg-white text-indigo-600 shadow-sm" : "text-slate-400")}
+                                        >
+                                            {language === 'ar' ? "تحميل ملف" : "UPLOAD"}
+                                        </button>
+                                        <button 
+                                            onClick={() => setUploadMode("url")}
+                                            className={cn("px-3 py-1 rounded-lg text-[10px] font-black transition-all", uploadMode === 'url' ? "bg-white text-indigo-600 shadow-sm" : "text-slate-400")}
+                                        >
+                                            {language === 'ar' ? "رابط خارجي" : "URL"}
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {uploadMode === 'file' ? (
+                                    <div 
+                                        onClick={() => fileInputRef.current?.click()}
+                                        className="aspect-video bg-slate-50 rounded-[24px] border-2 border-dashed border-slate-200 flex flex-col items-center justify-center overflow-hidden relative group transition-all duration-500 hover:border-indigo-300 cursor-pointer"
+                                    >
+                                        <input 
+                                            type="file" 
+                                            className="hidden" 
+                                            ref={fileInputRef}
+                                            accept="image/*"
+                                            onChange={(e) => setImageFile(e.target.files?.[0] || null)}
+                                        />
+                                        {imageFile ? (
+                                            <div className="relative w-full h-full">
+                                                <img src={URL.createObjectURL(imageFile)} className="w-full h-full object-cover" />
+                                                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                                    <Upload className="w-8 h-8 text-white" />
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <div className="text-center p-8 space-y-4">
+                                                <div className="w-12 h-12 bg-white rounded-2xl shadow-sm flex items-center justify-center mx-auto transition-transform group-hover:translate-y-[-4px]">
+                                                    <Upload className="w-6 h-6 text-indigo-600" />
+                                                </div>
+                                                <div className="space-y-1">
+                                                    <p className="font-black text-slate-900 text-sm">{language === 'ar' ? "اضغط لتحميل الصورة" : "Click to upload image"}</p>
+                                                    <p className="text-[10px] font-bold text-slate-400">{language === 'ar' ? "PNG, JPG حتى 5 ميجابايت" : "PNG, JPG up to 5MB"}</p>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                ) : (
+                                    <div className="relative">
+                                        <ImageIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300" />
+                                        <Input 
+                                            className="h-14 pl-12 rounded-2xl bg-slate-50 border-transparent focus:bg-white focus:ring-4 focus:ring-indigo-50 font-bold"
+                                            placeholder="https://example.com/collection.jpg"
+                                            value={imageUrl}
+                                            onChange={(e) => setImageUrl(e.target.value)}
+                                        />
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className="flex gap-4 pt-4">
+                                <Button 
+                                    variant="ghost" 
+                                    onClick={() => setIsCreateModalOpen(false)}
+                                    className="flex-1 h-14 rounded-2xl font-black text-slate-400 hover:bg-slate-50"
+                                >
+                                    {language === 'ar' ? "إلغاء" : "Cancel"}
+                                </Button>
+                                <Button 
+                                    onClick={handleSubmit}
+                                    disabled={submitRequest.isPending}
+                                    className="flex-[2] h-14 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-black shadow-lg shadow-indigo-100"
+                                >
+                                    {submitRequest.isPending ? <Loader2 className="w-5 h-5 animate-spin" /> : (language === 'ar' ? "إرسال الطلب للمراجعة" : "Submit for Review")}
+                                </Button>
+                            </div>
                         </div>
                     </div>
                 </DialogContent>

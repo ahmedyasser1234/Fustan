@@ -208,7 +208,11 @@ function RequestCard({ request, onApprove, onReject, isPending, categories }: an
                                 <div className="w-full h-full flex items-center justify-center bg-indigo-50"><Layers className="w-10 h-10 text-indigo-200" /></div>
                             )
                         ) : (
-                            <div className="w-full h-full flex items-center justify-center bg-purple-50"><Layers className="w-10 h-10 text-purple-200" /></div>
+                            request.data.imageUrl ? (
+                                <img src={request.data.imageUrl} alt="Category" className="w-full h-full object-cover" />
+                            ) : (
+                                <div className="w-full h-full flex items-center justify-center bg-purple-50"><Layers className="w-10 h-10 text-purple-200" /></div>
+                            )
                         )}
                         <div className="absolute top-3 left-3 px-3 py-1 bg-white/90 backdrop-blur-md rounded-full shadow-sm">
                             <span className="text-[10px] font-black uppercase tracking-wider text-slate-500">
@@ -225,20 +229,22 @@ function RequestCard({ request, onApprove, onReject, isPending, categories }: an
                                     <Store className="w-3 h-3" />
                                     <span>Vendor ID: {request.vendorId}</span>
                                     {category && (
-                                        <>
-                                            <span className="mx-2">•</span>
-                                            <Globe className="w-3 h-3 text-indigo-400" />
-                                            <span className="text-indigo-600">{language === 'ar' ? category.nameAr : category.nameEn}</span>
-                                        </>
+                                        <div className="flex items-center gap-1 bg-indigo-50 text-indigo-600 px-3 py-1 rounded-full text-[9px] ml-2">
+                                            <Globe className="w-2.5 h-2.5" />
+                                            <span>{language === 'ar' ? category.nameAr : category.nameEn}</span>
+                                        </div>
                                     )}
                                 </div>
-                                <h3 className="text-lg font-black text-slate-800">
-                                    {isSocial 
-                                        ? (language === 'ar' ? "منشور ترويجي جديد" : "New Promotional Post") 
-                                        : isCollection 
-                                            ? (language === 'ar' ? request.data.nameAr : request.data.nameEn)
-                                            : (request.data.nameAr || request.data.nameEn)}
-                                </h3>
+                                <div className="space-y-1">
+                                    <h3 className="text-lg font-black text-slate-800">
+                                        {(isCollection || request.type === 'category_request') ? request.data.nameAr : (isSocial ? (language === 'ar' ? "منشور ترويجي جديد" : "New Promotional Post") : (request.data.nameAr || request.data.nameEn))}
+                                    </h3>
+                                    {(isCollection || request.type === 'category_request') && (
+                                        <p className="text-sm font-bold text-slate-400 italic">
+                                            {request.data.nameEn}
+                                        </p>
+                                    )}
+                                </div>
                             </div>
                             
                             <div className="flex items-center gap-2">
@@ -263,13 +269,24 @@ function RequestCard({ request, onApprove, onReject, isPending, categories }: an
                             </div>
                         </div>
 
-                        <p className="text-slate-500 font-bold text-sm bg-slate-50/50 p-4 rounded-2xl border border-slate-50">
-                            {isSocial 
-                                ? request.data.caption 
-                                : isCollection 
-                                    ? (language === 'ar' ? request.data.descriptionAr : request.data.descriptionEn)
-                                    : (request.data.descriptionAr || request.data.descriptionEn)}
-                        </p>
+                        <div className="space-y-3 bg-slate-50/50 p-4 rounded-2xl border border-slate-50">
+                            {isSocial ? (
+                                <p className="text-slate-500 font-bold text-sm italic">{request.data.caption}</p>
+                            ) : (isCollection || request.type === 'category_request') ? (
+                                <>
+                                    <div className="space-y-1">
+                                        <label className="text-[9px] font-black text-slate-300 uppercase tracking-widest">{language === 'ar' ? "الوصف العربي" : "ARABIC DESCRIPTION"}</label>
+                                        <p className="text-slate-600 font-bold text-sm leading-relaxed">{request.data.descriptionAr || "---"}</p>
+                                    </div>
+                                    <div className="space-y-1">
+                                        <label className="text-[9px] font-black text-slate-300 uppercase tracking-widest">{language === 'ar' ? "الوصف الإنجليزي" : "ENGLISH DESCRIPTION"}</label>
+                                        <p className="text-slate-400 font-bold text-sm italic leading-relaxed">{request.data.descriptionEn || "---"}</p>
+                                    </div>
+                                </>
+                            ) : (
+                                <p className="text-slate-500 font-bold text-sm italic">{request.data.descriptionAr || request.data.descriptionEn}</p>
+                            )}
+                        </div>
 
                         <div className="flex flex-wrap gap-4 text-xs font-black text-slate-400">
                             {isSocial && request.data.platforms?.map((p: string) => (
