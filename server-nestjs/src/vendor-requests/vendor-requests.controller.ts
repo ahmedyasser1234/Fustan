@@ -49,9 +49,11 @@ export class VendorRequestsController {
     }
 
     @Post()
-    async create(@Req() req: Request, @Body() data: any) {
+    async create(@Req() req: Request, @Body() body: { type: string, data: any, scheduledAt?: string }) {
         const vendor = await this.getVendor(req);
-        return this.vendorRequestsService.create(vendor.id, data);
+        const type = body.type || 'category_request';
+        const scheduledAt = body.scheduledAt ? new Date(body.scheduledAt) : undefined;
+        return this.vendorRequestsService.create(vendor.id, type, body.data, scheduledAt);
     }
 
     @Get('my-requests')

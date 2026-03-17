@@ -619,6 +619,8 @@ export const vendorRequests = pgTable(
         data: jsonb("data").$type<any>().notNull(), // Form data like { nameAr, nameEn, descriptionAr, descriptionEn }
         status: text("status").default("pending").notNull(), // pending, approved, rejected
         adminNotes: text("adminNotes"),
+        scheduledAt: timestamp("scheduledAt"),
+        isExecuted: boolean("isExecuted").default(false).notNull(),
         createdAt: timestamp("createdAt").defaultNow().notNull(),
         updatedAt: timestamp("updatedAt").defaultNow().notNull(),
     },

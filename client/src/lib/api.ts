@@ -114,8 +114,10 @@ export const endpoints = {
         create: (data: any) => api.post('/store-reviews', data).then(res => res.data),
     },
     vendorRequests: {
-        create: (data: any) => api.post('/vendor-requests', data).then(res => res.data),
+        create: (data: { type: string; data: any; scheduledAt?: string }) => api.post('/vendor-requests', data).then(res => res.data),
         myRequests: () => api.get('/vendor-requests/my-requests').then(res => res.data),
+        listAll: () => api.get('/vendor-requests').then(res => res.data),
+        updateStatus: (id: number, data: { status: string; adminNotes?: string }) => api.patch(`/vendor-requests/${id}/status`, data).then(res => res.data),
     },
     coupons: {
         create: (data: any) => api.post('/coupons', data).then(res => res.data),

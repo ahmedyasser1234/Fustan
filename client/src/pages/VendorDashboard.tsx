@@ -25,7 +25,8 @@ import {
   MessageSquare,
   Star,
   Zap,
-  CreditCard
+  CreditCard,
+  Share2
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
@@ -65,6 +66,7 @@ import ProductPreviewView from "@/components/dashboard/ProductPreviewView";
 import CollectionProductsView from "@/components/dashboard/CollectionProductsView";
 import NotificationBell from "@/components/dashboard/NotificationBell";
 import WalletTab from "@/components/dashboard/WalletTab";
+import SocialTab from "@/components/dashboard/SocialTab";
 
 export default function VendorDashboard() {
   const { language, t } = useLanguage();
@@ -214,6 +216,7 @@ export default function VendorDashboard() {
                 { id: "shipping", icon: Truck, color: "from-cyan-500 to-blue-500" },
                 { id: "wallet", icon: CreditCard, color: "from-emerald-500 to-teal-500" },
                 { id: "customers", icon: User, color: "from-teal-500 to-green-500" },
+                { id: "social", icon: Share2, color: "from-pink-400 to-purple-600" },
                 { id: "messages", icon: MessageSquare, badge: unreadCount, color: "from-indigo-500 to-purple-500" },
               ].map((tab) => (
                 <button
@@ -308,6 +311,7 @@ export default function VendorDashboard() {
           {activeTab === "coupons" && dashboard?.vendor?.id && <CouponsTab vendorId={dashboard.vendor.id} />}
           {activeTab === "shipping" && dashboard?.vendor?.id && <ShippingTab vendorId={dashboard.vendor.id} />}
           {activeTab === "wallet" && <WalletTab />}
+          {activeTab === "social" && <SocialTab />}
           {activeTab === "customers" && dashboard?.vendor?.id && <CustomersTab vendorId={dashboard.vendor.id} />}
         </div>
       </main>

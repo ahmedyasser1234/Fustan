@@ -13,11 +13,12 @@ export class VendorRequestsService {
         return this.databaseService.db;
     }
 
-    async create(vendorId: number, data: any) {
+    async create(vendorId: number, type: string, data: any, scheduledAt?: Date) {
         return await this.db.insert(schema.vendorRequests).values({
             vendorId,
-            type: 'category_request',
+            type,
             data,
+            scheduledAt,
             status: 'pending',
         }).returning();
     }
@@ -33,6 +34,13 @@ export class VendorRequestsService {
     async updateStatus(id: number, status: string, adminNotes?: string) {
         return await this.db.update(schema.vendorRequests)
             .set({ status, adminNotes, updatedAt: new Date() })
+            .where(eq(schema.vendorRequests.id, id))
+            .returning();
+    }
+
+    async markAsExecuted(id: number) {
+        return await this.db.update(schema.vendorRequests)
+            .set({ isExecuted: true, updatedAt: new Date() })
             .where(eq(schema.vendorRequests.id, id))
             .returning();
     }
