@@ -990,12 +990,12 @@ export default function ProductsTab({ vendorId, collectionId, onProductClick, on
                                             {sizes.map((s, idx) => {
                                                 const sizeInfo = SIZE_DATA.find(d => d[selectedSystem] === s.size);
                                                 return (
-                                                    <div key={idx} className="flex flex-col gap-3 bg-white/5 p-4 rounded-3xl border border-white/10 group/item relative transition-all hover:bg-white/10">
+                                                    <div key={idx} className="flex flex-col gap-5 bg-white/5 p-8 rounded-[32px] border border-white/10 group/item relative transition-all hover:bg-white/10">
                                                         <div className="grid grid-cols-[1fr_1fr_auto] items-end gap-2 px-1">
-                                                            <div className="basis-0 min-w-0 space-y-1">
-                                                                <label className="text-[10px] font-black text-white/40 uppercase leading-none">{language === 'ar' ? "المقاس" : "Size"}</label>
+                                                            <div className="basis-0 min-w-0 space-y-2">
+                                                                <label className="text-xs font-black text-white/40 uppercase leading-none tracking-widest">{language === 'ar' ? "المقاس" : "Size"}</label>
                                                                 <Select value={s.size} onValueChange={(val) => handleSizeChange(idx, 'size', val)}>
-                                                                    <SelectTrigger className="h-10 bg-transparent border-white/10 text-white font-black w-full rounded-xl">
+                                                                    <SelectTrigger className="h-14 bg-transparent border-white/10 text-white font-black w-full rounded-2xl text-lg">
                                                                         <SelectValue placeholder={language === 'ar' ? "اختر المقاس" : "Select Size"} />
                                                                     </SelectTrigger>
                                                                     <SelectContent className="rounded-xl border-slate-800 bg-slate-900 text-white font-bold">
@@ -1008,14 +1008,14 @@ export default function ProductsTab({ vendorId, collectionId, onProductClick, on
                                                                 </Select>
                                                             </div>
 
-                                                            <div className="basis-0 min-w-0 space-y-1">
-                                                                <label className="text-[10px] font-black text-white/40 uppercase leading-none">{language === 'ar' ? "الكمية" : "Qty"}</label>
+                                                            <div className="basis-0 min-w-0 space-y-2">
+                                                                <label className="text-xs font-black text-white/40 uppercase leading-none tracking-widest">{language === 'ar' ? "الكمية" : "Qty"}</label>
                                                                 <Input 
                                                                     type="number" 
                                                                     placeholder="0" 
                                                                     value={s.quantity} 
                                                                     onChange={e => handleSizeChange(idx, 'quantity', parseInt(e.target.value))} 
-                                                                    className="h-10 bg-transparent border-white/10 text-white font-black text-center w-full rounded-xl" 
+                                                                    className="h-14 bg-transparent border-white/10 text-white font-black text-center w-full rounded-2xl text-lg" 
                                                                 />
                                                             </div>
 
@@ -1023,33 +1023,33 @@ export default function ProductsTab({ vendorId, collectionId, onProductClick, on
                                                                 <Button 
                                                                     variant="ghost" 
                                                                     size="icon" 
-                                                                    className="h-10 w-10 text-white/40 hover:text-red-400 hover:bg-red-400/10 shrink-0" 
+                                                                    className="h-14 w-14 text-white/40 hover:text-red-400 hover:bg-red-400/10 shrink-0" 
                                                                     onClick={() => handleRemoveSize(idx)}
                                                                 >
-                                                                    <Trash2 className="w-4 h-4" />
+                                                                    <Trash2 className="w-5 h-5" />
                                                                 </Button>
                                                             )}
                                                         </div>
 
                                                         {sizeInfo && (
-                                                            <div className="mt-1 pt-3 border-t border-white/5 flex items-center justify-between px-1">
-                                                                <div className="flex items-center gap-2">
+                                                            <div className="mt-2 pt-6 border-t border-white/10 flex items-center justify-between px-1">
+                                                                <div className="flex items-center gap-4">
                                                                     <div className="flex flex-col">
-                                                                        <span className="text-[8px] font-black text-white/30 uppercase leading-none">{t('chest')}</span>
-                                                                        <span className="text-xs font-black text-amber-500">{sizeInfo.chest}</span>
+                                                                        <span className="text-[10px] font-black text-white/30 uppercase leading-none tracking-tight">{t('chest')}</span>
+                                                                        <span className="text-sm font-black text-amber-500">{sizeInfo.chest}</span>
                                                                     </div>
-                                                                    <div className="w-[1px] h-4 bg-white/10 mx-1" />
+                                                                    <div className="w-[1px] h-6 bg-white/10 mx-1" />
                                                                     <div className="flex flex-col">
-                                                                        <span className="text-[8px] font-black text-white/30 uppercase leading-none">{t('waist')}</span>
-                                                                        <span className="text-xs font-black text-amber-500">{sizeInfo.waist}</span>
+                                                                        <span className="text-[10px] font-black text-white/30 uppercase leading-none tracking-tight">{t('waist')}</span>
+                                                                        <span className="text-sm font-black text-amber-500">{sizeInfo.waist}</span>
                                                                     </div>
-                                                                    <div className="w-[1px] h-4 bg-white/10 mx-1" />
+                                                                    <div className="w-[1px] h-6 bg-white/10 mx-1" />
                                                                     <div className="flex flex-col">
-                                                                        <span className="text-[8px] font-black text-white/30 uppercase leading-none">{t('hips')}</span>
-                                                                        <span className="text-xs font-black text-amber-500">{sizeInfo.hips}</span>
+                                                                        <span className="text-[10px] font-black text-white/30 uppercase leading-none tracking-tight">{t('hips')}</span>
+                                                                        <span className="text-sm font-black text-amber-500">{sizeInfo.hips}</span>
                                                                     </div>
                                                                 </div>
-                                                                <span className="text-[9px] font-black text-white/20 uppercase tracking-widest">{t('measurements')} (CM)</span>
+                                                                <span className="text-[10px] font-black text-white/20 uppercase tracking-widest">{t('measurements')} (CM)</span>
                                                             </div>
                                                         )}
                                                     </div>
