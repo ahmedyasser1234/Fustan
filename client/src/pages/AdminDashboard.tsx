@@ -611,15 +611,15 @@ export default function AdminDashboard() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)}
-                className={`group h-10 md:h-12 px-4 md:px-6 rounded-xl md:rounded-2xl font-bold text-xs md:text-sm flex items-center gap-2 transition-all duration-300 relative overflow-hidden whitespace-nowrap min-w-fit ${activeTab === tab.id
+                className={`group h-10 md:h-12 px-4 md:px-6 rounded-xl md:rounded-2xl font-bold text-xs md:text-sm flex items-center gap-2 transition-all duration-300 relative whitespace-nowrap min-w-fit ${activeTab === tab.id
                   ? `bg-gradient-to-r ${tab.color} text-white shadow-lg scale-105`
                   : "bg-gray-100 text-gray-500 hover:bg-white hover:text-slate-900 border border-transparent hover:border-gray-200 hover:shadow-md"
                   }`}
               >
                 <tab.icon className={`w-4 h-4 md:w-5 md:h-5 relative z-10 transition-transform group-hover:scale-110 ${activeTab === tab.id ? 'animate-pulse' : ''}`} />
                 <span className="relative z-10">{tab.label}</span>
-                {tab.badge ? (
-                  <span className="absolute -top-1 -right-1 md:-top-2 md:-right-2 w-5 h-5 md:w-6 md:h-6 bg-red-600 text-white text-[10px] md:text-xs font-black rounded-full flex items-center justify-center animate-bounce shadow-md z-20 border-2 border-white">
+                {tab.badge && activeTab !== tab.id ? (
+                  <span className="absolute -top-2 -right-2 md:-top-3 md:-right-3 h-6 w-6 md:h-7 md:w-7 bg-red-600 text-white text-[11px] md:text-sm font-black rounded-full flex items-center justify-center animate-bounce shadow-md z-20 border-2 border-white">
                     {tab.badge > 99 ? '99+' : tab.badge}
                   </span>
                 ) : null}
@@ -2100,12 +2100,10 @@ function CategoriesTab({
             </div>
             <div className="text-right">
               <h4 className="font-black text-slate-900">
-                {language === 'ar' ? "لديك طلبات أقسام جديدة" : "You have new category requests"}
+                {t('newCategoryRequestsTitle')}
               </h4>
               <p className="text-xs text-slate-500 font-bold">
-                {language === 'ar'
-                  ? `هناك ${pendingRequests.length} طلبات بانتظار المراجعة في مركز الطلبات.`
-                  : `There are ${pendingRequests.length} requests waiting for review in the Request Center.`}
+                {t('newCategoryRequestsDesc').replace('{count}', pendingRequests.length.toString())}
               </p>
             </div>
           </div>
@@ -2118,7 +2116,7 @@ function CategoriesTab({
               window.location.search = params.toString();
             }}
           >
-            {language === 'ar' ? "عرض الطلبات" : "View Requests"}
+            {t('viewRequests')}
           </Button>
         </div>
       )}

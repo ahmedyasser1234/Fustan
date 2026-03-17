@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 export default function VendorRequestsTab() {
     const { t, language } = useLanguage();
     const queryClient = useQueryClient();
-    const [activeSection, setActiveSection] = useState<'stores' | 'content'>('stores');
+    const [activeSection, setActiveSection] = useState<'stores' | 'collections' | 'categories' | 'social'>('stores');
 
     const { data: pendingVendors, isLoading: vendorsLoading } = useQuery({
         queryKey: ['admin', 'vendors', 'pending'],
@@ -31,6 +31,9 @@ export default function VendorRequestsTab() {
     });
 
     const pendingRequests = allRequests?.filter((r: any) => r.status === 'pending') || [];
+    const pendingCollections = pendingRequests.filter((r: any) => r.type === 'collection_request');
+    const pendingCategories = pendingRequests.filter((r: any) => r.type === 'category_request');
+    const pendingSocial = pendingRequests.filter((r: any) => r.type === 'social_post_request');
 
     const updateVendorStatus = useMutation({
         mutationFn: ({ id, status }: { id: number, status: string }) =>
@@ -65,24 +68,35 @@ export default function VendorRequestsTab() {
                 </div>
             </div>
 
-            {/* Toggle Switch */}
-            <div className="flex p-1.5 bg-slate-100 rounded-2xl w-fit mb-8">
+            <div className="flex flex-wrap p-1.5 bg-slate-100 rounded-2xl w-fit mb-8 gap-1">
                 <button 
                     onClick={() => setActiveSection('stores')}
-                    className={`px-8 py-3 rounded-xl font-black text-sm transition-all duration-300 ${activeSection === 'stores' ? 'bg-white text-orange-600 shadow-md' : 'text-slate-400 hover:text-slate-600'}`}
+                    className={`px-6 py-3 rounded-xl font-black text-sm transition-all duration-300 ${activeSection === 'stores' ? 'bg-white text-orange-600 shadow-md' : 'text-slate-400 hover:text-slate-600'}`}
                 >
-                    {language === 'ar' ? "طلبات الانضمام" : "Join Requests"} ({pendingVendors?.length || 0})
+                    {t('stores')} ({pendingVendors?.length || 0})
                 </button>
                 <button 
-                    onClick={() => setActiveSection('content')}
-                    className={`px-8 py-3 rounded-xl font-black text-sm transition-all duration-300 ${activeSection === 'content' ? 'bg-white text-purple-600 shadow-md' : 'text-slate-400 hover:text-slate-600'}`}
+                    onClick={() => setActiveSection('collections')}
+                    className={`px-6 py-3 rounded-xl font-black text-sm transition-all duration-300 ${activeSection === 'collections' ? 'bg-white text-indigo-600 shadow-md' : 'text-slate-400 hover:text-slate-600'}`}
                 >
-                    {language === 'ar' ? "طلبات المحتوى" : "Content Requests"} ({pendingRequests?.length || 0})
+                    {t('collections')} ({pendingCollections.length})
+                </button>
+                <button 
+                    onClick={() => setActiveSection('categories')}
+                    className={`px-6 py-3 rounded-xl font-black text-sm transition-all duration-300 ${activeSection === 'categories' ? 'bg-white text-teal-600 shadow-md' : 'text-slate-400 hover:text-slate-600'}`}
+                >
+                    {t('categories')} ({pendingCategories.length})
+                </button>
+                <button 
+                    onClick={() => setActiveSection('social')}
+                    className={`px-6 py-3 rounded-xl font-black text-sm transition-all duration-300 ${activeSection === 'social' ? 'bg-white text-purple-600 shadow-md' : 'text-slate-400 hover:text-slate-600'}`}
+                >
+                    {t('social')} ({pendingSocial.length})
                 </button>
             </div>
 
             <div className="grid gap-4">
-                {activeSection === 'stores' ? (
+                {activeSection === 'stores' && (
                     pendingVendors?.length === 0 ? (
                         <EmptyState icon={Store} text={t('noPendingRequests')} />
                     ) : (
@@ -96,11 +110,47 @@ export default function VendorRequestsTab() {
                             />
                         ))
                     )
-                ) : (
-                    pendingRequests?.length === 0 ? (
-                        <EmptyState icon={MessageSquare} text={language === 'ar' ? "لا توجد طلبات محتوى معلقة" : "No pending content requests"} />
+                )}
+
+                {activeSection === 'collections' && (
+                    pendingCollections.length === 0 ? (
+                        <EmptyState icon={Layers} text={language === 'ar' ? "لا توجد طلبات مجموعات معلقة" : "No pending collection requests"} />
                     ) : (
-                        pendingRequests?.map((request: any) => (
+                        pendingCollections.map((request: any) => (
+                            <RequestCard 
+                                key={request.id} 
+                                request={request}
+                                categories={categories}
+                                onApprove={() => updateRequestStatus.mutate({ id: request.id, status: 'approved' })}
+                                onReject={() => updateRequestStatus.mutate({ id: request.id, status: 'rejected' })}
+                                isPending={updateRequestStatus.isPending}
+                            />
+                        ))
+                    )
+                )}
+
+                {activeSection === 'categories' && (
+                    pendingCategories.length === 0 ? (
+                        <EmptyState icon={Layers} text={language === 'ar' ? "لا توجد طلبات أقسام معلقة" : "No pending category requests"} />
+                    ) : (
+                        pendingCategories.map((request: any) => (
+                            <RequestCard 
+                                key={request.id} 
+                                request={request}
+                                categories={categories}
+                                onApprove={() => updateRequestStatus.mutate({ id: request.id, status: 'approved' })}
+                                onReject={() => updateRequestStatus.mutate({ id: request.id, status: 'rejected' })}
+                                isPending={updateRequestStatus.isPending}
+                            />
+                        ))
+                    )
+                )}
+
+                {activeSection === 'social' && (
+                    pendingSocial.length === 0 ? (
+                        <EmptyState icon={Instagram} text={language === 'ar' ? "لا توجد طلبات سوشيال ميديا معلقة" : "No pending social media requests"} />
+                    ) : (
+                        pendingSocial.map((request: any) => (
                             <RequestCard 
                                 key={request.id} 
                                 request={request}
@@ -183,7 +233,7 @@ function VendorCard({ vendor, onApprove, onReject, isPending }: any) {
 }
 
 function RequestCard({ request, onApprove, onReject, isPending, categories }: any) {
-    const { language } = useLanguage();
+    const { language, t } = useLanguage();
     const isSocial = request.type === 'social_post_request';
     const isCollection = request.type === 'collection_request';
     
@@ -216,7 +266,7 @@ function RequestCard({ request, onApprove, onReject, isPending, categories }: an
                         )}
                         <div className="absolute top-3 left-3 px-3 py-1 bg-white/90 backdrop-blur-md rounded-full shadow-sm">
                             <span className="text-[10px] font-black uppercase tracking-wider text-slate-500">
-                                {isSocial ? "SOCIAL POST" : isCollection ? "COLLECTION" : "CATEGORY"}
+                                {isSocial ? t('socialPostRequest') : isCollection ? t('collectionRequest') : t('categoryRequest')}
                             </span>
                         </div>
                     </div>
@@ -275,11 +325,11 @@ function RequestCard({ request, onApprove, onReject, isPending, categories }: an
                             ) : (isCollection || request.type === 'category_request') ? (
                                 <>
                                     <div className="space-y-1">
-                                        <label className="text-[9px] font-black text-slate-300 uppercase tracking-widest">{language === 'ar' ? "الوصف العربي" : "ARABIC DESCRIPTION"}</label>
+                                        <label className="text-[9px] font-black text-slate-300 uppercase tracking-widest">{t('arabicDescription')}</label>
                                         <p className="text-slate-600 font-bold text-sm leading-relaxed">{request.data.descriptionAr || "---"}</p>
                                     </div>
                                     <div className="space-y-1">
-                                        <label className="text-[9px] font-black text-slate-300 uppercase tracking-widest">{language === 'ar' ? "الوصف الإنجليزي" : "ENGLISH DESCRIPTION"}</label>
+                                        <label className="text-[9px] font-black text-slate-300 uppercase tracking-widest">{t('englishDescription')}</label>
                                         <p className="text-slate-400 font-bold text-sm italic leading-relaxed">{request.data.descriptionEn || "---"}</p>
                                     </div>
                                 </>

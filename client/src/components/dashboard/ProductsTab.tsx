@@ -155,6 +155,15 @@ export default function ProductsTab({ vendorId, collectionId, onProductClick, on
             }
         }
     }, [collectionIdState, collections]);
+    
+    // Auto-sync internal price state for validation and old calculations
+    useEffect(() => {
+        if (availability === 'sale' || availability === 'both') {
+            setPrice(salePrice);
+        } else if (availability === 'rent') {
+            setPrice(rentPrice);
+        }
+    }, [availability, salePrice, rentPrice]);
 
     const deleteProduct = useMutation({
         mutationFn: async (id: number) => await endpoints.products.delete(id),
@@ -731,24 +740,21 @@ export default function ProductsTab({ vendorId, collectionId, onProductClick, on
                                             <h4 className="font-black text-slate-900 uppercase tracking-widest text-xs">{language === 'ar' ? "التصنيف والذكاء" : "Product Intelligence"}</h4>
                                         </div>
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                                            {/* Hide Collection for vendors as per request */}
-                                            {vendorId === 0 && (
-                                                <div className="space-y-2">
-                                                    <label className="text-[10px] font-black text-slate-400">{language === 'ar' ? "المجموعة" : "COLLECTION"}</label>
-                                                    <Select value={collectionIdState} onValueChange={setCollectionId}>
-                                                        <SelectTrigger className="h-14 rounded-2xl border-slate-100 shadow-sm font-bold bg-white focus:ring-4 focus:ring-blue-50">
-                                                            <SelectValue placeholder={language === 'ar' ? "اختر مجموعة" : "Select Collection"} />
-                                                        </SelectTrigger>
-                                                        <SelectContent className="rounded-2xl shadow-xl border-slate-100">
-                                                            {collections?.map((c: any) => (
-                                                                <SelectItem key={c.id} value={c.id.toString()} className="font-bold py-3">
-                                                                    {language === 'ar' ? c.nameAr : c.nameEn}
-                                                                </SelectItem>
-                                                            ))}
-                                                        </SelectContent>
-                                                    </Select>
-                                                </div>
-                                            )}
+                                            <div className="space-y-2">
+                                                <label className="text-[10px] font-black text-slate-400">{language === 'ar' ? "المجموعة" : "COLLECTION"}</label>
+                                                <Select value={collectionIdState} onValueChange={setCollectionId}>
+                                                    <SelectTrigger className="h-14 rounded-2xl border-slate-100 shadow-sm font-bold bg-white focus:ring-4 focus:ring-blue-50">
+                                                        <SelectValue placeholder={language === 'ar' ? "اختر مجموعة" : "Select Collection"} />
+                                                    </SelectTrigger>
+                                                    <SelectContent className="rounded-2xl shadow-xl border-slate-100">
+                                                        {collections?.map((c: any) => (
+                                                            <SelectItem key={c.id} value={c.id.toString()} className="font-bold py-3">
+                                                                {language === 'ar' ? c.nameAr : c.nameEn}
+                                                            </SelectItem>
+                                                        ))}
+                                                    </SelectContent>
+                                                </Select>
+                                            </div>
                                             <div className="space-y-2">
                                                 <label className="text-[10px] font-black text-slate-400">{language === 'ar' ? "القسم" : "CATEGORY"}</label>
                                                 <Select value={categoryId} onValueChange={setCategoryId}>

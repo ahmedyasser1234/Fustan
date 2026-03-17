@@ -19,7 +19,7 @@ interface CollectionsTabProps {
 
 export default function CollectionsTab({ vendorId, categoryId, onCollectionClick, showConfirm }: CollectionsTabProps) {
     const queryClient = useQueryClient();
-    const { language } = useLanguage();
+    const { language, t } = useLanguage();
 
     // UI State
     const [isFormOpen, setIsFormOpen] = useState(false);
@@ -130,12 +130,10 @@ export default function CollectionsTab({ vendorId, categoryId, onCollectionClick
                         </div>
                         <div className="text-right">
                             <h4 className="font-black text-slate-900">
-                                {language === 'ar' ? "لديك طلبات مجموعات جديدة" : "You have new collection requests"}
+                                {t('newCollectionRequestsTitle')}
                             </h4>
                             <p className="text-xs text-slate-500 font-bold">
-                                {language === 'ar' 
-                                    ? `هناك ${pendingRequests.length} طلبات بانتظار المراجعة في مركز الطلبات.` 
-                                    : `There are ${pendingRequests.length} requests waiting for review in the Request Center.`}
+                                {t('newCollectionRequestsDesc').replace('{count}', pendingRequests.length.toString())}
                             </p>
                         </div>
                     </div>
@@ -143,14 +141,12 @@ export default function CollectionsTab({ vendorId, categoryId, onCollectionClick
                         variant="outline" 
                         className="border-amber-200 text-amber-700 font-black rounded-xl hover:bg-amber-100"
                         onClick={() => {
-                            // This depends on how we navigate back to the requests tab
-                            // In AdminDashboard, we use window.location.search usually
                             const params = new URLSearchParams(window.location.search);
                             params.set("tab", "requests");
                             window.location.search = params.toString();
                         }}
                     >
-                        {language === 'ar' ? "عرض الطلبات" : "View Requests"}
+                        {t('viewRequests')}
                     </Button>
                 </div>
             )}
