@@ -112,11 +112,15 @@ export class CollectionsService {
             conditions.push(eq(collections.categoryId, categoryId));
         }
 
+        let results;
         if (conditions.length > 0) {
-            return query.where(and(...conditions)).orderBy(desc(collections.createdAt));
+            results = await query.where(and(...conditions)).orderBy(desc(collections.createdAt));
+        } else {
+            results = await query.orderBy(desc(collections.createdAt));
         }
 
-        return query.orderBy(desc(collections.createdAt));
+        console.log(`   - Query Execution Finished. Found ${results.length} collections.`);
+        return results;
     }
 
     async findOne(id: number) {
