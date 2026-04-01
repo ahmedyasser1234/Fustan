@@ -447,7 +447,7 @@ export class AiService {
 
         try {
             this.logger.log('Creating Kie.ai task...');
-            const response = await fetch('https://api.kie.ai/v1/tasks', {
+            const response = await fetch('https://api.kie.ai/api/v1/jobs/createTask', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -461,13 +461,13 @@ export class AiService {
 
             const result = await response.json();
 
-            // Kie.ai uses code 200 for success and returns taskId
-            if (result.code !== 200 || !result.data?.taskId) {
+            // From logs: Kie.ai uses code 200 for success in the jobs API
+            if (result.code !== 200 || (!result.data?.taskId && !result.data?.jobId)) {
                 this.logger.error(`Kie.ai Task Creation Failed: ${JSON.stringify(result)}`);
                 throw new Error(result.msg || 'Failed to create Kie.ai task');
             }
 
-            const taskId = result.data.taskId;
+            const taskId = result.data.taskId || result.data.jobId;
             this.logger.log(`Kie.ai Task Created. TaskId: ${taskId}. Polling for results...`);
 
             const resultUrl = await this.pollKieTask(taskId);
@@ -494,7 +494,7 @@ export class AiService {
             this.logger.log(`Polling Kie.ai Task ${taskId} - Attempt ${attempt}/${maxAttempts}`);
 
             try {
-                const response = await fetch(`https://api.kie.ai/v1/tasks/${taskId}`, {
+                const response = await fetch(`https://api.kie.ai/api/v1/jobs/getTaskDetails?jobId=${taskId}`, {
                     headers: {
                         'x-api-key': this.kieAiApiKey,
                     },
@@ -502,16 +502,20 @@ export class AiService {
 
                 const result = await response.json();
 
-                // Based on docs, it might return a different result structure during polling
+                if (result.code !== 200) {
+                    this.logger.warn(`Polling response code: ${result.code}. Message: ${result.msg}`);
+                }
+
                 const task = result.data || result;
 
-                if (task.status === 'succeeded' || task.status === 'completed' || task.status === 'success') {
-                    const url = task.result?.url || task.results?.[0]?.url;
+                // Handle success states
+                if (task.status === 'success' || task.status === 'succeeded' || task.status === 'completed') {
+                    const url = task.results?.[0]?.url || task.result?.url || (task.results && task.results[0]);
                     if (url) return url;
                     throw new Error('Task succeeded but no image URL found');
                 }
 
-                if (task.status === 'failed') {
+                if (task.status === 'failed' || task.status === 'error') {
                     throw new Error(`Kie.ai task failed: ${task.failReason || JSON.stringify(task.error) || 'Unknown error'}`);
                 }
             } catch (error: any) {
