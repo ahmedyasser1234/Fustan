@@ -504,8 +504,9 @@ export class AiService {
                 });
 
                 const result = await response.json();
+                this.logger.log(`Full Polling Response: ${JSON.stringify(result)}`);
 
-                if (result.code !== 200) {
+                if (result.code !== undefined && result.code !== 200) {
                     this.logger.warn(`Polling response code: ${result.code}. Message: ${result.msg}`);
                 }
 
