@@ -497,7 +497,7 @@ export class AiService {
             this.logger.log(`Polling Kie.ai Task ${taskId} - Attempt ${attempt}/${maxAttempts}`);
 
             try {
-                const response = await fetch(`https://api.kie.ai/api/v1/jobs/getTaskDetails?jobId=${taskId}`, {
+                const response = await fetch(`https://api.kie.ai/api/v1/jobs/recordInfo?taskId=${taskId}`, {
                     headers: {
                         'Authorization': `Bearer ${this.kieAiApiKey}`,
                     },
@@ -506,21 +506,25 @@ export class AiService {
                 const result = await response.json();
                 this.logger.log(`Full Polling Response: ${JSON.stringify(result)}`);
 
-                if (result.code !== undefined && result.code !== 200) {
+                if (result.code !== 200) {
                     this.logger.warn(`Polling response code: ${result.code}. Message: ${result.msg}`);
                 }
 
                 const task = result.data || result;
 
-                // Handle success states
-                if (task.status === 'success' || task.status === 'succeeded' || task.status === 'completed') {
-                    const url = task.results?.[0]?.url || task.result?.url || (task.results && task.results[0]);
+                // Kie.ai uses 'state' and 'success' as a positive outcome
+                if (task.state === 'success' || task.status === 'success' || task.status === 'completed') {
+                    // Try different result paths based on documentation variants
+                    const url = task.results?.[0]?.url || 
+                                (task.resultJson && JSON.parse(task.resultJson)?.[0]?.url) ||
+                                (task.result && task.result.url);
+                                
                     if (url) return url;
                     throw new Error('Task succeeded but no image URL found');
                 }
 
-                if (task.status === 'failed' || task.status === 'error') {
-                    throw new Error(`Kie.ai task failed: ${task.failReason || JSON.stringify(task.error) || 'Unknown error'}`);
+                if (task.state === 'fail' || task.status === 'failed' || task.status === 'error') {
+                    throw new Error(`Kie.ai task failed: ${task.failMsg || task.failReason || JSON.stringify(task.error) || 'Unknown error'}`);
                 }
             } catch (error: any) {
                 this.logger.warn(`Polling attempt ${attempt} failed: ${error.message}`);
