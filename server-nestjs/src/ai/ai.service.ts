@@ -139,6 +139,7 @@ export class AiService {
 
         try {
             this.logger.log('Starting Real VTON (IDM-VTON) generation...');
+            this.logger.log(`Inputs: Dress=${dressImageUrl}, User=${userImageUrl}`);
 
             const output = await this.replicate.run(
                 "cuuupid/idm-vton:0513734a452173b8173e907e3a59d19a36266e55b48528559432bd21c7d7e985", 
@@ -147,7 +148,7 @@ export class AiService {
                         crop: false,
                         seed: 42,
                         steps: 30,
-                        category: "one-pieces", // Fustan is primarily dresses
+                        category: "one-pieces",
                         garment_img: dressImageUrl,
                         human_img: userImageUrl,
                         garment_des: data.productDescription || data.productName || "dress"
@@ -155,16 +156,11 @@ export class AiService {
                 }
             );
 
-            this.logger.log(`VTON Result: ${JSON.stringify(output)}`);
+            this.logger.log(`VTON Result Received successfully.`);
 
-            // Replicate output for idm-vton is usually an array of URLs or a single URL
             const resultUrl = Array.isArray(output) ? output[0] : output;
+            if (!resultUrl) throw new Error('No image URL returned from VTON model');
 
-            if (!resultUrl) {
-                throw new Error('No image URL returned from VTON model');
-            }
-
-            // Upload the result to Cloudinary for persistence
             const uploadResult = await cloudinary.uploader.upload(resultUrl, {
                 folder: 'vton-results'
             });
@@ -174,8 +170,17 @@ export class AiService {
                 provider: 'replicate-idm-vton'
             };
 
-        } catch (error) {
-            this.logger.error('Real VTON failed:', error);
+        } catch (error: any) {
+            this.logger.error('Real VTON Critical Error Details:');
+            this.logger.error(`Message: ${error.message}`);
+            if (error.response) {
+                this.logger.error(`Status: ${error.response.status}`);
+                const errorData = await error.response.json().catch(() => ({}));
+                this.logger.error(`Detail: ${JSON.stringify(errorData)}`);
+            } else {
+                this.logger.error(`Full Error: ${JSON.stringify(error)}`);
+            }
+            
             // Final fallback to measurement-based if real VTON fails
             return this.performMeasurementBasedVTON(data, dressImageUrl);
         }
