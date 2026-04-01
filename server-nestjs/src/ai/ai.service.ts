@@ -455,7 +455,10 @@ export class AiService {
                 },
                 body: JSON.stringify({
                     model: 'nano-banana-pro',
-                    prompt: prompt,
+                    input: {
+                        prompt: prompt,
+                        aspect_ratio: '3:4'
+                    }
                 }),
             });
 
