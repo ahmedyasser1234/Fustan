@@ -451,7 +451,7 @@ export class AiService {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'x-api-key': this.kieAiApiKey,
+                    'Authorization': `Bearer ${this.kieAiApiKey}`,
                 },
                 body: JSON.stringify({
                     model: 'nano-banana-pro',
@@ -496,7 +496,7 @@ export class AiService {
             try {
                 const response = await fetch(`https://api.kie.ai/api/v1/jobs/getTaskDetails?jobId=${taskId}`, {
                     headers: {
-                        'x-api-key': this.kieAiApiKey,
+                        'Authorization': `Bearer ${this.kieAiApiKey}`,
                     },
                 });
 
