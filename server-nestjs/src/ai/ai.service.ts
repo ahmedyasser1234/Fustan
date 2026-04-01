@@ -140,7 +140,7 @@ export class AiService {
                 NOTE: Morph the dress onto the person naturally.
             `;
 
-            return this.runKieTask(prompt);
+            return this.runKieTask(prompt, [userImageUrl, dressImageUrl]);
 
         } catch (error: any) {
             this.logger.error('Kie.ai VTON failed:', error);
@@ -437,10 +437,10 @@ export class AiService {
         Maintain the exact design and details of the dress. Context: ${data.imageUrl}`;
 
         const prompt = data.prompt || defaultPrompt;
-        return this.runKieTask(prompt);
+        return this.runKieTask(prompt, [data.imageUrl]);
     }
 
-    private async runKieTask(prompt: string) {
+    private async runKieTask(prompt: string, imageInput: string[] = []) {
         if (!this.kieAiApiKey) {
             throw new Error('KIE_AI_API_KEY not configured');
         }
@@ -457,6 +457,7 @@ export class AiService {
                     model: 'nano-banana-pro',
                     input: {
                         prompt: prompt,
+                        image_input: imageInput,
                         aspect_ratio: '3:4'
                     }
                 }),
