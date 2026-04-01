@@ -136,10 +136,11 @@ export class AiService {
                 aspect_ratio: "3:4"
             };
 
-            return this.runKieTask(input);
+            return await this.runKieTask(input);
 
         } catch (error: any) {
             this.logger.error('Kie.ai VTON failed:', error);
+            // Fallback to measurement-based generation if Kie.ai fails (credits, API error, etc.)
             return this.performMeasurementBasedVTON(data, dressImageUrl);
         }
     }
@@ -432,12 +433,22 @@ export class AiService {
         Elegant setting, perfect cinematic lighting, 8k resolution, photorealistic, luxury fashion magazine style. 
         Maintain the exact design and details of the dress. Context: ${data.imageUrl}`;
 
-        const prompt = data.prompt || defaultPrompt;
-        return this.runKieTask({
-            prompt,
-            image_input: [data.imageUrl],
-            aspect_ratio: "3:4"
-        });
+        try {
+            const prompt = data.prompt || defaultPrompt;
+            return await this.runKieTask({
+                prompt,
+                image_input: [data.imageUrl],
+                aspect_ratio: "3:4"
+            });
+        } catch (error) {
+            this.logger.error('Kie.ai Image Enhancement failed:', error);
+            // Fallback: return original image if enhancement fails
+            return {
+                imageUrl: data.imageUrl,
+                provider: 'original-fallback',
+                error: true
+            };
+        }
     }
 
     private async runKieTask(input: any) {
