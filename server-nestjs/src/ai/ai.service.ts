@@ -129,7 +129,7 @@ export class AiService {
 
         try {
             this.logger.log('Starting Virtual Try-On via Kie.ai (Nano Banana Pro)...');
-            
+
             const prompt = `
                 CREATE A REALISTIC VIRTUAL TRY-ON.
                 PERSON IMAGE: ${userImageUrl}
@@ -140,7 +140,7 @@ export class AiService {
                 NOTE: Morph the dress onto the person naturally.
             `;
 
-            return this.runKieTask(prompt, [userImageUrl, dressImageUrl]);
+            return this.runKieTask(prompt);
 
         } catch (error: any) {
             this.logger.error('Kie.ai VTON failed:', error);
@@ -437,10 +437,10 @@ export class AiService {
         Maintain the exact design and details of the dress. Context: ${data.imageUrl}`;
 
         const prompt = data.prompt || defaultPrompt;
-        return this.runKieTask(prompt, [data.imageUrl]);
+        return this.runKieTask(prompt);
     }
 
-    private async runKieTask(prompt: string, imageInput: string[] = []) {
+    private async runKieTask(prompt: string) {
         if (!this.kieAiApiKey) {
             throw new Error('KIE_AI_API_KEY not configured');
         }
@@ -455,11 +455,7 @@ export class AiService {
                 },
                 body: JSON.stringify({
                     model: 'nano-banana-pro',
-                    input: {
-                        prompt: prompt,
-                        image_input: imageInput,
-                        aspect_ratio: '3:4'
-                    }
+                    prompt: prompt,
                 }),
             });
 
@@ -498,14 +494,13 @@ export class AiService {
             this.logger.log(`Polling Kie.ai Task ${taskId} - Attempt ${attempt}/${maxAttempts}`);
 
             try {
-                const response = await fetch(`https://api.kie.ai/api/v1/jobs/recordInfo?taskId=${taskId}`, {
+                const response = await fetch(`https://api.kie.ai/api/v1/jobs/getTaskDetails?jobId=${taskId}`, {
                     headers: {
                         'Authorization': `Bearer ${this.kieAiApiKey}`,
                     },
                 });
 
                 const result = await response.json();
-                this.logger.log(`Full Polling Response: ${JSON.stringify(result)}`);
 
                 if (result.code !== 200) {
                     this.logger.warn(`Polling response code: ${result.code}. Message: ${result.msg}`);
@@ -513,19 +508,15 @@ export class AiService {
 
                 const task = result.data || result;
 
-                // Kie.ai uses 'state' and 'success' as a positive outcome
-                if (task.state === 'success' || task.status === 'success' || task.status === 'completed') {
-                    // Try different result paths based on documentation variants
-                    const url = task.results?.[0]?.url || 
-                                (task.resultJson && JSON.parse(task.resultJson)?.[0]?.url) ||
-                                (task.result && task.result.url);
-                                
+                // Handle success states
+                if (task.status === 'success' || task.status === 'succeeded' || task.status === 'completed') {
+                    const url = task.results?.[0]?.url || task.result?.url || (task.results && task.results[0]);
                     if (url) return url;
                     throw new Error('Task succeeded but no image URL found');
                 }
 
-                if (task.state === 'fail' || task.status === 'failed' || task.status === 'error') {
-                    throw new Error(`Kie.ai task failed: ${task.failMsg || task.failReason || JSON.stringify(task.error) || 'Unknown error'}`);
+                if (task.status === 'failed' || task.status === 'error') {
+                    throw new Error(`Kie.ai task failed: ${task.failReason || JSON.stringify(task.error) || 'Unknown error'}`);
                 }
             } catch (error: any) {
                 this.logger.warn(`Polling attempt ${attempt} failed: ${error.message}`);
