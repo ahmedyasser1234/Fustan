@@ -32,4 +32,9 @@ export class AiController {
     async generateDescription(@Body() body: any) {
         return this.aiService.generateProductDescription(body);
     }
+
+    @Post('enhance-image')
+    async enhanceImage(@Body() body: { imageUrl: string; prompt?: string }) {
+        return this.aiService.generateImageWithKie(body);
+    }
 }

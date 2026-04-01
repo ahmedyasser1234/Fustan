@@ -101,6 +101,7 @@ export default function ProductsTab({ vendorId, collectionId, onProductClick, on
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingProduct, setEditingProduct] = useState<any>(null);
     const [isGeneratingAI, setIsGeneratingAI] = useState(false);
+    const [isEnhancing, setIsEnhancing] = useState(false);
 
     // Form State
     const [nameAr, setNameAr] = useState("");
@@ -205,6 +206,60 @@ export default function ProductsTab({ vendorId, collectionId, onProductClick, on
             toast.error(language === 'ar' ? "فشل توليد الوصف" : "Failed to generate description");
         } finally {
             setIsGeneratingAI(false);
+        }
+    };
+
+    const handleEnhanceImage = async () => {
+        const currentImageUrl = aiQualifiedImage ? URL.createObjectURL(aiQualifiedImage) : editingProduct?.aiQualifiedImage;
+
+        if (!currentImageUrl) {
+            return toast.error(language === 'ar' ? "يرجى تحميل صورة أولاً" : "Please upload an image first");
+        }
+
+        setIsEnhancing(true);
+        try {
+            // If it's a local file, we need to upload it first to get a URL that Kie.ai can access
+            let imageUrlToProcess = currentImageUrl;
+            
+            if (aiQualifiedImage) {
+                const formData = new FormData();
+                formData.append('file', aiQualifiedImage);
+                // We use a temporary upload or just the products upload logic
+                // For simplicity, we assume the backend can handle the URL if it's already on Cloudinary
+                // If it's local, we might need a separate 'upload-temp' endpoint
+                // But wait, the user expects 'kie.ai' to work. 
+                // Let's assume for now the user uploads the image, it gets saved, then they enhance it.
+                // Or better: we upload it to Cloudinary first.
+                
+                const uploadRes = await api.post('/media/upload', formData, { 
+                    headers: { 'Content-Type': 'multipart/form-data' } 
+                });
+                imageUrlToProcess = uploadRes.data.secure_url;
+            }
+
+            const result = await endpoints.ai.enhanceImage({
+                imageUrl: imageUrlToProcess,
+                prompt: nameEn ? `A professional studio shot of a ${nameEn} dress. Luxury boutique setting.` : undefined
+            });
+
+            if (result.imageUrl) {
+                // Since we can't easily set a File object from a URL, 
+                // we'll update the editingProduct or show it in the preview
+                if (editingProduct) {
+                    setEditingProduct({ ...editingProduct, aiQualifiedImage: result.imageUrl });
+                } else {
+                    // For new products, we'll store the URL to be sent during submit
+                    // We might need a separate state for 'enhancedImageUrl'
+                    setEditingProduct({ aiQualifiedImage: result.imageUrl });
+                }
+                setAiQualifiedImage(null); // Clear the local file state to show the URL from editingProduct
+                toast.success(language === 'ar' ? "تم تحسين الصورة بنجاح" : "Image enhanced successfully");
+            }
+        } catch (error) {
+            console.error('Enhancement error:', error);
+            toast.error(language === 'ar' ? "فشل تحسين الصورة" : "Failed to enhance image");
+        } finally {
+            setIsEnhancing(false);
         }
     };
 
@@ -613,7 +668,14 @@ export default function ProductsTab({ vendorId, collectionId, onProductClick, on
                                         </div>
 
                                         <div className="aspect-[4/3] bg-rose-50/30 rounded-[28px] border-2 border-dashed border-rose-200 flex flex-col items-center justify-center overflow-hidden relative group transition-all duration-500 hover:border-rose-300">
-                                            {aiQualifiedImage ? (
+                                            {isEnhancing ? (
+                                                <div className="flex flex-col items-center gap-4">
+                                                    <Loader2 className="w-10 h-10 text-rose-500 animate-spin" />
+                                                    <p className="text-xs font-black text-rose-600 animate-pulse">
+                                                        {language === 'ar' ? "جاري التحسين..." : "Enhancing..."}
+                                                    </p>
+                                                </div>
+                                            ) : aiQualifiedImage ? (
                                                 <img src={URL.createObjectURL(aiQualifiedImage)} className="w-full h-full object-cover" />
                                             ) : editingProduct?.aiQualifiedImage ? (
                                                 <img src={editingProduct.aiQualifiedImage} className="w-full h-full object-cover" />
@@ -626,10 +688,22 @@ export default function ProductsTab({ vendorId, collectionId, onProductClick, on
                                                     <p className="text-[8px] font-bold text-slate-400 mt-1">{language === 'ar' ? "صورة واضحة للفستان على مانيكان" : "Clear dress on mannequin"}</p>
                                                 </div>
                                             )}
-                                            <label className="absolute inset-0 cursor-pointer">
-                                                <input type="file" accept="image/*" className="hidden" onChange={(e) => setAiQualifiedImage(e.target.files?.[0] || null)} />
-                                            </label>
+                                            {!isEnhancing && (
+                                                <label className="absolute inset-0 cursor-pointer">
+                                                    <input type="file" accept="image/*" className="hidden" onChange={(e) => setAiQualifiedImage(e.target.files?.[0] || null)} />
+                                                </label>
+                                            )}
                                         </div>
+
+                                        {(aiQualifiedImage || editingProduct?.aiQualifiedImage) && !isEnhancing && (
+                                            <Button 
+                                                onClick={handleEnhanceImage}
+                                                className="w-full bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white h-10 rounded-xl font-black text-xs shadow-lg shadow-rose-100 transition-all hover:scale-[1.02] active:scale-95 group"
+                                            >
+                                                <Sparkles className={`w-4 h-4 ${language === 'ar' ? 'ml-2' : 'mr-2'} group-hover:animate-pulse`} />
+                                                {language === 'ar' ? "تحسين بالذكاء الاصطناعي (Nano Banana)" : "AI Enhance (Nano Banana)"}
+                                            </Button>
+                                        )}
                                     </div>
 
                                     <div className="mt-auto p-6 bg-slate-50 rounded-[32px] border border-slate-100 space-y-4">

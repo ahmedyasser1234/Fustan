@@ -143,16 +143,9 @@ export function TryOnSection({ productName, productImage, productDescription }: 
             return;
         }
 
-        // Validate all measurements
-        const requiredFields = [
-            'height', 'weight', 'neck', 'shoulders', 'bust', 'underBust',
-            'waist', 'hips', 'armLength', 'armCircumference', 'wrist',
-            'dressLength', 'kneeLength', 'backWidth', 'frontLength'
-        ];
-        const missingFields = requiredFields.filter(field => !measurements[field as keyof typeof measurements]);
-
-        if (missingFields.length > 0) {
-            toast.error(language === 'ar' ? 'يرجى إدخال جميع المقاسات' : 'Please enter all measurements');
+        // Only strictly require height and weight for AI context, others are optional for the preview
+        if (!measurements.height || !measurements.weight) {
+            toast.error(language === 'ar' ? 'يرجى إدخال الطول والوزن على الأقل' : 'Please enter at least height and weight');
             return;
         }
 
@@ -290,7 +283,7 @@ export function TryOnSection({ productName, productImage, productDescription }: 
                                                             {language === 'ar' ? 'اضغطي لرفع صورتك' : 'Click to upload your photo'}
                                                         </p>
                                                         <p className="text-sm text-gray-500">
-                                                            {language === 'ar' ? 'PNG, JPG (حتى 5 ميجا)' : 'PNG, JPG (up to 5MB)'}
+                                                            {language === 'ar' ? 'صورة كاملة للجسم أفضل (PNG/JPG)' : 'Full body photo is best (PNG/JPG)'}
                                                         </p>
                                                     </div>
                                                 </div>
@@ -622,10 +615,7 @@ export function TryOnSection({ productName, productImage, productDescription }: 
                                 {/* Generate Button */}
                                 <Button
                                     onClick={handleGenerate}
-                                    disabled={isLoading || !dressImage || !userImage ||
-                                        !measurements.height || !measurements.weight ||
-                                        !measurements.bust || !measurements.waist || !measurements.hips ||
-                                        !measurements.shoulders || !measurements.armLength || !measurements.dressLength}
+                                    disabled={isLoading || !userImage || !measurements.height || !measurements.weight}
                                     className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white h-14 text-lg font-bold rounded-full shadow-lg transition-all disabled:opacity-50"
                                 >
                                     {isLoading ? (
