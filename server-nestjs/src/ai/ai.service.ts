@@ -7,31 +7,21 @@ import { GoogleGenAI, HarmCategory, HarmBlockThreshold } from '@google/genai';
 
 import { v2 as cloudinary } from 'cloudinary';
 import { Readable } from 'stream';
-import Replicate from 'replicate';
 
 @Injectable()
 export class AiService {
     private openai: OpenAI;
     private gemini: GoogleGenAI;
-    private replicate: Replicate;
     private readonly logger = new Logger(AiService.name);
     private kieAiApiKey: string;
 
     constructor(private configService: ConfigService) {
         const apiKey = this.configService.get<string>('OPENAI_API_KEY');
         const geminiApiKey = this.configService.get<string>('GEMINI_API_KEY');
-        const replicateToken = this.configService.get<string>('REPLICATE_API_TOKEN');
         this.kieAiApiKey = this.configService.get<string>('KIE_AI_API_KEY');
 
         this.logger.log(`DEBUG: Gemini Key Present: ${!!geminiApiKey}`);
-        this.logger.log(`DEBUG: Replicate Token Present: ${!!replicateToken}`);
         this.logger.log(`DEBUG: Kie.ai Key Present: ${!!this.kieAiApiKey}`);
-
-        if (replicateToken) {
-            this.replicate = new Replicate({
-                auth: replicateToken,
-            });
-        }
 
         if (apiKey) {
             this.openai = new OpenAI({ apiKey });
@@ -132,56 +122,28 @@ export class AiService {
     }
 
     private async performVTON(dressImageUrl: string, userImageUrl: string, data: any) {
-        if (!this.replicate) {
-            this.logger.warn('Replicate not configured, falling back to measurement-based generation...');
+        if (!this.kieAiApiKey) {
+            this.logger.warn('Kie.ai not configured, falling back to measurement-based generation...');
             return this.performMeasurementBasedVTON(data, dressImageUrl);
         }
 
         try {
-            this.logger.log('Starting Real VTON (IDM-VTON) generation...');
-            this.logger.log(`Inputs: Dress=${dressImageUrl}, User=${userImageUrl}`);
+            this.logger.log('Starting Virtual Try-On via Kie.ai (Nano Banana Pro)...');
+            
+            const prompt = `
+                CREATE A REALISTIC VIRTUAL TRY-ON.
+                PERSON IMAGE: ${userImageUrl}
+                GOAL: Put this person into the dress shown in this product image: ${dressImageUrl}.
+                PRESERVE: Keep the person's EXACT face and body shape from the person image.
+                DRESS: Use the EXACT color, fabric, and design of the dress from the product image.
+                STYLE: High-end fashion editorial, studio lighting, photorealistic.
+                NOTE: Morph the dress onto the person naturally.
+            `;
 
-            const output = await this.replicate.run(
-                "cuuupid/idm-vton:0513734a452173b8173e907e3a59d19a36266e55b48528559432bd21c7d7e985", 
-                {
-                    input: {
-                        crop: false,
-                        seed: 42,
-                        steps: 30,
-                        category: "one-pieces",
-                        garment_img: dressImageUrl,
-                        human_img: userImageUrl,
-                        garment_des: data.productDescription || data.productName || "dress"
-                    }
-                }
-            );
-
-            this.logger.log(`VTON Result Received successfully.`);
-
-            const resultUrl = Array.isArray(output) ? output[0] : output;
-            if (!resultUrl) throw new Error('No image URL returned from VTON model');
-
-            const uploadResult = await cloudinary.uploader.upload(resultUrl, {
-                folder: 'vton-results'
-            });
-
-            return {
-                imageUrl: uploadResult.secure_url,
-                provider: 'replicate-idm-vton'
-            };
+            return this.runKieTask(prompt);
 
         } catch (error: any) {
-            this.logger.error('Real VTON Critical Error Details:');
-            this.logger.error(`Message: ${error.message}`);
-            if (error.response) {
-                this.logger.error(`Status: ${error.response.status}`);
-                const errorData = await error.response.json().catch(() => ({}));
-                this.logger.error(`Detail: ${JSON.stringify(errorData)}`);
-            } else {
-                this.logger.error(`Full Error: ${JSON.stringify(error)}`);
-            }
-            
-            // Final fallback to measurement-based if real VTON fails
+            this.logger.error('Kie.ai VTON failed:', error);
             return this.performMeasurementBasedVTON(data, dressImageUrl);
         }
     }
@@ -472,13 +434,20 @@ export class AiService {
 
         const defaultPrompt = `A high-end, professional studio fashion photography of this dress. 
         Elegant setting, perfect cinematic lighting, 8k resolution, photorealistic, luxury fashion magazine style. 
-        Maintain the exact design and details of the dress.`;
+        Maintain the exact design and details of the dress. Context: ${data.imageUrl}`;
 
         const prompt = data.prompt || defaultPrompt;
+        return this.runKieTask(prompt);
+    }
+
+    private async runKieTask(prompt: string) {
+        if (!this.kieAiApiKey) {
+            throw new Error('KIE_AI_API_KEY not configured');
+        }
 
         try {
-            // 1. Create Task
-            const createResponse = await fetch('https://api.kie.ai/api/v1/jobs/createTask', {
+            this.logger.log('Creating Kie.ai task...');
+            const response = await fetch('https://api.kie.ai/api/v1/jobs/createTask', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${this.kieAiApiKey}`,
@@ -488,28 +457,26 @@ export class AiService {
                     model: 'nano-banana-pro',
                     input: {
                         prompt: prompt,
-                        image_input: [data.imageUrl],
                         aspect_ratio: '3:4'
                     }
                 })
             });
 
-            const createResult = await createResponse.json();
+            const result = await response.json();
 
-            if (createResult.code !== 0 || !createResult.data?.jobId) {
-                this.logger.error(`Kie.ai Task Creation Failed: ${JSON.stringify(createResult)}`);
-                throw new Error(createResult.message || 'Failed to create Kie.ai task');
+            if (result.code !== 0 || !result.data?.jobId) {
+                this.logger.error(`Kie.ai Task Creation Failed: ${JSON.stringify(result)}`);
+                throw new Error(result.message || 'Failed to create Kie.ai task');
             }
 
-            const jobId = createResult.data.jobId;
+            const jobId = result.data.jobId;
             this.logger.log(`Kie.ai Task Created. JobId: ${jobId}. Polling for results...`);
 
-            // 2. Poll for Results
             const resultUrl = await this.pollKieTask(jobId);
 
-            // 3. Upload Result to Cloudinary (optional but recommended for persistence)
+            // Upload Result to Cloudinary for persistence
             const uploadResult = await cloudinary.uploader.upload(resultUrl, {
-                folder: 'fustan-ai-enhancements'
+                folder: 'fustan-ai-results'
             });
 
             return {
@@ -518,45 +485,49 @@ export class AiService {
                 jobId
             };
 
-        } catch (error) {
-            this.logger.error('Kie.ai generation failed:', error);
+        } catch (error: any) {
+            this.logger.error('Kie.ai execution failed:', error.message);
             throw error;
         }
     }
 
-    private async pollKieTask(jobId: string, maxAttempts = 30, intervalMs = 2000): Promise<string> {
+    private async pollKieTask(jobId: string, maxAttempts = 60, intervalMs = 5000): Promise<string> {
         for (let attempt = 1; attempt <= maxAttempts; attempt++) {
             this.logger.log(`Polling Kie.ai Job ${jobId} - Attempt ${attempt}/${maxAttempts}`);
 
-            const response = await fetch(`https://api.kie.ai/api/v1/jobs/getTaskDetails?jobId=${jobId}`, {
-                headers: {
-                    'Authorization': `Bearer ${this.kieAiApiKey}`
+            try {
+                const response = await fetch(`https://api.kie.ai/api/v1/jobs/getTaskDetails?jobId=${jobId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${this.kieAiApiKey}`
+                    }
+                });
+
+                const result = await response.json();
+
+                if (result.code !== 0) {
+                    throw new Error(`Polling failed: ${result.message}`);
                 }
-            });
 
-            const result = await response.json();
+                const task = result.data;
 
-            if (result.code !== 0) {
-                throw new Error(`Polling failed: ${result.message}`);
-            }
-
-            const task = result.data;
-
-            if (task.status === 'success') {
-                if (task.results?.[0]?.url) {
-                    return task.results[0].url;
+                if (task.status === 'success' || task.status === 'completed') {
+                    if (task.results?.[0]?.url) {
+                        return task.results[0].url;
+                    }
+                    throw new Error('Task succeeded but no image URL found');
                 }
-                throw new Error('Task succeeded but no image URL found');
-            }
 
-            if (task.status === 'failed') {
-                throw new Error(`Kie.ai task failed: ${task.failReason || 'Unknown error'}`);
+                if (task.status === 'failed') {
+                    throw new Error(`Kie.ai task failed: ${task.failReason || 'Unknown error'}`);
+                }
+            } catch (error: any) {
+                this.logger.warn(`Polling attempt ${attempt} failed: ${error.message}`);
             }
 
             // Still processing
             await new Promise(resolve => setTimeout(resolve, intervalMs));
         }
 
-        throw new Error('Polling timed out after 1 minute');
+        throw new Error('Polling timed out after 5 minutes');
     }
 }
