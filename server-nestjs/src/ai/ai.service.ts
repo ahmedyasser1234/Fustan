@@ -130,17 +130,13 @@ export class AiService {
         try {
             this.logger.log('Starting Virtual Try-On via Kie.ai (Nano Banana Pro)...');
 
-            const prompt = `
-                CREATE A REALISTIC VIRTUAL TRY-ON.
-                PERSON IMAGE: ${userImageUrl}
-                GOAL: Put this person into the dress shown in this product image: ${dressImageUrl}.
-                PRESERVE: Keep the person's EXACT face and body shape from the person image.
-                DRESS: Use the EXACT color, fabric, and design of the dress from the product image.
-                STYLE: High-end fashion editorial, studio lighting, photorealistic.
-                NOTE: Morph the dress onto the person naturally.
-            `;
+            const input = {
+                prompt: `Put this person into the dress shown in this product image. PRESERVE: Keep the person's EXACT face and body shape. DRESS: Use the EXACT color, fabric, and design. STYLE: High-end fashion editorial, studio lighting, photorealistic.`,
+                image_input: [userImageUrl, dressImageUrl],
+                aspect_ratio: "3:4"
+            };
 
-            return this.runKieTask(prompt);
+            return this.runKieTask(input);
 
         } catch (error: any) {
             this.logger.error('Kie.ai VTON failed:', error);
@@ -437,10 +433,14 @@ export class AiService {
         Maintain the exact design and details of the dress. Context: ${data.imageUrl}`;
 
         const prompt = data.prompt || defaultPrompt;
-        return this.runKieTask(prompt);
+        return this.runKieTask({
+            prompt,
+            image_input: [data.imageUrl],
+            aspect_ratio: "3:4"
+        });
     }
 
-    private async runKieTask(prompt: string) {
+    private async runKieTask(input: any) {
         if (!this.kieAiApiKey) {
             throw new Error('KIE_AI_API_KEY not configured');
         }
@@ -455,7 +455,7 @@ export class AiService {
                 },
                 body: JSON.stringify({
                     model: 'nano-banana-pro',
-                    prompt: prompt,
+                    input: input,
                 }),
             });
 
