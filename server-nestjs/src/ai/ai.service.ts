@@ -447,32 +447,30 @@ export class AiService {
 
         try {
             this.logger.log('Creating Kie.ai task...');
-            const response = await fetch('https://api.kie.ai/api/v1/jobs/createTask', {
+            const response = await fetch('https://api.kie.ai/v1/tasks', {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${this.kieAiApiKey}`,
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'x-api-key': this.kieAiApiKey,
                 },
                 body: JSON.stringify({
                     model: 'nano-banana-pro',
-                    input: {
-                        prompt: prompt,
-                        aspect_ratio: '3:4'
-                    }
-                })
+                    prompt: prompt,
+                }),
             });
 
             const result = await response.json();
 
-            if (result.code !== 0 || !result.data?.jobId) {
+            // Kie.ai uses code 200 for success and returns taskId
+            if (result.code !== 200 || !result.data?.taskId) {
                 this.logger.error(`Kie.ai Task Creation Failed: ${JSON.stringify(result)}`);
-                throw new Error(result.message || 'Failed to create Kie.ai task');
+                throw new Error(result.msg || 'Failed to create Kie.ai task');
             }
 
-            const jobId = result.data.jobId;
-            this.logger.log(`Kie.ai Task Created. JobId: ${jobId}. Polling for results...`);
+            const taskId = result.data.taskId;
+            this.logger.log(`Kie.ai Task Created. TaskId: ${taskId}. Polling for results...`);
 
-            const resultUrl = await this.pollKieTask(jobId);
+            const resultUrl = await this.pollKieTask(taskId);
 
             // Upload Result to Cloudinary for persistence
             const uploadResult = await cloudinary.uploader.upload(resultUrl, {
@@ -482,7 +480,7 @@ export class AiService {
             return {
                 imageUrl: uploadResult.secure_url,
                 provider: 'kie-ai-nano-banana-pro',
-                jobId
+                taskId
             };
 
         } catch (error: any) {
@@ -491,34 +489,30 @@ export class AiService {
         }
     }
 
-    private async pollKieTask(jobId: string, maxAttempts = 60, intervalMs = 5000): Promise<string> {
+    private async pollKieTask(taskId: string, maxAttempts = 60, intervalMs = 5000): Promise<string> {
         for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-            this.logger.log(`Polling Kie.ai Job ${jobId} - Attempt ${attempt}/${maxAttempts}`);
+            this.logger.log(`Polling Kie.ai Task ${taskId} - Attempt ${attempt}/${maxAttempts}`);
 
             try {
-                const response = await fetch(`https://api.kie.ai/api/v1/jobs/getTaskDetails?jobId=${jobId}`, {
+                const response = await fetch(`https://api.kie.ai/v1/tasks/${taskId}`, {
                     headers: {
-                        'Authorization': `Bearer ${this.kieAiApiKey}`
-                    }
+                        'x-api-key': this.kieAiApiKey,
+                    },
                 });
 
                 const result = await response.json();
 
-                if (result.code !== 0) {
-                    throw new Error(`Polling failed: ${result.message}`);
-                }
+                // Based on docs, it might return a different result structure during polling
+                const task = result.data || result;
 
-                const task = result.data;
-
-                if (task.status === 'success' || task.status === 'completed') {
-                    if (task.results?.[0]?.url) {
-                        return task.results[0].url;
-                    }
+                if (task.status === 'succeeded' || task.status === 'completed' || task.status === 'success') {
+                    const url = task.result?.url || task.results?.[0]?.url;
+                    if (url) return url;
                     throw new Error('Task succeeded but no image URL found');
                 }
 
                 if (task.status === 'failed') {
-                    throw new Error(`Kie.ai task failed: ${task.failReason || 'Unknown error'}`);
+                    throw new Error(`Kie.ai task failed: ${task.failReason || JSON.stringify(task.error) || 'Unknown error'}`);
                 }
             } catch (error: any) {
                 this.logger.warn(`Polling attempt ${attempt} failed: ${error.message}`);
