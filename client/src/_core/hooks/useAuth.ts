@@ -21,36 +21,39 @@ export function useAuth(options?: UseAuthOptions) {
     },
     retry: false,
     refetchOnWindowFocus: false,
-    // @ts-ignore
-    onError: (err: any) => {
-      if (err.response?.status === 401 || err.response?.status === 403) {
-        queryClient.setQueryData(['auth', 'me'], null);
-      }
-    }
   });
+
+  useEffect(() => {
+    const handleUnauthorized = () => {
+      queryClient.setQueryData(['auth', 'me'], null);
+      queryClient.invalidateQueries({ queryKey: ['auth', 'me'] });
+    };
+    window.addEventListener('fustan-unauthorized', handleUnauthorized);
+    return () => window.removeEventListener('fustan-unauthorized', handleUnauthorized);
+  }, [queryClient]);
 
   const logoutMutation = useMutation({
     mutationFn: async () => {
       const response = await endpoints.auth.logout();
       return response.data;
     },
-    onSuccess: () => {
-      queryClient.setQueryData(['auth', 'me'], null);
-      if (typeof window !== "undefined") {
-        window.location.href = "/";
-      }
-    },
   });
 
   const logout = useCallback(async () => {
     try {
+      // 1. Set local state to null immediately
+      queryClient.setQueryData(['auth', 'me'], null);
+      
+      // 2. Call the server to clear the session cookie
       await logoutMutation.mutateAsync();
     } catch (error: unknown) {
-      console.error("Logout failed:", error);
+      console.error("Logout request failed:", error);
     } finally {
-      queryClient.setQueryData(['auth', 'me'], null);
-      await queryClient.invalidateQueries({ queryKey: ['auth', 'me'] });
-      await queryClient.resetQueries({ queryKey: ['auth', 'me'] });
+      // 3. Clear all queries and redirect to home
+      queryClient.clear();
+      if (typeof window !== "undefined") {
+        window.location.href = "/";
+      }
     }
   }, [logoutMutation, queryClient]);
 
@@ -91,5 +94,6 @@ export function useAuth(options?: UseAuthOptions) {
     ...state,
     refresh: () => meQuery.refetch(),
     logout,
+    logoutMutation,
   };
 }

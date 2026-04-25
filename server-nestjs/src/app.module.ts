@@ -68,7 +68,7 @@ import { VendorRequestsModule } from './vendor-requests/vendor-requests.module';
       {
         name: 'default',
         ttl: 60000,
-        limit: 100,
+        limit: 500,
       },
       {
         name: 'auth',

@@ -274,16 +274,16 @@ export class PixVerseService {
     const traceId = crypto.randomUUID();
     this.logger.log(`Uploading image to PixVerse. TraceId: ${traceId}`);
 
+    const formData = new FormData();
+    formData.append('image_url', imageUrl);
+
     const response = await fetch(this.uploadUrl, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
         'API-KEY': this.apiKey,
-        'Ai-trace-id': traceId,
+        'Ai-Trace-Id': traceId,
       },
-      body: JSON.stringify({
-        image_url: imageUrl,
-      }),
+      body: formData,
     });
 
     const result = await response.json();

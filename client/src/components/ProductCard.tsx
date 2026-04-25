@@ -24,13 +24,14 @@ export function ProductCard({ product, index = 0, loading = false, onQuickView }
 
     const { user } = useAuth();
 
-    const { data: wishlistStatus } = useQuery({
-        queryKey: ['wishlist-status', product?.id],
-        queryFn: () => endpoints.wishlist.check(product.id),
-        enabled: !!user && !!product?.id,
+    const { data: wishlistItems } = useQuery({
+        queryKey: ['wishlist'],
+        queryFn: () => endpoints.wishlist.list(),
+        enabled: !!user,
+        staleTime: 5 * 60 * 1000,
     });
 
-    const isFavorite = wishlistStatus?.isFavorite;
+    const isFavorite = wishlistItems?.some((item: any) => item.productId === product.id);
 
     const toggleWishlistMutation = useMutation({
         mutationFn: () => isFavorite

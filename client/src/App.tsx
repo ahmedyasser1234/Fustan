@@ -42,6 +42,7 @@ import { Heart, ShoppingCart, User, Menu, X, ChevronLeft, Search, ShoppingBag, L
 import { useState, useEffect, useRef, useMemo } from "react";
 import { getLoginUrl } from "@/const";
 import { motion, AnimatePresence } from "framer-motion";
+import { toast } from "sonner";
 
 import { Switch as UISwitch } from "@/components/ui/switch"; // Renamed to avoid conflict with wouter's Switch
 import { useLanguage } from "@/lib/i18n";
@@ -80,7 +81,7 @@ function Navigation({ isChatHistoryOpen, setIsChatHistoryOpen, unreadCount, syst
     };
   }, [userMenuOpen]);
 
-  const { user, logout } = useAuth();
+  const { user, logout, logoutMutation } = useAuth();
   const { t, language, setLanguage } = useLanguage();
 
   const { data: cartData } = useQuery({
@@ -301,11 +302,18 @@ function Navigation({ isChatHistoryOpen, setIsChatHistoryOpen, unreadCount, syst
                             <div className="h-px bg-gray-50 my-2" />
 
                             <button
-                              onClick={() => {
+                              disabled={logoutMutation.isPending}
+                              onClick={async () => {
                                 setUserMenuOpen(false);
-                                logout();
+                                const toastId = toast.loading(language === 'ar' ? "جاري تسجيل الخروج..." : "Logging out...");
+                                try {
+                                  await logout();
+                                  toast.success(language === 'ar' ? "تم تسجيل الخروج بنجاح" : "Logged out successfully", { id: toastId });
+                                } catch (err) {
+                                  toast.error(language === 'ar' ? "فشل تسجيل الخروج" : "Logout failed", { id: toastId });
+                                }
                               }}
-                              className="w-full text-start px-4 py-3.5 rounded-2xl hover:bg-red-50 text-red-500 transition-colors font-bold flex items-center gap-3"
+                              className="w-full text-start px-4 py-3.5 rounded-2xl hover:bg-red-50 text-red-500 transition-colors font-bold flex items-center gap-3 disabled:opacity-50"
                             >
                               <div className="w-5" />
                               {t('logout')}

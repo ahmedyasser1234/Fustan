@@ -6,6 +6,18 @@ const api = axios.create({
     withCredentials: true,
 });
 
+// Add a response interceptor to handle 401 errors
+api.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (error.response?.status === 401) {
+            // Broadcast event to clear auth state
+            window.dispatchEvent(new Event('fustan-unauthorized'));
+        }
+        return Promise.reject(error);
+    }
+);
+
 export default api;
 
 export const endpoints = {
