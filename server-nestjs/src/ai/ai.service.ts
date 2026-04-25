@@ -150,13 +150,12 @@ export class AiService {
     try {
       this.logger.log(`Starting PixVerse Image Template VTON with template ${templateId}...`);
 
-      // 1. Upload both images to PixVerse to get IDs
-      const dressId = await this.pixVerseService.uploadImage(dressImageUrl);
+      // Template 377378608924544 accepts only 1 image - upload user image only
       const userId = await this.pixVerseService.uploadImage(userImageUrl);
 
-      // 2. Create template task (Image template for VTON)
+      // Create template task with only 1 image as required by this template
       const imageId = await this.pixVerseService.createImageTemplateTask(
-        [userId, dressId],
+        [userId],
         templateId,
       );
 
