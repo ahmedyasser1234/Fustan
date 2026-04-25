@@ -1,6 +1,8 @@
 import {
   Body,
   Controller,
+  Get,
+  Param,
   Post,
   UseInterceptors,
   UploadedFiles,
@@ -37,6 +39,29 @@ export class AiController {
     if (files.userImage?.[0]) fileArray.push(files.userImage[0]);
 
     return this.aiService.generateTryOn(body, fileArray);
+  }
+
+  @Get('try-on/result/:imageId')
+  async getTryOnResult(@Param('imageId') imageId: string) {
+    const result = await this.pixVerseService.getImageResult(imageId);
+    
+    // Normalize the result for the frontend
+    if (result.ErrCode === 0 && result.Resp) {
+      if (result.Resp.status === 2) { // 2 usually means success in PixVerse v2
+        return {
+          status: 'completed',
+          imageUrl: result.Resp.url || result.Resp.image_url,
+        };
+      } else if (result.Resp.status === 3) { // 3 usually means failed
+        return {
+          status: 'failed',
+          error: result.Resp.msg || 'PixVerse generation failed',
+        };
+      }
+      return { status: 'pending' };
+    }
+    
+    return { status: 'pending' };
   }
 
   @Post('analyze-analytics')

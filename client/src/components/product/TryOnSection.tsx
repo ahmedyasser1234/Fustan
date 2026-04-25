@@ -137,13 +137,30 @@ export function TryOnSection({ productName, productImage, productDescription }: 
         setUserPreview('');
     };
 
+    const pollForResult = async (imageId: string | number): Promise<string | null> => {
+        const maxAttempts = 40; // 40 × 3s = 2 minutes max
+        for (let i = 0; i < maxAttempts; i++) {
+            await new Promise(r => setTimeout(r, 3000)); // wait 3 seconds
+            try {
+                const res = await api.get(`/ai/try-on/result/${imageId}`);
+                const data = res.data;
+                if (data.imageUrl) return data.imageUrl;
+                if (data.status === 'failed') throw new Error(data.error || 'Processing failed');
+                // still processing, continue polling
+            } catch (err: any) {
+                if (err.response?.status === 404) continue; // not ready yet
+                throw err;
+            }
+        }
+        throw new Error('Timeout: Image took too long to generate');
+    };
+
     const handleGenerate = async () => {
         if (!dressPreview || !userImage) {
             toast.error(language === 'ar' ? 'يرجى اختيار صورة الفستان وصورتك' : 'Please select both dress and your photo');
             return;
         }
 
-        // Only strictly require height and weight for AI context, others are optional for the preview
         if (!measurements.height || !measurements.weight) {
             toast.error(language === 'ar' ? 'يرجى إدخال الطول والوزن على الأقل' : 'Please enter at least height and weight');
             return;
@@ -164,26 +181,30 @@ export function TryOnSection({ productName, productImage, productDescription }: 
             formData.append('productName', productName);
             formData.append('productDescription', productDescription || '');
 
-            // Add all measurements
             Object.entries(measurements).forEach(([key, value]) => {
                 formData.append(key, value);
             });
 
-            const response = await api.post('/ai/try-on', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
+            const response = await api.post('/ai/try-on', formData);
 
-            if (response.data && response.data.imageUrl) {
+            if (response.data?.imageUrl) {
+                // Got direct imageUrl (mock or cached)
                 setGeneratedImage(response.data.imageUrl);
                 toast.success(language === 'ar' ? 'تم إنشاء الصورة بنجاح!' : 'Image generated successfully!');
-
-                if (response.data.mock) {
-                    toast.info(language === 'ar' ? 'هذه صورة تجريبية (لا يوجد مفتاح API)' : 'This is a mock image (No API Key)');
+            } else if (response.data?.imageId) {
+                // Got a pending task - start polling
+                toast.info(language === 'ar' ? 'جاري المعالجة... قد يستغرق دقيقة أو أكثر' : 'Processing... may take a minute or more');
+                const imageUrl = await pollForResult(response.data.imageId);
+                if (imageUrl) {
+                    setGeneratedImage(imageUrl);
+                    toast.success(language === 'ar' ? 'تم إنشاء الصورة بنجاح!' : 'Image generated successfully!');
+                } else {
+                    toast.error(language === 'ar' ? 'فشل إنشاء الصورة' : 'Failed to generate image');
                 }
+            } else {
+                toast.error(language === 'ar' ? 'لم يتم استلام نتيجة من السيرفر' : 'No result received from server');
             }
-        } catch (error) {
+        } catch (error: any) {
             console.error('Try-On Error:', error);
             toast.error(language === 'ar' ? 'فشل إنشاء الصورة. حاول مرة أخرى' : 'Failed to generate image. Try again.');
         } finally {

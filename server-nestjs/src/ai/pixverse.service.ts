@@ -476,7 +476,7 @@ export class PixVerseService {
   /**
    * Gets the result of an image generation task.
    */
-  async getImageResult(imageId: string) {
+  async getImageResult(imageId: string | number) {
     if (!this.apiKey) throw new Error('PIXVERSE_API_KEY not configured');
 
     const traceId = crypto.randomUUID();
@@ -484,12 +484,17 @@ export class PixVerseService {
       method: 'GET',
       headers: {
         'API-KEY': this.apiKey,
-        'Ai-trace-Id': traceId,
+        'Ai-Trace-Id': traceId,
       },
     });
 
-    const result = await response.json();
-    return result;
+    const rawText = await response.text();
+    try {
+      return JSON.parse(rawText);
+    } catch {
+      this.logger.error(`PixVerse result returned non-JSON: ${rawText.substring(0, 200)}`);
+      return { ErrCode: -1, ErrMsg: 'Invalid JSON response from PixVerse' };
+    }
   }
 
   /**
