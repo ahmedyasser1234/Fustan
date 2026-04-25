@@ -105,3 +105,5 @@ temp/
 *.db
 *.sqlite
 *.sqlite3
+client/public/*.mp4
+client/public/*.png
