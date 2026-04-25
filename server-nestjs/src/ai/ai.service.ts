@@ -69,6 +69,8 @@ export class AiService {
       productImage?: string;
       productDescription?: string;
       templateId?: number;
+      userId?: number;
+      productId?: number;
     },
     files?: Express.Multer.File[],
   ) {
@@ -120,9 +122,19 @@ export class AiService {
       }
     }
 
-    // If we have both images, use VTON directly
+    // If we have both images, use the dedicated VTON API
     if (dressImageUrl && userImageUrl) {
-      return this.performPixVerseTemplateVTON(dressImageUrl, userImageUrl, data.templateId || 377378608924544);
+      const taskId = await this.pixVerseService.createVirtualTryOnTask(
+        data.userId || 0,
+        userImageUrl,
+        dressImageUrl,
+      );
+      return {
+        taskId,
+        provider: 'pixverse-vton',
+        status: 'pending',
+        message: 'Virtual Try-On task created. You will be notified when it is ready.',
+      };
     }
 
     throw new Error('Both product image and user image are required for PixVerse VTON.');

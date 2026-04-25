@@ -518,8 +518,8 @@ export default function ProductDetail() {
                       <button onClick={() => { if (product.sizes?.length > 0) { if (selectedSize) handleSizeQtyChange(selectedSize, 1); else toast.error("اختر المقاس"); } else setQuantity(q => q + 1); }} className="w-12 h-full flex items-center justify-center text-gray-400 hover:text-rose-600"><Plus size={18} /></button>
                     </div>
                     <div className="flex flex-col gap-3 flex-1">
-                      <div className="flex flex-col lg:flex-row gap-3">
-                        <Button onClick={handleAddToCartMulti} disabled={addToCartMutation.isPending} className="h-14 rounded-2xl bg-gray-900 hover:bg-black text-white font-black flex-1 text-lg">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <Button onClick={handleAddToCartMulti} disabled={addToCartMutation.isPending} className="h-14 rounded-2xl bg-gray-900 hover:bg-black text-white font-black w-full text-lg shadow-sm">
                           {t('addToCart')}
                         </Button>
                         <Button onClick={() => {
@@ -530,9 +530,9 @@ export default function ProductDetail() {
                             vendorLogo: vendor.logo,
                             recipientId: vendor.userId
                           });
-                        }} className="h-14 rounded-2xl bg-blue-50 text-blue-600 border border-blue-100 hover:bg-blue-100 font-black flex-1 flex items-center justify-center gap-2 text-base">
-                          <MessageSquare size={18} />
-                          {language === 'ar' ? 'تواصل مع المصمم' : 'Contact Designer'}
+                        }} className="h-14 rounded-2xl bg-blue-50 text-blue-600 border border-blue-100 hover:bg-blue-100 font-black w-full flex items-center justify-center gap-2 text-sm md:text-base px-2">
+                          <MessageSquare size={18} className="shrink-0" />
+                          <span className="truncate">{language === 'ar' ? 'تواصل مع المصمم' : 'Contact Designer'}</span>
                         </Button>
                       </div>
                       <Button onClick={() => document.getElementById('ai-try-on-section')?.scrollIntoView({ behavior: 'smooth' })} className="h-14 rounded-2xl bg-gradient-to-r from-purple-600 to-rose-600 text-white font-black w-full text-lg shadow-lg shadow-rose-100">
