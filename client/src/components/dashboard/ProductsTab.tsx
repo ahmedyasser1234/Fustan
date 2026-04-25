@@ -127,14 +127,8 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
     const [colorVariants, setColorVariants] = useState<{ id?: number; colorName: string; colorCode: string; imageFiles: File[]; existingImages?: string[] }[]>([]);
     const [sku, setSku] = useState("");
     const [tags, setTags] = useState("");
-    const [collectionId, setCollectionId] = useState("");
 
     // Queries
-    const { data: collections } = useQuery({
-        queryKey: ['vendor', 'collections', vendorId],
-        queryFn: async () => await endpoints.collections.list(vendorId),
-        enabled: !!vendorId,
-    });
     const { data: products, isLoading } = useQuery({
         queryKey: ['vendor', 'products', vendorId],
         queryFn: async () => await endpoints.products.list({ vendorId }),
@@ -259,7 +253,6 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
 
             const formData = new FormData();
             formData.append("vendorId", vendorId.toString());
-            if (collectionId) formData.append("collectionId", collectionId.toString());
             formData.append("nameAr", nameAr);
             formData.append("nameEn", nameEn);
             formData.append("descriptionAr", descriptionAr);
@@ -351,7 +344,6 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
         setRentPrice(product.rentPrice?.toString() || "");
         setSalePrice(product.salePrice?.toString() || "");
         setCategoryId(product.categoryId?.toString() || "");
-        setCollectionId(product.collectionId?.toString() || "");
         setSizes(product.sizes || [{ size: "", quantity: 0 }]);
         setCutType(product.cutType || "");
         setBodyShape(product.bodyShape || "");
@@ -398,7 +390,6 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
         setCategoryId("");
         setCutType(""); setBodyShape(""); setImpression(""); setOccasion(""); setSilhouette("");
         setSku(""); setTags("");
-        setCollectionId("");
         setColorVariants([]);
         setSelectedSystem("us");
     };
@@ -822,21 +813,6 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
                                             <h4 className="font-black text-slate-900 uppercase tracking-widest text-xs">{language === 'ar' ? "التصنيف والذكاء" : "Product Intelligence"}</h4>
                                         </div>
                                         <div className="grid grid-cols-1 gap-6">
-                                            <div className="space-y-2">
-                                                <label className="text-[10px] font-black text-slate-400">{language === 'ar' ? "المجموعة (Collection)" : "COLLECTION"}</label>
-                                                <Select value={collectionId} onValueChange={setCollectionId}>
-                                                    <SelectTrigger className="h-14 rounded-2xl border-slate-100 shadow-sm font-bold bg-white focus:ring-4 focus:ring-blue-50">
-                                                        <SelectValue placeholder={language === 'ar' ? "اختر المجموعة" : "Select Collection"} />
-                                                    </SelectTrigger>
-                                                    <SelectContent className="rounded-2xl shadow-xl border-slate-100">
-                                                        {collections?.map((c: any) => (
-                                                            <SelectItem key={c.id} value={c.id.toString()} className="font-bold py-3">
-                                                                {language === 'ar' ? c.nameAr : c.nameEn}
-                                                            </SelectItem>
-                                                        ))}
-                                                    </SelectContent>
-                                                </Select>
-                                            </div>
                                             <div className="space-y-2">
                                                 <label className="text-[10px] font-black text-slate-400">{language === 'ar' ? "القسم" : "CATEGORY"}</label>
                                                 <Select value={categoryId} onValueChange={setCategoryId}>

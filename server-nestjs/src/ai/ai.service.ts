@@ -292,7 +292,6 @@ export class AiService {
     nameAr: string;
     nameEn: string;
     categoryName?: string;
-    collectionName?: string;
     occasion?: string;
     availability?: string;
     price?: string;
@@ -311,14 +310,12 @@ export class AiService {
                 Your task is to write a poetic, persuasive, and evocative product description for a dress.
                 
                 Product Details:
-                - Name (AR): ${data.nameAr}
-                - Name (EN): ${data.nameEn}
-                - Category: ${data.categoryName || 'Fashion'}
-                - Collection: ${data.collectionName || 'General'}
-                - Occasion: ${data.occasion || 'Special Events'}
-                - Availability: ${data.availability}
-                - Price hint: ${data.price} EGP
-                
+                - الاسم (عربي): ${data.nameAr}
+                - الاسم (انجليزي): ${data.nameEn}
+                - القسم: ${data.categoryName || 'غير محدد'}
+                - المناسبة: ${data.occasion || 'عامة'}
+                - نظام التوفر: ${data.availability || 'بيع'}
+                - السعر: ${data.price || 'حسب الطلب'}SAR               
                 Guidelines:
                 1. Write one description in ARABIC and one in ENGLISH.
                 2. Use rich, evocative language that makes the customer feel the fabric and the elegance.

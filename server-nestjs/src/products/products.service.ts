@@ -28,10 +28,10 @@ export class ProductsService {
     const imageUrls: string[] = [];
 
     const vendorId = data.vendorId ? parseInt(data.vendorId) : NaN;
-    const collectionId = data.collectionId ? parseInt(data.collectionId) : null;
+    const categoryId = data.categoryId ? parseInt(data.categoryId) : null;
 
     console.log(
-      `   - Parsed IDs: Vendor=${vendorId}, Collection=${collectionId}`,
+      `   - Parsed IDs: Vendor=${vendorId}, Category=${categoryId}`,
     );
 
     if (isNaN(vendorId)) {
@@ -41,35 +41,10 @@ export class ProductsService {
       );
     }
 
-    if (!collectionId || isNaN(collectionId)) {
-      console.error('❌ Missing or Invalid Collection ID');
+    if (!categoryId || isNaN(categoryId)) {
+      console.error('❌ Missing or Invalid Category ID');
       throw new BadRequestException(
-        'Please select a collection for this product',
-      );
-    }
-
-    // Verify collection and get categoryId
-    const collection =
-      await this.databaseService.db.query.collections.findFirst({
-        where: and(
-          eq(collections.id, collectionId),
-          eq(collections.vendorId, vendorId),
-        ),
-      });
-
-    if (!collection) {
-      console.error(
-        `❌ Collection not found for ID ${collectionId} and Vendor ${vendorId}`,
-      );
-      throw new BadRequestException(
-        'The selected collection does not exist or does not belong to your store',
-      );
-    }
-
-    if (!collection.categoryId) {
-      console.error('❌ Collection has no category ID');
-      throw new BadRequestException(
-        'Selected collection is misconfigured: it has no category',
+        'Please select a category for this product',
       );
     }
 
@@ -154,8 +129,7 @@ export class ProductsService {
           occasion: data.occasion,
           slug,
           vendorId,
-          collectionId,
-          categoryId: collection.categoryId,
+          categoryId,
           images: imageUrls,
           aiQualifiedImage: aiQualifiedImageUrl,
           discount: parseFloat(data.discount || '0'),
@@ -415,20 +389,7 @@ export class ProductsService {
       );
     }
 
-    if (data.collectionId) {
-      const collectionId = parseInt(data.collectionId);
-      const collection =
-        await this.databaseService.db.query.collections.findFirst({
-          where: eq(collections.id, collectionId),
-        });
-      if (!collection || !collection.categoryId) {
-        throw new BadRequestException(
-          'Invalid collection or collection has no category',
-        );
-      }
-      // Update categoryId to match collection
-      data.categoryId = collection.categoryId;
-    }
+    const categoryId = data.categoryId ? parseInt(data.categoryId) : null;
 
     const colorVariantsArr =
       typeof data.colorVariants === 'string'
@@ -468,6 +429,7 @@ export class ProductsService {
           aiQualifiedImage: aiQualifiedImageUrl,
           stock: totalStock,
           sizes: sizesArr,
+          categoryId: categoryId || product.categoryId,
           vendorPrice: vendorPrice,
           vendorOriginalPrice: parseFloat(
             data.originalPrice || vendorPrice.toString(),
