@@ -125,7 +125,7 @@ export class PixVerseService {
       ? 'Replace the background of the first image with the scene from the second image. Ensure the product in the first image looks natural in the new environment.'
       : 'Change the background to a professional studio setting with soft lighting, high-end fashion style.';
 
-    const response = await fetch(`${this.baseUrl}/video/visionary/generate`, {
+    const response = await fetch(`${this.baseUrl}/visionary/video/generate`, {
       method: 'POST',
       headers: this.getHeaders(),
       body: JSON.stringify({
@@ -139,7 +139,14 @@ export class PixVerseService {
       }),
     });
 
-    const result = await response.json();
+    const responseText = await response.text();
+    let result;
+    try {
+      result = JSON.parse(responseText);
+    } catch (e) {
+      this.logger.error(`Failed to parse PixVerse response as JSON. Raw response: ${responseText.substring(0, 500)}`);
+      throw new Error('Invalid response from PixVerse API');
+    }
 
     if (result.ErrCode !== 0 || (!result.Resp?.video_id && !result.Resp?.taskId)) {
       this.logger.error(
@@ -174,7 +181,7 @@ export class PixVerseService {
 
     this.logger.log(`Creating PixVerse Virtual Try-On task for user ${userId}`);
 
-    const response = await fetch(`${this.baseUrl}/video/visionary/generate`, {
+    const response = await fetch(`${this.baseUrl}/visionary/video/generate`, {
       method: 'POST',
       headers: this.getHeaders(),
       body: JSON.stringify({
@@ -189,7 +196,14 @@ export class PixVerseService {
       }),
     });
 
-    const result = await response.json();
+    const responseText = await response.text();
+    let result;
+    try {
+      result = JSON.parse(responseText);
+    } catch (e) {
+      this.logger.error(`Failed to parse PixVerse response as JSON. Raw response: ${responseText.substring(0, 500)}`);
+      throw new Error('Invalid response from PixVerse API');
+    }
 
     if (result.ErrCode !== 0 || (!result.Resp?.video_id && !result.Resp?.taskId)) {
       this.logger.error(
