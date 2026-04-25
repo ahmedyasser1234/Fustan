@@ -203,9 +203,7 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
                 // Let's assume for now the user uploads the image, it gets saved, then they enhance it.
                 // Or better: we upload it to Cloudinary first.
                 
-                const uploadRes = await api.post('/media/upload', formData, { 
-                    headers: { 'Content-Type': 'multipart/form-data' } 
-                });
+                const uploadRes = await api.post('/media/upload', formData);
                 imageUrlToProcess = uploadRes.data.secure_url;
             }
 
@@ -245,6 +243,9 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
 
     const submitMutation = useMutation({
         mutationFn: async () => {
+            console.log("🚀 Starting Product Submission...");
+            console.log("   - Name AR:", nameAr);
+            console.log("   - Category ID:", categoryId);
 
             if (!aiQualifiedImage && !editingProduct?.aiQualifiedImage) {
                 toast.error(language === 'ar' ? "صورة AI مطلوبة للميزة التجريبية" : "AI-Ready image is required for Try-On feature");
@@ -300,11 +301,16 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
                 };
             });
             formData.append("colorVariants", JSON.stringify(processedVariants));
-
+            console.log("   - FormData prepared. Sending request...");
+            
             if (editingProduct) {
-                return await endpoints.products.update(editingProduct.id, formData);
+                const res = await endpoints.products.update(editingProduct.id, formData);
+                console.log("✅ Update Response:", res);
+                return res;
             }
-            return (await endpoints.products.create(formData)).data;
+            const res = await endpoints.products.create(formData);
+            console.log("✅ Create Response:", res);
+            return res;
         },
         onSuccess: () => {
             toast.success(editingProduct ?

@@ -43,10 +43,10 @@ export const endpoints = {
     },
     products: {
         list: (params?: any) => api.get('/products', { params }).then(res => res.data),
-        create: (data: FormData) => api.post('/products', data, { headers: { 'Content-Type': 'multipart/form-data' } }).then(res => res.data),
+        create: (data: FormData) => api.post('/products', data).then(res => res.data),
         featured: () => api.get('/products/featured').then(res => res.data),
         get: (id: number) => api.get(`/products/${id}`).then(res => res.data),
-        update: (id: number, data: FormData) => api.patch(`/products/${id}`, data, { headers: { 'Content-Type': 'multipart/form-data' } }).then(res => res.data),
+        update: (id: number, data: FormData) => api.patch(`/products/${id}`, data).then(res => res.data),
         delete: (id: number) => api.delete(`/products/${id}`).then(res => res.data),
         getColors: (productId: number) => api.get(`/products/${productId}/colors`).then(res => res.data),
         addColor: (productId: number, data: any) => api.post(`/products/${productId}/colors`, data).then(res => res.data),
@@ -68,8 +68,8 @@ export const endpoints = {
     categories: {
         list: () => api.get('/categories').then(res => res.data),
         get: (id: number) => api.get(`/categories/${id}`).then(res => res.data),
-        create: (data: any) => api.post('/categories', data, { headers: { 'Content-Type': 'multipart/form-data' } }).then(res => res.data),
-        update: (id: number, data: any) => api.patch(`/categories/${id}`, data, { headers: { 'Content-Type': 'multipart/form-data' } }).then(res => res.data),
+        create: (data: any) => api.post('/categories', data).then(res => res.data),
+        update: (id: number, data: any) => api.patch(`/categories/${id}`, data).then(res => res.data),
         delete: (id: number) => api.delete(`/categories/${id}`).then(res => res.data),
     },
     cart: {
@@ -93,7 +93,7 @@ export const endpoints = {
         orders: (params?: any) => api.get('/vendors/orders', { params }).then(res => res.data),
         customers: () => api.get('/vendors/customers').then(res => res.data),
         customerDetails: (id: number) => api.get(`/vendors/customers/${id}`).then(res => res.data),
-        update: (id: number, data: FormData) => api.patch(`/vendors/${id}`, data, { headers: { 'Content-Type': 'multipart/form-data' } }).then(res => res.data),
+        update: (id: number, data: FormData) => api.patch(`/vendors/${id}`, data).then(res => res.data),
     },
     collections: {
         list: (vendorId?: number, categoryId?: number) => api.get('/collections', { params: { vendorId, categoryId } }).then(res => res.data),

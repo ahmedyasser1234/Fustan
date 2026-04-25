@@ -125,16 +125,13 @@ export class PixVerseService {
       ? 'Replace the background of the first image with the scene from the second image. Ensure the product in the first image looks natural in the new environment.'
       : 'Change the background to a professional studio setting with soft lighting, high-end fashion style.';
 
-    const response = await fetch(`${this.baseUrl}/visionary/video/generate`, {
+    const response = await fetch(`${this.baseUrl}/video/img/generate`, {
       method: 'POST',
       headers: this.getHeaders(),
       body: JSON.stringify({
-        model: 'visionary-1.0',
-        input: {
-          image_input: imageInput,
-          prompt: prompt || defaultPrompt,
-          mode: 'background_change',
-        },
+        model: 'c1',
+        img_id: await this.uploadImage(imageUrl),
+        prompt: prompt || defaultPrompt,
         webhook_id: this.webhookId,
       }),
     });

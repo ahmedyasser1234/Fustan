@@ -116,8 +116,8 @@ export class ProductsService {
         ? JSON.parse(data.usagePrices)
         : data.usagePrices;
 
-    return await this.databaseService.db.transaction(async (tx) => {
-      const [newProduct] = await tx
+    const newProduct = await this.databaseService.db.transaction(async (tx) => {
+      const [insertedProduct] = await tx
         .insert(products)
         .values({
           ...data,
@@ -178,7 +178,7 @@ export class ProductsService {
           }
 
           await tx.insert(productColors).values({
-            productId: newProduct.id,
+            productId: insertedProduct.id,
             colorName: variant.colorName,
             colorCode: variant.colorCode,
             images: variantImages,
@@ -188,21 +188,24 @@ export class ProductsService {
         await Promise.all(variantPromises);
       }
 
-      // Handle AI Background Change automatically if AI-Ready image is provided
-      if (aiQualifiedImageUrl) {
-        console.log(
-          `   - ✨ Triggering background PixVerse task for product ${newProduct.id}`,
-        );
-        this.pixVerseService
-          .createBackgroundChangeTask(newProduct.id, aiQualifiedImageUrl)
-          .catch((err) =>
-            console.error('   - ❌ Background PixVerse trigger failed:', err),
-          );
-      }
-
-      console.log('✅ [Products Service] Product Created Successfully');
-      return newProduct;
+      return insertedProduct;
     });
+
+    // Handle AI Background Change automatically if AI-Ready image is provided
+    // We do this AFTER the transaction is committed
+    if (aiQualifiedImageUrl) {
+      console.log(
+        `   - ✨ Triggering background PixVerse task for product ${newProduct.id}`,
+      );
+      this.pixVerseService
+        .createBackgroundChangeTask(newProduct.id, aiQualifiedImageUrl)
+        .catch((err) =>
+          console.error('   - ❌ Background PixVerse trigger failed:', err),
+        );
+    }
+
+    console.log('✅ [Products Service] Create request completed');
+    return newProduct;
   }
 
   async findAll(
