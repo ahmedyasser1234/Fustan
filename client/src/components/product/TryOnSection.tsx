@@ -139,16 +139,21 @@ export function TryOnSection({ productName, productImage, productDescription }: 
 
     const pollForResult = async (imageId: string | number): Promise<string | null> => {
         const maxAttempts = 40; // 40 × 3s = 2 minutes max
+        console.log(`🚀 Starting poll for imageId: ${imageId}`);
         for (let i = 0; i < maxAttempts; i++) {
             await new Promise(r => setTimeout(r, 3000)); // wait 3 seconds
             try {
                 const res = await api.get(`/ai/try-on/result/${imageId}`);
                 const data = res.data;
-                if (data.imageUrl) return data.imageUrl;
+                console.log(`  -> Poll ${i + 1}: Status = ${data.status}`, data);
+                if (data.imageUrl) {
+                    console.log(`✅ Success! Image URL: ${data.imageUrl}`);
+                    return data.imageUrl;
+                }
                 if (data.status === 'failed') throw new Error(data.error || 'Processing failed');
-                // still processing, continue polling
             } catch (err: any) {
-                if (err.response?.status === 404) continue; // not ready yet
+                console.error(`  -> Poll ${i + 1} Error:`, err);
+                if (err.response?.status === 404) continue; 
                 throw err;
             }
         }

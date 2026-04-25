@@ -43,6 +43,7 @@ export class AiController {
 
   @Get('try-on/result/:imageId')
   async getTryOnResult(@Param('imageId') imageId: string) {
+    console.log(`🔍 [AiController] Polling result for imageId: ${imageId}`);
     const result = await this.pixVerseService.getImageResult(imageId);
     
     // Normalize the result for the frontend
