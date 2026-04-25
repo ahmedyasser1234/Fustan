@@ -397,23 +397,51 @@ export class PixVerseService {
 
     const traceId = crypto.randomUUID();
     this.logger.log(`Creating PixVerse Image Template task. TraceId: ${traceId}`);
+    this.logger.log(`  -> img_ids: ${JSON.stringify(imgIds)}, template_id: ${templateId}`);
 
-    const response = await fetch(`${this.appApiUrl}/image/template/generate`, {
-      method: 'POST',
-      headers: this.getHeaders(),
-      body: JSON.stringify({
-        img_ids: imgIds,
-        template_id: templateId,
-      }),
-    });
+    // Add 30s timeout so the request never hangs silently
+    const controller = new AbortController();
+    const timeout = setTimeout(() => {
+      controller.abort();
+    }, 30000);
 
-    const result = await response.json();
+    let response: Response;
+    try {
+      response = await fetch(`${this.appApiUrl}/image/template/generate`, {
+        method: 'POST',
+        headers: this.getHeaders(),
+        body: JSON.stringify({
+          img_ids: imgIds,
+          template_id: templateId,
+        }),
+        signal: controller.signal,
+      });
+      clearTimeout(timeout);
+    } catch (err: any) {
+      clearTimeout(timeout);
+      if (err.name === 'AbortError') {
+        this.logger.error('PixVerse Image Template request TIMED OUT after 30s');
+        throw new Error('PixVerse API timed out after 30 seconds');
+      }
+      throw err;
+    }
+
+    const rawText = await response.text();
+    this.logger.log(`  -> PixVerse response (${response.status}): ${rawText.substring(0, 400)}`);
+
+    let result: any;
+    try {
+      result = JSON.parse(rawText);
+    } catch {
+      throw new Error(`PixVerse returned non-JSON: ${rawText.substring(0, 200)}`);
+    }
 
     if (result.ErrCode !== 0 || !result.Resp?.image_id) {
       this.logger.error(`PixVerse Image Template Failed: ${JSON.stringify(result)}`);
       throw new Error(result.ErrMsg || 'Failed to create image template task');
     }
 
+    this.logger.log(`  -> image_id: ${result.Resp.image_id}`);
     return result.Resp.image_id;
   }
 
