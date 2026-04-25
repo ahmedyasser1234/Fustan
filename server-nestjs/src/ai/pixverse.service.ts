@@ -11,9 +11,9 @@ export class PixVerseService {
   private readonly apiKey: string;
   private readonly webhookSecret: string;
   private readonly webhookId: string;
-  private readonly baseUrl = 'https://api.pixverse.ai./api/v1';
-  private readonly appApiUrl = 'https://app-api.pixverse.ai./openapi/v2';
-  private readonly uploadUrl = 'https://app-api.pixverse.ai./openapi/v2/image/upload';
+  private readonly baseUrl = 'https://app-api.pixverse.ai/openapi/v2';
+  private readonly appApiUrl = 'https://app-api.pixverse.ai/openapi/v2';
+  private readonly uploadUrl = 'https://app-api.pixverse.ai/openapi/v2/image/upload';
 
   constructor(
     private configService: ConfigService,
@@ -24,6 +24,17 @@ export class PixVerseService {
       'PIXVERSE_WEBHOOK_SECRET',
     );
     this.webhookId = this.configService.get<string>('PIXVERSE_WEBHOOK_ID');
+  }
+
+  /**
+   * Helper to generate mandatory headers for PixVerse v2 API.
+   */
+  private getHeaders() {
+    return {
+      'Content-Type': 'application/json',
+      'API-KEY': this.apiKey,
+      'Ai-Trace-Id': crypto.randomUUID(),
+    };
   }
 
   /**
@@ -114,12 +125,9 @@ export class PixVerseService {
       ? 'Replace the background of the first image with the scene from the second image. Ensure the product in the first image looks natural in the new environment.'
       : 'Change the background to a professional studio setting with soft lighting, high-end fashion style.';
 
-    const response = await fetch(`${this.baseUrl}/visionary/create`, {
+    const response = await fetch(`${this.baseUrl}/video/visionary/generate`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${this.apiKey}`,
-      },
+      headers: this.getHeaders(),
       body: JSON.stringify({
         model: 'visionary-1.0',
         input: {
@@ -133,14 +141,14 @@ export class PixVerseService {
 
     const result = await response.json();
 
-    if (response.status !== 200 || !result.data?.taskId) {
+    if (result.ErrCode !== 0 || (!result.Resp?.video_id && !result.Resp?.taskId)) {
       this.logger.error(
         `PixVerse Task Creation Failed: ${JSON.stringify(result)}`,
       );
-      throw new Error(result.msg || 'Failed to create PixVerse task');
+      throw new Error(result.ErrMsg || 'Failed to create PixVerse task');
     }
 
-    const taskId = result.data.taskId;
+    const taskId = result.Resp.video_id || result.Resp.taskId;
 
     // Track task in database
     await this.databaseService.db.insert(schema.aiTasks).values({
@@ -166,12 +174,9 @@ export class PixVerseService {
 
     this.logger.log(`Creating PixVerse Virtual Try-On task for user ${userId}`);
 
-    const response = await fetch(`${this.baseUrl}/visionary/create`, {
+    const response = await fetch(`${this.baseUrl}/video/visionary/generate`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${this.apiKey}`,
-      },
+      headers: this.getHeaders(),
       body: JSON.stringify({
         model: 'visionary-1.0',
         input: {
@@ -186,14 +191,14 @@ export class PixVerseService {
 
     const result = await response.json();
 
-    if (response.status !== 200 || !result.data?.taskId) {
+    if (result.ErrCode !== 0 || (!result.Resp?.video_id && !result.Resp?.taskId)) {
       this.logger.error(
         `PixVerse Task Creation Failed: ${JSON.stringify(result)}`,
       );
-      throw new Error(result.msg || 'Failed to create PixVerse task');
+      throw new Error(result.ErrMsg || 'Failed to create PixVerse task');
     }
 
-    const taskId = result.data.taskId;
+    const taskId = result.Resp.video_id || result.Resp.taskId;
 
     // Track task in database
     await this.databaseService.db.insert(schema.aiTasks).values({
@@ -281,7 +286,7 @@ export class PixVerseService {
       method: 'POST',
       headers: {
         'API-KEY': this.apiKey,
-        'Ai-Trace-Id': traceId,
+        'Ai-Trace-Id': crypto.randomUUID(),
       },
       body: formData,
     });
@@ -345,21 +350,18 @@ export class PixVerseService {
 
     const response = await fetch(`${this.baseUrl}/video/${endpoint}`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${this.apiKey}`,
-      },
+      headers: this.getHeaders(),
       body: JSON.stringify(body),
     });
 
     const result = await response.json();
 
-    if (response.status !== 200 || !result.data?.taskId) {
+    if (result.ErrCode !== 0 || (!result.Resp?.video_id && !result.Resp?.taskId)) {
       this.logger.error(`PixVerse Video Task Failed: ${JSON.stringify(result)}`);
-      throw new Error(result.msg || 'Failed to create PixVerse video task');
+      throw new Error(result.ErrMsg || 'Failed to create PixVerse video task');
     }
 
-    const taskId = result.data.taskId;
+    const taskId = result.Resp.video_id || result.Resp.taskId;
 
     // Track task in database
     await this.databaseService.db.insert(schema.aiTasks).values({
@@ -384,11 +386,7 @@ export class PixVerseService {
 
     const response = await fetch(`${this.appApiUrl}/image/template/generate`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'API-KEY': this.apiKey,
-        'Ai-Trace-Id': traceId,
-      },
+      headers: this.getHeaders(),
       body: JSON.stringify({
         img_ids: imgIds,
         template_id: templateId,
