@@ -11,9 +11,9 @@ export class PixVerseService {
   private readonly apiKey: string;
   private readonly webhookSecret: string;
   private readonly webhookId: string;
-  private readonly baseUrl = 'https://api.pixverse.ai/api/v1';
-  private readonly appApiUrl = 'https://app-api.pixverse.ai/openapi/v2';
-  private readonly uploadUrl = 'https://app-api.pixverse.ai/openapi/v2/image/upload';
+  private readonly baseUrl = 'https://api.pixverse.ai./api/v1';
+  private readonly appApiUrl = 'https://app-api.pixverse.ai./openapi/v2';
+  private readonly uploadUrl = 'https://app-api.pixverse.ai./openapi/v2/image/upload';
 
   constructor(
     private configService: ConfigService,
