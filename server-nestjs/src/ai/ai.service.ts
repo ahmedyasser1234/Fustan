@@ -122,18 +122,20 @@ export class AiService {
       }
     }
 
-    // If we have both images, use the dedicated VTON API
+    // If we have both images, use the Template-based VTON with the ID you found
     if (dressImageUrl && userImageUrl) {
-      const taskId = await this.pixVerseService.createVirtualTryOnTask(
-        data.userId || 0,
-        userImageUrl,
+      const templateId = 322852853601344; // Vogue Walk ID
+      this.logger.log(`Using PixVerse Template VTON with ID: ${templateId}`);
+      
+      const result = await this.performPixVerseTemplateVTON(
         dressImageUrl,
+        userImageUrl,
+        templateId,
       );
+
       return {
-        taskId,
-        provider: 'pixverse-vton',
-        status: 'pending',
-        message: 'Virtual Try-On task created. You will be notified when it is ready.',
+        ...result,
+        message: 'Virtual Try-On task created using Vogue Walk template.',
       };
     }
 
