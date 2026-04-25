@@ -59,7 +59,10 @@ export function ChatProvider({ children }: { children: ReactNode }) {
             // Append /chat namespace manually if the library doesn't handle it automatically with the full URL
             const newSocket = io(`${socketUrl}/chat`, {
                 withCredentials: true,
-                transports: ['websocket', 'polling']
+                transports: ['polling', 'websocket'], // Try polling first for better compatibility
+                reconnection: true,
+                reconnectionAttempts: 10,
+                reconnectionDelay: 2000,
             });
 
             newSocket.on('connect', () => {
@@ -117,7 +120,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
                 setSocket(null);
             };
         }
-    }, [user, queryClient]);
+    }, [user?.id, queryClient]); // Use user?.id for stable dependency
 
     const isUserOnline = useCallback((userId: number) => {
         return onlineUsers.has(userId);

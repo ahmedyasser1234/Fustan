@@ -693,7 +693,7 @@ function AppContent() {
               const response = await endpoints.vendors.list();
               const vendorsList = Array.isArray(response) ? response : (response?.vendors || []);
               const supportVendor = Array.isArray(vendorsList) ? vendorsList.find((v: any) => v.storeNameEn === 'Fustan Support' || v.storeSlug === 'fustan-support') : null;
-              
+
               if (supportVendor) {
                 console.log('✅ Debug: Support vendor found', supportVendor.id);
                 openChat({

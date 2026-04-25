@@ -16,9 +16,8 @@ export function ProtectedRoute({ path, component: Component, role: propRole, red
     const { language } = useLanguage();
     const [, setLocation] = useLocation();
 
-    // Aggressively determine if we are a guest
-    const token = typeof window !== 'undefined' ? localStorage.getItem('app_token') : null;
-    const isGuest = !isAuthenticated && !token;
+    // Use loading state from useAuth to prevent premature redirects
+    const isGuest = !loading && !isAuthenticated;
 
     // Guess role from path if not provided
     const role = propRole || (path.startsWith('/admin') ? 'admin' : (path.startsWith('/vendor') ? 'vendor' : 'customer'));
