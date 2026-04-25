@@ -250,7 +250,7 @@ function Navigation({ isChatHistoryOpen, setIsChatHistoryOpen, unreadCount, syst
                         <>
                           <div className="flex items-center gap-4 p-2 mb-4">
                             <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center text-xl font-bold text-gray-500">
-                              {user.name.charAt(0).toUpperCase()}
+                              {user.name?.charAt(0)?.toUpperCase() || user.email?.charAt(0)?.toUpperCase() || '?'}
                             </div>
                             <div className="overflow-hidden">
                               <p className="font-bold text-gray-900 text-lg truncate">{user.name}</p>
@@ -684,7 +684,7 @@ function AppContent() {
               console.log('🔍 Debug: Finding support vendor...');
               const response = await endpoints.vendors.list();
               const vendorsList = Array.isArray(response) ? response : (response?.vendors || []);
-              const supportVendor = vendorsList.find((v: any) => v.storeNameEn === 'Fustan Support' || v.storeSlug === 'fustan-support');
+              const supportVendor = Array.isArray(vendorsList) ? vendorsList.find((v: any) => v.storeNameEn === 'Fustan Support' || v.storeSlug === 'fustan-support') : null;
               
               if (supportVendor) {
                 console.log('✅ Debug: Support vendor found', supportVendor.id);
