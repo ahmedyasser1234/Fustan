@@ -180,7 +180,8 @@ export class ProductsService {
 
       // Handle Color Variants
       if (Array.isArray(colorVariantsArr) && colorVariantsArr.length > 0) {
-        for (const variant of colorVariantsArr) {
+        console.log(`   - 🎨 Processing ${colorVariantsArr.length} Color Variants...`);
+        const variantPromises = colorVariantsArr.map(async (variant) => {
           const variantImages: string[] = [];
 
           // Filter files belonging to this variant based on fieldname prefix
@@ -208,24 +209,24 @@ export class ProductsService {
             colorCode: variant.colorCode,
             images: variantImages,
           });
-        }
+        });
+
+        await Promise.all(variantPromises);
       }
 
       // Handle AI Background Change automatically if AI-Ready image is provided
       if (aiQualifiedImageUrl) {
-        try {
-          console.log(
-            `   - ✨ Triggering automatic PixVerse background change for product ${newProduct.id}`,
+        console.log(
+          `   - ✨ Triggering background PixVerse task for product ${newProduct.id}`,
+        );
+        this.pixVerseService
+          .createBackgroundChangeTask(newProduct.id, aiQualifiedImageUrl)
+          .catch((err) =>
+            console.error('   - ❌ Background PixVerse trigger failed:', err),
           );
-          await this.pixVerseService.createBackgroundChangeTask(
-            newProduct.id,
-            aiQualifiedImageUrl,
-          );
-        } catch (error) {
-          console.error('   - ❌ Automatic PixVerse trigger failed:', error);
-        }
       }
 
+      console.log('✅ [Products Service] Product Created Successfully');
       return newProduct;
     });
   }

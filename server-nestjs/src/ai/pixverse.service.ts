@@ -418,6 +418,34 @@ export class PixVerseService {
   }
 
   /**
+   * Creates a Video Template Generation task (for effects like Vogue Walk).
+   */
+  async createVideoTemplateTask(imgIds: number[], templateId: number) {
+    if (!this.apiKey) throw new Error('PIXVERSE_API_KEY not configured');
+
+    const traceId = crypto.randomUUID();
+    this.logger.log(`Creating PixVerse Video Template task. TraceId: ${traceId}`);
+
+    const response = await fetch(`${this.appApiUrl}/video/template/generate`, {
+      method: 'POST',
+      headers: this.getHeaders(),
+      body: JSON.stringify({
+        img_ids: imgIds,
+        template_id: templateId,
+      }),
+    });
+
+    const result = await response.json();
+
+    if (result.ErrCode !== 0 || !result.Resp?.video_id) {
+      this.logger.error(`PixVerse Video Template Failed: ${JSON.stringify(result)}`);
+      throw new Error(result.ErrMsg || 'Failed to create video template task');
+    }
+
+    return result.Resp.video_id;
+  }
+
+  /**
    * Gets the result of an image generation task.
    */
   async getImageResult(imageId: string) {

@@ -6,6 +6,20 @@ const api = axios.create({
     withCredentials: true,
 });
 
+// Add a request interceptor to add the auth token to every request
+api.interceptors.request.use(
+    (config) => {
+        const token = localStorage.getItem('app_token');
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+    },
+    (error) => {
+        return Promise.reject(error);
+    }
+);
+
 // Add a response interceptor to handle 401 errors
 api.interceptors.response.use(
     (response) => response,

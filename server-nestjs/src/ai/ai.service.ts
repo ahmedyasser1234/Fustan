@@ -122,10 +122,10 @@ export class AiService {
       }
     }
 
-    // If we have both images, use the Template-based VTON with the ID you found
+    // If we have both images, use the Official Image Template-based VTON
     if (dressImageUrl && userImageUrl) {
-      const templateId = 322852853601344; // Vogue Walk ID
-      this.logger.log(`Using PixVerse Template VTON with ID: ${templateId}`);
+      const templateId = 377378608924544; // Official VTON Image Template ID
+      this.logger.log(`Using Official PixVerse Image Template VTON with ID: ${templateId}`);
       
       const result = await this.performPixVerseTemplateVTON(
         dressImageUrl,
@@ -135,7 +135,7 @@ export class AiService {
 
       return {
         ...result,
-        message: 'Virtual Try-On task created using Vogue Walk template.',
+        message: 'Virtual Try-On task created successfully.',
       };
     }
 
@@ -154,7 +154,7 @@ export class AiService {
       const dressId = await this.pixVerseService.uploadImage(dressImageUrl);
       const userId = await this.pixVerseService.uploadImage(userImageUrl);
 
-      // 2. Create template task
+      // 2. Create template task (Image template for VTON)
       const imageId = await this.pixVerseService.createImageTemplateTask(
         [userId, dressId],
         templateId,
