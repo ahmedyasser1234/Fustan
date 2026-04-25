@@ -108,7 +108,7 @@ export class AiController {
       body.imgUrls.map((url) => this.pixVerseService.uploadImage(url)),
     );
     const imageId = await this.pixVerseService.createImageTemplateTask(
-      imgIds.map((id) => id.toString()),
+      imgIds,
       body.templateId,
     );
     return { imageId, message: 'PixVerse Image Template task created' };
