@@ -142,7 +142,7 @@ export class AiService {
 
       // 2. Create template task
       const imageId = await this.pixVerseService.createImageTemplateTask(
-        [userId.toString(), dressId.toString()],
+        [userId, dressId],
         templateId,
       );
 

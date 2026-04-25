@@ -376,7 +376,7 @@ export class PixVerseService {
   /**
    * Creates an Image Template Generation task.
    */
-  async createImageTemplateTask(imgIds: string[], templateId: number) {
+  async createImageTemplateTask(imgIds: number[], templateId: number) {
     if (!this.apiKey) throw new Error('PIXVERSE_API_KEY not configured');
 
     const traceId = crypto.randomUUID();
