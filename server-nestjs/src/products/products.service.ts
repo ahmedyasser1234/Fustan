@@ -25,186 +25,125 @@ export class ProductsService {
 
   async create(data: any, files: Express.Multer.File[]) {
     console.log('⚙️ [Products Service] Processing Create Product...');
-    const imageUrls: string[] = [];
 
     const vendorId = data.vendorId ? parseInt(data.vendorId) : NaN;
     const categoryId = data.categoryId ? parseInt(data.categoryId) : null;
 
-    console.log(
-      `   - Parsed IDs: Vendor=${vendorId}, Category=${categoryId}`,
-    );
-
     if (isNaN(vendorId)) {
-      console.error('❌ Invalid Vendor ID');
-      throw new BadRequestException(
-        'Invalid vendor ID - ensure you are logged in as a vendor',
-      );
+      throw new BadRequestException('Invalid vendor ID - ensure you are logged in as a vendor');
     }
-
     if (!categoryId || isNaN(categoryId)) {
-      console.error('❌ Missing or Invalid Category ID');
-      throw new BadRequestException(
-        'Please select a category for this product',
-      );
+      throw new BadRequestException('Please select a category for this product');
     }
 
-    // Upload main product images
+    // 1. Parse JSON data
+    const sizesArr = typeof data.sizes === 'string' ? JSON.parse(data.sizes) : data.sizes || [];
+    const tagsArr = typeof data.tags === 'string' ? JSON.parse(data.tags) : data.tags || [];
+    const colorVariantsArr = typeof data.colorVariants === 'string' ? JSON.parse(data.colorVariants) : data.colorVariants || [];
+    const usagePricesArr = typeof data.usagePrices === 'string' ? JSON.parse(data.usagePrices) : data.usagePrices || [];
+
+    // 2. Identify all files for parallel upload
     const mainFiles = files?.filter((f) => f.fieldname === 'images') || [];
-    if (mainFiles.length > 0) {
-      const uploadPromises = mainFiles.map((file) =>
-        this.cloudinary.uploadFile(file),
-      );
-      const results = await Promise.all(uploadPromises);
-
-      results.forEach((result) => {
-        if ('secure_url' in result) {
-          imageUrls.push(result.secure_url);
-        }
-      });
-    }
-
-    // Upload AI-Ready Image
-    let aiQualifiedImageUrl: string | null = null;
     const aiFile = files?.find((f) => f.fieldname === 'aiQualifiedImage');
-    if (aiFile) {
-      const result = await this.cloudinary.uploadFile(aiFile);
-      if ('secure_url' in result) {
-        aiQualifiedImageUrl = result.secure_url;
+    
+    const allVariantFiles: { variantIdx: number; file: Express.Multer.File }[] = [];
+    colorVariantsArr.forEach((variant, idx) => {
+      if (variant.imageFieldPrefix) {
+        const vFiles = files.filter(f => f.fieldname.startsWith(variant.imageFieldPrefix));
+        vFiles.forEach(f => allVariantFiles.push({ variantIdx: idx, file: f }));
       }
-    }
-
-    const productNameEn = data.nameEn || 'unnamed-product';
-    const slug =
-      productNameEn.toLowerCase().replace(/[^a-z0-9]+/g, '-') +
-      '-' +
-      Date.now();
-    const sizesArr =
-      typeof data.sizes === 'string' ? JSON.parse(data.sizes) : data.sizes;
-    const tagsArr =
-      typeof data.tags === 'string' ? JSON.parse(data.tags) : data.tags;
-    const colorVariantsArr =
-      typeof data.colorVariants === 'string'
-        ? JSON.parse(data.colorVariants)
-        : data.colorVariants;
-
-    let totalStock = 0;
-    if (Array.isArray(sizesArr)) {
-      totalStock = sizesArr.reduce(
-        (sum, s) => sum + (parseInt(s.quantity) || 0),
-        0,
-      );
-    }
-
-    // Calculate Price with Commission
-    // Fetch Vendor to get commission rate
-    const vendor = await this.databaseService.db.query.vendors.findFirst({
-      where: eq(vendors.id, vendorId),
     });
 
+    console.log(`   - 📷 Uploading ${mainFiles.length + (aiFile ? 1 : 0) + allVariantFiles.length} files in parallel...`);
+
+    // 3. Perform all uploads simultaneously
+    const uploadResults = await Promise.all([
+      ...mainFiles.map(f => this.cloudinary.uploadFile(f)),
+      ...(aiFile ? [this.cloudinary.uploadFile(aiFile)] : []),
+      ...allVariantFiles.map(vf => this.cloudinary.uploadFile(vf.file))
+    ]);
+
+    // 4. Map results back
+    let pointer = 0;
+    const mainImageUrls = uploadResults.slice(pointer, pointer + mainFiles.length).map(r => (r as any).secure_url);
+    pointer += mainFiles.length;
+
+    let aiQualifiedImageUrl: string | null = null;
+    if (aiFile) {
+      aiQualifiedImageUrl = (uploadResults[pointer] as any).secure_url;
+      pointer += 1;
+    }
+
+    const variantImageMap: Record<number, string[]> = {};
+    const variantResults = uploadResults.slice(pointer);
+    allVariantFiles.forEach((vf, idx) => {
+      if (!variantImageMap[vf.variantIdx]) variantImageMap[vf.variantIdx] = [];
+      const url = (variantResults[idx] as any).secure_url;
+      if (url) variantImageMap[vf.variantIdx].push(url);
+    });
+
+    // 5. Calculate pricing
+    const vendor = await this.databaseService.db.query.vendors.findFirst({ where: eq(vendors.id, vendorId) });
     const commissionRate = vendor?.commissionRate || 15;
     const vendorPrice = parseFloat(data.price || '0');
     const finalPrice = vendorPrice * (1 + commissionRate / 100);
+    const originalPrice = parseFloat(data.originalPrice || data.price || '0') * (1 + commissionRate / 100);
+    const rentPrice = (parseFloat(data.rentPrice || '0')) * (1 + commissionRate / 100);
+    const salePrice = (parseFloat(data.salePrice || '0')) * (1 + commissionRate / 100);
 
-    const rentPrice = parseFloat(data.rentPrice || '0');
-    const salePrice = parseFloat(data.salePrice || '0');
+    const productNameEn = data.nameEn || 'unnamed-product';
+    const slug = productNameEn.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + Date.now();
 
-    const finalRentPrice = rentPrice * (1 + commissionRate / 100);
-    const finalSalePrice = salePrice * (1 + commissionRate / 100);
+    let totalStock = 0;
+    if (Array.isArray(sizesArr)) {
+      totalStock = sizesArr.reduce((sum, s) => sum + (parseInt(s.quantity) || 0), 0);
+    }
 
-    const usagePricesArr =
-      typeof data.usagePrices === 'string'
-        ? JSON.parse(data.usagePrices)
-        : data.usagePrices;
-
+    // 6. Save to Database
     const newProduct = await this.databaseService.db.transaction(async (tx) => {
-      const [insertedProduct] = await tx
-        .insert(products)
-        .values({
-          ...data,
-          sku: data.sku,
-          tags: tagsArr,
-          cutType: data.cutType,
-          bodyShape: data.bodyShape,
-          impression: data.impression,
-          occasion: data.occasion,
-          slug,
-          vendorId,
-          categoryId,
-          images: imageUrls,
-          aiQualifiedImage: aiQualifiedImageUrl,
-          discount: parseFloat(data.discount || '0'),
-          vendorPrice: vendorPrice,
-          vendorOriginalPrice: parseFloat(
-            data.originalPrice || vendorPrice.toString(),
-          ),
-          price: finalPrice,
-          originalPrice:
-            parseFloat(data.originalPrice || vendorPrice.toString()) *
-            (1 + commissionRate / 100),
-          rentPrice: finalRentPrice,
-          salePrice: finalSalePrice,
-          availability: data.availability || 'sale',
-          condition: data.condition || 'new',
-          usageCount: parseInt(data.usageCount || '0'),
-          usagePrices: usagePricesArr,
-          stock: totalStock,
-          sizes: sizesArr,
-        })
-        .returning();
+      const [insertedProduct] = await tx.insert(products).values({
+        ...data,
+        slug,
+        vendorId,
+        categoryId,
+        images: mainImageUrls,
+        aiQualifiedImage: aiQualifiedImageUrl,
+        discount: parseFloat(data.discount || '0'),
+        vendorPrice,
+        vendorOriginalPrice: parseFloat(data.originalPrice || data.price || '0'),
+        price: finalPrice,
+        originalPrice,
+        rentPrice,
+        salePrice,
+        availability: data.availability || 'sale',
+        condition: data.condition || 'new',
+        usageCount: parseInt(data.usageCount || '0'),
+        usagePrices: usagePricesArr,
+        stock: totalStock,
+        sizes: sizesArr,
+      }).returning();
 
-      // Handle Color Variants
-      if (Array.isArray(colorVariantsArr) && colorVariantsArr.length > 0) {
-        console.log(`   - 🎨 Processing ${colorVariantsArr.length} Color Variants...`);
-        const variantPromises = colorVariantsArr.map(async (variant) => {
-          const variantImages: string[] = [];
-
-          // Filter files belonging to this variant based on fieldname prefix
-          if (variant.imageFieldPrefix) {
-            const variantFiles = files.filter((f) =>
-              f.fieldname.startsWith(variant.imageFieldPrefix),
-            );
-            if (variantFiles.length > 0) {
-              const uploadPromises = variantFiles.map((file) =>
-                this.cloudinary.uploadFile(file),
-              );
-              const results = await Promise.all(uploadPromises);
-
-              results.forEach((result) => {
-                if ('secure_url' in result) {
-                  variantImages.push(result.secure_url);
-                }
-              });
-            }
-          }
-
+      if (Array.isArray(colorVariantsArr)) {
+        for (let i = 0; i < colorVariantsArr.length; i++) {
+          const variant = colorVariantsArr[i];
           await tx.insert(productColors).values({
             productId: insertedProduct.id,
             colorName: variant.colorName,
             colorCode: variant.colorCode,
-            images: variantImages,
+            images: variantImageMap[i] || [],
           });
-        });
-
-        await Promise.all(variantPromises);
+        }
       }
-
       return insertedProduct;
     });
 
-    // Handle AI Background Change automatically if AI-Ready image is provided
-    // We do this AFTER the transaction is committed
+    // 7. Background AI Task (Non-blocking)
     if (aiQualifiedImageUrl) {
-      console.log(
-        `   - ✨ Triggering background PixVerse task for product ${newProduct.id}`,
-      );
-      this.pixVerseService
-        .createBackgroundChangeTask(newProduct.id, aiQualifiedImageUrl)
-        .catch((err) =>
-          console.error('   - ❌ Background PixVerse trigger failed:', err),
-        );
+      this.pixVerseService.createBackgroundChangeTask(newProduct.id, aiQualifiedImageUrl)
+        .catch(err => console.error('   - ❌ PixVerse failed:', err));
     }
 
-    console.log('✅ [Products Service] Create request completed');
+    console.log('✅ [Products Service] Create completed for product:', newProduct.id);
     return newProduct;
   }
 

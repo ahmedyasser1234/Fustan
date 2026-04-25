@@ -125,14 +125,17 @@ export class PixVerseService {
       ? 'Replace the background of the first image with the scene from the second image. Ensure the product in the first image looks natural in the new environment.'
       : 'Change the background to a professional studio setting with soft lighting, high-end fashion style.';
 
+    const imgId = await this.uploadImage(imageUrl);
     const response = await fetch(`${this.baseUrl}/video/img/generate`, {
       method: 'POST',
       headers: this.getHeaders(),
       body: JSON.stringify({
         model: 'c1',
-        img_id: await this.uploadImage(imageUrl),
+        img_id: Number(imgId),
         prompt: prompt || defaultPrompt,
-        webhook_id: this.webhookId,
+        duration: 5,
+        quality: 'high',
+        webhook_id: Number(this.webhookId),
       }),
     });
 
