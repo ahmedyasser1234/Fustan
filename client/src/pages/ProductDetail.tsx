@@ -476,7 +476,7 @@ export default function ProductDetail() {
                 )}
               </div>
 
-              <h1 className="text-3xl md:text-5xl lg:text-7xl font-black text-gray-900 mb-6 leading-tight select-none">
+              <h1 className="text-2xl md:text-4xl lg:text-5xl font-black text-gray-900 mb-6 leading-tight select-none">
                 {language === 'ar' ? product.nameAr : product.nameEn}
               </h1>
 
@@ -517,24 +517,26 @@ export default function ProductDetail() {
                       <span className="font-black text-xl">{product.sizes?.length > 0 ? (selectedSize ? (sizeQuantities[selectedSize] || 0) : 0) : quantity}</span>
                       <button onClick={() => { if (product.sizes?.length > 0) { if (selectedSize) handleSizeQtyChange(selectedSize, 1); else toast.error("اختر المقاس"); } else setQuantity(q => q + 1); }} className="w-12 h-full flex items-center justify-center text-gray-400 hover:text-rose-600"><Plus size={18} /></button>
                     </div>
-                    <div className="flex flex-col sm:flex-row gap-4 flex-1">
-                      <Button onClick={handleAddToCartMulti} disabled={addToCartMutation.isPending} className="h-14 md:h-16 rounded-full bg-gray-800 hover:bg-black text-white font-black flex-1">
-                        {t('addToCart')}
-                      </Button>
-                      <Button onClick={() => {
-                        if (!vendor) return;
-                        openChat({
-                          vendorId: vendor.id,
-                          vendorName: language === 'ar' ? vendor.storeNameAr : vendor.storeNameEn,
-                          vendorLogo: vendor.logo,
-                          recipientId: vendor.userId
-                        });
-                      }} className="h-14 md:h-16 rounded-full bg-blue-50 text-blue-600 border border-blue-100 hover:bg-blue-100 font-black flex-1 flex items-center justify-center gap-2">
-                        <MessageSquare size={18} />
-                        {language === 'ar' ? 'تواصل مع المصمم' : 'Contact Designer'}
-                      </Button>
-                      <Button onClick={() => document.getElementById('ai-try-on-section')?.scrollIntoView({ behavior: 'smooth' })} className="h-14 md:h-16 rounded-full bg-gradient-to-r from-purple-600 to-rose-600 text-white font-black flex-1">
-                        {language === 'ar' ? 'تجربة ذكية' : 'Magic Try-On'}
+                    <div className="flex flex-col gap-4 flex-1">
+                      <div className="flex flex-col sm:flex-row gap-4">
+                        <Button onClick={handleAddToCartMulti} disabled={addToCartMutation.isPending} className="h-14 md:h-16 rounded-full bg-gray-800 hover:bg-black text-white font-black flex-1 text-lg">
+                          {t('addToCart')}
+                        </Button>
+                        <Button onClick={() => {
+                          if (!vendor) return;
+                          openChat({
+                            vendorId: vendor.id,
+                            vendorName: language === 'ar' ? vendor.storeNameAr : vendor.storeNameEn,
+                            vendorLogo: vendor.logo,
+                            recipientId: vendor.userId
+                          });
+                        }} className="h-14 md:h-16 rounded-full bg-blue-50 text-blue-600 border border-blue-100 hover:bg-blue-100 font-black flex-1 flex items-center justify-center gap-2 text-base">
+                          <MessageSquare size={18} />
+                          {language === 'ar' ? 'تواصل مع المصمم' : 'Contact Designer'}
+                        </Button>
+                      </div>
+                      <Button onClick={() => document.getElementById('ai-try-on-section')?.scrollIntoView({ behavior: 'smooth' })} className="h-14 md:h-16 rounded-full bg-gradient-to-r from-purple-600 to-rose-600 text-white font-black w-full text-lg shadow-lg shadow-rose-100">
+                        {language === 'ar' ? '✨ تجربة ذكية (AI)' : '✨ Magic Try-On (AI)'}
                       </Button>
                     </div>
                   </div>
