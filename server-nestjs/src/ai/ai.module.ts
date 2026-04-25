@@ -1,0 +1,15 @@
+import { Module } from '@nestjs/common';
+import { AiController } from './ai.controller';
+import { AiService } from './ai.service';
+import { ConfigModule } from '@nestjs/config';
+import { PixVerseService } from './pixverse.service';
+import { PixVerseWebhookController } from './pixverse-webhook.controller';
+import { DatabaseModule } from '../database/database.module';
+
+@Module({
+  imports: [ConfigModule, DatabaseModule],
+  controllers: [AiController, PixVerseWebhookController],
+  providers: [AiService, PixVerseService],
+  exports: [AiService, PixVerseService],
+})
+export class AiModule {}
