@@ -58,11 +58,16 @@ export class AiController {
       if (result.Resp) {
         const { status, url, image_url } = result.Resp;
         // status 2 = Success, 3 = Failed, 1 = Processing
-        if (status === 2 || url || image_url) {
-          return {
-            status: 'completed',
-            imageUrl: url || image_url,
-          };
+        if (status === 2) {
+          const finalUrl = url || image_url;
+          if (finalUrl) {
+            return {
+              status: 'completed',
+              imageUrl: finalUrl,
+            };
+          }
+          // If status is 2 but no URL, it's an edge case, continue pending
+          return { status: 'pending', pixverseStatus: status };
         } else if (status === 3) {
           return {
             status: 'failed',
