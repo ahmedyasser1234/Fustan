@@ -498,6 +498,30 @@ export class PixVerseService {
   }
 
   /**
+   * Gets the result of a video generation task.
+   */
+  async getVideoResult(videoId: string | number) {
+    if (!this.apiKey) throw new Error('PIXVERSE_API_KEY not configured');
+
+    const traceId = crypto.randomUUID();
+    const response = await fetch(`${this.appApiUrl}/video/result/${videoId}`, {
+      method: 'GET',
+      headers: {
+        'API-KEY': this.apiKey,
+        'Ai-Trace-Id': traceId,
+      },
+    });
+
+    const rawText = await response.text();
+    try {
+      return JSON.parse(rawText);
+    } catch {
+      this.logger.error(`PixVerse video result returned non-JSON: ${rawText.substring(0, 200)}`);
+      return { ErrCode: -1, ErrMsg: 'Invalid JSON response from PixVerse' };
+    }
+  }
+
+  /**
    * Gets the account balance.
    */
   async getAccountBalance() {

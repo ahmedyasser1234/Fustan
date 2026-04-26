@@ -57,8 +57,8 @@ export class AiController {
 
       if (result.Resp) {
         const { status, url, image_url } = result.Resp;
-        // status 2 = Success, 3 = Failed, 1 = Processing
-        if (status === 2) {
+        // PixVerse v2 status: 1 = Success, 5 = In Progress, 3/8 = Failed
+        if (status === 1 || status === 2) {
           const finalUrl = url || image_url;
           if (finalUrl) {
             return {
@@ -66,12 +66,14 @@ export class AiController {
               imageUrl: finalUrl,
             };
           }
-          // If status is 2 but no URL, it's an edge case, continue pending
+          // If status is 1 but no URL, it's an edge case, continue pending
           return { status: 'pending', pixverseStatus: status };
-        } else if (status === 3) {
+        } else if (status === 5) {
+          return { status: 'pending', pixverseStatus: status };
+        } else if (status === 3 || status === 8 || status === 7) {
           return {
             status: 'failed',
-            error: 'PixVerse generation failed (Status 3)',
+            error: `PixVerse generation failed (Status ${status})`,
           };
         }
         return { status: 'pending', pixverseStatus: status };
@@ -162,6 +164,43 @@ export class AiController {
   @Post('pixverse/image/result')
   async pixVerseImageResult(@Body() body: { imageId: string }) {
     return this.pixVerseService.getImageResult(body.imageId);
+  }
+
+  @Get('pixverse/video/result/:videoId')
+  async getPixVerseVideoResult(@Param('videoId') videoId: string) {
+    console.log(`🔍 [AiController] Polling video result for videoId: ${videoId}`);
+    try {
+      const result = await this.pixVerseService.getVideoResult(videoId);
+      console.log(`  -> PixVerse Video Result for ${videoId}: ${JSON.stringify(result)}`);
+      
+      if (result.ErrCode !== 0) {
+        return { status: 'failed', error: result.ErrMsg || `PixVerse Error ${result.ErrCode}` };
+      }
+
+      if (result.Resp) {
+        const { status, url, video_url } = result.Resp;
+        // PixVerse v2 status: 1 = Success, 5 = In Progress, 3/8 = Failed
+        if (status === 1 || status === 2) {
+          const finalUrl = url || video_url;
+          if (finalUrl) {
+            return {
+              status: 'completed',
+              videoUrl: finalUrl,
+            };
+          }
+          return { status: 'pending', pixverseStatus: status };
+        } else if (status === 5) {
+          return { status: 'pending', pixverseStatus: status };
+        } else if (status === 3 || status === 8 || status === 7) {
+          return { status: 'failed', error: `PixVerse video generation failed (Status ${status})` };
+        }
+        return { status: 'pending', pixverseStatus: status };
+      }
+      return { status: 'failed', error: 'Invalid response structure from PixVerse' };
+    } catch (err: any) {
+      console.error(`  -> Video Polling Error for ${videoId}:`, err);
+      return { status: 'failed', error: err.message };
+    }
   }
 
   @Post('pixverse/account/balance')
