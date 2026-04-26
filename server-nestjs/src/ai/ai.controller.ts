@@ -44,25 +44,39 @@ export class AiController {
   @Get('try-on/result/:imageId')
   async getTryOnResult(@Param('imageId') imageId: string) {
     console.log(`🔍 [AiController] Polling result for imageId: ${imageId}`);
-    const result = await this.pixVerseService.getImageResult(imageId);
-    
-    // Normalize the result for the frontend
-    if (result.ErrCode === 0 && result.Resp) {
-      if (result.Resp.status === 2) { // 2 usually means success in PixVerse v2
-        return {
-          status: 'completed',
-          imageUrl: result.Resp.url || result.Resp.image_url,
-        };
-      } else if (result.Resp.status === 3) { // 3 usually means failed
-        return {
-          status: 'failed',
-          error: result.Resp.msg || 'PixVerse generation failed',
+    try {
+      const result = await this.pixVerseService.getImageResult(imageId);
+      console.log(`  -> PixVerse Result for ${imageId}: ${JSON.stringify(result)}`);
+      
+      if (result.ErrCode !== 0) {
+        return { 
+          status: 'failed', 
+          error: result.ErrMsg || `PixVerse Error ${result.ErrCode}` 
         };
       }
-      return { status: 'pending' };
+
+      if (result.Resp) {
+        const { status, url, image_url } = result.Resp;
+        // status 2 = Success, 3 = Failed, 1 = Processing
+        if (status === 2 || url || image_url) {
+          return {
+            status: 'completed',
+            imageUrl: url || image_url,
+          };
+        } else if (status === 3) {
+          return {
+            status: 'failed',
+            error: 'PixVerse generation failed (Status 3)',
+          };
+        }
+        return { status: 'pending', pixverseStatus: status };
+      }
+      
+      return { status: 'failed', error: 'Invalid response structure from PixVerse' };
+    } catch (err: any) {
+      console.error(`  -> Polling Error for ${imageId}:`, err);
+      return { status: 'failed', error: err.message };
     }
-    
-    return { status: 'pending' };
   }
 
   @Post('analyze-analytics')
