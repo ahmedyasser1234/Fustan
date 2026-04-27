@@ -11,7 +11,7 @@ export class VirtualTryonService {
   }
 
   async generateTryOn(userImageBase64: string, productImageBase64: string): Promise<Buffer> {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${this.apiKey}`;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${this.apiKey}`;
 
     const cleanUserImage = userImageBase64.replace(/^data:image\/\w+;base64,/, '');
     const cleanProductImage = productImageBase64.replace(/^data:image\/\w+;base64,/, '');
@@ -58,7 +58,7 @@ export class VirtualTryonService {
       }
 
       const result = await response.json() as any;
-      
+
       // The response structure for multimodal image generation:
       // candidates[0].content.parts[i].inlineData.data
       const imagePart = result.candidates?.[0]?.content?.parts?.find(
