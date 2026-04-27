@@ -11,7 +11,7 @@ export class VirtualTryonService {
   }
 
   async generateTryOn(userImageBase64: string, productImageBase64: string): Promise<Buffer> {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-preview-image-generation:generateContent?key=${this.apiKey}`;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image-preview:generateContent?key=${this.apiKey}`;
 
     const cleanUserImage = userImageBase64.replace(/^data:image\/\w+;base64,/, '');
     const cleanProductImage = productImageBase64.replace(/^data:image\/\w+;base64,/, '');
@@ -21,30 +21,20 @@ export class VirtualTryonService {
         {
           parts: [
             {
-              text: "You are a professional virtual try-on AI. Your task is to take the clothing from the 'Product Image' and realistically place it on the person in the 'User Image'. The output should be a single, high-quality, photorealistic image of the person wearing the product. Do not include any text or UI elements. Return the resulting image directly.",
+              text: "You are a professional virtual try-on AI. Take the clothing from the 'Product Image' and realistically place it on the person in the 'User Image'. Output a single high-quality photorealistic image of the person wearing the product. No text or UI elements.",
             },
-            {
-              inlineData: {
-                mimeType: 'image/jpeg',
-                data: cleanUserImage,
-              },
-            },
-            {
-              inlineData: {
-                mimeType: 'image/jpeg',
-                data: cleanProductImage,
-              },
-            },
+            { inlineData: { mimeType: 'image/jpeg', data: cleanUserImage } },
+            { inlineData: { mimeType: 'image/jpeg', data: cleanProductImage } },
           ],
         },
       ],
       generationConfig: {
-        responseModalities: ['IMAGE'],
+        responseModalities: ['IMAGE', 'TEXT'],
       },
     };
 
     try {
-      this.logger.log('Sending request to Gemini 2.0 Flash Preview Image Generation...');
+      this.logger.log('Sending request to Gemini 3.1 Flash Image Preview...');
 
       const response = await fetch(url, {
         method: 'POST',
