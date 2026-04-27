@@ -30,7 +30,7 @@ import { WishlistModule } from './wishlist/wishlist.module';
 import { WalletsModule } from './wallets/wallets.module';
 import { PointsModule } from './points/points.module';
 import { VendorRequestsModule } from './vendor-requests/vendor-requests.module';
-
+import { VirtualTryonModule } from './virtual-tryon/virtual-tryon.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -62,7 +62,7 @@ import { VendorRequestsModule } from './vendor-requests/vendor-requests.module';
     WalletsModule,
     PointsModule,
     VendorRequestsModule,
-
+    VirtualTryonModule,
     ScheduleModule.forRoot(),
     ThrottlerModule.forRoot([
       {
