@@ -68,6 +68,7 @@ export const vendors = pgTable(
     isVerified: boolean('isVerified').default(false),
     isActive: boolean('isActive').default(true),
     commissionRate: doublePrecision('commissionRate').default(15),
+    commissionFixed: doublePrecision('commissionFixed').default(0),
     rating: doublePrecision('rating').default(0),
     totalReviews: integer('totalReviews').default(0),
     shippingCost: doublePrecision('shippingCost').default(0).notNull(),
@@ -165,6 +166,7 @@ export const products = pgTable(
     reviewCount: integer('reviewCount').default(0),
     isActive: boolean('isActive').default(true),
     isFeatured: boolean('isFeatured').default(false),
+    isCustomerListing: boolean('isCustomerListing').default(false),
     aiQualifiedImage: text('aiQualifiedImage'),
     tags: jsonb('tags').$type<string[]>(),
     createdAt: timestamp('createdAt').defaultNow().notNull(),
@@ -662,3 +664,39 @@ export const aiTasks = pgTable(
 
 export type AiTask = typeof aiTasks.$inferSelect;
 export type InsertAiTask = typeof aiTasks.$inferInsert;
+
+// --- AI Subscriptions ---
+
+export const aiPlans = pgTable('aiPlans', {
+  id: serial('id').primaryKey(),
+  nameAr: text('nameAr').notNull(),
+  nameEn: text('nameEn').notNull(),
+  descriptionAr: text('descriptionAr'),
+  descriptionEn: text('descriptionEn'),
+  price: doublePrecision('price').notNull(),
+  credits: integer('credits').notNull(), // Number of AI images allowed
+  durationDays: integer('durationDays').default(30),
+  isActive: boolean('isActive').default(true),
+  createdAt: timestamp('createdAt').defaultNow().notNull(),
+  updatedAt: timestamp('updatedAt').defaultNow().notNull(),
+});
+
+export const userAiCredits = pgTable(
+  'userAiCredits',
+  {
+    id: serial('id').primaryKey(),
+    userId: integer('userId').notNull().unique(),
+    totalCredits: integer('totalCredits').default(0).notNull(),
+    usedCredits: integer('usedCredits').default(0).notNull(),
+    remainingCredits: integer('remainingCredits').default(0).notNull(),
+    expiresAt: timestamp('expiresAt'),
+    updatedAt: timestamp('updatedAt').defaultNow().notNull(),
+  },
+  (table) => ({
+    userIdIdx: index('userAiCredits_userId_idx').on(table.userId),
+  }),
+);
+
+export type AiPlan = typeof aiPlans.$inferSelect;
+export type UserAiCredits = typeof userAiCredits.$inferSelect;
+

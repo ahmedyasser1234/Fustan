@@ -523,7 +523,15 @@ export default function ProductDetail() {
                           {t('addToCart')}
                         </Button>
                         <Button onClick={() => {
-                          if (!vendor) return;
+                          if (!user) {
+                            toast.error(language === 'ar' ? "يرجى تسجيل الدخول للتواصل مع المصمم" : "Please login to contact the designer");
+                            setLocation("/login?redirect=" + window.location.pathname);
+                            return;
+                          }
+                          if (!vendor || !vendor.userId) {
+                            toast.error(language === 'ar' ? "بيانات المصمم غير متوفرة حالياً" : "Designer information is currently unavailable");
+                            return;
+                          }
                           openChat({
                             vendorId: vendor.id,
                             vendorName: language === 'ar' ? vendor.storeNameAr : vendor.storeNameEn,

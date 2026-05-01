@@ -2,6 +2,7 @@ import {
   Injectable,
   NotFoundException,
   BadRequestException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { DatabaseService } from '../database/database.service';
 import {
@@ -10,6 +11,7 @@ import {
   vendors,
   collections,
   productColors,
+  users,
 } from '../database/schema';
 import { eq, and, like, desc, or, SQL } from 'drizzle-orm';
 import { CloudinaryService } from '../media/cloudinary.provider';
@@ -23,49 +25,85 @@ export class ProductsService {
     private readonly pixVerseService: PixVerseService,
   ) {}
 
-  async create(data: any, files: Express.Multer.File[]) {
+  async create(data: any, files: Express.Multer.File[], userId?: number) {
     console.log('⚙️ [Products Service] Processing Create Product...');
 
-    const vendorId = data.vendorId ? parseInt(data.vendorId) : NaN;
+    let vendorId = data.vendorId ? parseInt(data.vendorId) : NaN;
+
+    // Security check: If vendor is creating, ensure they use their own vendorId
+    if (userId) {
+      const user = await this.databaseService.db.query.users.findFirst({
+        where: eq(users.id, userId),
+      });
+      if (user?.role === 'vendor') {
+        const vendor = await this.databaseService.db.query.vendors.findFirst({
+          where: eq(vendors.userId, userId),
+        });
+        if (!vendor) throw new BadRequestException('Vendor profile not found');
+        vendorId = vendor.id;
+      }
+    }
+
     const categoryId = data.categoryId ? parseInt(data.categoryId) : null;
 
     if (isNaN(vendorId)) {
-      throw new BadRequestException('Invalid vendor ID - ensure you are logged in as a vendor');
+      throw new BadRequestException('Invalid vendor ID');
     }
     if (!categoryId || isNaN(categoryId)) {
-      throw new BadRequestException('Please select a category for this product');
+      throw new BadRequestException(
+        'Please select a category for this product',
+      );
     }
 
     // 1. Parse JSON data
-    const sizesArr = typeof data.sizes === 'string' ? JSON.parse(data.sizes) : data.sizes || [];
-    const tagsArr = typeof data.tags === 'string' ? JSON.parse(data.tags) : data.tags || [];
-    const colorVariantsArr = typeof data.colorVariants === 'string' ? JSON.parse(data.colorVariants) : data.colorVariants || [];
-    const usagePricesArr = typeof data.usagePrices === 'string' ? JSON.parse(data.usagePrices) : data.usagePrices || [];
+    const sizesArr =
+      typeof data.sizes === 'string'
+        ? JSON.parse(data.sizes)
+        : data.sizes || [];
+    const tagsArr =
+      typeof data.tags === 'string' ? JSON.parse(data.tags) : data.tags || [];
+    const colorVariantsArr =
+      typeof data.colorVariants === 'string'
+        ? JSON.parse(data.colorVariants)
+        : data.colorVariants || [];
+    const usagePricesArr =
+      typeof data.usagePrices === 'string'
+        ? JSON.parse(data.usagePrices)
+        : data.usagePrices || [];
 
     // 2. Identify all files for parallel upload
     const mainFiles = files?.filter((f) => f.fieldname === 'images') || [];
     const aiFile = files?.find((f) => f.fieldname === 'aiQualifiedImage');
-    
-    const allVariantFiles: { variantIdx: number; file: Express.Multer.File }[] = [];
+
+    const allVariantFiles: { variantIdx: number; file: Express.Multer.File }[] =
+      [];
     colorVariantsArr.forEach((variant, idx) => {
       if (variant.imageFieldPrefix) {
-        const vFiles = files.filter(f => f.fieldname.startsWith(variant.imageFieldPrefix));
-        vFiles.forEach(f => allVariantFiles.push({ variantIdx: idx, file: f }));
+        const vFiles = files.filter((f) =>
+          f.fieldname.startsWith(variant.imageFieldPrefix),
+        );
+        vFiles.forEach((f) =>
+          allVariantFiles.push({ variantIdx: idx, file: f }),
+        );
       }
     });
 
-    console.log(`   - 📷 Uploading ${mainFiles.length + (aiFile ? 1 : 0) + allVariantFiles.length} files in parallel...`);
+    console.log(
+      `   - 📷 Uploading ${mainFiles.length + (aiFile ? 1 : 0) + allVariantFiles.length} files in parallel...`,
+    );
 
     // 3. Perform all uploads simultaneously
     const uploadResults = await Promise.all([
-      ...mainFiles.map(f => this.cloudinary.uploadFile(f)),
+      ...mainFiles.map((f) => this.cloudinary.uploadFile(f)),
       ...(aiFile ? [this.cloudinary.uploadFile(aiFile)] : []),
-      ...allVariantFiles.map(vf => this.cloudinary.uploadFile(vf.file))
+      ...allVariantFiles.map((vf) => this.cloudinary.uploadFile(vf.file)),
     ]);
 
     // 4. Map results back
     let pointer = 0;
-    const mainImageUrls = uploadResults.slice(pointer, pointer + mainFiles.length).map(r => (r as any).secure_url);
+    const mainImageUrls = uploadResults
+      .slice(pointer, pointer + mainFiles.length)
+      .map((r) => (r as any).secure_url);
     pointer += mainFiles.length;
 
     let aiQualifiedImageUrl: string | null = null;
@@ -83,45 +121,72 @@ export class ProductsService {
     });
 
     // 5. Calculate pricing
-    const vendor = await this.databaseService.db.query.vendors.findFirst({ where: eq(vendors.id, vendorId) });
+    const vendor = await this.databaseService.db.query.vendors.findFirst({
+      where: eq(vendors.id, vendorId),
+    });
     const commissionRate = vendor?.commissionRate || 15;
+    const commissionFixed = vendor?.commissionFixed || 0;
+
     const vendorPrice = parseFloat(data.price || '0');
-    const finalPrice = vendorPrice * (1 + commissionRate / 100);
-    const originalPrice = parseFloat(data.originalPrice || data.price || '0') * (1 + commissionRate / 100);
-    const rentPrice = (parseFloat(data.rentPrice || '0')) * (1 + commissionRate / 100);
-    const salePrice = (parseFloat(data.salePrice || '0')) * (1 + commissionRate / 100);
+    // Final Price = (Vendor Price * (1 + Commission%)) + Fixed Commission
+    const finalPrice =
+      vendorPrice * (1 + commissionRate / 100) + commissionFixed;
+
+    const vendorOriginalPrice = parseFloat(
+      data.originalPrice || data.price || '0',
+    );
+    const originalPrice =
+      vendorOriginalPrice * (1 + commissionRate / 100) + commissionFixed;
+
+    const rentPrice =
+      parseFloat(data.rentPrice || '0') * (1 + commissionRate / 100) +
+      (data.rentPrice ? commissionFixed : 0);
+    const salePrice =
+      parseFloat(data.salePrice || '0') * (1 + commissionRate / 100) +
+      (data.salePrice ? commissionFixed : 0);
 
     const productNameEn = data.nameEn || 'unnamed-product';
-    const slug = productNameEn.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + Date.now();
+    const slug =
+      productNameEn.toLowerCase().replace(/[^a-z0-9]+/g, '-') +
+      '-' +
+      Date.now();
 
     let totalStock = 0;
     if (Array.isArray(sizesArr)) {
-      totalStock = sizesArr.reduce((sum, s) => sum + (parseInt(s.quantity) || 0), 0);
+      totalStock = sizesArr.reduce(
+        (sum, s) => sum + (parseInt(s.quantity) || 0),
+        0,
+      );
     }
 
     // 6. Save to Database
     const newProduct = await this.databaseService.db.transaction(async (tx) => {
-      const [insertedProduct] = await tx.insert(products).values({
-        ...data,
-        slug,
-        vendorId,
-        categoryId,
-        images: mainImageUrls,
-        aiQualifiedImage: aiQualifiedImageUrl,
-        discount: parseFloat(data.discount || '0'),
-        vendorPrice,
-        vendorOriginalPrice: parseFloat(data.originalPrice || data.price || '0'),
-        price: finalPrice,
-        originalPrice,
-        rentPrice,
-        salePrice,
-        availability: data.availability || 'sale',
-        condition: data.condition || 'new',
-        usageCount: parseInt(data.usageCount || '0'),
-        usagePrices: usagePricesArr,
-        stock: totalStock,
-        sizes: sizesArr,
-      }).returning();
+      const [insertedProduct] = await tx
+        .insert(products)
+        .values({
+          ...data,
+          slug,
+          vendorId,
+          categoryId,
+          images: mainImageUrls,
+          aiQualifiedImage: aiQualifiedImageUrl,
+          discount: parseFloat(data.discount || '0'),
+          vendorPrice,
+          vendorOriginalPrice: parseFloat(
+            data.originalPrice || data.price || '0',
+          ),
+          price: finalPrice,
+          originalPrice,
+          rentPrice,
+          salePrice,
+          availability: data.availability || 'sale',
+          condition: data.condition || 'new',
+          usageCount: parseInt(data.usageCount || '0'),
+          usagePrices: usagePricesArr,
+          stock: totalStock,
+          sizes: sizesArr,
+        })
+        .returning();
 
       if (Array.isArray(colorVariantsArr)) {
         for (let i = 0; i < colorVariantsArr.length; i++) {
@@ -139,12 +204,68 @@ export class ProductsService {
 
     // 7. Background AI Task (Non-blocking)
     if (aiQualifiedImageUrl) {
-      this.pixVerseService.createBackgroundChangeTask(newProduct.id, aiQualifiedImageUrl)
-        .catch(err => console.error('   - ❌ PixVerse failed:', err));
+      this.pixVerseService
+        .createBackgroundChangeTask(newProduct.id, aiQualifiedImageUrl)
+        .catch((err) => console.error('   - ❌ PixVerse failed:', err));
     }
 
-    console.log('✅ [Products Service] Create completed for product:', newProduct.id);
+    console.log(
+      '✅ [Products Service] Create completed for product:',
+      newProduct.id,
+    );
     return newProduct;
+  }
+
+  async createCustomerListing(
+    userId: number,
+    data: any,
+    files: Express.Multer.File[],
+  ) {
+    console.log(
+      `⚙️ [Products Service] Processing Customer Listing for User ID: ${userId}`,
+    );
+
+    // 1. Find or Create Vendor Profile for the Customer
+    let vendor = await this.databaseService.db.query.vendors.findFirst({
+      where: eq(vendors.userId, userId),
+    });
+
+    if (!vendor) {
+      console.log('   - Creating Lite Vendor Profile for Customer...');
+      const user = await this.databaseService.db.query.users.findFirst({
+        where: eq(users.id, userId),
+      });
+
+      if (!user) throw new NotFoundException('User not found');
+
+      const storeSlug = `${user.name?.toLowerCase().replace(/[^a-z0-9]+/g, '-') || 'user'}-${userId}-${Date.now()}`;
+
+      const [newVendor] = await this.databaseService.db
+        .insert(vendors)
+        .values({
+          userId: userId,
+          storeNameAr: user.name || 'متجر عميل',
+          storeNameEn: user.name || 'Customer Store',
+          storeSlug,
+          email: user.email || '',
+          status: 'approved',
+          isActive: true,
+          commissionRate: 20, // Default higher commission for customers
+          commissionFixed: 0,
+        })
+        .returning();
+      vendor = newVendor;
+    }
+
+    // 2. Prepare data for regular create
+    const productData = {
+      ...data,
+      vendorId: vendor.id,
+      isCustomerListing: true,
+      isActive: true, // Show immediately
+    };
+
+    return this.create(productData, files);
   }
 
   async findAll(
@@ -154,6 +275,7 @@ export class ProductsService {
     offset = 0,
     vendorId?: number,
     collectionId?: number,
+    isCustomerListing?: boolean,
   ) {
     const conditions: SQL[] = [];
 
@@ -179,6 +301,10 @@ export class ProductsService {
 
     if (collectionId) {
       conditions.push(eq(products.collectionId, collectionId));
+    }
+
+    if (isCustomerListing !== undefined) {
+      conditions.push(eq(products.isCustomerListing, isCustomerListing));
     }
 
     const foundProducts = await this.databaseService.db
@@ -238,7 +364,9 @@ export class ProductsService {
           rating: vendors.rating,
           totalReviews: vendors.totalReviews,
           shippingCost: vendors.shippingCost,
-          commissionRate: vendors.commissionRate, // Include commissionRate
+          commissionRate: vendors.commissionRate,
+          commissionFixed: vendors.commissionFixed,
+          userId: vendors.userId,
         },
         collection: {
           id: collections.id,
@@ -289,9 +417,31 @@ export class ProductsService {
       .orderBy(desc(categories.displayOrder));
   }
 
-  async update(id: number, data: any, files?: Express.Multer.File[]) {
+  async update(
+    id: number,
+    data: any,
+    files?: Express.Multer.File[],
+    userId?: number,
+  ) {
     const result = await this.findOne(id);
     const product = result.product;
+
+    // Security check: If vendor is updating, ensure they own the product
+    if (userId) {
+      const user = await this.databaseService.db.query.users.findFirst({
+        where: eq(users.id, userId),
+      });
+      if (user?.role === 'vendor') {
+        const vendor = await this.databaseService.db.query.vendors.findFirst({
+          where: eq(vendors.userId, userId),
+        });
+        if (!vendor || product.vendorId !== vendor.id) {
+          throw new UnauthorizedException(
+            'You are not authorized to update this product',
+          );
+        }
+      }
+    }
     const vendor = result.vendor; // Get vendor from findOne
 
     let imageUrls = product.images || [];
@@ -340,16 +490,23 @@ export class ProductsService {
 
     // Calculate Price with Commission
     const commissionRate = vendor?.commissionRate || 15;
+    const commissionFixed = vendor?.commissionFixed || 0;
+
     const vendorPrice = parseFloat(
       data.price || product.vendorPrice?.toString() || '0',
     );
-    const finalPrice = vendorPrice * (1 + commissionRate / 100);
+    const finalPrice =
+      vendorPrice * (1 + commissionRate / 100) + commissionFixed;
 
     const rentPrice = parseFloat(data.rentPrice || '0');
     const salePrice = parseFloat(data.salePrice || '0');
 
-    const finalRentPrice = rentPrice * (1 + commissionRate / 100);
-    const finalSalePrice = salePrice * (1 + commissionRate / 100);
+    const finalRentPrice =
+      rentPrice * (1 + commissionRate / 100) +
+      (data.rentPrice ? commissionFixed : 0);
+    const finalSalePrice =
+      salePrice * (1 + commissionRate / 100) +
+      (data.salePrice ? commissionFixed : 0);
 
     const usagePricesArr =
       typeof data.usagePrices === 'string'
@@ -477,7 +634,27 @@ export class ProductsService {
     });
   }
 
-  async remove(id: number) {
+  async remove(id: number, userId?: number) {
+    const result = await this.findOne(id);
+    const product = result.product;
+
+    // Security check: Ownership validation
+    if (userId) {
+      const user = await this.databaseService.db.query.users.findFirst({
+        where: eq(users.id, userId),
+      });
+      if (user?.role === 'vendor') {
+        const vendor = await this.databaseService.db.query.vendors.findFirst({
+          where: eq(vendors.userId, userId),
+        });
+        if (!vendor || product.vendorId !== vendor.id) {
+          throw new UnauthorizedException(
+            'You are not authorized to delete this product',
+          );
+        }
+      }
+    }
+
     await this.databaseService.db.delete(products).where(eq(products.id, id));
     return { success: true };
   }

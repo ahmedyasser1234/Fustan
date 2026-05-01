@@ -25,22 +25,30 @@ async function cleanup() {
     console.log(`📊 Found ${admins.length} admin accounts.`);
 
     if (admins.length > 1) {
-      console.log('⚠️ Multiple admin accounts found. Identifying duplicates...');
-      
+      console.log(
+        '⚠️ Multiple admin accounts found. Identifying duplicates...',
+      );
+
       // Keep the one with the lowest ID (usually the first created) or one that is actually used.
       // For safety, we keep the one that matches a specific email if provided, or just id=1.
-      const primaryAdmin = admins.find(a => a.id === 1) || admins[0];
-      
-      console.log(`✅ Keeping Admin: ${primaryAdmin.name} (ID: ${primaryAdmin.id})`);
+      const primaryAdmin = admins.find((a) => a.id === 1) || admins[0];
+
+      console.log(
+        `✅ Keeping Admin: ${primaryAdmin.name} (ID: ${primaryAdmin.id})`,
+      );
 
       for (const admin of admins) {
         if (admin.id !== primaryAdmin.id) {
-          console.log(`🗑️ Removing duplicate admin: ${admin.name} (ID: ${admin.id})`);
+          console.log(
+            `🗑️ Removing duplicate admin: ${admin.name} (ID: ${admin.id})`,
+          );
           await db.delete(schema.users).where(eq(schema.users.id, admin.id));
         }
       }
     } else if (admins.length === 1) {
-      console.log('✅ Only one admin account exists. No cleanup needed for admins.');
+      console.log(
+        '✅ Only one admin account exists. No cleanup needed for admins.',
+      );
     } else {
       console.log('❓ No admin account found. You might need to create one.');
     }
@@ -52,7 +60,9 @@ async function cleanup() {
     });
 
     if (userOne && userOne.role !== 'admin') {
-      console.log(`⚠️ User with ID 1 exists but is not an admin (Role: ${userOne.role}).`);
+      console.log(
+        `⚠️ User with ID 1 exists but is not an admin (Role: ${userOne.role}).`,
+      );
       // Optional: Update to customer or remove if it was a dev account
     }
 

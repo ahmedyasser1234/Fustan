@@ -125,8 +125,10 @@ export class AiService {
     // If we have both images, use the Official Image Template-based VTON
     if (dressImageUrl && userImageUrl) {
       const templateId = 377378608924544; // Official VTON Image Template ID
-      this.logger.log(`Using Official PixVerse Image Template VTON with ID: ${templateId}`);
-      
+      this.logger.log(
+        `Using Official PixVerse Image Template VTON with ID: ${templateId}`,
+      );
+
       const result = await this.performPixVerseTemplateVTON(
         dressImageUrl,
         userImageUrl,
@@ -139,7 +141,9 @@ export class AiService {
       };
     }
 
-    throw new Error('Both product image and user image are required for PixVerse VTON.');
+    throw new Error(
+      'Both product image and user image are required for PixVerse VTON.',
+    );
   }
 
   private async performPixVerseTemplateVTON(
@@ -148,7 +152,9 @@ export class AiService {
     templateId: number,
   ) {
     try {
-      this.logger.log(`Starting PixVerse Image Template VTON with template ${templateId}...`);
+      this.logger.log(
+        `Starting PixVerse Image Template VTON with template ${templateId}...`,
+      );
 
       // Template 377378608924544 accepts only 1 image - upload user image only
       const userId = await this.pixVerseService.uploadImage(userImageUrl);
@@ -163,7 +169,8 @@ export class AiService {
         imageId,
         provider: 'pixverse-image-template',
         status: 'pending',
-        message: 'PixVerse Image Template task created. Poll for result using imageId.',
+        message:
+          'PixVerse Image Template task created. Poll for result using imageId.',
       };
     } catch (error) {
       this.logger.error('PixVerse Template VTON failed:', error);
@@ -173,7 +180,9 @@ export class AiService {
 
   private async performMeasurementBasedVTON(data: any, dressImageUrl?: string) {
     // This method is now deprecated as fallbacks are removed.
-    throw new Error('Measurement-based generation is no longer supported. Please provide a user image for PixVerse VTON.');
+    throw new Error(
+      'Measurement-based generation is no longer supported. Please provide a user image for PixVerse VTON.',
+    );
   }
 
   private async getMockImage() {

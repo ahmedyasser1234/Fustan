@@ -1,7 +1,7 @@
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ShoppingCart, Star, Eye } from "lucide-react";
+import { ShoppingCart, Star, Eye, Users } from "lucide-react";
 import { motion } from "framer-motion";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { endpoints } from "@/lib/api";
@@ -65,10 +65,25 @@ export function ProductCard({ product, index = 0, loading = false, onQuickView }
                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                         />
                         {product.discount > 0 && (
-                            <Badge className={`absolute top-4 ${language === 'ar' ? 'right-4' : 'left-4'} bg-white/90 backdrop-blur-md text-rose-600 border-none px-3 py-1 rounded-full font-black text-sm shadow-sm`}>
+                            <Badge className={`absolute top-4 ${language === 'ar' ? 'right-4' : 'left-4'} bg-white/90 backdrop-blur-md text-rose-600 border-none px-3 py-1 rounded-full font-black text-sm shadow-sm z-10`}>
                                 -{product.discount}%
                             </Badge>
                         )}
+
+                        {/* Condition & Source Badges */}
+                        <div className={`absolute bottom-4 ${language === 'ar' ? 'left-4' : 'right-4'} flex flex-col gap-2 items-end z-10`}>
+                            {product.condition === 'used' && (
+                                <Badge className="bg-amber-500/90 backdrop-blur-md text-white border-none px-3 py-1 rounded-full font-black text-[10px] uppercase shadow-lg">
+                                    {t('used')}
+                                </Badge>
+                            )}
+                            {product.isCustomerListing && (
+                                <Badge className="bg-purple-600/90 backdrop-blur-md text-white border-none px-3 py-1 rounded-full font-black text-[10px] uppercase shadow-lg flex items-center gap-1">
+                                    <Users size={10} />
+                                    {language === 'ar' ? 'من المجتمع' : 'Community'}
+                                </Badge>
+                            )}
+                        </div>
 
                         {/* Overlay Actions */}
                         <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">

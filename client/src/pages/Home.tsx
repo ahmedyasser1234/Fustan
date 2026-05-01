@@ -124,6 +124,12 @@ export default function Home() {
     queryFn: () => endpoints.content.list('social_feed')
   });
 
+  // Fetch Customer Listings (Marketplace)
+  const { data: communityProducts, isLoading: communityLoading } = useQuery({
+    queryKey: ['products', 'community'],
+    queryFn: () => endpoints.products.list({ isCustomerListing: true, limit: 6 })
+  });
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setCurrentVideo((prev) => (prev + 1) % heroSlides.length);
@@ -595,6 +601,46 @@ export default function Home() {
 
       {/* Flash Sales Section */}
       <FlashSalesSection onQuickView={setQuickViewProduct} />
+
+      {/* Community Marketplace Section */}
+      <section className="py-24 bg-[#fafafa] relative overflow-hidden">
+        <div className="container mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <span className="text-2xl text-[oklch(58.6%_0.253_17.585)] mb-2 block font-bold">
+              {language === 'ar' ? "من خزانة عميلاتنا" : "From Our Community"}
+            </span>
+            <h2 className="text-4xl md:text-5xl font-black text-gray-900">
+              {language === 'ar' ? "فساتين معروضة للبيع" : "Pre-loved & Exclusive"}
+            </h2>
+            <p className="mt-4 text-slate-500 font-bold max-w-2xl mx-auto text-lg">
+              {language === 'ar' 
+                ? "اكتشفي تشكيلة فريدة من الفساتين المعروضة مباشرة من عميلاتنا بأسعار مميزة" 
+                : "Discover a unique collection of dresses listed directly by our customers at special prices"}
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-10">
+            {(communityLoading ? Array(4).fill({}) : (communityProducts as any[] || [])).map((product: any, i: number) => (
+              <div key={i}>
+                <ProductCard product={product} loading={communityLoading} onQuickView={setQuickViewProduct} />
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-16 text-center">
+            <Link href="/sell-dress">
+              <Button size="lg" className="h-16 px-12 rounded-full bg-slate-900 hover:bg-black text-white font-black text-xl shadow-2xl transition-all hover:scale-105 active:scale-95">
+                {language === 'ar' ? "اعرضي فستانك للبيع الآن" : "Sell Your Dress Now"}
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
 
 
 

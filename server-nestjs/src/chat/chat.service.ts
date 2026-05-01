@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { DatabaseService } from '../database/database.service';
 import { conversations, messages, users, vendors } from '../database/schema';
 import { eq, and, or, desc, asc, inArray, sql } from 'drizzle-orm';
@@ -124,7 +128,33 @@ export class ChatService {
   }
 
   async getMessages(conversationId: number, userId: number) {
-    // Validate access? (Skipping strictly for MVP speed, but should check if user part of chat)
+    // 1. Verify user is part of this conversation
+    const [conv] = await this.databaseService.db
+      .select({
+        customerId: conversations.customerId,
+        vendorId: conversations.vendorId,
+      })
+      .from(conversations)
+      .where(eq(conversations.id, conversationId))
+      .limit(1);
+
+    if (!conv) throw new NotFoundException('Conversation not found');
+
+    // Find vendor profile of the current user
+    const [vendor] = await this.databaseService.db
+      .select({ id: vendors.id })
+      .from(vendors)
+      .where(eq(vendors.userId, userId))
+      .limit(1);
+
+    const isParticipant =
+      conv.customerId === userId || (vendor && conv.vendorId === vendor.id);
+
+    if (!isParticipant) {
+      throw new UnauthorizedException(
+        'You are not a participant in this conversation',
+      );
+    }
 
     return await this.databaseService.db
       .select()

@@ -21,6 +21,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../common/decorators/roles.decorator';
 import { FileValidationPipe } from '../common/pipes/file-validation.pipe';
+import { User } from '../common/decorators/user.decorator';
 
 @Controller('products')
 export class ProductsController {
@@ -31,14 +32,27 @@ export class ProductsController {
   @Roles('admin', 'vendor')
   @UseInterceptors(AnyFilesInterceptor())
   async create(
+    @User('id') userId: number,
     @Body() body: any,
     @UploadedFiles(new FileValidationPipe(50 * 1024 * 1024))
     files: Express.Multer.File[],
   ) {
-    console.log('📥 [Products Controller] Create Request Received');
-    console.log('   - Body:', JSON.stringify(body, null, 2));
-    console.log('   - Files Count:', files?.length || 0);
-    return this.productsService.create(body, files);
+    return this.productsService.create(body, files, userId);
+  }
+
+  @Post('customer-listing')
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(AnyFilesInterceptor())
+  async createCustomerListing(
+    @User('id') userId: number,
+    @Body() body: any,
+    @UploadedFiles(new FileValidationPipe(50 * 1024 * 1024))
+    files: Express.Multer.File[],
+  ) {
+    console.log(
+      `📥 [Products Controller] Customer Listing Request from User: ${userId}`,
+    );
+    return this.productsService.createCustomerListing(userId, body, files);
   }
 
   @Get()
@@ -47,6 +61,7 @@ export class ProductsController {
     @Query('categoryId') categoryId?: string,
     @Query('vendorId') vendorId?: string,
     @Query('collectionId') collectionId?: string,
+    @Query('isCustomerListing') isCustomerListing?: string,
     @Query('limit') limit?: string,
     @Query('offset') offset?: string,
   ) {
@@ -57,6 +72,11 @@ export class ProductsController {
       offset ? parseInt(offset) : 0,
       vendorId ? parseInt(vendorId) : undefined,
       collectionId ? parseInt(collectionId) : undefined,
+      isCustomerListing === 'true'
+        ? true
+        : isCustomerListing === 'false'
+          ? false
+          : undefined,
     );
   }
 
@@ -80,19 +100,20 @@ export class ProductsController {
   @Roles('admin', 'vendor')
   @UseInterceptors(AnyFilesInterceptor())
   async update(
+    @User('id') userId: number,
     @Param('id', ParseIntPipe) id: number,
     @Body() body: any,
     @UploadedFiles(new FileValidationPipe(10 * 1024 * 1024))
     files: Express.Multer.File[],
   ) {
-    return this.productsService.update(id, body, files);
+    return this.productsService.update(id, body, files, userId);
   }
 
-  @Delete(':id')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('admin', 'vendor')
-  async remove(@Param('id', ParseIntPipe) id: number) {
-    return this.productsService.remove(id);
+  async remove(
+    @User('id') userId: number,
+    @Param('id', ParseIntPipe) id: number,
+  ) {
+    return this.productsService.remove(id, userId);
   }
 
   // ==================== Product Colors Endpoints ====================

@@ -27,6 +27,9 @@ export function useAuth(options?: UseAuthOptions) {
     const handleUnauthorized = () => {
       queryClient.setQueryData(['auth', 'me'], null);
       queryClient.invalidateQueries({ queryKey: ['auth', 'me'] });
+      if (typeof window !== "undefined") {
+        localStorage.removeItem('app_token');
+      }
     };
     window.addEventListener('fustan-unauthorized', handleUnauthorized);
     return () => window.removeEventListener('fustan-unauthorized', handleUnauthorized);
@@ -52,6 +55,7 @@ export function useAuth(options?: UseAuthOptions) {
       // 3. Clear all queries and redirect to home
       queryClient.clear();
       if (typeof window !== "undefined") {
+        localStorage.removeItem('app_token');
         window.location.href = "/";
       }
     }

@@ -40,6 +40,10 @@ export class VendorsController {
   async findAll() {
     return this.vendorsService.findAll();
   }
+  @Get('support')
+  async getSupport() {
+    return this.vendorsService.getSupportVendor();
+  }
 
   @Get('dashboard')
   @UseGuards(JwtAuthGuard)
@@ -114,6 +118,7 @@ export class VendorsController {
     ]),
   )
   async update(
+    @User('id') userId: number,
     @Param('id') id: string,
     @Body() updateVendorDto: any,
     @UploadedFiles()
@@ -124,6 +129,6 @@ export class VendorsController {
       gallery?: Express.Multer.File[];
     },
   ) {
-    return this.vendorsService.update(+id, updateVendorDto, files);
+    return this.vendorsService.update(+id, updateVendorDto, files, userId);
   }
 }

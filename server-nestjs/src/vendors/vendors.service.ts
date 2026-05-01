@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { DatabaseService } from '../database/database.service';
 import {
   vendors,
@@ -35,6 +39,47 @@ export class VendorsService {
       .limit(1);
 
     return result.length > 0 ? result[0] : null;
+  }
+
+  async getSupportVendor() {
+    let [supportVendor] = await this.databaseService.db
+      .select()
+      .from(vendors)
+      .where(eq(vendors.storeNameEn, 'Fustan Support'))
+      .limit(1);
+
+    if (!supportVendor) {
+      // Find an admin user to bind it to
+      const [admin] = await this.databaseService.db
+        .select()
+        .from(users)
+        .where(eq(users.role, 'admin'))
+        .limit(1);
+
+      if (admin) {
+        const [newVendor] = await this.databaseService.db
+          .insert(vendors)
+          .values({
+            userId: admin.id,
+            storeNameAr: 'دعم فستان',
+            storeNameEn: 'Fustan Support',
+            storeSlug: 'fustan-support',
+            email: 'support@fustan.com',
+            phone: '0000000000',
+            descriptionAr: 'الدعم الفني للمنصة',
+            descriptionEn: 'Platform Technical Support',
+            logo: 'https://placehold.co/400x400/e91e63/ffffff?text=FS',
+            isActive: true,
+            status: 'approved',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          })
+          .returning();
+        supportVendor = newVendor;
+      }
+    }
+
+    return supportVendor;
   }
 
   async findOne(idOrSlug: string | number) {
@@ -225,7 +270,27 @@ export class VendorsService {
       coverImage?: Express.Multer.File[];
       gallery?: Express.Multer.File[];
     },
+    userId?: number,
   ) {
+    // Ownership check
+    if (userId) {
+      const user = await this.databaseService.db.query.users.findFirst({
+        where: eq(users.id, userId),
+      });
+      if (user?.role === 'vendor') {
+        const [vendor] = await this.databaseService.db
+          .select()
+          .from(vendors)
+          .where(eq(vendors.id, id))
+          .limit(1);
+        if (!vendor || vendor.userId !== userId) {
+          throw new UnauthorizedException(
+            'You are not authorized to update this vendor profile',
+          );
+        }
+      }
+    }
+
     const updateData = { ...data };
 
     // Parse socialLinks if it's a JSON string (FormData sends objects as strings)

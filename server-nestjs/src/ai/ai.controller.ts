@@ -46,12 +46,14 @@ export class AiController {
     console.log(`🔍 [AiController] Polling result for imageId: ${imageId}`);
     try {
       const result = await this.pixVerseService.getImageResult(imageId);
-      console.log(`  -> PixVerse Result for ${imageId}: ${JSON.stringify(result)}`);
-      
+      console.log(
+        `  -> PixVerse Result for ${imageId}: ${JSON.stringify(result)}`,
+      );
+
       if (result.ErrCode !== 0) {
-        return { 
-          status: 'failed', 
-          error: result.ErrMsg || `PixVerse Error ${result.ErrCode}` 
+        return {
+          status: 'failed',
+          error: result.ErrMsg || `PixVerse Error ${result.ErrCode}`,
         };
       }
 
@@ -78,8 +80,11 @@ export class AiController {
         }
         return { status: 'pending', pixverseStatus: status };
       }
-      
-      return { status: 'failed', error: 'Invalid response structure from PixVerse' };
+
+      return {
+        status: 'failed',
+        error: 'Invalid response structure from PixVerse',
+      };
     } catch (err: any) {
       console.error(`  -> Polling Error for ${imageId}:`, err);
       return { status: 'failed', error: err.message };
@@ -168,13 +173,20 @@ export class AiController {
 
   @Get('pixverse/video/result/:videoId')
   async getPixVerseVideoResult(@Param('videoId') videoId: string) {
-    console.log(`🔍 [AiController] Polling video result for videoId: ${videoId}`);
+    console.log(
+      `🔍 [AiController] Polling video result for videoId: ${videoId}`,
+    );
     try {
       const result = await this.pixVerseService.getVideoResult(videoId);
-      console.log(`  -> PixVerse Video Result for ${videoId}: ${JSON.stringify(result)}`);
-      
+      console.log(
+        `  -> PixVerse Video Result for ${videoId}: ${JSON.stringify(result)}`,
+      );
+
       if (result.ErrCode !== 0) {
-        return { status: 'failed', error: result.ErrMsg || `PixVerse Error ${result.ErrCode}` };
+        return {
+          status: 'failed',
+          error: result.ErrMsg || `PixVerse Error ${result.ErrCode}`,
+        };
       }
 
       if (result.Resp) {
@@ -192,11 +204,17 @@ export class AiController {
         } else if (status === 5) {
           return { status: 'pending', pixverseStatus: status };
         } else if (status === 3 || status === 8 || status === 7) {
-          return { status: 'failed', error: `PixVerse video generation failed (Status ${status})` };
+          return {
+            status: 'failed',
+            error: `PixVerse video generation failed (Status ${status})`,
+          };
         }
         return { status: 'pending', pixverseStatus: status };
       }
-      return { status: 'failed', error: 'Invalid response structure from PixVerse' };
+      return {
+        status: 'failed',
+        error: 'Invalid response structure from PixVerse',
+      };
     } catch (err: any) {
       console.error(`  -> Video Polling Error for ${videoId}:`, err);
       return { status: 'failed', error: err.message };

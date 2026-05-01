@@ -44,6 +44,7 @@ export const endpoints = {
     products: {
         list: (params?: any) => api.get('/products', { params }).then(res => res.data),
         create: (data: FormData) => api.post('/products', data).then(res => res.data),
+        createCustomerListing: (data: FormData) => api.post('/products/customer-listing', data).then(res => res.data),
         featured: () => api.get('/products/featured').then(res => res.data),
         get: (id: number) => api.get(`/products/${id}`).then(res => res.data),
         update: (id: number, data: FormData) => api.patch(`/products/${id}`, data).then(res => res.data),
@@ -94,6 +95,7 @@ export const endpoints = {
         customers: () => api.get('/vendors/customers').then(res => res.data),
         customerDetails: (id: number) => api.get(`/vendors/customers/${id}`).then(res => res.data),
         update: (id: number, data: FormData) => api.patch(`/vendors/${id}`, data).then(res => res.data),
+        support: () => api.get('/vendors/support').then(res => res.data),
     },
     collections: {
         list: (vendorId?: number, categoryId?: number) => api.get('/collections', { params: { vendorId, categoryId } }).then(res => res.data),

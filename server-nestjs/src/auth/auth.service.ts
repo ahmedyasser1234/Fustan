@@ -180,7 +180,12 @@ export class AuthService {
       );
       return {
         token,
-        user: { email: email, name: data.name, role: data.role },
+        user: {
+          id: newUser.id,
+          email: email,
+          name: data.name,
+          role: data.role || 'customer',
+        },
       };
     });
   }
@@ -246,7 +251,8 @@ export class AuthService {
       user.role || 'customer',
       user.email || undefined,
     );
-    return { token, user: user };
+    const { password: _, ...userWithoutPassword } = user;
+    return { token, user: userWithoutPassword };
   }
 
   async loginWithGoogle(token: string) {
@@ -315,7 +321,8 @@ export class AuthService {
         userRole,
         email,
       );
-      return { token: sessionToken, user: user[0] };
+      const { password: _, ...userWithoutPassword } = user[0];
+      return { token: sessionToken, user: userWithoutPassword };
     } catch (error) {
       console.error('Google Auth Error:', error);
       throw new UnauthorizedException('Google authentication failed');
@@ -354,7 +361,8 @@ export class AuthService {
       .where(eq(users.id, userId))
       .returning();
 
-    return updatedUser;
+    const { password: _, ...userWithoutPassword } = updatedUser;
+    return userWithoutPassword;
   }
 
   async findUserByOpenId(openId: string) {
@@ -364,6 +372,8 @@ export class AuthService {
       .where(eq(users.openId, openId))
       .limit(1);
 
-    return result.length > 0 ? result[0] : null;
+    if (result.length === 0) return null;
+    const { password: _, ...userWithoutPassword } = result[0];
+    return userWithoutPassword;
   }
 }

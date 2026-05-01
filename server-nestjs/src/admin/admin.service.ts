@@ -239,6 +239,7 @@ export class AdminService {
     phone?: string;
     city?: string;
     commissionRate?: number;
+    commissionFixed?: number;
   }) {
     // Check if email already exists
     const existingUser = await this.databaseService.db
@@ -305,7 +306,8 @@ export class AdminService {
           phone: data.phone,
           cityAr: data.city,
           cityEn: data.city,
-          commissionRate: data.commissionRate || 15,
+          commissionRate: data.commissionRate ?? 10, // Default 10% for professional vendors
+          commissionFixed: data.commissionFixed ?? 0,
           status: 'approved', // Auto-approve admin-created vendors
         })
         .returning();
@@ -470,13 +472,39 @@ export class AdminService {
 
       // Recalculate all product prices for this vendor
       const rateMultiplier = 1 + commissionRate / 100;
+      const commissionFixed = updated.commissionFixed || 0;
 
       // We use sql helper for dynamic calculation in update
+      // Final Price = (Vendor Price * (1 + Commission%)) + Fixed Commission
       await tx.execute(sql`
                 UPDATE products 
                 SET 
-                    price = COALESCE("vendorPrice", price / ${rateMultiplier}) * ${rateMultiplier},
-                    "originalPrice" = COALESCE("vendorOriginalPrice", "vendorPrice", "originalPrice" / ${rateMultiplier}) * ${rateMultiplier},
+                    price = COALESCE("vendorPrice", price) * ${rateMultiplier} + ${commissionFixed},
+                    "originalPrice" = COALESCE("vendorOriginalPrice", "vendorPrice", "originalPrice") * ${rateMultiplier} + ${commissionFixed},
+                    "updatedAt" = NOW()
+                WHERE "vendorId" = ${vendorId}
+            `);
+
+      return updated;
+    });
+  }
+
+  async updateVendorFixedCommission(vendorId: number, commissionFixed: number) {
+    return await this.databaseService.db.transaction(async (tx) => {
+      const [updated] = await tx
+        .update(vendors)
+        .set({ commissionFixed, updatedAt: new Date() })
+        .where(eq(vendors.id, vendorId))
+        .returning();
+
+      const commissionRate = updated.commissionRate || 0;
+      const rateMultiplier = 1 + commissionRate / 100;
+
+      await tx.execute(sql`
+                UPDATE products 
+                SET 
+                    price = COALESCE("vendorPrice", price) * ${rateMultiplier} + ${commissionFixed},
+                    "originalPrice" = COALESCE("vendorOriginalPrice", "vendorPrice", "originalPrice") * ${rateMultiplier} + ${commissionFixed},
                     "updatedAt" = NOW()
                 WHERE "vendorId" = ${vendorId}
             `);

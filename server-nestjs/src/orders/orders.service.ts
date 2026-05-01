@@ -299,12 +299,14 @@ export class OrdersService {
         // Get Vendor Shipping Cost and Commission Rate
         let shippingCost = 0;
         let commissionRate = 0;
+        let commission = 0;
 
         if (vendorGroups.has(vendorId)) {
           const vendorData = await this.databaseService.db
             .select({
               shippingCost: vendors.shippingCost,
               commissionRate: vendors.commissionRate,
+              commissionFixed: vendors.commissionFixed,
             })
             .from(vendors)
             .where(eq(vendors.id, vendorId))
@@ -313,16 +315,22 @@ export class OrdersService {
           if (vendorData.length > 0) {
             shippingCost = vendorData[0].shippingCost;
             commissionRate = vendorData[0].commissionRate || 0;
+            const commissionFixed = vendorData[0].commissionFixed || 0;
+
+            // Calculate total items in this order group to apply fixed commission per item
+            const totalItemsCount = group.items.reduce(
+              (sum, item) => sum + item.quantity,
+              0,
+            );
+
+            const commissionBase = Math.max(0, finalTotal);
+            commission =
+              (commissionBase * commissionRate) / 100 +
+              totalItemsCount * commissionFixed;
           }
         }
 
         const orderTotal = finalTotal + shippingCost;
-
-        // Calculate Commission
-        // Commission is usually based on subtotal - discount (Revenue generated for vendor)
-        // Assuming commission is changing on the sold amount (excluding shipping)
-        const commissionBase = Math.max(0, finalTotal);
-        const commission = (commissionBase * commissionRate) / 100;
 
         const orderNumber = `ORD-${Date.now()}-${vendorId}-${Math.floor(Math.random() * 1000)}`;
 

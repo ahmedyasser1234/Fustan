@@ -1,4 +1,11 @@
-import { Controller, Post, Body, Res, HttpStatus, Logger } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Res,
+  HttpStatus,
+  Logger,
+} from '@nestjs/common';
 import { VirtualTryonService } from './virtual-tryon.service';
 import { Response } from 'express';
 
@@ -16,7 +23,8 @@ export class VirtualTryonController {
     try {
       if (!body.userImage || !body.productImage) {
         return res.status(HttpStatus.BAD_REQUEST).json({
-          message: 'Both userImage and productImage are required as base64 strings',
+          message:
+            'Both userImage and productImage are required as base64 strings',
         });
       }
 

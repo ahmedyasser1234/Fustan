@@ -86,6 +86,14 @@ export class AdminController {
     return this.adminService.updateVendorCommission(+id, commissionRate);
   }
 
+  @Patch('vendors/:id/commission-fixed')
+  async updateVendorFixedCommission(
+    @Param('id') id: string,
+    @Body('commissionFixed') commissionFixed: number,
+  ) {
+    return this.adminService.updateVendorFixedCommission(+id, commissionFixed);
+  }
+
   @Patch('vendors/:id/status')
   async updateVendorStatus(
     @Param('id') id: string,

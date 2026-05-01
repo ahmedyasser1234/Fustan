@@ -32,6 +32,7 @@ import Profile from "@/pages/Profile";
 import SharedWishlist from "@/pages/SharedWishlist";
 import FAQ from "@/pages/FAQ";
 import SearchResults from "@/pages/SearchResults";
+import SellDress from "@/pages/SellDress";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { endpoints } from "@/lib/api";
 import { ProtectedRoute } from "./components/ProtectedRoute";
@@ -168,7 +169,8 @@ function Navigation({ isChatHistoryOpen, setIsChatHistoryOpen, unreadCount, syst
               { label: t('home'), href: "/" },
               { label: t('products'), href: "/products" },
               { label: t('about'), href: "/about-us" },
-              { label: t('contact'), href: "/contact-us" }
+              { label: t('contact'), href: "/contact-us" },
+              { label: language === 'ar' ? 'اعرضي فستانك' : 'Sell Your Dress', href: "/sell-dress" }
             ].map(link => {
               const isActive = location === link.href;
               return (
@@ -409,7 +411,8 @@ function Navigation({ isChatHistoryOpen, setIsChatHistoryOpen, unreadCount, syst
                     { label: t('home'), href: "/" },
                     { label: t('products'), href: "/products" },
                     { label: t('about'), href: "/about-us" },
-                    { label: t('contact'), href: "/contact-us" }
+                    { label: t('contact'), href: "/contact-us" },
+                    { label: language === 'ar' ? 'اعرضي فستانك للبيع' : 'Sell Your Dress', href: "/sell-dress" }
                   ].map((item) => (
                     <Link key={item.label} href={item.href}>
                       <span
@@ -519,6 +522,7 @@ function Footer() {
               <li><Link href="/about-us" className="hover:text-rose-600 transition-colors">{isAr ? 'حكاية فستان' : 'Our Story'}</Link></li>
               <li><Link href="/contact-us" className="hover:text-rose-600 transition-colors">{isAr ? 'تواصل معنا' : 'Contact Us'}</Link></li>
               <li><Link href="/faq" className="hover:text-rose-600 transition-colors">{isAr ? 'الأسئلة الشائعة' : 'FAQs'}</Link></li>
+              <li><Link href="/sell-dress" className="hover:text-rose-600 transition-colors font-black text-rose-500">{isAr ? 'بيعي فستانك الآن' : 'Sell Your Dress Now'}</Link></li>
             </ul>
           </div>
 
@@ -589,6 +593,7 @@ function Router() {
       <ProtectedRoute path={"/orders/:id"} component={OrderDetails} />
       <ProtectedRoute path={"/wishlist"} component={Wishlist} />
       <ProtectedRoute path={"/notifications"} component={Notifications} />
+      <ProtectedRoute path={"/sell-dress"} component={SellDress} />
       <Route path={"/wishlist/shared/:token"} component={SharedWishlist} />
       <ProtectedRoute path={"/profile"} component={Profile} />
 
@@ -688,11 +693,8 @@ function AppContent() {
           whileTap={{ scale: 0.9 }}
           onClick={async () => {
             try {
-              // Try to find Support Vendor
-              console.log('🔍 Debug: Finding support vendor...');
-              const response = await endpoints.vendors.list();
-              const vendorsList = Array.isArray(response) ? response : (response?.vendors || []);
-              const supportVendor = Array.isArray(vendorsList) ? vendorsList.find((v: any) => v.storeNameEn === 'Fustan Support' || v.storeSlug === 'fustan-support') : null;
+              // Get Support Vendor Profile
+              const supportVendor = await endpoints.vendors.support();
 
               if (supportVendor) {
                 console.log('✅ Debug: Support vendor found', supportVendor.id);

@@ -13,7 +13,8 @@ export class PixVerseService {
   private readonly webhookId: string;
   private readonly baseUrl = 'https://app-api.pixverse.ai/openapi/v2';
   private readonly appApiUrl = 'https://app-api.pixverse.ai/openapi/v2';
-  private readonly uploadUrl = 'https://app-api.pixverse.ai/openapi/v2/image/upload';
+  private readonly uploadUrl =
+    'https://app-api.pixverse.ai/openapi/v2/image/upload';
 
   constructor(
     private configService: ConfigService,
@@ -144,11 +145,16 @@ export class PixVerseService {
     try {
       result = JSON.parse(responseText);
     } catch (e) {
-      this.logger.error(`Failed to parse PixVerse response as JSON. Raw response: ${responseText.substring(0, 500)}`);
+      this.logger.error(
+        `Failed to parse PixVerse response as JSON. Raw response: ${responseText.substring(0, 500)}`,
+      );
       throw new Error('Invalid response from PixVerse API');
     }
 
-    if (result.ErrCode !== 0 || (!result.Resp?.video_id && !result.Resp?.taskId)) {
+    if (
+      result.ErrCode !== 0 ||
+      (!result.Resp?.video_id && !result.Resp?.taskId)
+    ) {
       this.logger.error(
         `PixVerse Task Creation Failed: ${JSON.stringify(result)}`,
       );
@@ -201,11 +207,16 @@ export class PixVerseService {
     try {
       result = JSON.parse(responseText);
     } catch (e) {
-      this.logger.error(`Failed to parse PixVerse response as JSON. Raw response: ${responseText.substring(0, 500)}`);
+      this.logger.error(
+        `Failed to parse PixVerse response as JSON. Raw response: ${responseText.substring(0, 500)}`,
+      );
       throw new Error('Invalid response from PixVerse API');
     }
 
-    if (result.ErrCode !== 0 || (!result.Resp?.video_id && !result.Resp?.taskId)) {
+    if (
+      result.ErrCode !== 0 ||
+      (!result.Resp?.video_id && !result.Resp?.taskId)
+    ) {
       this.logger.error(
         `PixVerse Task Creation Failed: ${JSON.stringify(result)}`,
       );
@@ -308,7 +319,9 @@ export class PixVerseService {
     const result = await response.json();
 
     if (result.ErrCode !== 0 || !result.Resp?.img_id) {
-      this.logger.error(`PixVerse Image Upload Failed: ${JSON.stringify(result)}`);
+      this.logger.error(
+        `PixVerse Image Upload Failed: ${JSON.stringify(result)}`,
+      );
       throw new Error(result.ErrMsg || 'Failed to upload image to PixVerse');
     }
 
@@ -353,7 +366,9 @@ export class PixVerseService {
         body.image_references = await Promise.all(
           params.image_references.map(async (ref: any) => ({
             ...ref,
-            img_id: ref.img_url ? await this.uploadImage(ref.img_url) : ref.img_id,
+            img_id: ref.img_url
+              ? await this.uploadImage(ref.img_url)
+              : ref.img_id,
           })),
         );
       }
@@ -370,8 +385,13 @@ export class PixVerseService {
 
     const result = await response.json();
 
-    if (result.ErrCode !== 0 || (!result.Resp?.video_id && !result.Resp?.taskId)) {
-      this.logger.error(`PixVerse Video Task Failed: ${JSON.stringify(result)}`);
+    if (
+      result.ErrCode !== 0 ||
+      (!result.Resp?.video_id && !result.Resp?.taskId)
+    ) {
+      this.logger.error(
+        `PixVerse Video Task Failed: ${JSON.stringify(result)}`,
+      );
       throw new Error(result.ErrMsg || 'Failed to create PixVerse video task');
     }
 
@@ -396,8 +416,12 @@ export class PixVerseService {
     if (!this.apiKey) throw new Error('PIXVERSE_API_KEY not configured');
 
     const traceId = crypto.randomUUID();
-    this.logger.log(`Creating PixVerse Image Template task. TraceId: ${traceId}`);
-    this.logger.log(`  -> img_ids: ${JSON.stringify(imgIds)}, template_id: ${templateId}`);
+    this.logger.log(
+      `Creating PixVerse Image Template task. TraceId: ${traceId}`,
+    );
+    this.logger.log(
+      `  -> img_ids: ${JSON.stringify(imgIds)}, template_id: ${templateId}`,
+    );
 
     // Add 30s timeout so the request never hangs silently
     const controller = new AbortController();
@@ -420,24 +444,32 @@ export class PixVerseService {
     } catch (err: any) {
       clearTimeout(timeout);
       if (err.name === 'AbortError') {
-        this.logger.error('PixVerse Image Template request TIMED OUT after 30s');
+        this.logger.error(
+          'PixVerse Image Template request TIMED OUT after 30s',
+        );
         throw new Error('PixVerse API timed out after 30 seconds');
       }
       throw err;
     }
 
     const rawText = await response.text();
-    this.logger.log(`  -> PixVerse response (${response.status}): ${rawText.substring(0, 400)}`);
+    this.logger.log(
+      `  -> PixVerse response (${response.status}): ${rawText.substring(0, 400)}`,
+    );
 
     let result: any;
     try {
       result = JSON.parse(rawText);
     } catch {
-      throw new Error(`PixVerse returned non-JSON: ${rawText.substring(0, 200)}`);
+      throw new Error(
+        `PixVerse returned non-JSON: ${rawText.substring(0, 200)}`,
+      );
     }
 
     if (result.ErrCode !== 0 || !result.Resp?.image_id) {
-      this.logger.error(`PixVerse Image Template Failed: ${JSON.stringify(result)}`);
+      this.logger.error(
+        `PixVerse Image Template Failed: ${JSON.stringify(result)}`,
+      );
       throw new Error(result.ErrMsg || 'Failed to create image template task');
     }
 
@@ -452,7 +484,9 @@ export class PixVerseService {
     if (!this.apiKey) throw new Error('PIXVERSE_API_KEY not configured');
 
     const traceId = crypto.randomUUID();
-    this.logger.log(`Creating PixVerse Video Template task. TraceId: ${traceId}`);
+    this.logger.log(
+      `Creating PixVerse Video Template task. TraceId: ${traceId}`,
+    );
 
     const response = await fetch(`${this.appApiUrl}/video/template/generate`, {
       method: 'POST',
@@ -466,7 +500,9 @@ export class PixVerseService {
     const result = await response.json();
 
     if (result.ErrCode !== 0 || !result.Resp?.video_id) {
-      this.logger.error(`PixVerse Video Template Failed: ${JSON.stringify(result)}`);
+      this.logger.error(
+        `PixVerse Video Template Failed: ${JSON.stringify(result)}`,
+      );
       throw new Error(result.ErrMsg || 'Failed to create video template task');
     }
 
@@ -492,7 +528,9 @@ export class PixVerseService {
     try {
       return JSON.parse(rawText);
     } catch {
-      this.logger.error(`PixVerse result returned non-JSON: ${rawText.substring(0, 200)}`);
+      this.logger.error(
+        `PixVerse result returned non-JSON: ${rawText.substring(0, 200)}`,
+      );
       return { ErrCode: -1, ErrMsg: 'Invalid JSON response from PixVerse' };
     }
   }
@@ -516,7 +554,9 @@ export class PixVerseService {
     try {
       return JSON.parse(rawText);
     } catch {
-      this.logger.error(`PixVerse video result returned non-JSON: ${rawText.substring(0, 200)}`);
+      this.logger.error(
+        `PixVerse video result returned non-JSON: ${rawText.substring(0, 200)}`,
+      );
       return { ErrCode: -1, ErrMsg: 'Invalid JSON response from PixVerse' };
     }
   }
