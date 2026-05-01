@@ -125,7 +125,11 @@ function Navigation({ isChatHistoryOpen, setIsChatHistoryOpen, unreadCount, syst
   }, [cartData, guestCartTrigger]);
 
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 20);
+    const handleScroll = () => {
+      // Use a more robust check for scroll position
+      const scrollPos = window.scrollY || window.pageYOffset || document.documentElement.scrollTop;
+      setIsScrolled(scrollPos > 20);
+    };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -151,7 +155,7 @@ function Navigation({ isChatHistoryOpen, setIsChatHistoryOpen, unreadCount, syst
         <div className="flex items-center justify-between font-sans">
           {/* Logo */}
           <Link href="/">
-            <div className="flex items-center cursor-pointer group">
+            <div className="flex items-center cursor-pointer group flex-shrink-0">
               <img
                 src={(!isScrolled && isHeroPage) ? "/logo-white.png" : "/12345.png"}
                 alt="Fustan Logo"
@@ -161,7 +165,7 @@ function Navigation({ isChatHistoryOpen, setIsChatHistoryOpen, unreadCount, syst
           </Link>
 
           {/* Center: Navigation Links (Luxury Pill) */}
-          <div className={`hidden lg:flex items-center gap-1 px-2 py-2 rounded-full transition-all duration-300 ${isScrolled || !isHeroPage
+          <div className={`hidden lg:flex items-center gap-1 px-2 py-2 rounded-full transition-all duration-300 flex-shrink-0 ${isScrolled || !isHeroPage
             ? 'bg-gray-100/50 backdrop-blur-md border border-gray-100'
             : 'bg-transparent border border-transparent'
             }`}>
@@ -175,7 +179,7 @@ function Navigation({ isChatHistoryOpen, setIsChatHistoryOpen, unreadCount, syst
               const isActive = location === link.href;
               return (
                 <Link key={link.href} href={link.href}>
-                  <span className={`block px-6 py-2.5 rounded-full text-sm font-black cursor-pointer transition-all duration-300 ${isActive
+                  <span className={`block px-3 xl:px-6 py-2.5 rounded-full text-[13px] xl:text-sm font-black cursor-pointer transition-all duration-300 ${isActive
                     ? (isScrolled || location !== '/' ? 'bg-white text-gray-900 shadow-sm' : 'bg-white text-gray-900 shadow-lg')
                     : (isScrolled || location !== '/' ? 'text-gray-500 hover:text-gray-900' : 'text-white/80 hover:text-white')
                     }`}>
@@ -187,7 +191,7 @@ function Navigation({ isChatHistoryOpen, setIsChatHistoryOpen, unreadCount, syst
           </div>
 
           {/* Right Side: Tools & Search */}
-          <div className="flex items-center gap-1 md:gap-3">
+          <div className="flex items-center gap-1.5 md:gap-3 flex-shrink-0">
             {/* Search Input (Hidden on extra small) */}
             {/* Search Input (Hidden on mobile) */}
             <form onSubmit={handleSearch} className="hidden lg:flex relative items-center group">
@@ -197,11 +201,11 @@ function Navigation({ isChatHistoryOpen, setIsChatHistoryOpen, unreadCount, syst
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder={language === 'ar' ? "ابحثي عن فستان أحلامك..." : "Find your dream dress..."}
                 className={`h-11 rounded-full px-6 pe-12 transition-all duration-300 ${isScrolled || !isHeroPage
-                  ? 'bg-gray-100/50 focus:bg-white border-gray-100 focus:border-rose-200 w-48 md:w-64 focus:w-72'
-                  : 'bg-transparent hover:bg-white/5 text-white placeholder:text-white/60 border-transparent focus:border-white/20 w-48 md:w-60 focus:w-64'
+                  ? 'bg-gray-100/50 focus:bg-white border-gray-100 focus:border-rose-200 w-40 xl:w-64 focus:w-72'
+                  : 'bg-transparent hover:bg-white/5 text-white placeholder:text-white/60 border-transparent focus:border-white/20 w-40 xl:w-60 focus:w-64'
                   } border outline-none font-medium text-sm`}
               />
-              <button type="submit" className={`absolute end-2 w-8 h-8 rounded-full flex items-center justify-center transition-all ${isScrolled || !isHeroPage ? 'bg-rose-600 text-white shadow-rose-200 shadow-lg' : 'bg-white text-gray-900 shadow-white/20 shadow-md'}`}>
+              <button type="submit" className={`absolute ${language === 'ar' ? 'left-2' : 'right-2'} w-8 h-8 rounded-full flex items-center justify-center transition-all ${isScrolled || !isHeroPage ? 'bg-rose-600 text-white shadow-rose-200 shadow-lg' : 'bg-white text-gray-900 shadow-white/20 shadow-md'}`}>
                 <Search size={14} />
               </button>
             </form>
