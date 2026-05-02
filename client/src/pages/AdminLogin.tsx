@@ -55,13 +55,13 @@ export default function AdminLogin() {
                     <div className="w-20 h-20 bg-gradient-to-br from-primary/10 to-primary/5 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-primary/10 ring-8 ring-primary/5 shadow-inner rotate-3 transition-transform hover:rotate-6 duration-500">
                         <ShieldCheck className="w-10 h-10 text-primary" />
                     </div>
-                    <CardTitle className="text-3xl font-black text-slate-900 tracking-tight">Fustan Admin</CardTitle>
+                    <CardTitle className="text-3xl font-medium text-slate-900 tracking-tight">Fustan Admin</CardTitle>
                     <CardDescription className="text-slate-500 font-medium text-base">Secure Gateway for Administrators</CardDescription>
                 </CardHeader>
                 <CardContent className="px-8 pb-10">
                     <form onSubmit={handleSubmit} className="space-y-5">
                         <div className="space-y-2">
-                            <label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">Email Address</label>
+                            <label className="text-xs font-medium uppercase tracking-widest text-slate-400 ml-1">Email Address</label>
                             <div className="relative group">
                                 <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-primary transition-colors">
                                     <Lock className="w-5 h-5" />
@@ -77,7 +77,7 @@ export default function AdminLogin() {
                             </div>
                         </div>
                         <div className="space-y-2">
-                            <label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">Password</label>
+                            <label className="text-xs font-medium uppercase tracking-widest text-slate-400 ml-1">Password</label>
                             <div className="relative group">
                                 <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-primary transition-colors">
                                     <ShieldCheck className="w-5 h-5" />
@@ -109,7 +109,7 @@ export default function AdminLogin() {
 
                     <div className="mt-8 flex items-center justify-center gap-2 text-slate-400 opacity-60 hover:opacity-100 transition-opacity cursor-default">
                         <AlertCircle size={14} />
-                        <span className="text-[10px] uppercase font-black tracking-widest">Restricted Area</span>
+                        <span className="text-[10px] uppercase font-medium tracking-widest">Restricted Area</span>
                     </div>
                 </CardContent>
             </Card>

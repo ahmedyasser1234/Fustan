@@ -38,7 +38,7 @@ export default function CollectionProductsView({ vendorId, collectionId, onBack,
                     <ArrowRight className="w-6 h-6 text-slate-600" />
                 </Button>
                 <div>
-                    <h2 className="text-3xl font-black text-slate-900 mb-1">
+                    <h2 className="text-3xl font-medium text-slate-900 mb-1">
                         {collection ? (language === 'ar' ? collection.nameAr : collection.nameEn) : "..."}
                     </h2>
                     <p className="text-slate-400 font-bold">{language === 'ar' ? "استعرض المنتجات المنتمية لهذه المجموعة" : "Browse products belonging to this collection"}</p>
@@ -48,7 +48,7 @@ export default function CollectionProductsView({ vendorId, collectionId, onBack,
             {isLoading ? (
                 <div className="flex flex-col items-center justify-center p-20 space-y-4 text-center">
                     <Loader2 className="w-12 h-12 animate-spin text-purple-600" />
-                    <p className="text-slate-400 font-black">{language === 'ar' ? "تحميل منتجات المجموعة..." : "Loading products..."}</p>
+                    <p className="text-slate-400 font-medium">{language === 'ar' ? "تحميل منتجات المجموعة..." : "Loading products..."}</p>
                 </div>
             ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -57,7 +57,7 @@ export default function CollectionProductsView({ vendorId, collectionId, onBack,
                             <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6">
                                 <Package className="w-10 h-10 text-slate-200" />
                             </div>
-                            <h3 className="text-xl font-black text-slate-800 mb-2">{language === 'ar' ? "المجموعة فارغة" : "Collection is empty"}</h3>
+                            <h3 className="text-xl font-medium text-slate-800 mb-2">{language === 'ar' ? "المجموعة فارغة" : "Collection is empty"}</h3>
                             <p className="text-slate-400 font-bold max-w-xs mx-auto">
                                 {language === 'ar' ? "لا توجد منتجات مرتبطة بهذه المجموعة حالياً" : "No products are currently linked to this collection"}
                             </p>
@@ -85,8 +85,8 @@ export default function CollectionProductsView({ vendorId, collectionId, onBack,
                                     </div>
                                 </div>
                                 <CardContent className="p-6 text-right">
-                                    <h3 className="font-black text-lg text-slate-900 line-clamp-1 mb-2">{language === 'ar' ? product.nameAr : product.nameEn}</h3>
-                                    <span className="font-black text-xl text-[#e91e63]">{product.price} {t('currency')}</span>
+                                    <h3 className="font-medium text-lg text-slate-900 line-clamp-1 mb-2">{language === 'ar' ? product.nameAr : product.nameEn}</h3>
+                                    <span className="font-medium text-xl text-[#e91e63]">{product.price} {t('currency')}</span>
                                 </CardContent>
                             </Card>
                         ))

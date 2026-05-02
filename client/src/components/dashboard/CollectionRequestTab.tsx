@@ -118,13 +118,13 @@ export default function CollectionRequestTab() {
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700" dir={language === 'ar' ? 'rtl' : 'ltr'}>
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div>
-                    <h2 className="text-3xl font-black text-slate-900 mb-2">{language === 'ar' ? "طلبات المجموعات" : "Collection Requests"}</h2>
+                    <h2 className="text-3xl font-medium text-slate-900 mb-2">{language === 'ar' ? "طلبات المجموعات" : "Collection Requests"}</h2>
                     <p className="text-slate-400 font-bold">{language === 'ar' ? "اطلب إضافة مجموعات جديدة لمنتجاتك وتابع حالة طلباتك" : "Request new collections for your products and track their status"}</p>
                 </div>
 
                 <Button 
                     onClick={() => setIsCreateModalOpen(true)}
-                    className="h-14 px-8 rounded-2xl bg-slate-900 hover:bg-black text-white font-black shadow-xl shadow-slate-200 gap-3"
+                    className="h-14 px-8 rounded-2xl bg-slate-900 hover:bg-black text-white font-medium shadow-xl shadow-slate-200 gap-3"
                 >
                     <Plus className="w-5 h-5" />
                     {language === 'ar' ? "طلب مجموعة جديدة" : "Request New Collection"}
@@ -137,7 +137,7 @@ export default function CollectionRequestTab() {
                     <Info className="w-7 h-7 text-white" />
                 </div>
                 <div className="space-y-1">
-                    <h3 className="text-lg font-black text-amber-900">{language === 'ar' ? "لماذا لا أستطيع إضافة المجموعات مباشرة؟" : "Why can't I add collections directly?"}</h3>
+                    <h3 className="text-lg font-medium text-amber-900">{language === 'ar' ? "لماذا لا أستطيع إضافة المجموعات مباشرة؟" : "Why can't I add collections directly?"}</h3>
                     <p className="text-amber-700/70 font-bold leading-relaxed">
                         {language === 'ar' 
                             ? "لضمان تنظيم المتجر وجودة التصنيفات، يقوم المشرفون بمراجعة وإضافة المجموعات يدوياً. بمجرد الموافقة على طلبك، ستظهر المجموعة في قائمة اختياراتك عند إضافة منتج جديد."
@@ -161,7 +161,7 @@ export default function CollectionRequestTab() {
                                 )}
                                 <div className={`absolute bottom-4 ${language === 'ar' ? 'right-4' : 'left-4'}`}>
                                     <span className={cn(
-                                        "px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg",
+                                        "px-4 py-1.5 rounded-full text-[10px] font-medium uppercase tracking-widest shadow-lg",
                                         request.status === 'pending' ? "bg-amber-500 text-white" :
                                         request.status === 'approved' ? "bg-emerald-500 text-white" :
                                         "bg-red-500 text-white"
@@ -175,7 +175,7 @@ export default function CollectionRequestTab() {
                             </div>
                             <CardContent className="p-6 space-y-4">
                                 <div>
-                                    <h3 className="text-xl font-black text-slate-800 mb-1">
+                                    <h3 className="text-xl font-medium text-slate-800 mb-1">
                                         {language === 'ar' ? request.data.nameAr : request.data.nameEn}
                                     </h3>
                                     <p className="text-slate-400 font-bold text-sm line-clamp-2">
@@ -218,7 +218,7 @@ export default function CollectionRequestTab() {
                     </DialogHeader>
                     <DialogHeader className="p-8 pb-4 bg-slate-50 border-b border-slate-100 flex flex-row items-center justify-between">
                         <div>
-                            <DialogTitle className="text-2xl font-black text-slate-900">
+                            <DialogTitle className="text-2xl font-medium text-slate-900">
                                 {language === 'ar' ? "طلب مجموعة جديدة" : "Request New Collection"}
                             </DialogTitle>
                             <p className="text-sm font-bold text-slate-400 mt-1">
@@ -235,7 +235,7 @@ export default function CollectionRequestTab() {
                             <div className="grid grid-cols-2 gap-6">
                                 {/* Name AR */}
                                 <div className="space-y-2">
-                                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest">{language === 'ar' ? "الاسم (بالعربية)" : "NAME (AR)"}</label>
+                                    <label className="text-xs font-medium text-slate-400 uppercase tracking-widest">{language === 'ar' ? "الاسم (بالعربية)" : "NAME (AR)"}</label>
                                     <Input 
                                         className="h-14 rounded-2xl bg-slate-50 border-transparent focus:bg-white focus:ring-4 focus:ring-indigo-50 font-bold"
                                         placeholder="مثال: تشكيلة الصيف"
@@ -246,7 +246,7 @@ export default function CollectionRequestTab() {
                                 </div>
                                 {/* Name EN */}
                                 <div className="space-y-2">
-                                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest">{language === 'ar' ? "NAME (EN)" : "NAME (EN)"}</label>
+                                    <label className="text-xs font-medium text-slate-400 uppercase tracking-widest">{language === 'ar' ? "NAME (EN)" : "NAME (EN)"}</label>
                                     <Input 
                                         className="h-14 rounded-2xl bg-slate-50 border-transparent focus:bg-white focus:ring-4 focus:ring-indigo-50 font-bold"
                                         placeholder="e.g. Summer Collection"
@@ -260,7 +260,7 @@ export default function CollectionRequestTab() {
                             <div className="grid grid-cols-2 gap-6">
                                 {/* Description AR */}
                                 <div className="space-y-2">
-                                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest">{language === 'ar' ? "الوصف (بالعربية)" : "DESCRIPTION (AR)"}</label>
+                                    <label className="text-xs font-medium text-slate-400 uppercase tracking-widest">{language === 'ar' ? "الوصف (بالعربية)" : "DESCRIPTION (AR)"}</label>
                                     <Textarea 
                                         className="min-h-[100px] rounded-2xl bg-slate-50 border-transparent focus:bg-white focus:ring-4 focus:ring-indigo-50 font-bold p-4"
                                         placeholder="وصف مختصر للمجموعة..."
@@ -271,7 +271,7 @@ export default function CollectionRequestTab() {
                                 </div>
                                 {/* Description EN */}
                                 <div className="space-y-2">
-                                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest">{language === 'ar' ? "DESCRIPTION (EN)" : "DESCRIPTION (EN)"}</label>
+                                    <label className="text-xs font-medium text-slate-400 uppercase tracking-widest">{language === 'ar' ? "DESCRIPTION (EN)" : "DESCRIPTION (EN)"}</label>
                                     <Textarea 
                                         className="min-h-[100px] rounded-2xl bg-slate-50 border-transparent focus:bg-white focus:ring-4 focus:ring-indigo-50 font-bold p-4"
                                         placeholder="Short description for the collection..."
@@ -284,7 +284,7 @@ export default function CollectionRequestTab() {
 
                             {/* Category Selection */}
                             <div className="space-y-2">
-                                <label className="text-xs font-black text-slate-400 uppercase tracking-widest">{language === 'ar' ? "القسم الرئيسي" : "TARGET CATEGORY"}</label>
+                                <label className="text-xs font-medium text-slate-400 uppercase tracking-widest">{language === 'ar' ? "القسم الرئيسي" : "TARGET CATEGORY"}</label>
                                 <Select value={categoryId} onValueChange={setCategoryId}>
                                     <SelectTrigger className="h-14 rounded-2xl bg-slate-50 border-transparent focus:ring-4 focus:ring-indigo-50 font-bold px-6">
                                         <SelectValue placeholder={language === 'ar' ? "اختر القسم" : "Select Category"} />
@@ -302,19 +302,19 @@ export default function CollectionRequestTab() {
                             {/* Image Input Section */}
                             <div className="space-y-4">
                                 <div className="flex items-center justify-between">
-                                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest">
+                                    <label className="text-xs font-medium text-slate-400 uppercase tracking-widest">
                                         {language === 'ar' ? "صورة المجموعة" : "COLLECTION IMAGE"}
                                     </label>
                                     <div className="flex bg-slate-100 p-1 rounded-xl">
                                         <button 
                                             onClick={() => setUploadMode("file")}
-                                            className={cn("px-3 py-1 rounded-lg text-[10px] font-black transition-all", uploadMode === 'file' ? "bg-white text-indigo-600 shadow-sm" : "text-slate-400")}
+                                            className={cn("px-3 py-1 rounded-lg text-[10px] font-medium transition-all", uploadMode === 'file' ? "bg-white text-indigo-600 shadow-sm" : "text-slate-400")}
                                         >
                                             {language === 'ar' ? "تحميل ملف" : "UPLOAD"}
                                         </button>
                                         <button 
                                             onClick={() => setUploadMode("url")}
-                                            className={cn("px-3 py-1 rounded-lg text-[10px] font-black transition-all", uploadMode === 'url' ? "bg-white text-indigo-600 shadow-sm" : "text-slate-400")}
+                                            className={cn("px-3 py-1 rounded-lg text-[10px] font-medium transition-all", uploadMode === 'url' ? "bg-white text-indigo-600 shadow-sm" : "text-slate-400")}
                                         >
                                             {language === 'ar' ? "رابط خارجي" : "URL"}
                                         </button>
@@ -346,7 +346,7 @@ export default function CollectionRequestTab() {
                                                     <Upload className="w-6 h-6 text-indigo-600" />
                                                 </div>
                                                 <div className="space-y-1">
-                                                    <p className="font-black text-slate-900 text-sm">{language === 'ar' ? "اضغط لتحميل الصورة" : "Click to upload image"}</p>
+                                                    <p className="font-medium text-slate-900 text-sm">{language === 'ar' ? "اضغط لتحميل الصورة" : "Click to upload image"}</p>
                                                     <p className="text-[10px] font-bold text-slate-400">{language === 'ar' ? "PNG, JPG حتى 5 ميجابايت" : "PNG, JPG up to 5MB"}</p>
                                                 </div>
                                             </div>
@@ -369,14 +369,14 @@ export default function CollectionRequestTab() {
                                 <Button 
                                     variant="ghost" 
                                     onClick={() => setIsCreateModalOpen(false)}
-                                    className="flex-1 h-14 rounded-2xl font-black text-slate-400 hover:bg-slate-50"
+                                    className="flex-1 h-14 rounded-2xl font-medium text-slate-400 hover:bg-slate-50"
                                 >
                                     {language === 'ar' ? "إلغاء" : "Cancel"}
                                 </Button>
                                 <Button 
                                     onClick={handleSubmit}
                                     disabled={submitRequest.isPending}
-                                    className="flex-[2] h-14 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-black shadow-lg shadow-indigo-100"
+                                    className="flex-[2] h-14 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-medium shadow-lg shadow-indigo-100"
                                 >
                                     {submitRequest.isPending ? <Loader2 className="w-5 h-5 animate-spin" /> : (language === 'ar' ? "إرسال الطلب للمراجعة" : "Submit for Review")}
                                 </Button>

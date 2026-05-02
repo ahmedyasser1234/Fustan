@@ -31,7 +31,7 @@ export default function SharedWishlist() {
                     <div className="w-24 h-24 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-8 text-red-500">
                         <Heart size={40} className="fill-current opacity-20" />
                     </div>
-                    <h1 className="text-4xl font-black text-gray-900 mb-4">
+                    <h1 className="text-4xl font-medium text-gray-900 mb-4">
                         {language === 'ar' ? "قائمة غير موجودة" : "Wishlist Not Found"}
                     </h1>
                     <p className="text-gray-500 text-lg">
@@ -48,7 +48,7 @@ export default function SharedWishlist() {
         <div className="min-h-screen bg-gray-50 pt-32 pb-20 px-4">
             <div className="max-w-7xl mx-auto">
                 <header className="mb-12 text-center md:text-right" dir={language === 'ar' ? 'rtl' : 'ltr'}>
-                    <h1 className="text-4xl md:text-5xl font-black text-gray-900 mb-4">
+                    <h1 className="text-4xl md:text-3xl font-medium text-gray-900 mb-4">
                         {language === 'ar' ? "قائمة أمنيات مشتركة" : "Shared Wishlist"}
                     </h1>
                     <p className="text-gray-500 text-lg max-w-2xl">

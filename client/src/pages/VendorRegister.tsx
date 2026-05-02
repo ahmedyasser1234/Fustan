@@ -94,7 +94,7 @@ export default function VendorRegister() {
                     <div className="w-20 h-20 bg-rose-50 rounded-3xl flex items-center justify-center mx-auto mb-4 border border-rose-100 rotate-3 shadow-inner">
                         <Store className="w-10 h-10 text-rose-600 -rotate-3" />
                     </div>
-                    <CardTitle className="text-3xl font-black text-gray-900 tracking-tight">
+                    <CardTitle className="text-3xl font-medium text-gray-900 tracking-tight">
                         {language === 'ar' ? 'انضمي كمصممة أو متجر' : 'Join as Designer Or Store'}
                     </CardTitle>
                     <p className="text-base font-bold text-gray-500 max-w-md mx-auto">
@@ -129,8 +129,8 @@ export default function VendorRegister() {
                         {/* Store Details Section */}
                         <div className="pt-8 border-t border-gray-100 flex flex-col gap-6" dir={language === 'ar' ? 'rtl' : 'ltr'}>
                             <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-lg bg-rose-600 text-white flex items-center justify-center font-black">2</div>
-                                <h3 className="font-black text-xl text-gray-900">
+                                <div className="w-8 h-8 rounded-lg bg-rose-600 text-white flex items-center justify-center font-medium">2</div>
+                                <h3 className="font-medium text-xl text-gray-900">
                                     {language === 'ar' ? 'بيانات المتجر الاحترافية' : 'Professional Store Details'}
                                 </h3>
                             </div>
@@ -192,7 +192,7 @@ export default function VendorRegister() {
 
                         <Button
                             type="submit"
-                            className="w-full h-14 bg-rose-600 hover:bg-rose-700 text-white font-black text-lg rounded-2xl shadow-xl shadow-rose-200 transition-all hover:scale-[1.01]"
+                            className="w-full h-14 bg-rose-600 hover:bg-rose-700 text-white font-medium text-lg rounded-2xl shadow-xl shadow-rose-200 transition-all hover:scale-[1.01]"
                             disabled={isLoading}
                         >
                             {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : (language === 'ar' ? 'إنشاء متجري الآن' : 'Create My Store Now')}
@@ -202,7 +202,7 @@ export default function VendorRegister() {
                 <CardFooter className="justify-center border-t border-gray-50 pt-6 pb-10">
                     <div className="text-sm text-center">
                         <span className="text-gray-500 font-medium">{language === 'ar' ? 'لديكِ حساب متجر بالفعل؟' : "Already have a store account?"} </span>
-                        <Link href="/vendor/login" className="font-black text-rose-600 hover:text-rose-800 underline underline-offset-4">
+                        <Link href="/vendor/login" className="font-medium text-rose-600 hover:text-rose-800 underline underline-offset-4">
                             {language === 'ar' ? 'دخول التجار' : 'Vendor Sign In'}
                         </Link>
                     </div>

@@ -68,7 +68,7 @@ export function NotificationDropdown({ unreadCount }: NotificationDropdownProps)
             </PopoverTrigger>
             <PopoverContent className="w-80 p-0 rounded-3xl overflow-hidden shadow-2xl border-gray-100" align="end">
                 <div className="p-4 border-b border-gray-50 flex items-center justify-between bg-white">
-                    <h3 className="font-black text-gray-900">{t('notifications') || (language === 'ar' ? "الإشعارات" : "Notifications")}</h3>
+                    <h3 className="font-medium text-gray-900">{t('notifications') || (language === 'ar' ? "الإشعارات" : "Notifications")}</h3>
                     {unreadCount > 0 && (
                         <Button
                             variant="ghost"
@@ -161,7 +161,7 @@ export function NotificationDropdown({ unreadCount }: NotificationDropdownProps)
 
                 <div className="p-3 bg-gray-50/50 border-t border-gray-50 text-center">
                     <Link href="/notifications">
-                        <button className="text-xs font-black text-gray-600 hover:text-blue-600 transition-colors py-1">
+                        <button className="text-xs font-medium text-gray-600 hover:text-blue-600 transition-colors py-1">
                             {language === 'ar' ? "عرض جميع الإشعارات" : "View all notifications"}
                         </button>
                     </Link>

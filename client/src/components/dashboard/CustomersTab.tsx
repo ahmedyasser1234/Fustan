@@ -68,7 +68,7 @@ export default function CustomersTab({ vendorId }: CustomersTabProps) {
         <div className="space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h2 className="text-2xl font-black text-gray-900">{t('customers')}</h2>
+                    <h2 className="text-2xl font-medium text-gray-900">{t('customers')}</h2>
                     <p className="text-gray-500 font-bold">{filteredCustomers.length} {t('activeCustomers')}</p>
                 </div>
                 <div className="relative w-full md:w-80">
@@ -87,11 +87,11 @@ export default function CustomersTab({ vendorId }: CustomersTabProps) {
                     <table className="w-full min-w-[800px]">
                         <thead className="bg-gray-50/50 border-b border-gray-100">
                             <tr>
-                                <th className="py-4 px-6 text-right font-black text-gray-400 text-xs uppercase tracking-wider">{t('customer')}</th>
-                                <th className="py-4 px-6 text-right font-black text-gray-400 text-xs uppercase tracking-wider">{t('contactInfo')}</th>
-                                <th className="py-4 px-6 text-center font-black text-gray-400 text-xs uppercase tracking-wider">{t('totalOrders')}</th>
-                                <th className="py-4 px-6 text-center font-black text-gray-400 text-xs uppercase tracking-wider">{t('totalSpent')}</th>
-                                <th className="py-4 px-6 text-center font-black text-gray-400 text-xs uppercase tracking-wider">{t('actions')}</th>
+                                <th className="py-4 px-6 text-right font-medium text-gray-400 text-xs uppercase tracking-wider">{t('customer')}</th>
+                                <th className="py-4 px-6 text-right font-medium text-gray-400 text-xs uppercase tracking-wider">{t('contactInfo')}</th>
+                                <th className="py-4 px-6 text-center font-medium text-gray-400 text-xs uppercase tracking-wider">{t('totalOrders')}</th>
+                                <th className="py-4 px-6 text-center font-medium text-gray-400 text-xs uppercase tracking-wider">{t('totalSpent')}</th>
+                                <th className="py-4 px-6 text-center font-medium text-gray-400 text-xs uppercase tracking-wider">{t('actions')}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -100,7 +100,7 @@ export default function CustomersTab({ vendorId }: CustomersTabProps) {
                                     <tr key={customer.id} className="group hover:bg-gray-50/50 transition-colors border-b border-gray-50 last:border-0">
                                         <td className="py-4 px-6">
                                             <div className="flex items-center gap-4">
-                                                <div className="w-10 h-10 rounded-full bg-purple-50 flex items-center justify-center text-purple-600 font-black">
+                                                <div className="w-10 h-10 rounded-full bg-purple-50 flex items-center justify-center text-purple-600 font-medium">
                                                     {customer.name?.charAt(0).toUpperCase() || 'U'}
                                                 </div>
                                                 <div>
@@ -125,7 +125,7 @@ export default function CustomersTab({ vendorId }: CustomersTabProps) {
                                             </span>
                                         </td>
                                         <td className="py-4 px-6 text-center">
-                                            <p className="font-black text-gray-900">
+                                            <p className="font-medium text-gray-900">
                                                 {Math.round(customer.totalSpent).toLocaleString()} {t('currency')}
                                             </p>
                                         </td>
@@ -162,11 +162,11 @@ export default function CustomersTab({ vendorId }: CustomersTabProps) {
                         filteredCustomers.map((customer: any) => (
                             <div key={customer.id} className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm space-y-4 relative overflow-hidden">
                                 <div className="flex items-center gap-4 relative z-10">
-                                    <div className="w-12 h-12 rounded-full bg-purple-50 flex items-center justify-center text-purple-600 font-black text-lg shrink-0">
+                                    <div className="w-12 h-12 rounded-full bg-purple-50 flex items-center justify-center text-purple-600 font-medium text-lg shrink-0">
                                         {customer.name?.charAt(0).toUpperCase() || 'U'}
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                        <p className="font-black text-gray-900 truncate">{customer.name || t('guest')}</p>
+                                        <p className="font-medium text-gray-900 truncate">{customer.name || t('guest')}</p>
                                         <p className="text-xs text-gray-400 truncate flex items-center gap-1.5 mt-0.5">
                                             <Mail className="w-3 h-3" />
                                             {customer.email}
@@ -191,13 +191,13 @@ export default function CustomersTab({ vendorId }: CustomersTabProps) {
                                 <div className="grid grid-cols-2 gap-4 py-3 border-t border-b border-gray-50 relative z-10">
                                     <div className="text-center">
                                         <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">{t('totalOrders')}</p>
-                                        <span className="inline-flex items-center px-3 py-1 rounded-full bg-blue-50 text-blue-600 font-black text-xs">
+                                        <span className="inline-flex items-center px-3 py-1 rounded-full bg-blue-50 text-blue-600 font-medium text-xs">
                                             {customer.totalOrders} {t('orders')}
                                         </span>
                                     </div>
                                     <div className="text-center border-l border-gray-50 border-r-0 rtl:border-r rtl:border-l-0">
                                         <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">{t('totalSpent')}</p>
-                                        <p className="font-black text-gray-900">
+                                        <p className="font-medium text-gray-900">
                                             {Math.round(customer.totalSpent).toLocaleString()} <span className="text-xs font-medium text-gray-400">{t('currency')}</span>
                                         </p>
                                     </div>
@@ -216,7 +216,7 @@ export default function CustomersTab({ vendorId }: CustomersTabProps) {
             <Dialog open={messageOpen} onOpenChange={setMessageOpen}>
                 <DialogContent className="max-w-md rounded-[2rem] bg-white border-0 shadow-2xl p-6">
                     <DialogHeader>
-                        <DialogTitle className="text-right text-xl font-black text-gray-900 flex items-center gap-2">
+                        <DialogTitle className="text-right text-xl font-medium text-gray-900 flex items-center gap-2">
                             <div className="w-1.5 h-6 bg-purple-500 rounded-full" />
                             {t('sendMessageTo')} {selectedCustomer?.name}
                         </DialogTitle>

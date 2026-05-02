@@ -67,7 +67,7 @@ export function ProductCard({ product, index = 0, loading = false, onQuickView }
                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                         />
                         {product.discount > 0 && (
-                            <Badge className={`absolute top-4 ${language === 'ar' ? 'right-4' : 'left-4'} bg-white/90 backdrop-blur-md text-rose-600 border-none px-3 py-1 rounded-full font-black text-sm shadow-sm z-10`}>
+                            <Badge className={`absolute top-4 ${language === 'ar' ? 'right-4' : 'left-4'} bg-white/90 backdrop-blur-md text-rose-600 border-none px-3 py-1 rounded-full font-medium text-sm shadow-sm z-10`}>
                                 -{product.discount}%
                             </Badge>
                         )}
@@ -75,12 +75,12 @@ export function ProductCard({ product, index = 0, loading = false, onQuickView }
                         {/* Condition & Source Badges */}
                         <div className={`absolute bottom-4 ${language === 'ar' ? 'left-4' : 'right-4'} flex flex-col gap-2 items-end z-10`}>
                             {product.condition === 'used' && (
-                                <Badge className="bg-amber-500/90 backdrop-blur-md text-white border-none px-3 py-1 rounded-full font-black text-[10px] uppercase shadow-lg">
+                                <Badge className="bg-amber-500/90 backdrop-blur-md text-white border-none px-3 py-1 rounded-full font-medium text-[10px] uppercase shadow-lg">
                                     {t('used')}
                                 </Badge>
                             )}
                             {product.isCustomerListing && (
-                                <Badge className="bg-purple-600/90 backdrop-blur-md text-white border-none px-3 py-1 rounded-full font-black text-[10px] uppercase shadow-lg flex items-center gap-1">
+                                <Badge className="bg-purple-600/90 backdrop-blur-md text-white border-none px-3 py-1 rounded-full font-medium text-[10px] uppercase shadow-lg flex items-center gap-1">
                                     <Users size={10} />
                                     {language === 'ar' ? 'من المجتمع' : 'Community'}
                                 </Badge>
@@ -139,7 +139,7 @@ export function ProductCard({ product, index = 0, loading = false, onQuickView }
 
                 <div className={`px-2 ${language === 'ar' ? 'text-right' : 'text-left'}`}>
                     <Link href={`/products/${product.id}`}>
-                        <h3 className="text-base md:text-lg font-black text-gray-900 mb-1 truncate hover:text-rose-600 transition-colors">{name}</h3>
+                        <h3 className="text-base md:text-lg font-medium text-gray-900 mb-1 truncate hover:text-rose-600 transition-colors">{name}</h3>
                     </Link>
                     <div className={`flex flex-wrap items-center ${language === 'ar' ? 'justify-end' : 'justify-start'} gap-1.5 md:gap-2 mb-2`}>
                         <div className={`flex items-center gap-1 ${language === 'ar' ? 'order-last' : 'order-first'}`}>
@@ -149,7 +149,7 @@ export function ProductCard({ product, index = 0, loading = false, onQuickView }
                         {product.originalPrice && (
                             <span className="text-gray-400 font-medium line-through text-[10px] md:text-xs">{formatPrice(product.originalPrice)}</span>
                         )}
-                        <span className="text-base md:text-lg font-black text-rose-600">{formatPrice(product.price)}</span>
+                        <span className="text-base md:text-lg font-medium text-rose-600">{formatPrice(product.price)}</span>
                     </div>
 
                     {/* Color Swatches */}

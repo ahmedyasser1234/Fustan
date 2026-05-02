@@ -133,7 +133,7 @@ export default function NotificationBell() {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-80 rounded-[24px] p-0 border-0 shadow-xl bg-white/90 backdrop-blur-xl">
                 <div className="p-4 border-b border-slate-100 flex items-center justify-between">
-                    <h3 className="font-black text-slate-900">{language === 'ar' ? "الإشعارات" : "Notifications"}</h3>
+                    <h3 className="font-medium text-slate-900">{language === 'ar' ? "الإشعارات" : "Notifications"}</h3>
                     {unreadCount > 0 && (
                         <Button
                             variant="ghost"
@@ -166,13 +166,13 @@ export default function NotificationBell() {
                                     {!notification.isRead && (
                                         <div className="absolute top-4 right-4 w-2 h-2 bg-purple-500 rounded-full" />
                                     )}
-                                    <h4 className={cn("text-sm font-black mb-1", !notification.isRead ? "text-purple-900" : "text-slate-700")}>
+                                    <h4 className={cn("text-sm font-medium mb-1", !notification.isRead ? "text-purple-900" : "text-slate-700")}>
                                         {notification.title}
                                     </h4>
                                     <p className="text-xs text-slate-500 font-bold mb-2 leading-relaxed">
                                         {notification.message}
                                     </p>
-                                    <span className="text-[10px] font-black text-slate-300">
+                                    <span className="text-[10px] font-medium text-slate-300">
                                         {(() => {
                                             try {
                                                 const date = new Date(notification.createdAt);
@@ -189,7 +189,7 @@ export default function NotificationBell() {
                     )}
                 </ScrollArea>
                 <div className="p-2 border-t border-slate-100 bg-slate-50/50 rounded-b-[24px]">
-                    <Button variant="ghost" className="w-full h-8 text-xs font-black text-slate-400 hover:text-slate-600 rounded-xl">
+                    <Button variant="ghost" className="w-full h-8 text-xs font-medium text-slate-400 hover:text-slate-600 rounded-xl">
                         {language === 'ar' ? "عرض كل الإشعارات" : "View all notifications"}
                     </Button>
                 </div>

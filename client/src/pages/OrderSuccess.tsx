@@ -54,7 +54,7 @@ export default function OrderSuccess() {
                     initial={{ y: 20, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     transition={{ delay: 0.2 }}
-                    className="text-5xl font-black text-gray-900 mb-6 font-arabic"
+                    className="text-3xl font-medium text-gray-900 mb-6 font-arabic"
                 >
                     {t('orderSuccess')}
                 </motion.h1>

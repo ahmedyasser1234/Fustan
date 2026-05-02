@@ -77,7 +77,7 @@ export default function OverviewTab({ dashboard, onCategoryClick, onProductClick
                                 <div className="h-2 w-8 bg-slate-100 rounded-full" />
                             </div>
                             <p className="text-slate-400 font-bold text-sm mb-1 uppercase tracking-widest">{stat.label}</p>
-                            <h3 className="text-3xl font-black text-slate-900">{stat.value}</h3>
+                            <h3 className="text-3xl font-medium text-slate-900">{stat.value}</h3>
                         </CardContent>
                     </Card>
                 ))}
@@ -88,12 +88,12 @@ export default function OverviewTab({ dashboard, onCategoryClick, onProductClick
                 <Card className="lg:col-span-8 border-0 shadow-xl shadow-slate-100/50 rounded-[40px] bg-white overflow-hidden">
                     <div className={`p-10 border-b border-slate-50 flex items-center justify-between ${language === 'ar' ? 'flex-row' : 'flex-row'}`}>
                         <div className={language === 'ar' ? 'text-right' : 'text-left'}>
-                            <h3 className="text-2xl font-black text-slate-800 mb-1">{language === 'ar' ? "تحليل نمو المبيعات" : "Revenue Analytics"}</h3>
+                            <h3 className="text-2xl font-medium text-slate-800 mb-1">{language === 'ar' ? "تحليل نمو المبيعات" : "Revenue Analytics"}</h3>
                             <p className="text-sm font-bold text-slate-400">{language === 'ar' ? "أداء متجرك خلال الـ 6 أشهر الماضية" : "Store performance over the last 6 months"}</p>
                         </div>
                         <div className="flex items-center gap-2 bg-emerald-50 px-4 py-2 rounded-2xl">
                             <TrendingUp className="w-4 h-4 text-emerald-600" />
-                            <span className="text-xs font-black text-emerald-600">+12.5%</span>
+                            <span className="text-xs font-medium text-emerald-600">+12.5%</span>
                         </div>
                     </div>
                     <div className="p-10 h-[400px]">
@@ -141,7 +141,7 @@ export default function OverviewTab({ dashboard, onCategoryClick, onProductClick
                 <div className="lg:col-span-4 space-y-8">
                     <Card className="border-0 shadow-xl shadow-slate-100/50 rounded-[40px] bg-slate-900 text-white p-10 relative overflow-hidden">
                         <Zap className={`absolute ${language === 'ar' ? '-left-10' : '-right-10'} -bottom-10 w-48 h-48 text-white/5 ${language === 'ar' ? 'rotate-12' : '-rotate-12'}`} />
-                        <h4 className={`text-xl font-black mb-8 relative z-10 ${language === 'ar' ? 'text-right' : 'text-left'}`}>{language === 'ar' ? "إجراءات سريعة" : "Lightning Actions"}</h4>
+                        <h4 className={`text-xl font-medium mb-8 relative z-10 ${language === 'ar' ? 'text-right' : 'text-left'}`}>{language === 'ar' ? "إجراءات سريعة" : "Lightning Actions"}</h4>
                         <div className="space-y-4 relative z-10">
                             {[
                                 { label: language === 'ar' ? "إضافة فستان جديد" : "Post New Dress", icon: Plus, action: () => (window.location.search = "?tab=products") },
@@ -158,7 +158,7 @@ export default function OverviewTab({ dashboard, onCategoryClick, onProductClick
 
                     <Card className="border-0 shadow-xl shadow-slate-100/50 rounded-[40px] bg-white p-8">
                         <div className="flex items-center justify-between mb-6">
-                            <h4 className="font-black text-slate-800">{language === 'ar' ? "تنبيهات هامة" : "Alerts"}</h4>
+                            <h4 className="font-medium text-slate-800">{language === 'ar' ? "تنبيهات هامة" : "Alerts"}</h4>
                             <AlertCircle className="w-5 h-5 text-amber-500" />
                         </div>
                         <div className="space-y-4">
@@ -176,8 +176,8 @@ export default function OverviewTab({ dashboard, onCategoryClick, onProductClick
             {/* Recent Orders Section */}
             <div className="space-y-6">
                 <div className="flex items-center justify-between px-4">
-                    <h3 className="text-2xl font-black text-slate-900">{language === 'ar' ? "آخر الطلبات" : "Recent Activity"}</h3>
-                    <Button variant="link" onClick={() => (window.location.search = "?tab=orders")} className="text-[#e91e63] font-black underline underline-offset-8">
+                    <h3 className="text-2xl font-medium text-slate-900">{language === 'ar' ? "آخر الطلبات" : "Recent Activity"}</h3>
+                    <Button variant="link" onClick={() => (window.location.search = "?tab=orders")} className="text-[#e91e63] font-medium underline underline-offset-8">
                         {language === 'ar' ? "عرض الكل" : "View Full Journal"}
                     </Button>
                 </div>
@@ -187,10 +187,10 @@ export default function OverviewTab({ dashboard, onCategoryClick, onProductClick
                         <table className={`w-full ${language === 'ar' ? 'text-right' : 'text-left'}`}>
                             <thead className="bg-slate-50 border-b border-slate-100">
                                 <tr>
-                                    <th className={`py-6 px-10 text-[10px] font-black text-slate-400 uppercase tracking-widest ${language === 'ar' ? 'text-right' : 'text-left'}`}>{language === 'ar' ? "العميل" : "Customer"}</th>
-                                    <th className="py-6 px-8 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">{language === 'ar' ? "المنتجات" : "Items"}</th>
-                                    <th className="py-6 px-8 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">{language === 'ar' ? "الحالة" : "Status"}</th>
-                                    <th className={`py-6 px-10 text-[10px] font-black text-slate-400 uppercase tracking-widest ${language === 'ar' ? 'text-left' : 'text-right'}`}>{language === 'ar' ? "المبلغ" : "Total"}</th>
+                                    <th className={`py-6 px-10 text-[10px] font-medium text-slate-400 uppercase tracking-widest ${language === 'ar' ? 'text-right' : 'text-left'}`}>{language === 'ar' ? "العميل" : "Customer"}</th>
+                                    <th className="py-6 px-8 text-[10px] font-medium text-slate-400 uppercase tracking-widest text-center">{language === 'ar' ? "المنتجات" : "Items"}</th>
+                                    <th className="py-6 px-8 text-[10px] font-medium text-slate-400 uppercase tracking-widest text-center">{language === 'ar' ? "الحالة" : "Status"}</th>
+                                    <th className={`py-6 px-10 text-[10px] font-medium text-slate-400 uppercase tracking-widest ${language === 'ar' ? 'text-left' : 'text-right'}`}>{language === 'ar' ? "المبلغ" : "Total"}</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-50">
@@ -205,11 +205,11 @@ export default function OverviewTab({ dashboard, onCategoryClick, onProductClick
                                         <tr key={order.id} className="hover:bg-slate-50/50 transition-colors group cursor-pointer" onClick={() => onOrderClick(order)}>
                                             <td className="py-6 px-10">
                                                 <div className="flex items-center gap-4">
-                                                    <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center font-black text-slate-500 text-xs">
+                                                    <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center font-medium text-slate-500 text-xs">
                                                         {order.customer?.name?.[0] || 'G'}
                                                     </div>
                                                     <div>
-                                                        <p className="font-black text-slate-900 text-sm">{order.customer?.name || (language === 'ar' ? "ضيف" : "Guest")}</p>
+                                                        <p className="font-medium text-slate-900 text-sm">{order.customer?.name || (language === 'ar' ? "ضيف" : "Guest")}</p>
                                                         <p className="text-[10px] font-bold text-slate-400">#{order.orderNumber}</p>
                                                     </div>
                                                 </div>
@@ -219,14 +219,14 @@ export default function OverviewTab({ dashboard, onCategoryClick, onProductClick
                                             </td>
                                             <td className="py-6 px-8 text-center">
                                                 <span className={cn(
-                                                    "px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest",
+                                                    "px-4 py-1.5 rounded-full text-[10px] font-medium uppercase tracking-widest",
                                                     order.status === 'delivered' ? "bg-emerald-50 text-emerald-600" : "bg-amber-50 text-amber-600"
                                                 )}>
                                                     {order.status === 'delivered' ? (language === 'ar' ? 'مسلم' : 'Delivered') : (language === 'ar' ? 'قيد التنفيذ' : 'Processing')}
                                                 </span>
                                             </td>
                                             <td className={`py-6 px-10 ${language === 'ar' ? 'text-left' : 'text-right'}`}>
-                                                <span className="font-black text-slate-900">{order.total} <span className="text-[10px]">{t('currency')}</span></span>
+                                                <span className="font-medium text-slate-900">{order.total} <span className="text-[10px]">{t('currency')}</span></span>
                                             </td>
                                         </tr>
                                     ))

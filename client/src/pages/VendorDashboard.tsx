@@ -143,12 +143,12 @@ export default function VendorDashboard() {
                   </div>
                 </div>
                 <div>
-                  <h1 className="text-2xl md:text-4xl font-black text-slate-900 tracking-tight mb-0.5 md:mb-1 bg-gradient-to-l from-slate-900 to-purple-900 bg-clip-text text-transparent">
+                  <h1 className="text-2xl md:text-4xl font-medium text-slate-900 tracking-tight mb-0.5 md:mb-1 bg-gradient-to-l from-slate-900 to-purple-900 bg-clip-text text-transparent">
                     {t('dashboardTitle')}
                   </h1>
                   <p className="text-slate-500 font-bold flex flex-wrap items-center gap-1 md:gap-2 text-sm md:text-lg">
                     {t('welcomeBack')}
-                    <span className="text-purple-600 font-black">{language === 'ar' ? (dashboard?.vendor?.storeNameAr || user?.name) : (dashboard?.vendor?.storeNameEn || user?.name)}</span>
+                    <span className="text-purple-600 font-medium">{language === 'ar' ? (dashboard?.vendor?.storeNameAr || user?.name) : (dashboard?.vendor?.storeNameEn || user?.name)}</span>
                   </p>
                 </div>
               </div>
@@ -167,7 +167,7 @@ export default function VendorDashboard() {
                       <Package className="w-4 h-4 md:w-6 md:h-6 text-purple-600" />
                     </div>
                     <div>
-                      <p className="text-base md:text-2xl font-black text-slate-900 leading-none">{dashboard.stats?.totalProducts || 0}</p>
+                      <p className="text-base md:text-2xl font-medium text-slate-900 leading-none">{dashboard.stats?.totalProducts || 0}</p>
                       <p className="text-[8px] md:text-xs font-bold text-slate-400 mt-0.5 md:mt-1">{t('statsProducts')}</p>
                     </div>
                   </div>
@@ -178,7 +178,7 @@ export default function VendorDashboard() {
                       <ShoppingCart className="w-4 h-4 md:w-6 md:h-6 text-blue-600" />
                     </div>
                     <div>
-                      <p className="text-base md:text-2xl font-black text-slate-900 leading-none">{dashboard.stats?.totalOrders || 0}</p>
+                      <p className="text-base md:text-2xl font-medium text-slate-900 leading-none">{dashboard.stats?.totalOrders || 0}</p>
                       <p className="text-[8px] md:text-xs font-bold text-slate-400 mt-0.5 md:mt-1">{t('statsOrders')}</p>
                     </div>
                   </div>
@@ -189,7 +189,7 @@ export default function VendorDashboard() {
                       <TrendingUp className="w-4 h-4 md:w-6 md:h-6 text-emerald-600" />
                     </div>
                     <div>
-                      <p className="text-base md:text-2xl font-black text-slate-900 leading-none">{dashboard.stats?.totalRevenue ? `${Math.round(dashboard.stats.totalRevenue)}` : '0'}</p>
+                      <p className="text-base md:text-2xl font-medium text-slate-900 leading-none">{dashboard.stats?.totalRevenue ? `${Math.round(dashboard.stats.totalRevenue)}` : '0'}</p>
                       <p className="text-[8px] md:text-xs font-bold text-slate-400 mt-0.5 md:mt-1">{t('currency')}</p>
                     </div>
                   </div>
@@ -217,7 +217,7 @@ export default function VendorDashboard() {
                 <button
                   key={tab.id}
                   onClick={() => handleTabChange(tab.id)}
-                  className={`group h-11 md:h-14 px-4 md:px-7 rounded-2xl md:rounded-[20px] font-black text-xs md:text-sm flex items-center gap-2 md:gap-3 transition-all duration-300 relative overflow-hidden whitespace-nowrap min-w-fit ${activeTab === tab.id
+                  className={`group h-11 md:h-14 px-4 md:px-7 rounded-2xl md:rounded-[20px] font-medium text-xs md:text-sm flex items-center gap-2 md:gap-3 transition-all duration-300 relative overflow-hidden whitespace-nowrap min-w-fit ${activeTab === tab.id
                     ? "bg-slate-900 text-white shadow-xl shadow-slate-300/50 scale-105"
                     : "bg-white/60 backdrop-blur-sm text-slate-500 hover:bg-white hover:text-slate-900 border border-slate-200/60 hover:border-slate-300 hover:shadow-lg"
                     }`}
@@ -228,7 +228,7 @@ export default function VendorDashboard() {
                   <tab.icon className={`w-4 h-4 md:w-5 md:h-5 relative z-10 transition-transform group-hover:scale-110 ${activeTab === tab.id ? 'animate-pulse' : ''}`} />
                   <span className="relative z-10">{t(`tab${tab.id.charAt(0).toUpperCase() + tab.id.slice(1)}` as any)}</span>
                   {tab.badge > 0 && (
-                    <span className="absolute -top-1 -left-1 md:-top-2 md:-left-2 w-5 h-5 md:w-6 md:h-6 bg-gradient-to-r from-red-500 to-pink-500 text-white text-[9px] md:text-[11px] font-black rounded-full flex items-center justify-center animate-bounce shadow-lg z-20">
+                    <span className="absolute -top-1 -left-1 md:-top-2 md:-left-2 w-5 h-5 md:w-6 md:h-6 bg-gradient-to-r from-red-500 to-pink-500 text-white text-[9px] md:text-[11px] font-medium rounded-full flex items-center justify-center animate-bounce shadow-lg z-20">
                       {tab.badge}
                     </span>
                   )}
@@ -294,18 +294,18 @@ export default function VendorDashboard() {
       <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
         <AlertDialogContent className="max-w-md rounded-[32px] border-0 shadow-2xl p-8 bg-white">
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-2xl font-black text-slate-900">{confirmConfig.title}</AlertDialogTitle>
+            <AlertDialogTitle className="text-2xl font-medium text-slate-900">{confirmConfig.title}</AlertDialogTitle>
             <AlertDialogDescription className="text-slate-500 font-bold text-base mt-2">
               {confirmConfig.description}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="flex gap-4 mt-8">
-            <AlertDialogCancel className="flex-1 h-14 rounded-2xl border-slate-100 font-black text-slate-400 hover:bg-slate-50">
+            <AlertDialogCancel className="flex-1 h-14 rounded-2xl border-slate-100 font-medium text-slate-400 hover:bg-slate-50">
               {t('cancel')}
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={confirmConfig.onConfirm}
-              className="bg-red-500 hover:bg-red-600 text-white flex-1 h-14 rounded-2xl font-black shadow-lg shadow-red-100 border-0"
+              className="bg-red-500 hover:bg-red-600 text-white flex-1 h-14 rounded-2xl font-medium shadow-lg shadow-red-100 border-0"
             >
               {t('confirm')}
             </AlertDialogAction>
@@ -316,7 +316,7 @@ export default function VendorDashboard() {
       <Dialog open={customerInfoOpen} onOpenChange={setCustomerInfoOpen}>
         <DialogContent className="max-w-md rounded-[40px] border-0 shadow-2xl p-10 bg-white overflow-hidden">
           <DialogHeader className="mb-8">
-            <DialogTitle className="text-right text-2xl font-black text-slate-900 flex items-center gap-3">
+            <DialogTitle className="text-right text-2xl font-medium text-slate-900 flex items-center gap-3">
               <div className="w-2 h-8 bg-purple-600 rounded-full" />
               {t('customerProfile')}
             </DialogTitle>
@@ -325,27 +325,27 @@ export default function VendorDashboard() {
             <User className="absolute -left-10 -bottom-10 w-48 h-48 text-slate-50 -rotate-12 pointer-events-none" />
 
             <div className="bg-slate-50 p-6 rounded-3xl border border-slate-100 relative z-10">
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">{t('fullName')}</p>
-              <p className="font-black text-lg text-slate-900">
+              <p className="text-[10px] font-medium text-slate-400 uppercase tracking-widest mb-1">{t('fullName')}</p>
+              <p className="font-medium text-lg text-slate-900">
                 {selectedCustomer?.name || selectedCustomer?.shippingAddress?.name || t('guestAccount')}
               </p>
             </div>
 
             <div className="bg-slate-50 p-6 rounded-3xl border border-slate-100 relative z-10">
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">{t('emailContact')}</p>
-              <p className="font-black text-lg text-slate-900">
+              <p className="text-[10px] font-medium text-slate-400 uppercase tracking-widest mb-1">{t('emailContact')}</p>
+              <p className="font-medium text-lg text-slate-900">
                 {selectedCustomer?.email || selectedCustomer?.shippingAddress?.email || t('notAvailable')}
               </p>
             </div>
 
             <div className="bg-slate-50 p-6 rounded-3xl border border-slate-100 relative z-10">
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">{t('mobileNumber')}</p>
-              <p className="font-black text-lg text-slate-900" dir="ltr">
+              <p className="text-[10px] font-medium text-slate-400 uppercase tracking-widest mb-1">{t('mobileNumber')}</p>
+              <p className="font-medium text-lg text-slate-900" dir="ltr">
                 {selectedCustomer?.phone || selectedCustomer?.shippingAddress?.phone || t('notAvailable')}
               </p>
             </div>
 
-            <Button onClick={() => setCustomerInfoOpen(false)} className="w-full h-14 rounded-2xl bg-slate-900 hover:bg-black font-black text-white mt-4 relative z-10">
+            <Button onClick={() => setCustomerInfoOpen(false)} className="w-full h-14 rounded-2xl bg-slate-900 hover:bg-black font-medium text-white mt-4 relative z-10">
               {t('close')}
             </Button>
           </div>

@@ -60,7 +60,7 @@ export function FlashSalesSection({ onQuickView }: FlashSalesSectionProps) {
                             </span>
                             <span className="text-rose-400 text-xl font-bold">{language === 'ar' ? 'عرض مخصص لفترة محدودة' : 'Limited Time Offer'}</span>
                         </div>
-                        <h2 className="text-4xl md:text-5xl font-black mb-6 leading-tight">
+                        <h2 className="text-4xl md:text-3xl font-medium mb-6 leading-tight">
                             {t('flashSaleTitle')}
                         </h2>
 
@@ -68,7 +68,7 @@ export function FlashSalesSection({ onQuickView }: FlashSalesSectionProps) {
                         <div className={`flex gap-4 ${language === 'ar' ? 'justify-start' : 'justify-start'} text-center`}>
                             {['hours', 'minutes', 'seconds'].map((unit, i) => (
                                 <div key={unit} className="bg-white/10 backdrop-blur-md rounded-2xl p-4 min-w-[90px] border border-white/10">
-                                    <div className="text-3xl font-black text-white mb-1">
+                                    <div className="text-3xl font-medium text-white mb-1">
                                         {String(timeLeft[unit as keyof typeof timeLeft]).padStart(2, '0')}
                                     </div>
                                     <div className="text-xs text-gray-400 font-bold uppercase tracking-wider">

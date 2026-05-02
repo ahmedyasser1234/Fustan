@@ -455,10 +455,10 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700" dir={language === 'ar' ? 'rtl' : 'ltr'}>
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div className={`w-full sm:w-auto ${language === 'ar' ? 'text-center sm:text-right' : 'text-center sm:text-left'}`}>
-                    <h2 className="text-2xl sm:text-3xl font-black text-slate-900 mb-2">{language === 'ar' ? "إدارة المنتجات" : "Product Management"}</h2>
+                    <h2 className="text-2xl sm:text-3xl font-medium text-slate-900 mb-2">{language === 'ar' ? "إدارة المنتجات" : "Product Management"}</h2>
                     <p className="text-slate-400 font-bold text-sm sm:text-base">{language === 'ar' ? "أضف، عدل وأدر مبيعات فساتينك في مكان واحد" : "Add, edit and manage your dress sales in one place"}</p>
                 </div>
-                <Button onClick={() => setIsModalOpen(true)} className="w-full sm:w-auto bg-purple-600 hover:bg-purple-700 h-12 sm:h-14 px-8 rounded-full text-base sm:text-lg font-black shadow-lg shadow-purple-200 transition-all hover:scale-105 active:scale-95 group">
+                <Button onClick={() => setIsModalOpen(true)} className="w-full sm:w-auto bg-purple-600 hover:bg-purple-700 h-12 sm:h-14 px-8 rounded-full text-base sm:text-lg font-medium shadow-lg shadow-purple-200 transition-all hover:scale-105 active:scale-95 group">
                     <Plus className={`w-5 h-5 sm:w-6 sm:h-6 ${language === 'ar' ? 'ml-2' : 'mr-2'} group-hover:rotate-90 transition-transform`} />
                     {language === 'ar' ? "منتج جديد" : "New Product"}
                 </Button>
@@ -495,18 +495,18 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
                             </div>
 
                             {product.discount > 0 && (
-                                <div className="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 rounded-full text-xs font-black shadow-lg">
+                                <div className="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 rounded-full text-xs font-medium shadow-lg">
                                     -{product.discount}% OFF
                                 </div>
                             )}
                         </div>
                         <CardContent className={`p-6 ${language === 'ar' ? 'text-right' : 'text-left'}`}>
 
-                            <h3 className="font-black text-lg text-slate-900 line-clamp-1 mb-2">
+                            <h3 className="font-medium text-lg text-slate-900 line-clamp-1 mb-2">
                                 {language === 'ar' ? product.nameAr : product.nameEn}
                             </h3>
                             <div className="flex items-center gap-3">
-                                <span className="font-black text-xl text-[#e91e63]">{product.price} {t('currency')}</span>
+                                <span className="font-medium text-xl text-[#e91e63]">{product.price} {t('currency')}</span>
                                 {product.originalPrice > product.price && (
                                     <span className="text-slate-400 line-through text-xs font-bold">{product.originalPrice} {t('currency')}</span>
                                 )}
@@ -527,7 +527,7 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
                         {/* Custom Header */}
                         <div className="bg-white px-4 py-4 md:px-8 md:py-6 flex items-center justify-between border-b border-slate-100 sticky top-0 z-50">
                             <div>
-                                <h3 className="text-2xl font-black text-slate-900">
+                                <h3 className="text-2xl font-medium text-slate-900">
                                     {editingProduct ? (language === 'ar' ? 'تعديل منتج' : 'Edit Product') : (language === 'ar' ? 'إضافة منتج جديد' : 'New Dress')}
                                 </h3>
                                 <p className="text-sm font-bold text-slate-400">{language === 'ar' ? "املأ البيانات التالية لعرض فستانك في المتجر" : "Fill in the details to list your dress"}</p>
@@ -543,11 +543,11 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
                                 <div className="md:col-span-4 bg-white p-5 md:p-8 border-b md:border-b-0 md:border-l border-slate-100 flex flex-col gap-6 md:gap-8">
                                     <div className="space-y-4">
                                         <div className="flex items-center justify-between">
-                                            <h4 className="font-black text-slate-900 uppercase tracking-widest text-xs flex items-center gap-2">
+                                            <h4 className="font-medium text-slate-900 uppercase tracking-widest text-xs flex items-center gap-2">
                                                 <ImageIcon className="w-4 h-4 text-purple-600" />
                                                 {language === 'ar' ? "صور المنتج" : "Media Library"}
                                             </h4>
-                                            <div className="h-6 px-2 bg-purple-50 text-[10px] font-black text-purple-600 rounded-full flex items-center">
+                                            <div className="h-6 px-2 bg-purple-50 text-[10px] font-medium text-purple-600 rounded-full flex items-center">
                                                 {images.length || editingProduct?.images?.length || 0} / 6
                                             </div>
                                         </div>
@@ -564,9 +564,9 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
                                                         <Plus className="w-8 h-8 text-purple-600" />
                                                     </div>
                                                     <div className="space-y-1">
-                                                        <p className="font-black text-slate-900">{language === 'ar' ? "تحميل صورة الغلاف" : "Upload Cover"}</p>
+                                                        <p className="font-medium text-slate-900">{language === 'ar' ? "تحميل صورة الغلاف" : "Upload Cover"}</p>
                                                         <p className="text-[10px] font-bold text-slate-400">{language === 'ar' ? "اسحب وأفلت أو اضغط هنا" : "Tap to browse files"}</p>
-                                                        <p className="text-[9px] font-black text-purple-500 mt-2 bg-purple-50 px-2 py-0.5 rounded-full inline-block">
+                                                        <p className="text-[9px] font-medium text-purple-500 mt-2 bg-purple-50 px-2 py-0.5 rounded-full inline-block">
                                                             {language === 'ar' ? "الأبعاد المنصوح بها: 1200 × 1600 (3:4)" : "Recommended: 1200 x 1600 (3:4)"}
                                                         </p>
                                                     </div>
@@ -575,7 +575,7 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
 
                                             <label className="absolute inset-0 bg-slate-900/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-500 cursor-pointer text-white flex-col gap-2">
                                                 <ImageIcon className="w-8 h-8" />
-                                                <span className="font-black text-sm uppercase tracking-widest underline underline-offset-8">
+                                                <span className="font-medium text-sm uppercase tracking-widest underline underline-offset-8">
                                                     {language === 'ar' ? "تغيير الصورة" : "Update Cover"}
                                                 </span>
                                                 <input type="file" accept="image/*" className="hidden" onChange={(e) => {
@@ -620,11 +620,11 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
                                     {/* AI Try-On Feature Section */}
                                     <div className="space-y-4 pt-4 border-t border-slate-100 px-2">
                                         <div className="flex items-center justify-between">
-                                            <h4 className="font-black text-slate-900 uppercase tracking-widest text-xs flex items-center gap-2">
+                                            <h4 className="font-medium text-slate-900 uppercase tracking-widest text-xs flex items-center gap-2">
                                                 <Sparkles className="w-4 h-4 text-rose-500" />
                                                 {language === 'ar' ? "صورة التجربة الافتراضية (AI)" : "AI Try-On Image"}
                                             </h4>
-                                            <span className="text-[9px] font-black text-rose-500 bg-rose-50 px-2 py-0.5 rounded-full uppercase">
+                                            <span className="text-[9px] font-medium text-rose-500 bg-rose-50 px-2 py-0.5 rounded-full uppercase">
                                                 {language === 'ar' ? "إلزامي" : "Required"}
                                             </span>
                                         </div>
@@ -633,7 +633,7 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
                                             {isEnhancing ? (
                                                 <div className="flex flex-col items-center gap-4">
                                                     <Loader2 className="w-10 h-10 text-rose-500 animate-spin" />
-                                                    <p className="text-xs font-black text-rose-600 animate-pulse">
+                                                    <p className="text-xs font-medium text-rose-600 animate-pulse">
                                                         {language === 'ar' ? "جاري التحسين..." : "Enhancing..."}
                                                     </p>
                                                 </div>
@@ -646,7 +646,7 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
                                                     <div className="w-12 h-12 bg-white rounded-2xl shadow-sm flex items-center justify-center mx-auto mb-2">
                                                         <Upload className="w-6 h-6 text-rose-500" />
                                                     </div>
-                                                    <p className="text-[10px] font-black text-slate-900">{language === 'ar' ? "تحميل صورة AI" : "Upload AI Image"}</p>
+                                                    <p className="text-[10px] font-medium text-slate-900">{language === 'ar' ? "تحميل صورة AI" : "Upload AI Image"}</p>
                                                     <p className="text-[8px] font-bold text-slate-400 mt-1">{language === 'ar' ? "صورة واضحة للفستان على مانيكان" : "Clear dress on mannequin"}</p>
                                                 </div>
                                             )}
@@ -660,7 +660,7 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
                                         {(aiQualifiedImage || editingProduct?.aiQualifiedImage) && !isEnhancing && (
                                             <Button 
                                                 onClick={handleEnhanceImage}
-                                                className="w-full bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white h-10 rounded-xl font-black text-xs shadow-lg shadow-rose-100 transition-all hover:scale-[1.02] active:scale-95 group"
+                                                className="w-full bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white h-10 rounded-xl font-medium text-xs shadow-lg shadow-rose-100 transition-all hover:scale-[1.02] active:scale-95 group"
                                             >
                                                 <Sparkles className={`w-4 h-4 ${language === 'ar' ? 'ml-2' : 'mr-2'} group-hover:animate-pulse`} />
                                                 {language === 'ar' ? "تحسين بالذكاء الاصطناعي (Nano Banana)" : "AI Enhance (Nano Banana)"}
@@ -669,7 +669,7 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
                                     </div>
 
                                     <div className="mt-auto p-6 bg-slate-50 rounded-[32px] border border-slate-100 space-y-4">
-                                        <h5 className="font-black text-[10px] text-slate-400 uppercase tracking-widest">{language === 'ar' ? "تلميح العرض" : "Photography Tip"}</h5>
+                                        <h5 className="font-medium text-[10px] text-slate-400 uppercase tracking-widest">{language === 'ar' ? "تلميح العرض" : "Photography Tip"}</h5>
                                         <p className="text-xs font-bold text-slate-600 leading-relaxed italic">"الفساتين المصورة في ضوء النهار الطبيعي تحقق مبيعات أعلى بنسبة 40%."</p>
                                     </div>
                                 </div>
@@ -682,24 +682,24 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
                                         <div className="space-y-6">
                                             <div className="flex items-center gap-3">
                                                 <div className="h-2 w-8 bg-purple-600 rounded-full" />
-                                                <h4 className="font-black text-slate-900 uppercase tracking-widest text-xs">{language === 'ar' ? "المعلومات الأساسية" : "Identity"}</h4>
+                                                <h4 className="font-medium text-slate-900 uppercase tracking-widest text-xs">{language === 'ar' ? "المعلومات الأساسية" : "Identity"}</h4>
                                             </div>
 
                                             <div className="space-y-4">
                                                 <div className="space-y-2">
-                                                    <label className="text-xs font-black text-slate-400">{language === 'ar' ? "اسم الفستان (بالعربية)" : "ARABIC NAME"}</label>
+                                                    <label className="text-xs font-medium text-slate-400">{language === 'ar' ? "اسم الفستان (بالعربية)" : "ARABIC NAME"}</label>
                                                     <Input className="h-14 rounded-2xl border-slate-100 shadow-sm font-bold text-lg px-6 focus:ring-4 focus:ring-purple-50" value={nameAr} onChange={e => setNameAr(e.target.value)} dir="rtl" placeholder="فستان زفاف دانتيل..." />
                                                 </div>
                                                 <div className="space-y-2">
-                                                    <label className="text-xs font-black text-slate-400">{language === 'ar' ? "ENGLISH NAME" : "ENGLISH NAME"}</label>
+                                                    <label className="text-xs font-medium text-slate-400">{language === 'ar' ? "ENGLISH NAME" : "ENGLISH NAME"}</label>
                                                     <Input className="h-14 rounded-2xl border-slate-100 shadow-sm font-bold text-lg px-6 focus:ring-4 focus:ring-purple-50" value={nameEn} onChange={e => setNameEn(e.target.value)} dir="ltr" placeholder="Lace Wedding Dress..." />
                                                 </div>
                                                 <div className="space-y-2">
-                                                    <label className="text-xs font-black text-slate-400">{language === 'ar' ? "الرمز (SKU)" : "SKU"}</label>
+                                                    <label className="text-xs font-medium text-slate-400">{language === 'ar' ? "الرمز (SKU)" : "SKU"}</label>
                                                     <Input className="h-14 rounded-2xl border-slate-100 shadow-sm font-bold text-lg px-6 focus:ring-4 focus:ring-purple-50" value={sku} onChange={e => setSku(e.target.value)} placeholder="SKU-1234..." />
                                                 </div>
                                                 <div className="space-y-2">
-                                                    <label className="text-xs font-black text-slate-400">{language === 'ar' ? "الوسوم (مفصولة بفاصلة)" : "Tags (comma separated)"}</label>
+                                                    <label className="text-xs font-medium text-slate-400">{language === 'ar' ? "الوسوم (مفصولة بفاصلة)" : "Tags (comma separated)"}</label>
                                                     <Input className="h-14 rounded-2xl border-slate-100 shadow-sm font-bold text-lg px-6 focus:ring-4 focus:ring-purple-50" value={tags} onChange={e => setTags(e.target.value)} placeholder="فستان, زفاف, دانتيل..." />
                                                 </div>
                                             </div>
@@ -709,13 +709,13 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
                                         <div className="space-y-6">
                                             <div className="flex items-center gap-3">
                                                 <div className="h-2 w-8 bg-[#e91e63] rounded-full" />
-                                                <h4 className="font-black text-slate-900 uppercase tracking-widest text-xs">{language === 'ar' ? "نظام التسعير والحالة" : "Pricing & Condition"}</h4>
+                                                <h4 className="font-medium text-slate-900 uppercase tracking-widest text-xs">{language === 'ar' ? "نظام التسعير والحالة" : "Pricing & Condition"}</h4>
                                             </div>
 
                                             <div className="bg-slate-50 p-6 rounded-[32px] border border-slate-100 space-y-6 relative overflow-hidden">
                                                 <div className="grid grid-cols-2 gap-6">
                                                     <div className="space-y-2">
-                                                        <label className="text-[10px] font-black text-slate-400">{t('availability')}</label>
+                                                        <label className="text-[10px] font-medium text-slate-400">{t('availability')}</label>
                                                         <Select value={availability} onValueChange={(val: any) => setAvailability(val)}>
                                                             <SelectTrigger className="h-12 rounded-xl bg-white border-slate-100 font-bold">
                                                                 <SelectValue />
@@ -728,7 +728,7 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
                                                         </Select>
                                                     </div>
                                                     <div className="space-y-2">
-                                                        <label className="text-[10px] font-black text-slate-400">{t('condition')}</label>
+                                                        <label className="text-[10px] font-medium text-slate-400">{t('condition')}</label>
                                                         <Select value={condition} onValueChange={(val: any) => setCondition(val)}>
                                                             <SelectTrigger className="h-12 rounded-xl bg-white border-slate-100 font-bold">
                                                                 <SelectValue />
@@ -743,7 +743,7 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
 
                                                 {condition === 'used' && (
                                                     <div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-300">
-                                                        <label className="text-[10px] font-black text-slate-400">{t('usageCount')}</label>
+                                                        <label className="text-[10px] font-medium text-slate-400">{t('usageCount')}</label>
                                                         <Select value={usageCount.toString()} onValueChange={(val: string) => setUsageCount(parseInt(val))}>
                                                             <SelectTrigger className="h-12 rounded-xl bg-white border-slate-100 font-bold">
                                                                 <SelectValue />
@@ -763,47 +763,47 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
                                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                                     {(availability === 'sale' || availability === 'both') && (
                                                         <div className="space-y-2">
-                                                            <label className="text-[10px] font-black text-slate-400">{t('salePrice')}</label>
+                                                            <label className="text-[10px] font-medium text-slate-400">{t('salePrice')}</label>
                                                             <div className="relative">
-                                                                <Input type="number" value={salePrice} onChange={e => setSalePrice(e.target.value)} className="h-14 rounded-2xl border-white shadow-sm font-black text-xl px-6 pr-14 focus:ring-4 focus:ring-pink-50" />
-                                                                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-black text-slate-300 pointer-events-none">{t('sar')}</span>
+                                                                <Input type="number" value={salePrice} onChange={e => setSalePrice(e.target.value)} className="h-14 rounded-2xl border-white shadow-sm font-medium text-xl px-6 pr-14 focus:ring-4 focus:ring-pink-50" />
+                                                                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-medium text-slate-300 pointer-events-none">{t('sar')}</span>
                                                             </div>
                                                         </div>
                                                     )}
                                                     {(availability === 'rent' || availability === 'both') && (
                                                         <div className="space-y-2">
-                                                            <label className="text-[10px] font-black text-slate-400">{t('rentPrice')}</label>
+                                                            <label className="text-[10px] font-medium text-slate-400">{t('rentPrice')}</label>
                                                             <div className="relative">
-                                                                <Input type="number" value={rentPrice} onChange={e => setRentPrice(e.target.value)} className="h-14 rounded-2xl border-white shadow-sm font-black text-xl px-6 pr-14 focus:ring-4 focus:ring-blue-50" />
-                                                                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-black text-slate-300 pointer-events-none">{t('sar')}</span>
+                                                                <Input type="number" value={rentPrice} onChange={e => setRentPrice(e.target.value)} className="h-14 rounded-2xl border-white shadow-sm font-medium text-xl px-6 pr-14 focus:ring-4 focus:ring-blue-50" />
+                                                                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-medium text-slate-300 pointer-events-none">{t('sar')}</span>
                                                             </div>
                                                         </div>
                                                     )}
                                                 </div>
 
                                                 <div className="space-y-2">
-                                                    <label className="text-[10px] font-black text-slate-400">{language === 'ar' ? "الخصم %" : "DISCOUNT %"}</label>
+                                                    <label className="text-[10px] font-medium text-slate-400">{language === 'ar' ? "الخصم %" : "DISCOUNT %"}</label>
                                                     <div className="relative">
-                                                        <Input type="number" value={discount} onChange={e => setDiscount(e.target.value)} className="h-14 rounded-2xl border-white shadow-sm font-black text-xl px-6 pr-14 focus:ring-4 focus:ring-pink-50" />
-                                                        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-black text-slate-300 pointer-events-none">%</span>
+                                                        <Input type="number" value={discount} onChange={e => setDiscount(e.target.value)} className="h-14 rounded-2xl border-white shadow-sm font-medium text-xl px-6 pr-14 focus:ring-4 focus:ring-pink-50" />
+                                                        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-medium text-slate-300 pointer-events-none">%</span>
                                                     </div>
                                                 </div>
 
                                                 <div className="col-span-2 mt-4 pt-6 border-t border-slate-200/50">
-                                                    <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-4">
+                                                    <span className="text-[10px] font-medium text-slate-500 uppercase tracking-widest block mb-4">
                                                         {language === 'ar' ? "السعر النهائي للمشتري (يشمل 15% عمولة):" : "Final Price (Includes 15% Commission):"}
                                                     </span>
                                                     <div className="space-y-3">
                                                         {(availability === 'sale' || availability === 'both') && (
                                                             <div className="flex items-center justify-between bg-white p-4 rounded-2xl border border-slate-100">
                                                                 <span className="font-bold text-slate-500">{t('sale')}</span>
-                                                                <span className="text-2xl font-black text-[#e91e63]">{(parseFloat(salePrice || "0") * (1 - parseFloat(discount || "0") / 100) * 1.15).toFixed(2)} <span className="text-xs">{t('sar')}</span></span>
+                                                                <span className="text-2xl font-medium text-[#e91e63]">{(parseFloat(salePrice || "0") * (1 - parseFloat(discount || "0") / 100) * 1.15).toFixed(2)} <span className="text-xs">{t('sar')}</span></span>
                                                             </div>
                                                         )}
                                                         {(availability === 'rent' || availability === 'both') && (
                                                             <div className="flex items-center justify-between bg-white p-4 rounded-2xl border border-slate-100">
                                                                 <span className="font-bold text-slate-500">{t('rent')}</span>
-                                                                <span className="text-2xl font-black text-blue-600">{(parseFloat(rentPrice || "0") * (1 - parseFloat(discount || "0") / 100) * 1.15).toFixed(2)} <span className="text-xs">{t('sar')}</span></span>
+                                                                <span className="text-2xl font-medium text-blue-600">{(parseFloat(rentPrice || "0") * (1 - parseFloat(discount || "0") / 100) * 1.15).toFixed(2)} <span className="text-xs">{t('sar')}</span></span>
                                                             </div>
                                                         )}
                                                     </div>
@@ -816,11 +816,11 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
                                     <div className="space-y-6">
                                         <div className="flex items-center gap-3">
                                             <div className="h-2 w-8 bg-blue-600 rounded-full" />
-                                            <h4 className="font-black text-slate-900 uppercase tracking-widest text-xs">{language === 'ar' ? "التصنيف والذكاء" : "Product Intelligence"}</h4>
+                                            <h4 className="font-medium text-slate-900 uppercase tracking-widest text-xs">{language === 'ar' ? "التصنيف والذكاء" : "Product Intelligence"}</h4>
                                         </div>
                                         <div className="grid grid-cols-1 gap-6">
                                             <div className="space-y-2">
-                                                <label className="text-[10px] font-black text-slate-400">{language === 'ar' ? "القسم" : "CATEGORY"}</label>
+                                                <label className="text-[10px] font-medium text-slate-400">{language === 'ar' ? "القسم" : "CATEGORY"}</label>
                                                 <Select value={categoryId} onValueChange={setCategoryId}>
                                                     <SelectTrigger className="h-14 rounded-2xl border-slate-100 shadow-sm font-bold bg-white focus:ring-4 focus:ring-blue-50">
                                                         <SelectValue placeholder={language === 'ar' ? "اختر القسم" : "Select Category"} />
@@ -842,11 +842,11 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
                                     <div className="space-y-6 bg-gradient-to-br from-purple-50 to-pink-50 p-6 md:p-12 rounded-[24px] md:rounded-[40px] border border-purple-100">
                                         <div className="flex items-center gap-3">
                                             <div className="h-2 w-8 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full" />
-                                            <h4 className="font-black text-slate-900 uppercase tracking-widest text-xs">{language === 'ar' ? "معلومات إضافية (اختيارية)" : "Optional Attributes"}</h4>
+                                            <h4 className="font-medium text-slate-900 uppercase tracking-widest text-xs">{language === 'ar' ? "معلومات إضافية (اختيارية)" : "Optional Attributes"}</h4>
                                         </div>
                                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                                             <div className="space-y-2">
-                                                <label className="text-[10px] font-black text-slate-500">{language === 'ar' ? "نوع القصة (Silhouette)" : "SILHOUETTE"}</label>
+                                                <label className="text-[10px] font-medium text-slate-500">{language === 'ar' ? "نوع القصة (Silhouette)" : "SILHOUETTE"}</label>
                                                 <Select value={silhouette} onValueChange={handleSilhouetteChange}>
                                                     <SelectTrigger className="h-12 rounded-2xl border-white bg-white shadow-sm font-bold focus:ring-4 focus:ring-purple-100">
                                                         <SelectValue placeholder={language === 'ar' ? "اختر القصة" : "Select Silhouette"} />
@@ -861,15 +861,15 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
                                                 </Select>
                                             </div>
                                             <div className="space-y-2">
-                                                <label className="text-[10px] font-black text-slate-500">{language === 'ar' ? "شكل الجسم المناسب" : "BODY SHAPE"}</label>
+                                                <label className="text-[10px] font-medium text-slate-500">{language === 'ar' ? "شكل الجسم المناسب" : "BODY SHAPE"}</label>
                                                 <Input className="h-12 rounded-2xl border-white bg-white shadow-sm font-bold focus:ring-4 focus:ring-purple-100" value={bodyShape} onChange={e => setBodyShape(e.target.value)} placeholder={language === 'ar' ? "Hourglass, Pear..." : "Hourglass, Pear..."} />
                                             </div>
                                             <div className="space-y-2">
-                                                <label className="text-[10px] font-black text-slate-500">{language === 'ar' ? "الانطباع العام (Vibe)" : "VIBE"}</label>
+                                                <label className="text-[10px] font-medium text-slate-500">{language === 'ar' ? "الانطباع العام (Vibe)" : "VIBE"}</label>
                                                 <Input className="h-12 rounded-2xl border-white bg-white shadow-sm font-bold focus:ring-4 focus:ring-purple-100" value={impression} onChange={e => setImpression(e.target.value)} placeholder={language === 'ar' ? "Elegant, Romantic..." : "Elegant, Romantic..."} />
                                             </div>
                                             <div className="space-y-2 sm:col-span-2">
-                                                <label className="text-[10px] font-black text-slate-500">{language === 'ar' ? "أفضل مكان للتجول" : "BEST OCCASION"}</label>
+                                                <label className="text-[10px] font-medium text-slate-500">{language === 'ar' ? "أفضل مكان للتجول" : "BEST OCCASION"}</label>
                                                 <Input className="h-12 rounded-2xl border-white bg-white shadow-sm font-bold focus:ring-4 focus:ring-purple-100" value={occasion} onChange={e => setOccasion(e.target.value)} placeholder={language === 'ar' ? "Wedding, Party, Formal..." : "Wedding, Party, Formal..."} />
                                             </div>
                                         </div>
@@ -880,7 +880,7 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
                                         <div className="flex items-center justify-between">
                                             <div className="flex items-center gap-3">
                                                 <div className="h-2 w-8 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-full" />
-                                                <h4 className="font-black text-slate-900 uppercase tracking-widest text-xs">{language === 'ar' ? "الألوان المتوفرة (اختيارية)" : "Color Variants (Optional)"}</h4>
+                                                <h4 className="font-medium text-slate-900 uppercase tracking-widest text-xs">{language === 'ar' ? "الألوان المتوفرة (اختيارية)" : "Color Variants (Optional)"}</h4>
                                             </div>
                                             <Button
                                                 variant="outline"
@@ -909,7 +909,7 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
                                                         </Button>
                                                         <div className="grid grid-cols-2 gap-4">
                                                             <div className="space-y-2">
-                                                                <label className="text-[10px] font-black text-slate-400">{language === 'ar' ? "اسم اللون" : "COLOR NAME"}</label>
+                                                                <label className="text-[10px] font-medium text-slate-400">{language === 'ar' ? "اسم اللون" : "COLOR NAME"}</label>
                                                                 <Input
                                                                     className="h-10 rounded-xl border-slate-200 font-bold"
                                                                     value={variant.colorName}
@@ -922,7 +922,7 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
                                                                 />
                                                             </div>
                                                             <div className="space-y-2">
-                                                                <label className="text-[10px] font-black text-slate-400">{language === 'ar' ? "كود اللون" : "COLOR CODE"}</label>
+                                                                <label className="text-[10px] font-medium text-slate-400">{language === 'ar' ? "كود اللون" : "COLOR CODE"}</label>
                                                                 <div className="flex items-center gap-2">
                                                                     <Input
                                                                         type="color"
@@ -948,8 +948,8 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
                                                         </div>
                                                         <div className="space-y-4">
                                                             <div className="flex items-center justify-between">
-                                                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{language === 'ar' ? "صور هذا اللون" : "COLOR IMAGES"}</label>
-                                                                <span className="text-[9px] font-black text-blue-500 bg-blue-50 px-2 py-0.5 rounded-full">
+                                                                <label className="text-[10px] font-medium text-slate-400 uppercase tracking-widest">{language === 'ar' ? "صور هذا اللون" : "COLOR IMAGES"}</label>
+                                                                <span className="text-[9px] font-medium text-blue-500 bg-blue-50 px-2 py-0.5 rounded-full">
                                                                     {language === 'ar' ? "1200 × 1600 (3:4)" : "1200 x 1600 (3:4)"}
                                                                 </span>
                                                             </div>
@@ -994,7 +994,7 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
                                                                 {/* Upload Placeholder */}
                                                                 <label className="aspect-square bg-blue-50/50 rounded-2xl border-2 border-dashed border-blue-200 flex flex-col items-center justify-center cursor-pointer hover:bg-blue-50 hover:border-blue-400 transition-all group/upload">
                                                                     <Plus className="w-6 h-6 text-blue-400 group-hover:scale-110 transition-transform" />
-                                                                    <span className="text-[10px] font-black text-blue-500 mt-1 uppercase">{language === 'ar' ? "إضافة" : "ADD"}</span>
+                                                                    <span className="text-[10px] font-medium text-blue-500 mt-1 uppercase">{language === 'ar' ? "إضافة" : "ADD"}</span>
                                                                     <input
                                                                         type="file"
                                                                         multiple
@@ -1027,16 +1027,16 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
                                     <div className="space-y-6 bg-slate-900 p-6 md:p-12 rounded-[24px] md:rounded-[40px] text-white">
                                             <div className="flex items-center gap-3">
                                                 <div className="h-2 w-8 bg-amber-500 rounded-full" />
-                                                <h4 className="font-black text-white uppercase tracking-widest text-xs">{language === 'ar' ? "المخزون والمقاسات" : "Stock & Inventory"}</h4>
+                                                <h4 className="font-medium text-white uppercase tracking-widest text-xs">{language === 'ar' ? "المخزون والمقاسات" : "Stock & Inventory"}</h4>
                                             </div>
 
                                             <div className="flex flex-wrap items-center gap-4 bg-white/5 p-4 rounded-3xl border border-white/10">
                                                 <div className="space-y-1">
-                                                    <label className="text-[10px] font-black text-white/40 uppercase tracking-widest flex items-center gap-1">
+                                                    <label className="text-[10px] font-medium text-white/40 uppercase tracking-widest flex items-center gap-1">
                                                         {t('sizeSystem')}
                                                     </label>
                                                     <Select value={selectedSystem} onValueChange={(val: any) => setSelectedSystem(val)}>
-                                                        <SelectTrigger className="h-10 w-40 bg-transparent border-white/10 text-white font-black rounded-xl">
+                                                        <SelectTrigger className="h-10 w-40 bg-transparent border-white/10 text-white font-medium rounded-xl">
                                                             <SelectValue />
                                                         </SelectTrigger>
                                                         <SelectContent className="rounded-xl border-slate-800 bg-slate-900 text-white font-bold">
@@ -1050,7 +1050,7 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
                                                 <div className="flex-1 min-w-[200px] p-3 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-start gap-3">
                                                     <HelpCircle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
                                                     <div className="space-y-1">
-                                                        <p className="text-xs font-black text-amber-500 uppercase tracking-tight">{t('sizeGuide')}</p>
+                                                        <p className="text-xs font-medium text-amber-500 uppercase tracking-tight">{t('sizeGuide')}</p>
                                                         <p className="text-[10px] font-bold text-white/60 leading-relaxed">{t('sizeGuideDesc')}</p>
                                                     </div>
                                                 </div>
@@ -1078,9 +1078,9 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
 
                                                         <div className="space-y-4 flex flex-col items-center">
                                                             <div className="w-full space-y-2">
-                                                                <label className="text-[9px] font-black text-white/40 uppercase tracking-[0.2em] text-center block w-full">{language === 'ar' ? "المقاس" : "Size"}</label>
+                                                                <label className="text-[9px] font-medium text-white/40 uppercase tracking-[0.2em] text-center block w-full">{language === 'ar' ? "المقاس" : "Size"}</label>
                                                                 <Select value={s.size} onValueChange={(val: string) => handleSizeChange(idx, 'size', val)}>
-                                                                    <SelectTrigger className="h-10 bg-white/5 border-white/10 text-white font-black w-full rounded-xl text-sm text-center">
+                                                                    <SelectTrigger className="h-10 bg-white/5 border-white/10 text-white font-medium w-full rounded-xl text-sm text-center">
                                                                         <SelectValue placeholder={language === 'ar' ? "اختر المقاس" : "Select Size"} />
                                                                     </SelectTrigger>
                                                                     <SelectContent className="rounded-xl border-slate-800 bg-slate-900 text-white font-bold">
@@ -1094,32 +1094,32 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
                                                             </div>
                                                             
                                                             <div className="w-full space-y-2">
-                                                                <label className="text-[9px] font-black text-white/40 uppercase tracking-[0.2em] text-center block w-full">{language === 'ar' ? "الكمية" : "Qty"}</label>
+                                                                <label className="text-[9px] font-medium text-white/40 uppercase tracking-[0.2em] text-center block w-full">{language === 'ar' ? "الكمية" : "Qty"}</label>
                                                                 <Input 
                                                                     type="number" 
                                                                     placeholder="0" 
                                                                     value={s.quantity} 
                                                                     onChange={e => handleSizeChange(idx, 'quantity', parseInt(e.target.value))} 
-                                                                    className="h-10 bg-white/5 border-white/10 text-white font-black text-center w-full rounded-xl text-sm focus:ring-4 focus:ring-amber-500/20" 
+                                                                    className="h-10 bg-white/5 border-white/10 text-white font-medium text-center w-full rounded-xl text-sm focus:ring-4 focus:ring-amber-500/20" 
                                                                 />
                                                             </div>
                                                         </div>
 
                                                         {sizeInfo && (
                                                             <div className="mt-2 pt-4 border-t border-white/10 w-full">
-                                                                <p className="text-[9px] font-black text-white/20 uppercase tracking-[0.2em] text-center mb-3">{t('measurements')} (CM)</p>
+                                                                <p className="text-[9px] font-medium text-white/20 uppercase tracking-[0.2em] text-center mb-3">{t('measurements')} (CM)</p>
                                                                 <div className="grid grid-cols-3 gap-2">
                                                                     <div className="flex flex-col items-center p-2 rounded-xl bg-white/[0.02] border border-white/[0.05]">
-                                                                        <span className="text-[8px] font-black text-white/30 uppercase leading-none mb-1">{t('chest')}</span>
-                                                                        <span className="text-[11px] font-black text-amber-500">{sizeInfo.chest}</span>
+                                                                        <span className="text-[8px] font-medium text-white/30 uppercase leading-none mb-1">{t('chest')}</span>
+                                                                        <span className="text-[11px] font-medium text-amber-500">{sizeInfo.chest}</span>
                                                                     </div>
                                                                     <div className="flex flex-col items-center p-2 rounded-xl bg-white/[0.02] border border-white/[0.05]">
-                                                                        <span className="text-[8px] font-black text-white/30 uppercase leading-none mb-1">{t('waist')}</span>
-                                                                        <span className="text-[11px] font-black text-amber-500">{sizeInfo.waist}</span>
+                                                                        <span className="text-[8px] font-medium text-white/30 uppercase leading-none mb-1">{t('waist')}</span>
+                                                                        <span className="text-[11px] font-medium text-amber-500">{sizeInfo.waist}</span>
                                                                     </div>
                                                                     <div className="flex flex-col items-center p-2 rounded-xl bg-white/[0.02] border border-white/[0.05]">
-                                                                        <span className="text-[8px] font-black text-white/30 uppercase leading-none mb-1">{t('hips')}</span>
-                                                                        <span className="text-[11px] font-black text-amber-500">{sizeInfo.hips}</span>
+                                                                        <span className="text-[8px] font-medium text-white/30 uppercase leading-none mb-1">{t('hips')}</span>
+                                                                        <span className="text-[11px] font-medium text-amber-500">{sizeInfo.hips}</span>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -1135,7 +1135,7 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
                                         <div className="flex items-center justify-between">
                                             <div className="flex items-center gap-3">
                                                 <div className="h-2 w-8 bg-emerald-600 rounded-full" />
-                                                <h4 className="font-black text-slate-900 uppercase tracking-widest text-xs">{language === 'ar' ? "التفاصيل والوصف" : "Copywriting"}</h4>
+                                                <h4 className="font-medium text-slate-900 uppercase tracking-widest text-xs">{language === 'ar' ? "التفاصيل والوصف" : "Copywriting"}</h4>
                                             </div>
                                             <Button
                                                 variant="outline"
@@ -1154,11 +1154,11 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
                                         </div>
                                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                                             <div className="space-y-2">
-                                                <label className="text-[10px] font-black text-slate-400 tracking-widest">{language === 'ar' ? "وصف الفستان (بالعربية)" : "ARABIC STORYTELLING"}</label>
+                                                <label className="text-[10px] font-medium text-slate-400 tracking-widest">{language === 'ar' ? "وصف الفستان (بالعربية)" : "ARABIC STORYTELLING"}</label>
                                                 <Textarea className="min-h-[160px] rounded-[32px] border-slate-100 shadow-sm p-6 font-bold leading-relaxed focus:ring-4 focus:ring-emerald-50" value={descriptionAr} onChange={e => setDescriptionAr(e.target.value)} dir="rtl" placeholder="احكِ قصة هذا الفستان وكيف سيميز من تلبسه..." />
                                             </div>
                                             <div className="space-y-2">
-                                                <label className="text-[10px] font-black text-slate-400 tracking-widest">{language === 'ar' ? "ENGLISH DESCRIPTION" : "ENGLISH DESCRIPTION"}</label>
+                                                <label className="text-[10px] font-medium text-slate-400 tracking-widest">{language === 'ar' ? "ENGLISH DESCRIPTION" : "ENGLISH DESCRIPTION"}</label>
                                                 <Textarea className="min-h-[160px] rounded-[32px] border-slate-100 shadow-sm p-6 font-bold leading-relaxed focus:ring-4 focus:ring-emerald-50" value={descriptionEn} onChange={e => setDescriptionEn(e.target.value)} dir="ltr" placeholder="Describe the fabrics, the fit, and the feeling..." />
                                             </div>
                                         </div>
@@ -1169,13 +1169,13 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
 
                         {/* Sticky Footer */}
                         <div className="bg-white px-4 py-4 md:px-12 md:py-8 flex flex-col-reverse sm:flex-row items-center justify-between border-t border-slate-100 gap-4 sticky bottom-0 z-50 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
-                            <Button variant="ghost" onClick={handleCloseModal} className="w-full sm:w-auto h-12 md:h-14 px-8 rounded-full font-black text-slate-400 hover:bg-slate-50">
+                            <Button variant="ghost" onClick={handleCloseModal} className="w-full sm:w-auto h-12 md:h-14 px-8 rounded-full font-medium text-slate-400 hover:bg-slate-50">
                                 {language === 'ar' ? "تجاهل" : "Discard"}
                             </Button>
                             <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
                                 <div className="text-center sm:text-right hidden sm:block">
-                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{language === 'ar' ? "حالة المنتج" : "Visibility"}</p>
-                                    <p className="text-sm font-black text-emerald-500">{language === 'ar' ? "متاح للعرض فوراً" : "Ready for Listing"}</p>
+                                    <p className="text-[10px] font-medium text-slate-400 uppercase tracking-widest">{language === 'ar' ? "حالة المنتج" : "Visibility"}</p>
+                                    <p className="text-sm font-medium text-emerald-500">{language === 'ar' ? "متاح للعرض فوراً" : "Ready for Listing"}</p>
                                 </div>
                                 <Button
                                     onClick={() => {
@@ -1184,7 +1184,7 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
                                         submitMutation.mutate();
                                     }}
                                     disabled={submitMutation.isPending}
-                                    className="bg-slate-900 hover:bg-black w-full sm:w-auto h-14 md:h-16 px-8 md:px-16 rounded-[20px] md:rounded-[28px] text-base md:text-lg font-black text-white shadow-2xl transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50"
+                                    className="bg-slate-900 hover:bg-black w-full sm:w-auto h-14 md:h-16 px-8 md:px-16 rounded-[20px] md:rounded-[28px] text-base md:text-lg font-medium text-white shadow-2xl transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50"
                                 >
                                     {submitMutation.isPending ? (
                                         <div className="flex items-center gap-3 justify-center">

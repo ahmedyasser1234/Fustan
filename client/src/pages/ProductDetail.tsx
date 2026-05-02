@@ -63,7 +63,7 @@ function RelatedProducts({ collectionId, currentProductId, language }: { collect
   return (
     <div className="mt-32 border-t border-gray-100 pt-20">
       <div className="flex items-center justify-between mb-12" dir="rtl">
-        <h2 className="text-3xl font-black text-gray-900">{language === 'ar' ? "منتجات قد تعجبك" : "Products You May Like"}</h2>
+        <h2 className="text-3xl font-medium text-gray-900">{language === 'ar' ? "منتجات قد تعجبك" : "Products You May Like"}</h2>
         <Link href="/products">
           <Button variant="ghost" className="text-rose-600 font-bold hover:bg-rose-50 rounded-full">
             {t('viewAll')} <ChevronRight className={`mr-2 w-4 h-4 ${language === 'ar' ? 'rotate-180' : ''}`} />
@@ -117,7 +117,7 @@ function OffersDisplay({ vendorId, productId, language }: { vendorId?: number, p
                   {language === 'ar' ? offer.nameAr : offer.nameEn}
                 </h3>
                 <p className="text-rose-600 text-sm font-medium">
-                  {language === 'ar' ? "خصم " : "OFF "} <span className="font-black text-xl">{offer.discountPercent}%</span>
+                  {language === 'ar' ? "خصم " : "OFF "} <span className="font-medium text-xl">{offer.discountPercent}%</span>
                   {offer.minQuantity > 1 ? (language === 'ar' ? ` عند شراء ${offer.minQuantity} قطع فأكثر` : ` for ${offer.minQuantity} items or more`) : ''}
                 </p>
               </div>
@@ -398,7 +398,7 @@ export default function ProductDetail() {
 
                 {product.discount > 0 && (
                   <div className="absolute top-4 md:top-10 right-4 md:right-10 z-20">
-                    <div className="bg-rose-600 text-white px-4 md:px-8 py-1.5 md:py-3 rounded-full text-base md:text-2xl font-black shadow-lg transform rotate-3">
+                    <div className="bg-rose-600 text-white px-4 md:px-8 py-1.5 md:py-3 rounded-full text-base md:text-2xl font-medium shadow-lg transform rotate-3">
                       -{product.discount}%
                     </div>
                   </div>
@@ -472,10 +472,10 @@ export default function ProductDetail() {
                   <Link href={`/vendor/${vendor.storeSlug}`}>
                     <div className="flex items-center gap-4 group cursor-pointer">
                       <div className="text-right">
-                        <p className="font-black text-gray-900 group-hover:text-rose-600">{language === 'ar' ? vendor.storeNameAr : vendor.storeNameEn}</p>
+                        <p className="font-medium text-gray-900 group-hover:text-rose-600">{language === 'ar' ? vendor.storeNameAr : vendor.storeNameEn}</p>
                         <div className="flex items-center gap-2 justify-end">
                           <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-                          <span className="text-sm font-black text-gray-900">{Number(vendor.rating || 0).toFixed(1)}</span>
+                          <span className="text-sm font-medium text-gray-900">{Number(vendor.rating || 0).toFixed(1)}</span>
                         </div>
                       </div>
                       <div className="w-10 h-10 md:w-14 md:h-14 rounded-xl border border-gray-100 overflow-hidden shadow-sm shrink-0">
@@ -486,7 +486,7 @@ export default function ProductDetail() {
                 )}
               </div>
 
-              <h1 className="text-2xl md:text-4xl lg:text-5xl font-black text-gray-900 mb-6 leading-tight select-none">
+              <h1 className="text-2xl md:text-4xl lg:text-3xl font-medium text-gray-900 mb-6 leading-tight select-none">
                 {language === 'ar' ? product.nameAr : product.nameEn}
               </h1>
 
@@ -495,23 +495,23 @@ export default function ProductDetail() {
                   <div>
                     <p className="text-gray-400 font-bold mb-2">{t('currentPrice')}</p>
                     <div className="flex items-center gap-2">
-                      <span className="text-3xl md:text-5xl font-black text-gray-900">
+                      <span className="text-3xl md:text-3xl font-medium text-gray-900">
                         {language === 'ar' ? Number(product.price).toLocaleString('ar-SA') : Number(product.price).toLocaleString()}
                       </span>
-                      <span className="text-base md:text-xl font-black text-rose-600 uppercase">{t('currency')}</span>
+                      <span className="text-base md:text-xl font-medium text-rose-600 uppercase">{t('currency')}</span>
                     </div>
                   </div>
                 </div>
 
                 {product.sizes && product.sizes.length > 0 && (
                   <div className="mb-10" dir="rtl">
-                    <p className="text-lg font-black text-gray-900 mb-5">{language === 'ar' ? "المقاس:" : "Size:"}</p>
+                    <p className="text-lg font-medium text-gray-900 mb-5">{language === 'ar' ? "المقاس:" : "Size:"}</p>
                     <div className="flex flex-wrap gap-3">
                       {product.sizes.map((sizeObj: any, idx: number) => (
                         <button
                           key={idx}
                           onClick={() => setSelectedSize(sizeObj.size)}
-                          className={`min-w-12 h-12 rounded-xl font-black border-2 transition-all ${selectedSize === sizeObj.size ? "border-rose-600 bg-rose-50 text-rose-600" : "bg-white text-gray-500 border-gray-100"}`}
+                          className={`min-w-12 h-12 rounded-xl font-medium border-2 transition-all ${selectedSize === sizeObj.size ? "border-rose-600 bg-rose-50 text-rose-600" : "bg-white text-gray-500 border-gray-100"}`}
                         >
                           {sizeObj.size}
                         </button>
@@ -524,12 +524,12 @@ export default function ProductDetail() {
                   <div className="flex flex-col md:flex-row gap-4" dir="rtl">
                     <div className="flex items-center justify-between bg-gray-50 rounded-2xl p-1 h-14 md:h-16 w-full md:w-40 shrink-0">
                       <button onClick={() => { if (product.sizes?.length > 0) { if (selectedSize) handleSizeQtyChange(selectedSize, -1); else toast.error("اختر المقاس"); } else setQuantity(q => Math.max(1, q - 1)); }} className="w-12 h-full flex items-center justify-center text-gray-400 hover:text-rose-600"><Minus size={18} /></button>
-                      <span className="font-black text-xl">{product.sizes?.length > 0 ? (selectedSize ? (sizeQuantities[selectedSize] || 0) : 0) : quantity}</span>
+                      <span className="font-medium text-xl">{product.sizes?.length > 0 ? (selectedSize ? (sizeQuantities[selectedSize] || 0) : 0) : quantity}</span>
                       <button onClick={() => { if (product.sizes?.length > 0) { if (selectedSize) handleSizeQtyChange(selectedSize, 1); else toast.error("اختر المقاس"); } else setQuantity(q => q + 1); }} className="w-12 h-full flex items-center justify-center text-gray-400 hover:text-rose-600"><Plus size={18} /></button>
                     </div>
                     <div className="flex flex-col gap-3 flex-1">
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <Button onClick={handleAddToCartMulti} disabled={addToCartMutation.isPending} className="h-14 rounded-2xl bg-gray-900 hover:bg-black text-white font-black w-full text-lg shadow-sm">
+                        <Button onClick={handleAddToCartMulti} disabled={addToCartMutation.isPending} className="h-14 rounded-2xl bg-gray-900 hover:bg-black text-white font-medium w-full text-lg shadow-sm">
                           {t('addToCart')}
                         </Button>
                         <Button onClick={() => {
@@ -548,12 +548,12 @@ export default function ProductDetail() {
                             vendorLogo: vendor.logo,
                             recipientId: vendor.userId
                           });
-                        }} className="h-14 rounded-2xl bg-blue-50 text-blue-600 border border-blue-100 hover:bg-blue-100 font-black w-full flex items-center justify-center gap-2 text-sm md:text-base px-2">
+                        }} className="h-14 rounded-2xl bg-blue-50 text-blue-600 border border-blue-100 hover:bg-blue-100 font-medium w-full flex items-center justify-center gap-2 text-sm md:text-base px-2">
                           <MessageSquare size={18} className="shrink-0" />
                           <span className="truncate">{language === 'ar' ? 'تواصل مع المصمم' : 'Contact Designer'}</span>
                         </Button>
                       </div>
-                      <Button onClick={() => document.getElementById('ai-try-on-section')?.scrollIntoView({ behavior: 'smooth' })} className="h-14 rounded-2xl bg-gradient-to-r from-purple-600 to-rose-600 text-white font-black w-full text-lg shadow-lg shadow-rose-100">
+                      <Button onClick={() => document.getElementById('ai-try-on-section')?.scrollIntoView({ behavior: 'smooth' })} className="h-14 rounded-2xl bg-gradient-to-r from-purple-600 to-rose-600 text-white font-medium w-full text-lg shadow-lg shadow-rose-100">
                         {language === 'ar' ? '✨ تجربة ذكية (AI)' : '✨ Magic Try-On (AI)'}
                       </Button>
                     </div>

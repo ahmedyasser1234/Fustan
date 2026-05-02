@@ -41,7 +41,7 @@ export default function AboutUs() {
                             <Badge className="bg-white/20 text-white hover:bg-white/30 backdrop-blur-md mb-6 border-white/30 px-6 py-2 text-sm font-bold uppercase tracking-[0.2em]">
                                 {language === 'ar' ? "قصتنا" : "Our Story"}
                             </Badge>
-                            <h1 className="text-3xl md:text-5xl lg:text-6xl font-black mb-4 md:mb-6 leading-tight">
+                            <h1 className="text-3xl md:text-3xl lg:text-3xl font-medium mb-4 md:mb-6 leading-tight">
                                 {language === 'ar' ? "حيث تلتقي الفخامة" : "Where Luxury Meets"} <br />
                                 <span className="text-rose-200">{language === 'ar' ? "بالتقاليد العريقة" : "Timeless Traditions"}</span>
                             </h1>
@@ -66,7 +66,7 @@ export default function AboutUs() {
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
                     >
-                        <h2 className="text-2xl md:text-4xl font-black text-gray-900 mb-6 md:mb-8 leading-tight">
+                        <h2 className="text-2xl md:text-4xl font-medium text-gray-900 mb-6 md:mb-8 leading-tight">
                             {language === 'ar' ? "أتيليه فستان: رؤية جديدة للأناقة" : "Atelier Fustan: A New Vision of Elegance"}
                         </h2>
                         <div className="space-y-6 text-gray-500 text-lg leading-relaxed font-medium text-justify" dir={language === 'ar' ? "rtl" : "ltr"}>
@@ -112,13 +112,13 @@ export default function AboutUs() {
                                 alt="Detail 1"
                             />
                             <div className="bg-rose-600 p-4 md:p-8 rounded-3xl md:rounded-[2.5rem] text-white text-center shadow-lg shadow-rose-200">
-                                <span className="block text-2xl md:text-4xl font-black mb-1">+15</span>
+                                <span className="block text-2xl md:text-4xl font-medium mb-1">+15</span>
                                 <span className="text-[10px] md:text-sm font-bold opacity-90">{language === 'ar' ? "عاماً من الخبرة" : "Years Experience"}</span>
                             </div>
                         </div>
                         <div className="space-y-4 md:space-y-6">
                             <div className="bg-gray-900 p-4 md:p-8 rounded-3xl md:rounded-[2.5rem] text-white text-center shadow-xl">
-                                <span className="block text-2xl md:text-4xl font-black mb-1">5000+</span>
+                                <span className="block text-2xl md:text-4xl font-medium mb-1">5000+</span>
                                 <span className="text-[10px] md:text-sm font-bold opacity-90">{language === 'ar' ? "عميلة سعيدة" : "Happy Clients"}</span>
                             </div>
                             <img

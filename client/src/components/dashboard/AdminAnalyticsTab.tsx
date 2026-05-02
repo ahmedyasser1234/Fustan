@@ -65,7 +65,7 @@ export default function AdminAnalyticsTab() {
             {/* Header with AI Action */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h2 className="text-3xl font-black text-slate-900 flex items-center gap-3">
+                    <h2 className="text-3xl font-medium text-slate-900 flex items-center gap-3">
                         <Activity className="text-rose-600" />
                         {t('advancedAnalytics')}
                     </h2>
@@ -105,12 +105,12 @@ export default function AdminAnalyticsTab() {
                             <CardContent className="p-8">
                                 <div className="grid md:grid-cols-2 gap-8">
                                     <div className="space-y-4">
-                                        <h4 className="font-black text-lg text-slate-900 border-r-4 border-rose-500 pr-3">{t('executiveSummary')}</h4>
+                                        <h4 className="font-medium text-lg text-slate-900 border-r-4 border-rose-500 pr-3">{t('executiveSummary')}</h4>
                                         <p className="text-slate-700 leading-relaxed font-bold text-right">
                                             {aiInsights.summary}
                                         </p>
                                         <div className="p-4 bg-indigo-50 rounded-21 border border-indigo-100 mt-4">
-                                            <h5 className="text-indigo-900 font-black mb-2 flex items-center gap-2">
+                                            <h5 className="text-indigo-900 font-medium mb-2 flex items-center gap-2">
                                                 <TrendingUp className="w-4 h-4" />
                                                 {t('trendPrediction')}
                                             </h5>
@@ -118,7 +118,7 @@ export default function AdminAnalyticsTab() {
                                         </div>
                                     </div>
                                     <div className="space-y-4">
-                                        <h4 className="font-black text-lg text-slate-900 border-r-4 border-indigo-500 pr-3">{t('strategicRecommendations')}</h4>
+                                        <h4 className="font-medium text-lg text-slate-900 border-r-4 border-indigo-500 pr-3">{t('strategicRecommendations')}</h4>
                                         <ul className="space-y-3">
                                             {aiInsights.insights.map((insight: string, idx: number) => (
                                                 <motion.li
@@ -128,7 +128,7 @@ export default function AdminAnalyticsTab() {
                                                     transition={{ delay: idx * 0.1 }}
                                                     className="flex items-start gap-3 bg-slate-50 p-3 rounded-xl border border-slate-100"
                                                 >
-                                                    <div className="w-6 h-6 rounded-full bg-white shadow-sm flex items-center justify-center text-xs font-black text-slate-400 shrink-0">
+                                                    <div className="w-6 h-6 rounded-full bg-white shadow-sm flex items-center justify-center text-xs font-medium text-slate-400 shrink-0">
                                                         {idx + 1}
                                                     </div>
                                                     <span className="text-slate-700 font-bold text-sm">{insight}</span>
@@ -149,7 +149,7 @@ export default function AdminAnalyticsTab() {
                 <Card className="border-0 shadow-xl shadow-slate-200/50 rounded-3xl overflow-hidden bg-white">
                     <CardHeader className="flex flex-row items-center justify-between pb-2 border-b border-slate-50">
                         <div>
-                            <CardTitle className="text-xl font-black text-slate-900">{t('salesGrowth')}</CardTitle>
+                            <CardTitle className="text-xl font-medium text-slate-900">{t('salesGrowth')}</CardTitle>
                             <p className="text-sm text-slate-500 font-medium">{t('totalRevenueLast6Months')}</p>
                         </div>
                         <div className="w-10 h-10 bg-rose-50 rounded-xl flex items-center justify-center">
@@ -201,7 +201,7 @@ export default function AdminAnalyticsTab() {
                 <Card className="border-0 shadow-xl shadow-slate-200/50 rounded-3xl overflow-hidden bg-white">
                     <CardHeader className="flex flex-row items-center justify-between pb-2 border-b border-slate-50">
                         <div>
-                            <CardTitle className="text-xl font-black text-slate-900">{t('categoryDistribution')}</CardTitle>
+                            <CardTitle className="text-xl font-medium text-slate-900">{t('categoryDistribution')}</CardTitle>
                             <p className="text-sm text-slate-500 font-medium">{t('productsPerCategory')}</p>
                         </div>
                         <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center">
@@ -235,7 +235,7 @@ export default function AdminAnalyticsTab() {
                 <Card className="border-0 shadow-xl shadow-slate-200/50 rounded-3xl overflow-hidden bg-white lg:col-span-2">
                     <CardHeader className="flex flex-row items-center justify-between pb-2 border-b border-slate-50">
                         <div>
-                            <CardTitle className="text-xl font-black text-slate-900">{t('topPerformingStores')}</CardTitle>
+                            <CardTitle className="text-xl font-medium text-slate-900">{t('topPerformingStores')}</CardTitle>
                             <p className="text-sm text-slate-500 font-medium">{t('vendorsByRevenue')}</p>
                         </div>
                         <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center">

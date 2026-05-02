@@ -101,7 +101,7 @@ export default function CategoriesTab({ onCategoryClick }: CategoriesTabProps) {
     if (isLoading) return (
         <div className="flex flex-col items-center justify-center p-20 space-y-4">
             <Loader2 className="w-10 h-10 animate-spin text-purple-600" />
-            <p className="text-slate-400 font-black">{language === 'ar' ? "تحميل الأقسام..." : "Loading categories..."}</p>
+            <p className="text-slate-400 font-medium">{language === 'ar' ? "تحميل الأقسام..." : "Loading categories..."}</p>
         </div>
     );
 
@@ -109,7 +109,7 @@ export default function CategoriesTab({ onCategoryClick }: CategoriesTabProps) {
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700" dir={language === 'ar' ? 'rtl' : 'ltr'}>
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div className={language === 'ar' ? 'text-right' : 'text-left'}>
-                    <h2 className="text-3xl font-black text-slate-900 mb-2">{language === 'ar' ? "الأقسام والموضة" : "Style Categories"}</h2>
+                    <h2 className="text-3xl font-medium text-slate-900 mb-2">{language === 'ar' ? "الأقسام والموضة" : "Style Categories"}</h2>
                     <p className="text-slate-400 font-bold">{language === 'ar' ? "تصفح الأقسام العالمية ونظم مجموعاتك بناءً عليها" : "Browse global categories and organize your collections"}</p>
                 </div>
 
@@ -152,7 +152,7 @@ export default function CategoriesTab({ onCategoryClick }: CategoriesTabProps) {
                                     </div>
 
                                     <div>
-                                        <h3 className="font-black text-2xl text-slate-800 mb-2">
+                                        <h3 className="font-medium text-2xl text-slate-800 mb-2">
                                             {language === 'ar' ? category.nameAr : category.nameEn}
                                         </h3>
                                         <p className="text-sm font-bold text-slate-400 line-clamp-2">
@@ -161,7 +161,7 @@ export default function CategoriesTab({ onCategoryClick }: CategoriesTabProps) {
                                     </div>
 
                                     {onCategoryClick && (
-                                        <div className="pt-4 flex items-center gap-2 text-[#e91e63] font-black text-xs uppercase tracking-widest opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500">
+                                        <div className="pt-4 flex items-center gap-2 text-[#e91e63] font-medium text-xs uppercase tracking-widest opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500">
                                             {language === 'ar' ? "تصفح المجموعات" : "Browse Collections"}
                                             <ArrowLeft className="w-3 h-3 group-hover:-translate-x-1 transition-transform" />
                                         </div>
@@ -175,13 +175,13 @@ export default function CategoriesTab({ onCategoryClick }: CategoriesTabProps) {
 
             <div className="bg-slate-900 rounded-[24px] md:rounded-[40px] p-6 md:p-10 text-white relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6 md:gap-8">
                 <div className={`relative z-10 max-w-lg ${language === 'ar' ? 'text-center md:text-right' : 'text-center md:text-left'}`}>
-                    <h4 className="text-xl md:text-2xl font-black mb-2">{language === 'ar' ? "ملحوظة للبائعين" : "Vendor Notice"}</h4>
+                    <h4 className="text-xl md:text-2xl font-medium mb-2">{language === 'ar' ? "ملحوظة للبائعين" : "Vendor Notice"}</h4>
                     <p className="text-slate-400 font-bold text-sm md:text-base leading-relaxed">{language === 'ar' ? "الأقسام يتم إدارتها من قبل إدارة المنصة لضمان تجربة مستخدم موحدة. يمكنك إنشاء مجموعاتك الخاصة داخل هذه الأقسام." : "Categories are managed by the platform administration to ensure a unified user experience. You can create your own collections within these categories."}</p>
                 </div>
                 <div className="relative z-10 w-full md:w-auto">
                     <Button 
                         variant="outline" 
-                        className="w-full md:w-auto h-12 md:h-14 px-8 rounded-2xl bg-white/5 border-white/10 text-white hover:bg-white/10 font-black"
+                        className="w-full md:w-auto h-12 md:h-14 px-8 rounded-2xl bg-white/5 border-white/10 text-white hover:bg-white/10 font-medium"
                         onClick={() => setIsRequestModalOpen(true)}
                     >
                         {language === 'ar' ? "طلب قسم جديد" : "Request New Category"}
@@ -191,7 +191,7 @@ export default function CategoriesTab({ onCategoryClick }: CategoriesTabProps) {
                 <Dialog open={isRequestModalOpen} onOpenChange={setIsRequestModalOpen}>
                     <DialogContent className="max-w-2xl rounded-[32px] p-0 overflow-hidden border-0 bg-white">
                         <DialogHeader className="p-8 pb-4 bg-slate-50 border-b border-slate-100">
-                            <DialogTitle className="text-2xl font-black text-slate-900">
+                            <DialogTitle className="text-2xl font-medium text-slate-900">
                                 {language === 'ar' ? "طلب قسم جديد" : "Request New Category"}
                             </DialogTitle>
                             <p className="text-sm font-bold text-slate-400 mt-2">
@@ -202,7 +202,7 @@ export default function CategoriesTab({ onCategoryClick }: CategoriesTabProps) {
                             <div className="p-8 space-y-6">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="space-y-2">
-                                        <label className="text-xs font-black text-slate-400 uppercase tracking-widest">{language === 'ar' ? "اسم القسم (بالعربية)" : "NAME (ARABIC)"}</label>
+                                        <label className="text-xs font-medium text-slate-400 uppercase tracking-widest">{language === 'ar' ? "اسم القسم (بالعربية)" : "NAME (ARABIC)"}</label>
                                         <Input 
                                             className="h-12 rounded-xl bg-slate-50 border-transparent focus:bg-white focus:ring-4 focus:ring-purple-50 font-bold"
                                             placeholder="مثال: فساتين دانتيل"
@@ -212,7 +212,7 @@ export default function CategoriesTab({ onCategoryClick }: CategoriesTabProps) {
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-xs font-black text-slate-400 uppercase tracking-widest">{language === 'ar' ? "NAME (ENGLISH)" : "NAME (ENGLISH)"}</label>
+                                        <label className="text-xs font-medium text-slate-400 uppercase tracking-widest">{language === 'ar' ? "NAME (ENGLISH)" : "NAME (ENGLISH)"}</label>
                                         <Input 
                                             className="h-12 rounded-xl bg-slate-50 border-transparent focus:bg-white focus:ring-4 focus:ring-purple-50 font-bold"
                                             placeholder="Example: Lace Dresses"
@@ -224,7 +224,7 @@ export default function CategoriesTab({ onCategoryClick }: CategoriesTabProps) {
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="space-y-2">
-                                        <label className="text-xs font-black text-slate-400 uppercase tracking-widest">{language === 'ar' ? "وصف القسم (بالعربية)" : "DESCRIPTION (ARABIC)"}</label>
+                                        <label className="text-xs font-medium text-slate-400 uppercase tracking-widest">{language === 'ar' ? "وصف القسم (بالعربية)" : "DESCRIPTION (ARABIC)"}</label>
                                         <Textarea 
                                             className="min-h-[100px] rounded-xl bg-slate-50 border-transparent focus:bg-white focus:ring-4 focus:ring-purple-50 font-bold p-4"
                                             placeholder="صِف هذا القسم وكيف يساعد المتسوقين..."
@@ -234,7 +234,7 @@ export default function CategoriesTab({ onCategoryClick }: CategoriesTabProps) {
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-xs font-black text-slate-400 uppercase tracking-widest">{language === 'ar' ? "DESCRIPTION (ENGLISH)" : "DESCRIPTION (ENGLISH)"}</label>
+                                        <label className="text-xs font-medium text-slate-400 uppercase tracking-widest">{language === 'ar' ? "DESCRIPTION (ENGLISH)" : "DESCRIPTION (ENGLISH)"}</label>
                                         <Textarea 
                                             className="min-h-[100px] rounded-xl bg-slate-50 border-transparent focus:bg-white focus:ring-4 focus:ring-purple-50 font-bold p-4"
                                             placeholder="Describe this category and how it helps shoppers..."
@@ -248,19 +248,19 @@ export default function CategoriesTab({ onCategoryClick }: CategoriesTabProps) {
                                 {/* Image Input Section */}
                                 <div className="space-y-4">
                                     <div className="flex items-center justify-between">
-                                        <label className="text-xs font-black text-slate-400 uppercase tracking-widest">
+                                        <label className="text-xs font-medium text-slate-400 uppercase tracking-widest">
                                             {language === 'ar' ? "صورة القسم" : "CATEGORY IMAGE"}
                                         </label>
                                         <div className="flex bg-slate-100 p-1 rounded-xl">
                                             <button 
                                                 onClick={() => setUploadMode("file")}
-                                                className={cn("px-3 py-1 rounded-lg text-[10px] font-black transition-all", uploadMode === 'file' ? "bg-white text-purple-600 shadow-sm" : "text-slate-400")}
+                                                className={cn("px-3 py-1 rounded-lg text-[10px] font-medium transition-all", uploadMode === 'file' ? "bg-white text-purple-600 shadow-sm" : "text-slate-400")}
                                             >
                                                 {language === 'ar' ? "تحميل ملف" : "UPLOAD"}
                                             </button>
                                             <button 
                                                 onClick={() => setUploadMode("url")}
-                                                className={cn("px-3 py-1 rounded-lg text-[10px] font-black transition-all", uploadMode === 'url' ? "bg-white text-purple-600 shadow-sm" : "text-slate-400")}
+                                                className={cn("px-3 py-1 rounded-lg text-[10px] font-medium transition-all", uploadMode === 'url' ? "bg-white text-purple-600 shadow-sm" : "text-slate-400")}
                                             >
                                                 {language === 'ar' ? "رابط خارجي" : "URL"}
                                             </button>
@@ -292,7 +292,7 @@ export default function CategoriesTab({ onCategoryClick }: CategoriesTabProps) {
                                                         <Upload className="w-6 h-6 text-purple-600" />
                                                     </div>
                                                     <div className="space-y-1">
-                                                        <p className="font-black text-slate-900 text-sm">{language === 'ar' ? "اضغط لتحميل الصورة" : "Click to upload image"}</p>
+                                                        <p className="font-medium text-slate-900 text-sm">{language === 'ar' ? "اضغط لتحميل الصورة" : "Click to upload image"}</p>
                                                         <p className="text-[10px] font-bold text-slate-400">{language === 'ar' ? "PNG, JPG حتى 5 ميجابايت" : "PNG, JPG up to 5MB"}</p>
                                                     </div>
                                                 </div>
@@ -316,7 +316,7 @@ export default function CategoriesTab({ onCategoryClick }: CategoriesTabProps) {
                                         {language === 'ar' ? "تراجع" : "Cancel"}
                                     </Button>
                                     <Button 
-                                        className="h-12 px-10 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-black shadow-lg shadow-purple-100"
+                                        className="h-12 px-10 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-medium shadow-lg shadow-purple-100"
                                         onClick={handleRequestSubmit}
                                         disabled={submitRequest.isPending}
                                     >

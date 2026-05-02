@@ -96,7 +96,7 @@ export default function ShippingTab({ vendorId }: ShippingTabProps) {
                                 <Truck className="w-6 h-6 text-blue-600" />
                             </div>
                             <div>
-                                <CardTitle className="text-xl font-black">{t('standardShipping')}</CardTitle>
+                                <CardTitle className="text-xl font-medium">{t('standardShipping')}</CardTitle>
                                 <CardDescription>{t('standardShippingDesc')}</CardDescription>
                             </div>
                         </div>
@@ -141,7 +141,7 @@ export default function ShippingTab({ vendorId }: ShippingTabProps) {
                                     <Zap className={cn("w-6 h-6", hasFreeShipping ? "text-emerald-600" : "text-slate-400")} />
                                 </div>
                                 <div>
-                                    <CardTitle className="text-xl font-black">{t('freeShipping')}</CardTitle>
+                                    <CardTitle className="text-xl font-medium">{t('freeShipping')}</CardTitle>
                                     <CardDescription>{t('freeShippingDesc')}</CardDescription>
                                 </div>
                             </div>
@@ -197,7 +197,7 @@ export default function ShippingTab({ vendorId }: ShippingTabProps) {
                                 <span className="w-2 h-2 rounded-full bg-emerald-500" />
                                 {t('freeShippingActive')}
                             </span>
-                            <span className="text-slate-900 font-black">{freeShippingThreshold} {t('sar')}</span>
+                            <span className="text-slate-900 font-medium">{freeShippingThreshold} {t('sar')}</span>
                         </span>
                     ) : (
                         <span className="flex items-center justify-center md:justify-start gap-2">

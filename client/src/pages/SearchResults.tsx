@@ -37,7 +37,7 @@ export default function SearchResults() {
 
                     <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
                         <div>
-                            <h1 className="text-3xl md:text-4xl font-black text-gray-900 mb-2 flex items-center gap-3">
+                            <h1 className="text-3xl md:text-4xl font-medium text-gray-900 mb-2 flex items-center gap-3">
                                 <Search className="text-rose-600" size={32} />
                                 {language === 'ar' ? "نتائج البحث" : "Search Results"}
                             </h1>
@@ -73,7 +73,7 @@ export default function SearchResults() {
                         <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-6">
                             <PackageSearch size={48} className="text-gray-400" />
                         </div>
-                        <h2 className="text-2xl font-black text-gray-900 mb-2">
+                        <h2 className="text-2xl font-medium text-gray-900 mb-2">
                             {language === 'ar' ? "عذراً، لم نجد ما تبحثي عنه" : "Sorry, we couldn't find what you're looking for"}
                         </h2>
                         <p className="text-slate-500 font-bold mb-8 max-w-md">
@@ -81,7 +81,7 @@ export default function SearchResults() {
                                 ? "جربي كلمات بحث مختلفة أو تصفحي مجموعاتنا الأحدث"
                                 : "Try different keywords or browse our latest collections"}
                         </p>
-                        <Button className="bg-rose-600 hover:bg-rose-700 text-white rounded-full px-8 h-12 font-black shadow-lg shadow-rose-200">
+                        <Button className="bg-rose-600 hover:bg-rose-700 text-white rounded-full px-8 h-12 font-medium shadow-lg shadow-rose-200">
                             {language === 'ar' ? "تصفح كافة المنتجات" : "Browse All Products"}
                         </Button>
                     </div>

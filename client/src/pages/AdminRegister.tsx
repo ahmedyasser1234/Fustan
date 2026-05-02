@@ -57,13 +57,13 @@ export default function AdminRegister() {
                     <div className="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-slate-200 shadow-sm">
                         <UserPlus className="w-8 h-8 text-slate-800" />
                     </div>
-                    <CardTitle className="text-2xl font-black text-slate-900 tracking-tight">Create Admin Account</CardTitle>
+                    <CardTitle className="text-2xl font-medium text-slate-900 tracking-tight">Create Admin Account</CardTitle>
                     <p className="text-sm text-slate-500 font-medium">Register a new administrator with full privileges</p>
                 </CardHeader>
                 <CardContent>
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div className="space-y-2">
-                            <Label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">Full Name</Label>
+                            <Label className="text-xs font-medium uppercase tracking-widest text-slate-400 ml-1">Full Name</Label>
                             <Input
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
@@ -73,7 +73,7 @@ export default function AdminRegister() {
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">Email Address</Label>
+                            <Label className="text-xs font-medium uppercase tracking-widest text-slate-400 ml-1">Email Address</Label>
                             <Input
                                 type="email"
                                 value={email}
@@ -84,7 +84,7 @@ export default function AdminRegister() {
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">Password</Label>
+                            <Label className="text-xs font-medium uppercase tracking-widest text-slate-400 ml-1">Password</Label>
                             <Input
                                 type="password"
                                 value={password}

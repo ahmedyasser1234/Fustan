@@ -243,7 +243,7 @@ export default function OrderDetails() {
                                             </div>
                                         </div>
                                         <div className={`mt-2 flex ${language === 'ar' ? 'justify-end' : 'justify-start'}`}>
-                                            <span className="font-black text-rose-600">
+                                            <span className="font-medium text-rose-600">
                                                 {language === 'ar' ? 'الإجمالي' : 'Total'}: {formatPrice(item.total)}
                                             </span>
                                         </div>
@@ -293,7 +293,7 @@ export default function OrderDetails() {
                             <div className="border-t border-dashed border-gray-200 my-4 pt-4">
                                 <div className="flex justify-between items-center">
                                     <span className="font-bold text-lg text-gray-900">{language === 'ar' ? 'الإجمالي النهائي' : 'Final Total'}</span>
-                                    <span className="font-black text-xl text-rose-600">
+                                    <span className="font-medium text-xl text-rose-600">
                                         {formatPrice(order.total)}
                                     </span>
                                 </div>

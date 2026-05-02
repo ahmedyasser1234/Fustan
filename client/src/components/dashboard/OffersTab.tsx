@@ -173,12 +173,12 @@ export default function OffersTab({ vendorId }: OffersTabProps) {
         <div className="space-y-8" dir={language === 'ar' ? 'rtl' : 'ltr'}>
             <div className={`flex flex-col md:flex-row justify-between items-start md:items-center gap-4`}>
                 <div className={language === 'ar' ? 'text-right' : 'text-left'}>
-                    <h2 className="text-3xl font-black text-slate-900">{t('offersTitle')}</h2>
+                    <h2 className="text-3xl font-medium text-slate-900">{t('offersTitle')}</h2>
                     <p className="text-slate-500 text-sm">{t('offersDesc')}</p>
                 </div>
                 <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
                     <DialogTrigger asChild>
-                        <Button onClick={handleOpenCreate} className="w-full md:w-auto bg-pink-600 hover:bg-pink-700 h-12 px-8 rounded-2xl font-black text-lg gap-2 shadow-xl shadow-pink-100 transition-all active:scale-95">
+                        <Button onClick={handleOpenCreate} className="w-full md:w-auto bg-pink-600 hover:bg-pink-700 h-12 px-8 rounded-2xl font-medium text-lg gap-2 shadow-xl shadow-pink-100 transition-all active:scale-95">
                             <Plus className="w-6 h-6" />
                             {t('addOffer')}
                         </Button>
@@ -186,7 +186,7 @@ export default function OffersTab({ vendorId }: OffersTabProps) {
                     <DialogContent className="max-w-2xl w-[95%] bg-white/95 backdrop-blur-xl border-0 shadow-2xl rounded-[24px] md:rounded-3xl overflow-hidden p-0">
                         <div className="bg-gradient-to-r from-pink-600 to-purple-600 p-6 md:p-8 text-white" dir={language === 'ar' ? 'rtl' : 'ltr'}>
                             <DialogHeader className={language === 'ar' ? 'text-right' : 'text-left'}>
-                                <DialogTitle className="text-xl md:text-2xl font-black text-white">
+                                <DialogTitle className="text-xl md:text-2xl font-medium text-white">
                                     {editingOffer ? t('editOffer') : t('createOfferTitle')}
                                 </DialogTitle>
                                 <p className="text-white/80 text-xs md:text-sm">{language === 'ar' ? "حدد تفاصيل العرض والمنتجات المشمولة لتجذب أكبر عدد من العملاء" : "Set offer details and included products to attract more customers"}</p>
@@ -201,7 +201,7 @@ export default function OffersTab({ vendorId }: OffersTabProps) {
                                         <Zap className={cn("w-6 h-6", isFlashSale ? "text-amber-600" : "text-blue-600")} />
                                     </div>
                                     <div>
-                                        <p className="font-black text-slate-800">{t('flashSale')}</p>
+                                        <p className="font-medium text-slate-800">{t('flashSale')}</p>
                                         <p className="text-xs text-slate-500">{t('flashSaleDesc')}</p>
                                     </div>
                                 </div>
@@ -210,47 +210,47 @@ export default function OffersTab({ vendorId }: OffersTabProps) {
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                                 <div className="space-y-2">
-                                    <Label className="font-black text-slate-700">{t('offerNameAr')}</Label>
+                                    <Label className="font-medium text-slate-700">{t('offerNameAr')}</Label>
                                     <Input placeholder="مثال: خصم الجمعة البيضاء" value={nameAr} onChange={(e) => setNameAr(e.target.value)} className="h-12 rounded-xl border-slate-200" />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label className="font-black text-slate-700">{t('offerNameEn')}</Label>
+                                    <Label className="font-medium text-slate-700">{t('offerNameEn')}</Label>
                                     <Input placeholder="Example: Black Friday Sale" value={nameEn} onChange={(e) => setNameEn(e.target.value)} className="h-12 rounded-xl border-slate-200" />
                                 </div>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
                                 <div className="space-y-2">
-                                    <Label className="font-black text-slate-700">{t('discountPercent')}</Label>
+                                    <Label className="font-medium text-slate-700">{t('discountPercent')}</Label>
                                     <div className="relative">
-                                        <Input type="number" min="1" max="100" value={discountPercent} onChange={(e) => setDiscountPercent(e.target.value)} className="h-12 rounded-xl border-slate-200 pl-10 font-black text-lg" />
-                                        <span className="absolute left-3 top-1/2 -translate-y-1/2 font-black text-slate-400">%</span>
+                                        <Input type="number" min="1" max="100" value={discountPercent} onChange={(e) => setDiscountPercent(e.target.value)} className="h-12 rounded-xl border-slate-200 pl-10 font-medium text-lg" />
+                                        <span className="absolute left-3 top-1/2 -translate-y-1/2 font-medium text-slate-400">%</span>
                                     </div>
                                 </div>
                                 <div className="space-y-2">
-                                    <Label className="font-black text-slate-700">{t('maxUsage')}</Label>
+                                    <Label className="font-medium text-slate-700">{t('maxUsage')}</Label>
                                     <Input type="number" min="1" placeholder={language === 'ar' ? "اختياري" : "Optional"} value={usageLimit} onChange={(e) => setUsageLimit(e.target.value)} className="h-12 rounded-xl border-slate-200 font-bold" />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label className="font-black text-slate-700">{t('minQty')}</Label>
+                                    <Label className="font-medium text-slate-700">{t('minQty')}</Label>
                                     <Input type="number" min="1" value={minQuantity} onChange={(e) => setMinQuantity(e.target.value)} className="h-12 rounded-xl border-slate-200 font-bold" />
                                 </div>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                                 <div className="space-y-2">
-                                    <Label className="font-black text-slate-700">{t('startDate')}</Label>
+                                    <Label className="font-medium text-slate-700">{t('startDate')}</Label>
                                     <Input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="h-12 rounded-xl border-slate-200 font-bold" />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label className="font-black text-slate-700">{t('endDate')}</Label>
+                                    <Label className="font-medium text-slate-700">{t('endDate')}</Label>
                                     <Input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="h-12 rounded-xl border-slate-200 font-bold" />
                                 </div>
                             </div>
 
                             <div className="space-y-3">
                                 <div className="flex items-center justify-between">
-                                    <Label className="font-black text-slate-700">{t('productsIncluded')}</Label>
+                                    <Label className="font-medium text-slate-700">{t('productsIncluded')}</Label>
                                     <Badge variant="secondary" className="bg-pink-50 text-pink-600 font-bold">
                                         {selectedProducts.length} {language === 'ar' ? "مختار" : "Selected"}
                                     </Badge>
@@ -302,7 +302,7 @@ export default function OffersTab({ vendorId }: OffersTabProps) {
                             <Button
                                 onClick={handleSubmit}
                                 disabled={createOffer.isPending || updateOffer.isPending || (selectedProducts.length === 0)}
-                                className="bg-slate-900 hover:bg-slate-800 text-white h-12 px-12 rounded-2xl font-black text-lg shadow-xl shadow-slate-200"
+                                className="bg-slate-900 hover:bg-slate-800 text-white h-12 px-12 rounded-2xl font-medium text-lg shadow-xl shadow-slate-200"
                             >
                                 {createOffer.isPending || updateOffer.isPending ? (
                                     <><Loader2 className="w-5 h-5 mr-2 animate-spin" /> {t('saving')}</>
@@ -347,20 +347,20 @@ export default function OffersTab({ vendorId }: OffersTabProps) {
                                     </div>
                                     <div className="flex flex-col items-end gap-2">
                                         <Badge className={cn(
-                                            "font-black text-lg px-4 py-1.5 shadow-md",
+                                            "font-medium text-lg px-4 py-1.5 shadow-md",
                                             typeFlash ? "bg-amber-500 hover:bg-amber-600" : "bg-blue-600 hover:bg-blue-700"
                                         )}>
                                             %{offer.discountPercent} OFF
                                         </Badge>
                                         {isActive && (
-                                            <span className="flex items-center gap-1.5 text-[10px] font-black text-emerald-600 uppercase">
+                                            <span className="flex items-center gap-1.5 text-[10px] font-medium text-emerald-600 uppercase">
                                                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                                                 {t('activeNow')}
                                             </span>
                                         )}
                                     </div>
                                 </div>
-                                <CardTitle className="text-xl font-black text-slate-800 leading-tight">
+                                <CardTitle className="text-xl font-medium text-slate-800 leading-tight">
                                     {language === 'ar' ? offer.nameAr : offer.nameEn}
                                 </CardTitle>
                                 <CardDescription className="flex items-center gap-1.5 pt-2 text-slate-400 font-bold">
@@ -379,15 +379,15 @@ export default function OffersTab({ vendorId }: OffersTabProps) {
                             <CardContent className="space-y-4">
                                 <div className="grid grid-cols-2 gap-3">
                                     <div className="p-3 bg-slate-50 rounded-2xl border border-slate-100">
-                                        <p className="text-[10px] font-black text-slate-400 mb-1">{t('usage')}</p>
-                                        <p className="text-sm font-black text-slate-700 flex items-center gap-1.5">
+                                        <p className="text-[10px] font-medium text-slate-400 mb-1">{t('usage')}</p>
+                                        <p className="text-sm font-medium text-slate-700 flex items-center gap-1.5">
                                             <Users className="w-3.5 h-3.5" />
                                             {offer.usedCount || 0} / {offer.usageLimit || '∞'}
                                         </p>
                                     </div>
                                     <div className="p-3 bg-slate-50 rounded-2xl border border-slate-100">
-                                        <p className="text-[10px] font-black text-slate-400 mb-1">{t('minQty')}</p>
-                                        <p className="text-sm font-black text-slate-700 flex items-center gap-1.5">
+                                        <p className="text-[10px] font-medium text-slate-400 mb-1">{t('minQty')}</p>
+                                        <p className="text-sm font-medium text-slate-700 flex items-center gap-1.5">
                                             <Package className="w-3.5 h-3.5" />
                                             {offer.minQuantity} {language === 'ar' ? "قطعة" : "items"}
                                         </p>
@@ -440,7 +440,7 @@ export default function OffersTab({ vendorId }: OffersTabProps) {
                         <div className="w-24 h-24 bg-white rounded-3xl shadow-xl flex items-center justify-center mb-6">
                             <Tag className="w-10 h-10 text-slate-200" />
                         </div>
-                        <h3 className="text-2xl font-black text-slate-700 mb-2">{t('noOffers')}</h3>
+                        <h3 className="text-2xl font-medium text-slate-700 mb-2">{t('noOffers')}</h3>
                         <p className="text-slate-400 max-w-sm mb-8">{t('offersDesc')}</p>
                         <Button onClick={handleOpenCreate} className="bg-slate-900 h-12 px-8 rounded-2xl font-bold">{t('startOffer')}</Button>
                     </div>

@@ -54,12 +54,12 @@ import { useSystemNotifications } from "@/hooks/useSystemNotifications";
 import { ScrollToTop } from "./components/ScrollToTop";
 import { NotificationDropdown } from "./components/NotificationDropdown";
 
-const HERO_PAGES = ['/', '/products', '/about-us', '/contact-us'];
+const HERO_PAGES = ['/', '/products', '/about-us', '/contact-us', '/sell-dress'];
 
 function Navigation({ isChatHistoryOpen, setIsChatHistoryOpen, unreadCount, systemUnreadCount }: { isChatHistoryOpen: boolean, setIsChatHistoryOpen: (open: boolean) => void, unreadCount: number, systemUnreadCount: number }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [location, setLocation] = useLocation();
-  const isHeroPage = HERO_PAGES.includes(location);
+  const isHeroPage = HERO_PAGES.includes(location) || location.startsWith('/vendors/');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
@@ -179,9 +179,9 @@ function Navigation({ isChatHistoryOpen, setIsChatHistoryOpen, unreadCount, syst
               const isActive = location === link.href;
               return (
                 <Link key={link.href} href={link.href}>
-                  <span className={`block px-3 xl:px-6 py-2.5 rounded-full text-[13px] xl:text-sm font-black cursor-pointer transition-all duration-300 ${isActive
-                    ? (isScrolled || location !== '/' ? 'bg-white text-gray-900 shadow-sm' : 'bg-white text-gray-900 shadow-lg')
-                    : (isScrolled || location !== '/' ? 'text-gray-500 hover:text-gray-900' : 'text-white/80 hover:text-white')
+                  <span className={`block px-3 xl:px-6 py-2.5 rounded-full text-[13px] xl:text-sm font-medium cursor-pointer transition-all duration-300 ${isActive
+                    ? (isScrolled || !isHeroPage ? 'bg-white text-gray-900 shadow-sm' : 'bg-white text-gray-900 shadow-lg')
+                    : (isScrolled || !isHeroPage ? 'text-gray-500 hover:text-gray-900' : 'text-white/80 hover:text-white')
                     }`}>
                     {link.label}
                   </span>
@@ -228,7 +228,7 @@ function Navigation({ isChatHistoryOpen, setIsChatHistoryOpen, unreadCount, syst
                     <motion.span
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
-                      className="absolute -top-1 -right-1 flex h-4 w-4 md:h-6 md:w-6 items-center justify-center rounded-full bg-rose-500 text-[8px] md:text-xs font-black text-white ring-2 ring-white shadow-lg"
+                      className="absolute -top-1 -right-1 flex h-4 w-4 md:h-6 md:w-6 items-center justify-center rounded-full bg-rose-500 text-[8px] md:text-xs font-medium text-white ring-2 ring-white shadow-lg"
                     >
                       {cartCount}
                     </motion.span>
@@ -260,7 +260,7 @@ function Navigation({ isChatHistoryOpen, setIsChatHistoryOpen, unreadCount, syst
                               {user.name?.charAt(0)?.toUpperCase() || user.email?.charAt(0)?.toUpperCase() || '?'}
                             </div>
                             <div className="overflow-hidden">
-                              <p className="font-bold text-gray-900 text-lg truncate">{user.name}</p>
+                              <span className="font-medium truncate max-w-[100px]">{user.name}</span>
                               <p className="text-xs text-gray-400 font-medium truncate">{user.email}</p>
                             </div>
                           </div>
@@ -329,7 +329,7 @@ function Navigation({ isChatHistoryOpen, setIsChatHistoryOpen, unreadCount, syst
                       ) : (
                         <div className="space-y-4">
                           <div className="p-2">
-                            <h4 className="font-black text-gray-900 text-lg mb-1">{language === 'ar' ? "أهلاً بكِ في فستان" : "Welcome to Fustan"}</h4>
+                            <h4 className="font-medium text-gray-900 text-lg mb-1">{language === 'ar' ? "أهلاً بكِ في فستان" : "Welcome to Fustan"}</h4>
                             <p className="text-xs text-gray-400 font-medium">{language === 'ar' ? "سجلي الدخول لتجربة تسوق أفضل" : "Sign in for a better shopping experience"}</p>
                           </div>
 
@@ -421,7 +421,7 @@ function Navigation({ isChatHistoryOpen, setIsChatHistoryOpen, unreadCount, syst
                     <Link key={item.label} href={item.href}>
                       <span
                         onClick={() => setMobileMenuOpen(false)}
-                        className="block text-lg font-black text-gray-600 hover:text-gray-900 hover:bg-gray-50 py-3 rounded-2xl cursor-pointer transition-colors"
+                        className="block text-lg font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 py-3 rounded-2xl cursor-pointer transition-colors"
                       >
                         {item.label}
                       </span>
@@ -518,7 +518,7 @@ function Footer() {
           </div>
 
           <div className="md:col-span-2 text-start">
-            <h3 className="text-base font-black text-white mb-6 uppercase tracking-wider">
+            <h3 className="text-base font-medium text-white mb-6 uppercase tracking-wider">
               {isAr ? 'روابط تهمك' : 'Quick Links'}
             </h3>
             <ul className="space-y-3 text-slate-400 font-medium text-sm">
@@ -526,12 +526,12 @@ function Footer() {
               <li><Link href="/about-us" className="hover:text-rose-600 transition-colors">{isAr ? 'حكاية فستان' : 'Our Story'}</Link></li>
               <li><Link href="/contact-us" className="hover:text-rose-600 transition-colors">{isAr ? 'تواصل معنا' : 'Contact Us'}</Link></li>
               <li><Link href="/faq" className="hover:text-rose-600 transition-colors">{isAr ? 'الأسئلة الشائعة' : 'FAQs'}</Link></li>
-              <li><Link href="/sell-dress" className="hover:text-rose-600 transition-colors font-black text-rose-500">{isAr ? 'بيعي فستانك الآن' : 'Sell Your Dress Now'}</Link></li>
+              <li><Link href="/sell-dress" className="hover:text-rose-600 transition-colors font-medium text-rose-500">{isAr ? 'بيعي فستانك الآن' : 'Sell Your Dress Now'}</Link></li>
             </ul>
           </div>
 
           <div className="md:col-span-2 text-start">
-            <h3 className="text-base font-black text-white mb-6 uppercase tracking-wider">
+            <h3 className="text-base font-medium text-white mb-6 uppercase tracking-wider">
               {isAr ? 'سياساتنا' : 'Our Policies'}
             </h3>
             <ul className="space-y-3 text-slate-400 font-medium text-sm">
@@ -544,7 +544,7 @@ function Footer() {
 
           <div className="md:col-span-3 text-start">
             <div className="bg-white/5 p-6 rounded-[2rem] border border-white/10">
-              <h3 className="text-base font-black text-white mb-3">
+              <h3 className="text-base font-medium text-white mb-3">
                 {isAr ? 'انضمي لنشرتنا' : 'Join Our Newsletter'}
               </h3>
               <p className="text-xs text-slate-400 font-medium mb-4">
@@ -722,7 +722,7 @@ function AppContent() {
           <div className="absolute inset-0 bg-gradient-to-tr from-rose-600 to-rose-400 opacity-0 group-hover:opacity-100 transition-opacity rounded-full"></div>
           <MessageSquare className="w-6 h-6 md:w-8 md:h-8 relative z-10" />
           {unreadCount > 0 && (
-            <span className="absolute -top-1 -right-1 flex h-5 w-5 md:h-6 md:w-6 items-center justify-center rounded-full bg-white text-rose-600 text-[10px] md:text-[12px] font-black shadow-lg animate-bounce border-2 border-rose-500">
+            <span className="absolute -top-1 -right-1 flex h-5 w-5 md:h-6 md:w-6 items-center justify-center rounded-full bg-white text-rose-600 text-[10px] md:text-[12px] font-medium shadow-lg animate-bounce border-2 border-rose-500">
               {unreadCount}
             </span>
           )}

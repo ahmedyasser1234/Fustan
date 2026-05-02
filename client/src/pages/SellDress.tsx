@@ -129,7 +129,7 @@ export default function SellDress() {
             animate={{ opacity: 1, y: 0 }}
             className="max-w-3xl mx-auto space-y-6"
           >
-            <h1 className="text-3xl md:text-5xl font-black text-white leading-tight">
+            <h1 className="text-3xl md:text-3xl font-medium text-white leading-tight">
               {language === 'ar' ? "حولي خزانة ملابسك إلى أرباح" : "Turn Your Wardrobe Into Profit"}
             </h1>
             <p className="text-xl text-slate-300 font-medium">
@@ -153,14 +153,14 @@ export default function SellDress() {
                 <div className="space-y-6">
                   <div className="flex items-center gap-3">
                     <div className="w-2 h-8 bg-rose-500 rounded-full" />
-                    <h2 className="text-2xl font-black text-slate-900">
+                    <h2 className="text-2xl font-medium text-slate-900">
                       {language === 'ar' ? "تفاصيل الفستان" : "Dress Details"}
                     </h2>
                   </div>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <label className="text-sm font-black text-slate-400 uppercase tracking-wider">{language === 'ar' ? "الاسم بالعربية" : "Name in Arabic"}</label>
+                      <label className="text-sm font-medium text-slate-400 uppercase tracking-wider">{language === 'ar' ? "الاسم بالعربية" : "Name in Arabic"}</label>
                       <Input 
                         required
                         value={nameAr}
@@ -170,7 +170,7 @@ export default function SellDress() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-sm font-black text-slate-400 uppercase tracking-wider">{language === 'ar' ? "الاسم بالإنجليزية" : "Name in English"}</label>
+                      <label className="text-sm font-medium text-slate-400 uppercase tracking-wider">{language === 'ar' ? "الاسم بالإنجليزية" : "Name in English"}</label>
                       <Input 
                         required
                         value={nameEn}
@@ -182,7 +182,7 @@ export default function SellDress() {
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-sm font-black text-slate-400 uppercase tracking-wider">{language === 'ar' ? "الفئة" : "Category"}</label>
+                    <label className="text-sm font-medium text-slate-400 uppercase tracking-wider">{language === 'ar' ? "الفئة" : "Category"}</label>
                     <Select value={categoryId} onValueChange={setCategoryId} required>
                       <SelectTrigger className="h-14 rounded-2xl border-slate-100 bg-slate-50/50 focus:bg-white transition-all font-bold">
                         <SelectValue placeholder={language === 'ar' ? "اختر الفئة" : "Select Category"} />
@@ -199,7 +199,7 @@ export default function SellDress() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <label className="text-sm font-black text-slate-400 uppercase tracking-wider">{language === 'ar' ? "الوصف بالعربية" : "Description in Arabic"}</label>
+                      <label className="text-sm font-medium text-slate-400 uppercase tracking-wider">{language === 'ar' ? "الوصف بالعربية" : "Description in Arabic"}</label>
                       <Textarea 
                         required
                         value={descriptionAr}
@@ -209,7 +209,7 @@ export default function SellDress() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-sm font-black text-slate-400 uppercase tracking-wider">{language === 'ar' ? "الوصف بالإنجليزية" : "Description in English"}</label>
+                      <label className="text-sm font-medium text-slate-400 uppercase tracking-wider">{language === 'ar' ? "الوصف بالإنجليزية" : "Description in English"}</label>
                       <Textarea 
                         required
                         value={descriptionEn}
@@ -225,28 +225,28 @@ export default function SellDress() {
                 <div className="space-y-6">
                   <div className="flex items-center gap-3">
                     <div className="w-2 h-8 bg-rose-500 rounded-full" />
-                    <h2 className="text-2xl font-black text-slate-900">
+                    <h2 className="text-2xl font-medium text-slate-900">
                       {language === 'ar' ? "السعر والحالة" : "Price & Condition"}
                     </h2>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div className="space-y-2">
-                      <label className="text-sm font-black text-slate-400 uppercase tracking-wider">{language === 'ar' ? "السعر المطلوب" : "Asking Price"}</label>
+                      <label className="text-sm font-medium text-slate-400 uppercase tracking-wider">{language === 'ar' ? "السعر المطلوب" : "Asking Price"}</label>
                       <div className="relative">
                         <Input 
                           type="number"
                           required
                           value={price}
                           onChange={(e) => setPrice(e.target.value)}
-                          className="h-14 rounded-2xl border-slate-100 bg-slate-50/50 focus:bg-white transition-all font-black text-xl px-6 pr-14"
+                          className="h-14 rounded-2xl border-slate-100 bg-slate-50/50 focus:bg-white transition-all font-medium text-xl px-6 pr-14"
                         />
-                        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-black text-slate-300 uppercase">{t('sar')}</span>
+                        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-medium text-slate-300 uppercase">{t('sar')}</span>
                       </div>
                     </div>
 
                     <div className="space-y-2">
-                      <label className="text-sm font-black text-slate-400 uppercase tracking-wider">{language === 'ar' ? "الحالة" : "Condition"}</label>
+                      <label className="text-sm font-medium text-slate-400 uppercase tracking-wider">{language === 'ar' ? "الحالة" : "Condition"}</label>
                       <Select value={condition} onValueChange={(val: any) => setCondition(val)}>
                         <SelectTrigger className="h-14 rounded-2xl border-slate-100 bg-slate-50/50 focus:bg-white transition-all font-bold">
                           <SelectValue />
@@ -260,7 +260,7 @@ export default function SellDress() {
 
                     {condition === 'used' && (
                       <div className="space-y-2 animate-in fade-in slide-in-from-top-2">
-                        <label className="text-sm font-black text-slate-400 uppercase tracking-wider">{language === 'ar' ? "مرات الاستخدام" : "Usage Count"}</label>
+                        <label className="text-sm font-medium text-slate-400 uppercase tracking-wider">{language === 'ar' ? "مرات الاستخدام" : "Usage Count"}</label>
                         <Input 
                           type="number"
                           min="0"
@@ -278,7 +278,7 @@ export default function SellDress() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className="w-2 h-8 bg-rose-500 rounded-full" />
-                      <h2 className="text-2xl font-black text-slate-900">
+                      <h2 className="text-2xl font-medium text-slate-900">
                         {language === 'ar' ? "المقاسات المتاحة" : "Available Sizes"}
                       </h2>
                     </div>
@@ -340,7 +340,7 @@ export default function SellDress() {
                 
                 {/* Main Images */}
                 <div className="space-y-4">
-                  <h3 className="text-xl font-black text-slate-900 flex items-center gap-2">
+                  <h3 className="text-xl font-medium text-slate-900 flex items-center gap-2">
                     <ImageIcon className="w-5 h-5 text-rose-500" />
                     {language === 'ar' ? "صور الفستان" : "Dress Photos"}
                   </h3>
@@ -370,7 +370,7 @@ export default function SellDress() {
                     {images.length < 5 && (
                       <label className="aspect-[3/4] rounded-3xl border-2 border-dashed border-slate-200 bg-slate-50/50 flex flex-col items-center justify-center cursor-pointer hover:border-rose-400 hover:bg-rose-50/20 transition-all group">
                         <Upload className="w-8 h-8 text-slate-300 group-hover:text-rose-500 mb-2 transition-colors" />
-                        <span className="text-xs font-black text-slate-400 group-hover:text-rose-600">{language === 'ar' ? "إضافة صور" : "Add Photos"}</span>
+                        <span className="text-xs font-medium text-slate-400 group-hover:text-rose-600">{language === 'ar' ? "إضافة صور" : "Add Photos"}</span>
                         <input 
                           type="file" 
                           multiple 
@@ -390,12 +390,12 @@ export default function SellDress() {
                 {/* AI Qualified Image */}
                 <div className="space-y-4 pt-8 border-t border-slate-100">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-xl font-black text-slate-900 flex items-center gap-2">
+                    <h3 className="text-xl font-medium text-slate-900 flex items-center gap-2">
                       <Sparkles className="w-5 h-5 text-rose-500" />
                       {language === 'ar' ? "صورة التجربة الافتراضية" : "AI Try-On Image"}
                     </h3>
                     <div className="bg-rose-50 px-2 py-1 rounded-lg">
-                      <span className="text-[10px] font-black text-rose-600 uppercase tracking-widest">{language === 'ar' ? "إلزامي" : "Required"}</span>
+                      <span className="text-[10px] font-medium text-rose-600 uppercase tracking-widest">{language === 'ar' ? "إلزامي" : "Required"}</span>
                     </div>
                   </div>
 
@@ -412,7 +412,7 @@ export default function SellDress() {
                         <button 
                           type="button"
                           onClick={() => setAiQualifiedImage(null)}
-                          className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all text-white font-black uppercase text-xs"
+                          className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all text-white font-medium uppercase text-xs"
                         >
                           {language === 'ar' ? "تغيير الصورة" : "Change Image"}
                         </button>
@@ -422,7 +422,7 @@ export default function SellDress() {
                         <div className="w-12 h-12 bg-white rounded-2xl shadow-sm flex items-center justify-center mb-2">
                           <Upload className="w-6 h-6 text-rose-500" />
                         </div>
-                        <span className="text-xs font-black text-rose-500">{language === 'ar' ? "تحميل صورة AI" : "Upload AI Image"}</span>
+                        <span className="text-xs font-medium text-rose-500">{language === 'ar' ? "تحميل صورة AI" : "Upload AI Image"}</span>
                         <input 
                           type="file" 
                           accept="image/*" 
@@ -437,7 +437,7 @@ export default function SellDress() {
                 <div className="pt-8">
                   <Button 
                     disabled={isSubmitting}
-                    className="w-full h-16 rounded-2xl bg-slate-900 hover:bg-black text-white font-black text-lg shadow-2xl transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50"
+                    className="w-full h-16 rounded-2xl bg-slate-900 hover:bg-black text-white font-medium text-lg shadow-2xl transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50"
                   >
                     {isSubmitting ? (
                       <>

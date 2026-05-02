@@ -185,7 +185,7 @@ export default function MessagesTab() {
                 selectedConversation ? '-translate-x-full md:translate-x-0 rtl:translate-x-full rtl:md:translate-x-0 opacity-0 md:opacity-100 pointer-events-none md:pointer-events-auto' : 'translate-x-0 opacity-100'
             )}>
                 <div className="p-4 border-b border-gray-100 bg-white sticky top-0 z-20">
-                    <h3 className={`font-black text-xl text-gray-900 mb-4 ${language === 'ar' ? 'text-right' : 'text-left'}`}>{t('conversations')}</h3>
+                    <h3 className={`font-medium text-xl text-gray-900 mb-4 ${language === 'ar' ? 'text-right' : 'text-left'}`}>{t('conversations')}</h3>
                     <div className="relative">
                         <Search className={`absolute ${language === 'ar' ? 'right-3' : 'left-3'} top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400`} />
                         <Input
@@ -223,7 +223,7 @@ export default function MessagesTab() {
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <div className="flex justify-between items-center mb-1.5">
-                                        <h4 className={cn("text-base truncate transition-colors", selectedConversation?.id === conv.id ? "font-black text-slate-900" : "font-bold text-slate-700")}>
+                                        <h4 className={cn("text-base truncate transition-colors", selectedConversation?.id === conv.id ? "font-medium text-slate-900" : "font-bold text-slate-700")}>
                                             {conv.counterpartName}
                                         </h4>
                                         <span className="text-xs text-slate-400 font-medium whitespace-nowrap">
@@ -281,7 +281,7 @@ export default function MessagesTab() {
                                     <AvatarFallback><User className="h-5 w-5 md:h-6 md:w-6" /></AvatarFallback>
                                 </Avatar>
                                 <div>
-                                    <h3 className="font-black text-base md:text-lg text-slate-900">{selectedConversation.counterpartName}</h3>
+                                    <h3 className="font-medium text-base md:text-lg text-slate-900">{selectedConversation.counterpartName}</h3>
                                     <div className="flex items-center gap-1.5">
                                         <span className={cn(
                                             "h-2 w-2 rounded-full",
@@ -372,7 +372,7 @@ export default function MessagesTab() {
                                 <Zap className="h-6 w-6 text-white" />
                             </div>
                         </div>
-                        <h3 className="text-2xl font-black text-slate-800 mb-3">{t('startChat')}</h3>
+                        <h3 className="text-2xl font-medium text-slate-800 mb-3">{t('startChat')}</h3>
                         <p className="text-slate-400 text-base max-w-[300px] leading-relaxed">{t('selectChat')}</p>
                     </div>
                 )}

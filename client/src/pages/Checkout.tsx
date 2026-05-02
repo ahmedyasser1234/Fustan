@@ -178,7 +178,7 @@ export default function Checkout() {
       {/* Premium Header */}
       <header className="bg-white border-b border-gray-100 pt-16 md:pt-32 pb-8 md:pb-16">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="text-3xl md:text-5xl font-black text-gray-900 mb-4 md:mb-6 font-arabic">إتمام الطلب</h1>
+          <h1 className="text-3xl md:text-3xl font-medium text-gray-900 mb-4 md:mb-6 font-arabic">إتمام الطلب</h1>
 
           {/* Progress Indicator */}
           <div className="flex items-center justify-center gap-4 md:gap-12 mt-12 overflow-x-auto pb-4 scrollbar-hide">
@@ -221,7 +221,7 @@ export default function Checkout() {
                   className="space-y-8"
                 >
                   <div className="bg-white p-6 md:p-10 rounded-[2rem] md:rounded-[3rem] shadow-xl border border-gray-50">
-                    <h2 className="text-2xl md:text-3xl font-black text-gray-900 mb-6 md:mb-8 text-right flex items-center justify-end gap-3">
+                    <h2 className="text-2xl md:text-3xl font-medium text-gray-900 mb-6 md:mb-8 text-right flex items-center justify-end gap-3">
                       بيانات التوصيل <MapPin className="w-6 h-6 md:w-8 md:h-8 text-rose-500" />
                     </h2>
 
@@ -301,7 +301,7 @@ export default function Checkout() {
                   className="space-y-8"
                 >
                   <div className="bg-white p-6 md:p-10 rounded-[2rem] md:rounded-[3rem] shadow-xl border border-gray-50">
-                    <h2 className="text-2xl md:text-3xl font-black text-gray-900 mb-6 md:mb-8 text-right flex items-center justify-end gap-3">
+                    <h2 className="text-2xl md:text-3xl font-medium text-gray-900 mb-6 md:mb-8 text-right flex items-center justify-end gap-3">
                       بيانات الدفع <CreditCard className="w-6 h-6 md:w-8 md:h-8 text-rose-500" />
                     </h2>
 
@@ -314,7 +314,7 @@ export default function Checkout() {
                           <CreditCard size={20} className="md:w-6 md:h-6" />
                         </div>
                         <div className="text-center">
-                          <p className="font-black text-sm md:text-base text-gray-900">{language === 'ar' ? "بطاقة بنكية" : "Credit Card"}</p>
+                          <p className="font-medium text-sm md:text-base text-gray-900">{language === 'ar' ? "بطاقة بنكية" : "Credit Card"}</p>
                           <p className="text-[10px] md:text-xs text-gray-400 mt-1">Visa / Master Card</p>
                         </div>
                       </button>
@@ -324,10 +324,10 @@ export default function Checkout() {
                         className={`p-4 md:p-6 rounded-2xl md:rounded-[2rem] border-2 transition-all flex flex-col items-center gap-3 md:gap-4 ${formData.paymentMethod === 'tabby' ? 'border-[#00D3C3] bg-[#00D3C3]/5 shadow-lg shadow-[#00D3C3]/10' : 'border-gray-100 hover:border-[#00D3C3]/30 bg-white'}`}
                       >
                         <div className={`w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center ${formData.paymentMethod === 'tabby' ? 'bg-[#00D3C3] text-black' : 'bg-gray-50 text-gray-400'}`}>
-                          <span className="font-black italic text-base md:text-lg">tabby</span>
+                          <span className="font-medium italic text-base md:text-lg">tabby</span>
                         </div>
                         <div className="text-center">
-                          <p className="font-black text-sm md:text-base text-gray-900">{language === 'ar' ? "تابي" : "Tabby"}</p>
+                          <p className="font-medium text-sm md:text-base text-gray-900">{language === 'ar' ? "تابي" : "Tabby"}</p>
                           <p className="text-[10px] md:text-xs text-gray-400 mt-1">{language === 'ar' ? "قسّمها على 4 دفعات" : "Split in 4 payments"}</p>
                         </div>
                       </button>
@@ -337,10 +337,10 @@ export default function Checkout() {
                         className={`p-4 md:p-6 rounded-2xl md:rounded-[2rem] border-2 transition-all flex flex-col items-center gap-3 md:gap-4 ${formData.paymentMethod === 'tamara' ? 'border-[#FFB703] bg-[#FFB703]/5 shadow-lg shadow-[#FFB703]/10' : 'border-gray-100 hover:border-[#FFB703]/30 bg-white'}`}
                       >
                         <div className={`w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center ${formData.paymentMethod === 'tamara' ? 'bg-[#FFB703] text-black' : 'bg-gray-50 text-gray-400'}`}>
-                          <span className="font-black italic text-base md:text-lg">tamara</span>
+                          <span className="font-medium italic text-base md:text-lg">tamara</span>
                         </div>
                         <div className="text-center">
-                          <p className="font-black text-sm md:text-base text-gray-900">{language === 'ar' ? "تمارا" : "Tamara"}</p>
+                          <p className="font-medium text-sm md:text-base text-gray-900">{language === 'ar' ? "تمارا" : "Tamara"}</p>
                           <p className="text-[10px] md:text-xs text-gray-400 mt-1">{language === 'ar' ? "اشترِ الآن وادفع لاحقاً" : "Buy now, pay later"}</p>
                         </div>
                       </button>
@@ -357,7 +357,7 @@ export default function Checkout() {
                           <div className="relative z-10">
                             <div className="flex justify-between items-start mb-16">
                               <div className="w-16 h-12 bg-white/10 rounded-xl" />
-                              <span className="text-2xl font-black italic tracking-tighter">PREMIUM</span>
+                              <span className="text-2xl font-medium italic tracking-tighter">PREMIUM</span>
                             </div>
                             <div className="text-2xl mb-8 font-mono tracking-[0.3em]">{formData.cardNumber || '**** **** **** ****'}</div>
                             <div className="flex justify-between items-end">
@@ -401,7 +401,7 @@ export default function Checkout() {
                         <div className={`w-20 h-20 rounded-full mx-auto mb-6 flex items-center justify-center ${formData.paymentMethod === 'tabby' ? 'bg-[#00D3C3]/10 text-[#00D3C3]' : 'bg-[#FFB703]/10 text-[#FFB703]'}`}>
                           <CheckCircle2 size={40} />
                         </div>
-                        <h3 className="text-2xl font-black text-gray-900 mb-4">
+                        <h3 className="text-2xl font-medium text-gray-900 mb-4">
                           {formData.paymentMethod === 'tabby' ? (language === 'ar' ? "الدفع مع تابي" : "Pay with Tabby") : (language === 'ar' ? "الدفع مع تمارا" : "Pay with Tamara")}
                         </h3>
                         <p className="text-gray-500 font-bold leading-relaxed max-w-md mx-auto">
@@ -448,18 +448,18 @@ export default function Checkout() {
                 >
                   <div className="bg-white p-10 rounded-[3rem] shadow-xl border border-gray-50 text-right">
                     <CheckCircle2 size={64} className="text-green-500 mx-auto mb-6" />
-                    <h2 className="text-3xl font-black text-gray-900 mb-2 text-center">{t('reviewOrder')}</h2>
+                    <h2 className="text-3xl font-medium text-gray-900 mb-2 text-center">{t('reviewOrder')}</h2>
                     <p className="text-gray-500 text-center mb-12 text-lg">أنتِ على وشك اقتناء أجمل القطع المختارة</p>
 
                     <div className="grid md:grid-cols-2 gap-12 border-t border-gray-50 pt-12">
                       <div className="space-y-4">
-                        <h3 className="text-xl font-black text-gray-900 border-b border-gray-50 pb-3">{t('shippingInfo')}</h3>
+                        <h3 className="text-xl font-medium text-gray-900 border-b border-gray-50 pb-3">{t('shippingInfo')}</h3>
                         <p className="text-gray-600 font-bold">{formData.firstName} {formData.lastName}</p>
                         <p className="text-gray-400">{formData.address}</p>
                         <p className="text-gray-400">{formData.phone}</p>
                       </div>
                       <div className="space-y-4">
-                        <h3 className="text-xl font-black text-gray-900 border-b border-gray-50 pb-3">{t('paymentInfo')}</h3>
+                        <h3 className="text-xl font-medium text-gray-900 border-b border-gray-50 pb-3">{t('paymentInfo')}</h3>
                         <div className="flex items-center justify-end gap-3 text-gray-600 font-bold">
                           {formData.paymentMethod === 'card' ? (
                             <>
@@ -469,7 +469,7 @@ export default function Checkout() {
                           ) : (
                             <>
                               {formData.paymentMethod === 'tabby' ? (language === 'ar' ? 'الدفع عبر تابي' : 'Pay via Tabby') : (language === 'ar' ? 'الدفع عبر تمارا' : 'Pay via Tamara')}
-                              <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-[10px] font-black italic ${formData.paymentMethod === 'tabby' ? 'bg-[#00D3C3] text-black' : 'bg-[#FFB703] text-black'}`}>
+                              <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-[10px] font-medium italic ${formData.paymentMethod === 'tabby' ? 'bg-[#00D3C3] text-black' : 'bg-[#FFB703] text-black'}`}>
                                 {formData.paymentMethod}
                               </div>
                             </>
@@ -505,7 +505,7 @@ export default function Checkout() {
           {/* Sidebar Summary */}
           <div className="lg:col-span-4">
             <div className="bg-white p-10 rounded-[3rem] shadow-sm border border-gray-50 text-right sticky top-40">
-              <h3 className="text-2xl font-black text-gray-900 mb-8 border-b border-gray-50 pb-4">{t('orderSummary')}</h3>
+              <h3 className="text-2xl font-medium text-gray-900 mb-8 border-b border-gray-50 pb-4">{t('orderSummary')}</h3>
               <div className="space-y-6 mb-8 max-h-[400px] overflow-y-auto pr-2 scrollbar-hide">
                 {items.map((item: any) => (
                   <div key={item.id} className="flex items-center justify-end gap-4">
@@ -520,24 +520,24 @@ export default function Checkout() {
 
               <div className="space-y-4 mb-8">
                 <div className="flex justify-between items-center">
-                  <span className="font-black text-rose-600 text-xl">{language === 'ar' ? subtotal.toLocaleString('ar-SA') : subtotal.toLocaleString()} {t('currency')}</span>
+                  <span className="font-medium text-rose-600 text-xl">{language === 'ar' ? subtotal.toLocaleString('ar-SA') : subtotal.toLocaleString()} {t('currency')}</span>
                   <span className="text-gray-500 font-bold uppercase text-sm">{language === 'ar' ? "المجموع" : "Subtotal"}</span>
                 </div>
                 {totalDiscount > 0 && (
                   <div className="flex justify-between items-center">
-                    <span className="font-black text-green-600 text-xl">-{language === 'ar' ? totalDiscount.toLocaleString('ar-SA') : totalDiscount.toLocaleString()} {t('currency')}</span>
+                    <span className="font-medium text-green-600 text-xl">-{language === 'ar' ? totalDiscount.toLocaleString('ar-SA') : totalDiscount.toLocaleString()} {t('currency')}</span>
                     <span className="text-gray-500 font-bold uppercase text-sm">{t('discount')}</span>
                   </div>
                 )}
                 <div className="flex justify-between items-center">
-                  <span className="font-black text-gray-900 text-xl">{shipping === 0 ? (language === 'ar' ? 'مجاني' : 'Free') : `${language === 'ar' ? shipping.toLocaleString('ar-SA') : shipping.toLocaleString()} ${t('currency')}`}</span>
+                  <span className="font-medium text-gray-900 text-xl">{shipping === 0 ? (language === 'ar' ? 'مجاني' : 'Free') : `${language === 'ar' ? shipping.toLocaleString('ar-SA') : shipping.toLocaleString()} ${t('currency')}`}</span>
                   <span className="text-gray-500 font-bold uppercase text-sm">{language === 'ar' ? "الشحن" : "Shipping"}</span>
                 </div>
               </div>
 
               <div className="flex justify-between items-center border-t border-gray-100 pt-6">
-                <span className="font-black text-rose-600 text-3xl">{language === 'ar' ? total.toLocaleString('ar-SA') : total.toLocaleString()} {t('currency')}</span>
-                <span className="text-gray-900 font-black text-xl">{t('orderTotal')}</span>
+                <span className="font-medium text-rose-600 text-3xl">{language === 'ar' ? total.toLocaleString('ar-SA') : total.toLocaleString()} {t('currency')}</span>
+                <span className="text-gray-900 font-medium text-xl">{t('orderTotal')}</span>
               </div>
 
               <div className="mt-8 p-4 bg-gray-50 rounded-2xl border border-gray-100 flex items-center justify-center gap-3">

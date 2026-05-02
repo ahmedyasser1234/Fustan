@@ -19,7 +19,7 @@ export default function PrivacyPolicy() {
                             <Shield className="w-8 h-8 md:w-10 md:h-10" />
                         </div>
                         <div>
-                            <h1 className="text-2xl md:text-3xl font-black text-gray-900">
+                            <h1 className="text-2xl md:text-3xl font-medium text-gray-900">
                                 {isAr ? 'سياسة الخصوصية' : 'Privacy Policy'}
                             </h1>
                             <p className="text-sm md:text-base text-gray-500 font-bold mt-1 md:mt-2">
@@ -30,7 +30,7 @@ export default function PrivacyPolicy() {
 
                     <div className="space-y-12 text-gray-600 leading-relaxed">
                         <section>
-                            <h2 className="text-xl font-black text-gray-900 mb-4 flex items-center gap-3">
+                            <h2 className="text-xl font-medium text-gray-900 mb-4 flex items-center gap-3">
                                 <Eye className="text-rose-500" size={24} />
                                 {isAr ? '1. المعلومات التي نجمعها' : '1. Information We Collect'}
                             </h2>
@@ -42,7 +42,7 @@ export default function PrivacyPolicy() {
                         </section>
 
                         <section>
-                            <h2 className="text-xl font-black text-gray-900 mb-4 flex items-center gap-3">
+                            <h2 className="text-xl font-medium text-gray-900 mb-4 flex items-center gap-3">
                                 <Lock className="text-rose-500" size={24} />
                                 {isAr ? '2. كيف نستخدم معلوماتك' : '2. How We Use Your Information'}
                             </h2>
@@ -55,7 +55,7 @@ export default function PrivacyPolicy() {
                         </section>
 
                         <section>
-                            <h2 className="text-xl font-black text-gray-900 mb-4 flex items-center gap-3">
+                            <h2 className="text-xl font-medium text-gray-900 mb-4 flex items-center gap-3">
                                 <FileText className="text-rose-500" size={24} />
                                 {isAr ? '3. مشاركة وحماية البيانات' : '3. Data Sharing & Protection'}
                             </h2>
@@ -67,7 +67,7 @@ export default function PrivacyPolicy() {
                         </section>
 
                         <section className="bg-rose-50/50 p-6 rounded-3xl">
-                            <h2 className="text-xl font-black text-gray-900 mb-4">
+                            <h2 className="text-xl font-medium text-gray-900 mb-4">
                                 {isAr ? 'حقوقك كعضوة في فستان' : 'Your Rights as a Fustan Member'}
                             </h2>
                             <p className="text-sm font-bold text-gray-600">

@@ -24,7 +24,7 @@ export default function NotFound() {
           className="mb-12"
         >
           <div className="relative inline-block">
-            <span className="text-[12rem] font-black leading-none text-gray-900/5 select-none">404</span>
+            <span className="text-[12rem] font-medium leading-none text-gray-900/5 select-none">404</span>
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="w-32 h-32 bg-rose-600 rounded-[2.5rem] rotate-12 flex items-center justify-center shadow-2xl shadow-rose-200">
                 <AlertCircle size={64} className="text-white -rotate-12" />
@@ -38,7 +38,7 @@ export default function NotFound() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
         >
-          <h1 className="text-4xl md:text-5xl font-black text-gray-900 mb-6">
+          <h1 className="text-4xl md:text-3xl font-medium text-gray-900 mb-6">
             {language === 'ar' ? "عذراً، هذه الصفحة مفقودة" : "Oops! Page Not Found"}
           </h1>
 
@@ -50,14 +50,14 @@ export default function NotFound() {
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/">
-              <Button className="bg-rose-600 hover:bg-rose-700 text-white rounded-full px-10 h-16 text-xl font-black shadow-xl shadow-rose-100 flex items-center gap-3">
+              <Button className="bg-rose-600 hover:bg-rose-700 text-white rounded-full px-10 h-16 text-xl font-medium shadow-xl shadow-rose-100 flex items-center gap-3">
                 <Home size={24} />
                 {t('backToHome')}
               </Button>
             </Link>
 
             <Link href="/products">
-              <Button variant="outline" className="rounded-full px-10 h-16 text-xl font-black border-2 border-gray-100 hover:bg-gray-50 flex items-center gap-3">
+              <Button variant="outline" className="rounded-full px-10 h-16 text-xl font-medium border-2 border-gray-100 hover:bg-gray-50 flex items-center gap-3">
                 {language === 'ar' ? "تسوقي الآن" : "Shop Now"}
                 <ArrowRight size={24} className={language === 'ar' ? 'rotate-180' : ''} />
               </Button>

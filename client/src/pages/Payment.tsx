@@ -32,7 +32,7 @@ export default function Payment() {
                     <Lock size={32} />
                 </div>
 
-                <h1 className="text-2xl font-black text-gray-900 mb-2">بوابة الدفع الآمنة</h1>
+                <h1 className="text-2xl font-medium text-gray-900 mb-2">بوابة الدفع الآمنة</h1>
                 <p className="text-gray-500 mb-8">جارِ معالجة الطلب...</p>
 
                 <div className="space-y-4 mb-8">

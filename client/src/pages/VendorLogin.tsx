@@ -65,7 +65,7 @@ export default function VendorLogin() {
                     <div className="w-16 h-16 bg-rose-50 rounded-2xl flex items-center justify-center mx-auto mb-2 border border-rose-100 ring-8 ring-rose-50/50">
                         <Store className="w-8 h-8 text-rose-600" />
                     </div>
-                    <CardTitle className="text-2xl font-black text-gray-900">
+                    <CardTitle className="text-2xl font-medium text-gray-900">
                         {language === 'ar' ? 'بوابة التجار' : 'Vendor Portal'}
                     </CardTitle>
                     <p className="text-sm font-bold text-gray-500">

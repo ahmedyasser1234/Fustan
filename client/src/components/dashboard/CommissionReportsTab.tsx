@@ -21,7 +21,7 @@ export default function CommissionReportsTab() {
         <div className="space-y-6">
             {/* Header Section */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <h2 className="text-xl md:text-2xl font-black text-gray-900 flex items-center gap-3">
+                <h2 className="text-xl md:text-2xl font-medium text-gray-900 flex items-center gap-3">
                     <div className="w-10 h-10 md:w-12 md:h-12 bg-emerald-50 rounded-xl flex items-center justify-center shrink-0">
                         <TrendingUp className="w-5 h-5 md:w-6 md:h-6 text-emerald-600" />
                     </div>
@@ -29,7 +29,7 @@ export default function CommissionReportsTab() {
                 </h2>
                 <div className="bg-emerald-50 px-4 py-3 md:py-2 rounded-xl border border-emerald-100 flex items-center justify-between md:justify-start gap-3 w-full md:w-auto shadow-sm">
                     <span className="text-sm font-bold text-emerald-700">{t('totalPlatformProfits')}:</span>
-                    <span className="text-lg md:text-xl font-black text-emerald-600">{totalPlatformEarnings.toFixed(2)} {t('currency')}</span>
+                    <span className="text-lg md:text-xl font-medium text-emerald-600">{totalPlatformEarnings.toFixed(2)} {t('currency')}</span>
                 </div>
             </div>
 
@@ -42,11 +42,11 @@ export default function CommissionReportsTab() {
                             <table className="w-full">
                                 <thead>
                                     <tr className="border-b border-gray-100 bg-slate-50/80 backdrop-blur-sm">
-                                        <th className="py-4 px-6 font-black text-slate-900 text-start whitespace-nowrap">{t('store')}</th>
-                                        <th className="py-4 px-6 font-black text-slate-900 text-start whitespace-nowrap">{t('totalOrders')}</th>
-                                        <th className="py-4 px-6 font-black text-slate-900 text-start whitespace-nowrap">{t('totalSales')}</th>
-                                        <th className="py-4 px-6 font-black text-slate-900 text-emerald-600 text-start whitespace-nowrap">{t('platformCommission')}</th>
-                                        <th className="py-4 px-6 font-black text-slate-900 text-blue-600 text-start whitespace-nowrap">{t('vendorNetProfit')}</th>
+                                        <th className="py-4 px-6 font-medium text-slate-900 text-start whitespace-nowrap">{t('store')}</th>
+                                        <th className="py-4 px-6 font-medium text-slate-900 text-start whitespace-nowrap">{t('totalOrders')}</th>
+                                        <th className="py-4 px-6 font-medium text-slate-900 text-start whitespace-nowrap">{t('totalSales')}</th>
+                                        <th className="py-4 px-6 font-medium text-slate-900 text-emerald-600 text-start whitespace-nowrap">{t('platformCommission')}</th>
+                                        <th className="py-4 px-6 font-medium text-slate-900 text-blue-600 text-start whitespace-nowrap">{t('vendorNetProfit')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -65,10 +65,10 @@ export default function CommissionReportsTab() {
                                                 </td>
                                                 <td className="py-4 px-6 font-bold text-slate-700">{item.totalOrders}</td>
                                                 <td className="py-4 px-6 font-bold text-slate-700">{Number(item.totalSales).toFixed(2)} {t('currency')}</td>
-                                                <td className="py-4 px-6 font-black text-emerald-600 bg-emerald-50/30">
+                                                <td className="py-4 px-6 font-medium text-emerald-600 bg-emerald-50/30">
                                                     {Number(item.totalCommission).toFixed(2)} {t('currency')}
                                                 </td>
-                                                <td className="py-4 px-6 font-black text-blue-600">
+                                                <td className="py-4 px-6 font-medium text-blue-600">
                                                     {Number(item.netEarnings).toFixed(2)} {t('currency')}
                                                 </td>
                                             </tr>
@@ -110,14 +110,14 @@ export default function CommissionReportsTab() {
                                     </div>
                                     <div className="bg-emerald-50 p-2.5 rounded-xl border border-emerald-100 text-center">
                                         <span className="block text-xs text-emerald-600/80 font-bold mb-1">{t('platformCommission')}</span>
-                                        <span className="block font-black text-emerald-600 text-lg">{Number(item.totalCommission).toFixed(2)}</span>
+                                        <span className="block font-medium text-emerald-600 text-lg">{Number(item.totalCommission).toFixed(2)}</span>
                                     </div>
                                 </div>
 
                                 {/* Footer */}
                                 <div className="flex items-center justify-between pt-2 border-t border-gray-50 mt-1">
                                     <span className="text-xs text-gray-400 font-medium">{t('vendorNetProfit')}:</span>
-                                    <span className="font-black text-blue-600 text-base">{Number(item.netEarnings).toFixed(2)} {t('currency')}</span>
+                                    <span className="font-medium text-blue-600 text-base">{Number(item.netEarnings).toFixed(2)} {t('currency')}</span>
                                 </div>
                             </div>
                         ))

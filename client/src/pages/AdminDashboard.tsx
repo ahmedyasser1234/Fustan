@@ -565,7 +565,7 @@ export default function AdminDashboard() {
       {/* Desktop Navbar */}
       <header className="h-20 bg-white border-b border-gray-100 flex items-center justify-between px-4 md:px-8 sticky top-0 z-40">
         <div className="flex items-center gap-6">
-          <h1 className="text-2xl font-black text-gray-900">
+          <h1 className="text-2xl font-medium text-gray-900">
             {tabs.find((t) => t.id === activeTab)?.label}
           </h1>
 
@@ -587,8 +587,8 @@ export default function AdminDashboard() {
               {language === 'ar' ? "بحث سريع..." : "Quick search..."}
             </span>
             <div className="flex items-center gap-1">
-              <kbd className="px-1.5 py-0.5 bg-white border border-gray-200 rounded text-[10px] font-black text-gray-400">⌘</kbd>
-              <kbd className="px-1.5 py-0.5 bg-white border border-gray-200 rounded text-[10px] font-black text-gray-400">K</kbd>
+              <kbd className="px-1.5 py-0.5 bg-white border border-gray-200 rounded text-[10px] font-medium text-gray-400">⌘</kbd>
+              <kbd className="px-1.5 py-0.5 bg-white border border-gray-200 rounded text-[10px] font-medium text-gray-400">K</kbd>
             </div>
           </button>
         </div>
@@ -616,7 +616,7 @@ export default function AdminDashboard() {
                 <tab.icon className={`w-4 h-4 md:w-5 md:h-5 relative z-10 transition-transform group-hover:scale-110 ${activeTab === tab.id ? 'animate-pulse' : ''}`} />
                 <span className="relative z-10">{tab.label}</span>
                 {tab.badge && activeTab !== tab.id ? (
-                  <span className="absolute -top-2 -right-2 md:-top-3 md:-right-3 h-6 w-6 md:h-7 md:w-7 bg-red-600 text-white text-[11px] md:text-sm font-black rounded-full flex items-center justify-center animate-bounce shadow-md z-20 border-2 border-white">
+                  <span className="absolute -top-2 -right-2 md:-top-3 md:-right-3 h-6 w-6 md:h-7 md:w-7 bg-red-600 text-white text-[11px] md:text-sm font-medium rounded-full flex items-center justify-center animate-bounce shadow-md z-20 border-2 border-white">
                     {tab.badge > 99 ? '99+' : tab.badge}
                   </span>
                 ) : null}
@@ -640,7 +640,7 @@ export default function AdminDashboard() {
                       <header className="h-6 mb-1">
                         <p className="text-xs text-gray-500 font-bold uppercase tracking-widest">{t('totalCustomers')}</p>
                       </header>
-                      <p className="text-3xl font-black text-gray-900">{customers?.length || 0}</p>
+                      <p className="text-3xl font-medium text-gray-900">{customers?.length || 0}</p>
                     </div>
                     <Users className="w-12 h-12 text-blue-50" />
                   </div>
@@ -652,7 +652,7 @@ export default function AdminDashboard() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-gray-600 mb-1">{t('totalStores')}</p>
-                      <p className="text-3xl font-black text-gray-900">{vendors?.length || 0}</p>
+                      <p className="text-3xl font-medium text-gray-900">{vendors?.length || 0}</p>
                     </div>
                     <Store className="w-12 h-12 text-green-100" />
                   </div>
@@ -664,7 +664,7 @@ export default function AdminDashboard() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-gray-600 mb-1">{t('totalProducts')}</p>
-                      <p className="text-3xl font-black text-gray-900">{products?.length || 0}</p>
+                      <p className="text-3xl font-medium text-gray-900">{products?.length || 0}</p>
                     </div>
                     <Package className="w-12 h-12 text-yellow-100" />
                   </div>
@@ -676,7 +676,7 @@ export default function AdminDashboard() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-gray-600 mb-1">{t('paidOrders')}</p>
-                      <p className="text-3xl font-black text-gray-900">{adminOrders?.length || 0}</p>
+                      <p className="text-3xl font-medium text-gray-900">{adminOrders?.length || 0}</p>
                     </div>
                     <ShoppingCart className="w-12 h-12 text-rose-100" />
                   </div>
@@ -688,7 +688,7 @@ export default function AdminDashboard() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-xs font-bold text-emerald-600 mb-1">{t('totalRevenue')}</p>
-                      <p className="text-2xl font-black text-slate-900">{totalRevenue.toFixed(2)} {t('currency')}</p>
+                      <p className="text-2xl font-medium text-slate-900">{totalRevenue.toFixed(2)} {t('currency')}</p>
                       <div className="mt-2 flex items-center gap-1 text-[10px] text-emerald-600 font-bold">
                         <TrendingUp size={10} />
                         <span>{t('fromPaidOrders')}</span>
@@ -830,7 +830,7 @@ export default function AdminDashboard() {
                                 <td className="py-4 px-6 text-start">
                                   <div className="flex items-center gap-2">
                                     <div className="relative">
-                                      <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 font-black text-[10px] uppercase shadow-sm border border-slate-200">
+                                      <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 font-medium text-[10px] uppercase shadow-sm border border-slate-200">
                                         {(v.storeNameAr || v.storeNameEn || 'S').substring(0, 2)}
                                       </div>
                                       {isUserOnline(v.userId) && (
@@ -948,7 +948,7 @@ export default function AdminDashboard() {
                             <div className="flex items-start justify-between mb-3">
                               <div className="flex items-center gap-3 overflow-hidden">
                                 <div className="relative flex-shrink-0">
-                                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-br from-purple-50 to-pink-50 flex items-center justify-center text-slate-700 font-black text-xs sm:text-sm uppercase shadow-inner border border-white">
+                                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-br from-purple-50 to-pink-50 flex items-center justify-center text-slate-700 font-medium text-xs sm:text-sm uppercase shadow-inner border border-white">
                                     {(v.storeNameAr || v.storeNameEn || 'S').substring(0, 2)}
                                   </div>
                                   {isUserOnline(v.userId) && (
@@ -971,7 +971,7 @@ export default function AdminDashboard() {
                             <div className="grid grid-cols-2 gap-2 mb-3 text-sm">
                               <div className="bg-gray-50 rounded-xl p-2 sm:p-3 flex flex-col items-center justify-center text-center border border-gray-100">
                                 <span className="text-[10px] sm:text-xs text-gray-400 font-bold mb-1">{t('commission')}</span>
-                                <span className="font-black text-gray-900 text-base sm:text-lg">{v.commissionRate}%</span>
+                                <span className="font-medium text-gray-900 text-base sm:text-lg">{v.commissionRate}%</span>
                               </div>
                               <div className="bg-gray-50 rounded-xl p-2 sm:p-3 flex flex-col items-center justify-center text-center border border-gray-100">
                                 <span className="text-[10px] sm:text-xs text-gray-400 font-bold mb-1">{t('emailContact')}</span>
@@ -1095,7 +1095,7 @@ export default function AdminDashboard() {
                                 {Array.isArray(vendors) ? vendors.find((v: any) => v.id === product.vendorId)?.storeNameAr || t('never') : t('never')}
                               </p>
                             </div>
-                            <span className="font-black text-rose-600 bg-rose-50 px-2 py-1 rounded-lg text-sm">
+                            <span className="font-medium text-rose-600 bg-rose-50 px-2 py-1 rounded-lg text-sm">
                               {Number(product.price).toFixed(2)} {t('currency')}
                             </span>
                           </div>
@@ -1199,7 +1199,7 @@ export default function AdminDashboard() {
         {
           activeTab === "orders" && (
             <div>
-              <h2 className="text-2xl font-black text-gray-900 mb-6 flex items-center gap-3">
+              <h2 className="text-2xl font-medium text-gray-900 mb-6 flex items-center gap-3">
                 <div className="w-10 h-10 bg-rose-50 rounded-xl flex items-center justify-center">
                   <ShoppingCart className="w-6 h-6 text-rose-600" />
                 </div>
@@ -1219,7 +1219,7 @@ export default function AdminDashboard() {
                           <div className="flex justify-between items-start">
                             <div>
                               <div className="flex items-center gap-2">
-                                <span className="font-black text-gray-900">#{order.orderNumber}</span>
+                                <span className="font-medium text-gray-900">#{order.orderNumber}</span>
                                 <span className={`px-2 py-0.5 rounded-full text-[10px] uppercase font-bold tracking-wider ${order.status === 'delivered' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'
                                   }`}>
                                   {order.status === 'delivered' ? t('delivered') : t('processing')}
@@ -1229,7 +1229,7 @@ export default function AdminDashboard() {
                                 {order.customerName || `${t('customer')} #${order.customerId}`}
                               </p>
                             </div>
-                            <span className="font-black text-rose-600 text-lg">
+                            <span className="font-medium text-rose-600 text-lg">
                               {Number(order.total).toFixed(2)} {t('currency')}
                             </span>
                           </div>
@@ -1253,11 +1253,11 @@ export default function AdminDashboard() {
                     <table className="w-full">
                       <thead>
                         <tr className="border-b border-gray-200 bg-slate-50/50">
-                          <th className="py-4 px-6 font-black text-slate-900 text-start">{t('orderNumber')}</th>
-                          <th className="py-4 px-6 font-black text-slate-900 text-start">{t('customer')}</th>
-                          <th className="py-4 px-6 font-black text-slate-900 text-center">{t('amount')}</th>
-                          <th className="py-4 px-6 font-black text-slate-900 text-center">{t('deliveryStatus')}</th>
-                          <th className="py-4 px-6 font-black text-slate-900 text-end">{t('actions')}</th>
+                          <th className="py-4 px-6 font-medium text-slate-900 text-start">{t('orderNumber')}</th>
+                          <th className="py-4 px-6 font-medium text-slate-900 text-start">{t('customer')}</th>
+                          <th className="py-4 px-6 font-medium text-slate-900 text-center">{t('amount')}</th>
+                          <th className="py-4 px-6 font-medium text-slate-900 text-center">{t('deliveryStatus')}</th>
+                          <th className="py-4 px-6 font-medium text-slate-900 text-end">{t('actions')}</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -1265,9 +1265,9 @@ export default function AdminDashboard() {
                           <tr key={order.id} className="border-b border-slate-50 hover:bg-slate-50/50 transition-colors">
                             <td className="py-4 px-6 font-bold text-slate-900 text-start">{order.orderNumber}</td>
                             <td className="py-4 px-6 text-slate-600 font-medium text-start">{order.customerName || `${t('customer')} #${order.customerId}`}</td>
-                            <td className="py-4 px-6 font-black text-slate-900 text-center">{Number(order.total).toFixed(2)} {t('currency')}</td>
+                            <td className="py-4 px-6 font-medium text-slate-900 text-center">{Number(order.total).toFixed(2)} {t('currency')}</td>
                             <td className="py-4 px-6 text-center">
-                              <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${order.status === 'delivered' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'
+                              <span className={`px-3 py-1 rounded-full text-[10px] font-medium uppercase tracking-wider ${order.status === 'delivered' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'
                                 }`}>
                                 {order.status === 'delivered' ? t('delivered') : t('processing')}
                               </span>
@@ -1300,7 +1300,7 @@ export default function AdminDashboard() {
         {
           activeTab === "customers" && (
             <div>
-              <h2 className="text-2xl font-black text-gray-900 mb-6 flex items-center gap-3">
+              <h2 className="text-2xl font-medium text-gray-900 mb-6 flex items-center gap-3">
                 <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center">
                   <UserCheck className="w-6 h-6 text-blue-600" />
                 </div>
@@ -1344,7 +1344,7 @@ export default function AdminDashboard() {
                                 // For now, let's open the sheet and fetch there
                                 setDetailsCustomerId(c.id);
                               }}>
-                                <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 font-black text-sm uppercase shadow-sm border border-slate-200">
+                                <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 font-medium text-sm uppercase shadow-sm border border-slate-200">
                                   {(c.name || 'C').substring(0, 2)}
                                 </div>
                                 {isUserOnline(c.id) && (
@@ -1413,11 +1413,11 @@ export default function AdminDashboard() {
                     <table className="w-full">
                       <thead>
                         <tr className="border-b border-gray-100">
-                          <th className="py-4 px-6 font-black text-slate-900 text-start">{t('customer')}</th>
-                          <th className="py-4 px-6 font-black text-slate-900 text-start">{t('emailContact')}</th>
-                          <th className="py-4 px-6 font-black text-slate-900 text-center">{t('lastSeen')}</th>
-                          <th className="py-4 px-6 font-black text-slate-900 text-center">{t('mobileNumber')}</th>
-                          <th className="py-4 px-6 font-black text-slate-900 text-end">{t('actions')}</th>
+                          <th className="py-4 px-6 font-medium text-slate-900 text-start">{t('customer')}</th>
+                          <th className="py-4 px-6 font-medium text-slate-900 text-start">{t('emailContact')}</th>
+                          <th className="py-4 px-6 font-medium text-slate-900 text-center">{t('lastSeen')}</th>
+                          <th className="py-4 px-6 font-medium text-slate-900 text-center">{t('mobileNumber')}</th>
+                          <th className="py-4 px-6 font-medium text-slate-900 text-end">{t('actions')}</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -1444,7 +1444,7 @@ export default function AdminDashboard() {
                               <td className="py-4 px-6 font-bold text-slate-900 text-start">
                                 <div className="flex items-center gap-3">
                                   <div className="relative">
-                                    <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 font-black text-[10px] uppercase shadow-sm border border-slate-200">
+                                    <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 font-medium text-[10px] uppercase shadow-sm border border-slate-200">
                                       {(c.name || 'C').substring(0, 2)}
                                     </div>
                                     {isUserOnline(c.id) && (
@@ -1513,7 +1513,7 @@ export default function AdminDashboard() {
         {
           activeTab === "chat" && (
             <div>
-              <h2 className="text-2xl font-black text-gray-900 mb-6 flex items-center gap-3">
+              <h2 className="text-2xl font-medium text-gray-900 mb-6 flex items-center gap-3">
                 <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center">
                   <MessageSquare className="w-6 h-6 text-indigo-600" />
                 </div>
@@ -1523,7 +1523,7 @@ export default function AdminDashboard() {
               <Card className="border-0 shadow-sm overflow-hidden">
                 <div className="bg-indigo-50/50 px-6 py-4 border-b border-indigo-100 flex items-center justify-between">
                   <p className="text-sm font-bold text-indigo-600">{t('activeConversationsDesc')}</p>
-                  <span className="bg-white px-3 py-1 rounded-lg border border-indigo-100 text-indigo-700 text-xs font-black">
+                  <span className="bg-white px-3 py-1 rounded-lg border border-indigo-100 text-indigo-700 text-xs font-medium">
                     {adminConversations?.length || 0} {t('conversationCount')}
                   </span>
                 </div>
@@ -1685,7 +1685,7 @@ export default function AdminDashboard() {
                 </div>
 
                 <div className="bg-slate-50 p-4 rounded-2xl">
-                  <h4 className="font-black text-slate-900 mb-3 text-sm flex items-center gap-2">
+                  <h4 className="font-medium text-slate-900 mb-3 text-sm flex items-center gap-2">
                     <Package className="w-4 h-4 text-rose-600" /> {t('shippingAddress')}
                   </h4>
                   <div className="space-y-2 text-sm text-slate-600 font-medium">
@@ -1697,7 +1697,7 @@ export default function AdminDashboard() {
                 </div>
 
                 <div className="border border-slate-100 rounded-2xl overflow-hidden">
-                  <div className="bg-slate-50 px-4 py-2 font-black text-sm">{t('invoiceSummary')}</div>
+                  <div className="bg-slate-50 px-4 py-2 font-medium text-sm">{t('invoiceSummary')}</div>
                   <div className="p-4 space-y-3">
                     <div className="flex justify-between text-sm text-slate-600">
                       <span>{t('subtotal')}</span>
@@ -1713,7 +1713,7 @@ export default function AdminDashboard() {
                         <span>-{Number(selectedOrder.discount).toFixed(2)} {t('currency')}</span>
                       </div>
                     )}
-                    <div className="border-t border-slate-100 pt-3 flex justify-between font-black text-slate-900">
+                    <div className="border-t border-slate-100 pt-3 flex justify-between font-medium text-slate-900">
                       <span>{t('orderTotal')}</span>
                       <span className="text-lg text-rose-600">{Number(selectedOrder.total).toFixed(2)} {t('currency')}</span>
                     </div>
@@ -1877,7 +1877,7 @@ export default function AdminDashboard() {
           ) : customerDetails ? (
             <div className="space-y-6 py-6">
               <div className="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl">
-                <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-black text-xl">
+                <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-medium text-xl">
                   {(customerDetails.name || 'C').substring(0, 2).toUpperCase()}
                 </div>
                 <div>
@@ -1922,7 +1922,7 @@ export default function AdminDashboard() {
                           </p>
                         </div>
                         <div className="text-right">
-                          <p className="font-black text-sm text-blue-600">{order.total?.toLocaleString()} {t('currency')}</p>
+                          <p className="font-medium text-sm text-blue-600">{order.total?.toLocaleString()} {t('currency')}</p>
                           <span className={`inline-block px-2 py-0.5 rounded text-[10px] font-bold mt-1 ${order.status === 'completed' ? 'bg-green-100 text-green-700' :
                             order.status === 'cancelled' ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700'
                             }`}>
@@ -2109,7 +2109,7 @@ function CategoriesTab({
               <Plus className="w-6 h-6 text-teal-600" />
             </div>
             <div className="text-right">
-              <h4 className="font-black text-slate-900">
+              <h4 className="font-medium text-slate-900">
                 {t('newCategoryRequestsTitle')}
               </h4>
               <p className="text-xs text-slate-500 font-bold">
@@ -2119,7 +2119,7 @@ function CategoriesTab({
           </div>
           <Button
             variant="outline"
-            className="border-teal-200 text-teal-700 font-black rounded-xl hover:bg-teal-100"
+            className="border-teal-200 text-teal-700 font-medium rounded-xl hover:bg-teal-100"
             onClick={() => {
               const params = new URLSearchParams(window.location.search);
               params.set("tab", "requests");

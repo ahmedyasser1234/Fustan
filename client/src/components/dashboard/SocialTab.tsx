@@ -89,13 +89,13 @@ export default function SocialTab() {
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700" dir={language === 'ar' ? 'rtl' : 'ltr'}>
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div>
-                    <h2 className="text-3xl font-black text-slate-900 mb-2">{language === 'ar' ? "التسويق الاجتماعي" : "Social Marketing"}</h2>
+                    <h2 className="text-3xl font-medium text-slate-900 mb-2">{language === 'ar' ? "التسويق الاجتماعي" : "Social Marketing"}</h2>
                     <p className="text-slate-400 font-bold">{language === 'ar' ? "جدولة منشوراتك على منصات التواصل الاجتماعي ومتابعة حالتها" : "Schedule your social media posts and track their status"}</p>
                 </div>
 
                 <Button 
                     onClick={() => setIsCreateModalOpen(true)}
-                    className="h-14 px-8 rounded-2xl bg-slate-900 hover:bg-black text-white font-black shadow-xl shadow-slate-200 gap-3"
+                    className="h-14 px-8 rounded-2xl bg-slate-900 hover:bg-black text-white font-medium shadow-xl shadow-slate-200 gap-3"
                 >
                     <Plus className="w-5 h-5" />
                     {language === 'ar' ? "إنشاء منشور جديد" : "Create New Post"}
@@ -124,7 +124,7 @@ export default function SocialTab() {
                                 </div>
                                 <div className={`absolute bottom-4 ${language === 'ar' ? 'right-4' : 'left-4'}`}>
                                     <span className={cn(
-                                        "px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg",
+                                        "px-4 py-1.5 rounded-full text-[10px] font-medium uppercase tracking-widest shadow-lg",
                                         request.status === 'pending' ? "bg-amber-500 text-white" :
                                         request.status === 'approved' ? "bg-emerald-500 text-white" :
                                         "bg-red-500 text-white"
@@ -161,7 +161,7 @@ export default function SocialTab() {
                                             ) : (
                                                 <Clock className="w-4 h-4 text-amber-500" />
                                             )}
-                                            <span className="text-[10px] font-black text-slate-400">
+                                            <span className="text-[10px] font-medium text-slate-400">
                                                 {request.isExecuted ? (language === 'ar' ? "تم النشر" : "PUBLISHED") : (language === 'ar' ? "مجدول" : "SCHEDULED")}
                                             </span>
                                         </div>
@@ -180,7 +180,7 @@ export default function SocialTab() {
                     </DialogHeader>
                     <DialogHeader className="p-8 pb-4 bg-slate-50 border-b border-slate-100 flex flex-row items-center justify-between">
                         <div>
-                            <DialogTitle className="text-2xl font-black text-slate-900">
+                            <DialogTitle className="text-2xl font-medium text-slate-900">
                                 {language === 'ar' ? "جدولة منشور جديد" : "Schedule New Post"}
                             </DialogTitle>
                             <p className="text-sm font-bold text-slate-400 mt-1">
@@ -195,12 +195,12 @@ export default function SocialTab() {
                     <div className="p-8 space-y-6">
                         {/* Platform Selection */}
                         <div className="space-y-3">
-                            <label className="text-xs font-black text-slate-400 uppercase tracking-widest">{language === 'ar' ? "المنصات" : "PLATFORMS"}</label>
+                            <label className="text-xs font-medium text-slate-400 uppercase tracking-widest">{language === 'ar' ? "المنصات" : "PLATFORMS"}</label>
                             <div className="flex gap-4">
                                 <button 
                                     onClick={() => handlePlatformToggle('instagram')}
                                     className={cn(
-                                        "flex-1 p-4 rounded-2xl border-2 transition-all flex items-center justify-center gap-3 font-black",
+                                        "flex-1 p-4 rounded-2xl border-2 transition-all flex items-center justify-center gap-3 font-medium",
                                         selectedPlatforms.includes('instagram') 
                                             ? "border-pink-500 bg-pink-50 text-pink-600" 
                                             : "border-slate-100 bg-white text-slate-400 hover:border-slate-200"
@@ -210,7 +210,7 @@ export default function SocialTab() {
                                     Instagram
                                 </button>
                                 <button 
-                                    className="flex-1 p-4 rounded-2xl border-2 border-slate-50 bg-slate-50 text-slate-300 cursor-not-allowed flex items-center justify-center gap-3 font-black"
+                                    className="flex-1 p-4 rounded-2xl border-2 border-slate-50 bg-slate-50 text-slate-300 cursor-not-allowed flex items-center justify-center gap-3 font-medium"
                                 >
                                     Facebook ({language === 'ar' ? 'قريباً' : 'Soon'})
                                 </button>
@@ -219,7 +219,7 @@ export default function SocialTab() {
 
                         {/* Caption */}
                         <div className="space-y-2">
-                            <label className="text-xs font-black text-slate-400 uppercase tracking-widest">{language === 'ar' ? "نص المنشور" : "POST CAPTION"}</label>
+                            <label className="text-xs font-medium text-slate-400 uppercase tracking-widest">{language === 'ar' ? "نص المنشور" : "POST CAPTION"}</label>
                             <Textarea 
                                 className="min-h-[120px] rounded-2xl bg-slate-50 border-transparent focus:bg-white focus:ring-4 focus:ring-purple-50 font-bold p-4 text-slate-700"
                                 placeholder={language === 'ar' ? "اكتب تفاصيل المنشور هنا..." : "Write post details here..."}
@@ -230,7 +230,7 @@ export default function SocialTab() {
 
                         {/* Image URL */}
                         <div className="space-y-2">
-                            <label className="text-xs font-black text-slate-400 uppercase tracking-widest">{language === 'ar' ? "رابط الصورة" : "IMAGE URL"}</label>
+                            <label className="text-xs font-medium text-slate-400 uppercase tracking-widest">{language === 'ar' ? "رابط الصورة" : "IMAGE URL"}</label>
                             <div className="relative">
                                 <ImageIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300" />
                                 <Input 
@@ -245,7 +245,7 @@ export default function SocialTab() {
                         {/* Scheduling */}
                         <div className="grid grid-cols-2 gap-6">
                             <div className="space-y-2">
-                                <label className="text-xs font-black text-slate-400 uppercase tracking-widest">{language === 'ar' ? "تاريخ النشر" : "PUBLISH DATE"}</label>
+                                <label className="text-xs font-medium text-slate-400 uppercase tracking-widest">{language === 'ar' ? "تاريخ النشر" : "PUBLISH DATE"}</label>
                                 <div className="relative">
                                     <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300" />
                                     <Input 
@@ -257,7 +257,7 @@ export default function SocialTab() {
                                 </div>
                             </div>
                             <div className="space-y-2">
-                                <label className="text-xs font-black text-slate-400 uppercase tracking-widest">{language === 'ar' ? "وقت النشر" : "PUBLISH TIME"}</label>
+                                <label className="text-xs font-medium text-slate-400 uppercase tracking-widest">{language === 'ar' ? "وقت النشر" : "PUBLISH TIME"}</label>
                                 <div className="relative">
                                     <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300" />
                                     <Input 
@@ -274,14 +274,14 @@ export default function SocialTab() {
                             <Button 
                                 variant="ghost" 
                                 onClick={() => setIsCreateModalOpen(false)}
-                                className="flex-1 h-14 rounded-2xl font-black text-slate-400 hover:bg-slate-50"
+                                className="flex-1 h-14 rounded-2xl font-medium text-slate-400 hover:bg-slate-50"
                             >
                                 {language === 'ar' ? "إلغاء" : "Cancel"}
                             </Button>
                             <Button 
                                 onClick={handleSubmit}
                                 disabled={submitRequest.isPending}
-                                className="flex-[2] h-14 rounded-2xl bg-purple-600 hover:bg-purple-700 text-white font-black shadow-lg shadow-purple-100"
+                                className="flex-[2] h-14 rounded-2xl bg-purple-600 hover:bg-purple-700 text-white font-medium shadow-lg shadow-purple-100"
                             >
                                 {submitRequest.isPending ? <Loader2 className="w-5 h-5 animate-spin" /> : (language === 'ar' ? "تأكيد الطلب والجدولة" : "Confirm & Schedule")}
                             </Button>

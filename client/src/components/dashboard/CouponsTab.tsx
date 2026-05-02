@@ -122,7 +122,7 @@ export function CouponsTab({ vendorId }: { vendorId: number }) {
         <div className="space-y-6" dir={language === 'ar' ? 'rtl' : 'ltr'}>
             <div className={`flex items-center justify-between ${language === 'ar' ? 'flex-row' : 'flex-row'}`}>
                 <div className={language === 'ar' ? 'text-right' : 'text-left'}>
-                    <h2 className="text-2xl font-black text-gray-900">{t('couponsTitle')}</h2>
+                    <h2 className="text-2xl font-medium text-gray-900">{t('couponsTitle')}</h2>
                     <p className="text-gray-500 text-sm">{t('couponsDesc')}</p>
                 </div>
                 <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
@@ -134,7 +134,7 @@ export function CouponsTab({ vendorId }: { vendorId: number }) {
                     </DialogTrigger>
                     <DialogContent className="max-w-md" dir={language === 'ar' ? 'rtl' : 'ltr'}>
                         <DialogHeader className={language === 'ar' ? 'text-right' : 'text-left'}>
-                            <DialogTitle className="text-xl font-black">
+                            <DialogTitle className="text-xl font-medium">
                                 {editingCoupon ? t('editCoupon') : t('createCouponTitle')}
                             </DialogTitle>
                         </DialogHeader>
@@ -145,7 +145,7 @@ export function CouponsTab({ vendorId }: { vendorId: number }) {
                                     placeholder={t('couponCodePlaceholder')}
                                     value={code}
                                     onChange={(e) => setCode(e.target.value.toUpperCase())}
-                                    className="uppercase font-black text-lg tracking-widest h-12 border-slate-200 focus:ring-purple-500"
+                                    className="uppercase font-medium text-lg tracking-widest h-12 border-slate-200 focus:ring-purple-500"
                                 />
                                 <p className="text-[10px] text-gray-400">{t('couponCodeNote')}</p>
                             </div>
@@ -223,7 +223,7 @@ export function CouponsTab({ vendorId }: { vendorId: number }) {
                                         <div className="flex flex-col items-center gap-4 grayscale opacity-50">
                                             <Ticket className="w-16 h-16 text-purple-200" />
                                             <div className="space-y-1">
-                                                <p className="font-black text-gray-500">{t('noCoupons')}</p>
+                                                <p className="font-medium text-gray-500">{t('noCoupons')}</p>
                                                 <p className="text-xs text-gray-400">{t('noCouponsDesc')}</p>
                                             </div>
                                         </div>
@@ -241,7 +241,7 @@ export function CouponsTab({ vendorId }: { vendorId: number }) {
                                                     </div>
                                                     <div>
                                                         <div className="flex items-center gap-2">
-                                                            <span className="font-black text-gray-900 tracking-wider">
+                                                            <span className="font-medium text-gray-900 tracking-wider">
                                                                 {coupon.code}
                                                             </span>
                                                             <button
@@ -266,7 +266,7 @@ export function CouponsTab({ vendorId }: { vendorId: number }) {
                                                 </div>
                                             </td>
                                             <td className="py-4 px-6">
-                                                <div className="inline-flex items-center px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded-md font-black text-sm">
+                                                <div className="inline-flex items-center px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded-md font-medium text-sm">
                                                     %{coupon.discountPercent}
                                                 </div>
                                             </td>
@@ -334,7 +334,7 @@ export function CouponsTab({ vendorId }: { vendorId: number }) {
                         <div className="flex flex-col items-center gap-4 py-10 grayscale opacity-50 text-center">
                             <Ticket className="w-12 h-12 text-purple-200" />
                             <div className="space-y-1">
-                                <p className="font-black text-gray-500">{t('noCoupons')}</p>
+                                <p className="font-medium text-gray-500">{t('noCoupons')}</p>
                                 <p className="text-xs text-gray-400">{t('noCouponsDesc')}</p>
                             </div>
                         </div>
@@ -350,7 +350,7 @@ export function CouponsTab({ vendorId }: { vendorId: number }) {
                                             </div>
                                             <div>
                                                 <div className="flex items-center gap-2">
-                                                    <span className="font-black text-gray-900 text-lg tracking-wider">
+                                                    <span className="font-medium text-gray-900 text-lg tracking-wider">
                                                         {coupon.code}
                                                     </span>
                                                     <button
@@ -381,14 +381,14 @@ export function CouponsTab({ vendorId }: { vendorId: number }) {
                                     <div className="grid grid-cols-2 gap-4 py-2 border-t border-b border-gray-50">
                                         <div className="text-center">
                                             <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">{t('tableDiscount')}</p>
-                                            <span className="inline-flex items-center px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded-md font-black text-sm">
+                                            <span className="inline-flex items-center px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded-md font-medium text-sm">
                                                 %{coupon.discountPercent}
                                             </span>
                                         </div>
                                         <div className="text-center border-l border-gray-50 border-r-0 rtl:border-r rtl:border-l-0">
                                             <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">{t('tableUsage')}</p>
                                             <div className="flex flex-col items-center gap-1">
-                                                <span className="text-sm font-black text-gray-900">
+                                                <span className="text-sm font-medium text-gray-900">
                                                     {coupon.usedCount || 0} <span className="text-gray-400 font-medium">/ {coupon.maxUses || '∞'}</span>
                                                 </span>
                                                 {coupon.maxUses && (

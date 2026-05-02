@@ -50,7 +50,7 @@ export default function ContactUs() {
                             <Badge className="bg-white/20 text-white hover:bg-white/30 backdrop-blur-md mb-4 border-white/30 px-6 py-2 text-xs font-bold uppercase tracking-[0.2em]">
                                 {language === 'ar' ? "تواصل معنا" : "Contact Us"}
                             </Badge>
-                            <h1 className="text-3xl md:text-5xl font-black mb-6 leading-tight">
+                            <h1 className="text-3xl md:text-3xl font-medium mb-6 leading-tight">
                                 {language === 'ar' ? "نحن هنا لمساعدتك" : "We're Here to Help"}
                             </h1>
                             <p className="text-lg md:text-2xl text-white/90 max-w-2xl mx-auto leading-relaxed font-bold">
@@ -108,7 +108,7 @@ export default function ContactUs() {
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: 0.3 }}
                     >
-                        <h2 className="text-2xl font-black text-gray-900 mb-8">{language === 'ar' ? "أرسلي رسالة" : "Send a Message"}</h2>
+                        <h2 className="text-2xl font-medium text-gray-900 mb-8">{language === 'ar' ? "أرسلي رسالة" : "Send a Message"}</h2>
                         <form onSubmit={handleSubmit} className="space-y-6">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-2">

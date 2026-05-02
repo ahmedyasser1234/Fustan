@@ -42,7 +42,7 @@ export default function WalletTab() {
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h2 className="text-3xl font-black text-slate-900 mb-2 flex items-center gap-3">
+                    <h2 className="text-3xl font-medium text-slate-900 mb-2 flex items-center gap-3">
                         <div className="w-2 h-8 bg-emerald-500 rounded-full" />
                         {language === 'ar' ? 'المحفظة المالية' : 'Financial Wallet'}
                     </h2>
@@ -52,7 +52,7 @@ export default function WalletTab() {
                 </div>
                 <div className="flex items-center gap-2 px-4 py-2 bg-emerald-50 rounded-2xl border border-emerald-100">
                     <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-                    <span className="text-sm font-black text-emerald-700 capitalize">
+                    <span className="text-sm font-medium text-emerald-700 capitalize">
                         {language === 'ar' ? 'محدثة الآن' : 'Updated now'}
                     </span>
                 </div>
@@ -72,11 +72,11 @@ export default function WalletTab() {
                         <p className="text-emerald-100 font-bold text-sm mb-1 uppercase tracking-widest">
                             {language === 'ar' ? 'الرصيد المتاح للسحب' : 'Available Balance'}
                         </p>
-                        <h3 className="text-4xl font-black mb-4 tabular-nums">
+                        <h3 className="text-4xl font-medium mb-4 tabular-nums">
                             {formatPrice(wallet?.availableBalance || 0)}
                         </h3>
                         <div className="flex gap-3">
-                            <button className="flex-1 h-12 bg-white text-emerald-700 font-black rounded-xl hover:bg-emerald-50 transition-colors shadow-lg">
+                            <button className="flex-1 h-12 bg-white text-emerald-700 font-medium rounded-xl hover:bg-emerald-50 transition-colors shadow-lg">
                                 {language === 'ar' ? 'طلب سحب' : 'Request Payout'}
                             </button>
                         </div>
@@ -94,7 +94,7 @@ export default function WalletTab() {
                         <p className="text-slate-400 font-bold text-sm mb-1 uppercase tracking-widest">
                             {language === 'ar' ? 'أرباح معلقة (تحت المراجعة)' : 'Pending Balance'}
                         </p>
-                        <h3 className="text-4xl font-black text-slate-900 tabular-nums">
+                        <h3 className="text-4xl font-medium text-slate-900 tabular-nums">
                             {formatPrice(wallet?.pendingBalance || 0)}
                         </h3>
                         <p className="text-xs text-slate-400 font-bold mt-4 flex items-center gap-2">
@@ -108,7 +108,7 @@ export default function WalletTab() {
             {/* Transactions History */}
             <Card className="rounded-[24px] md:rounded-[40px] border-slate-100 bg-white/80 backdrop-blur-xl shadow-2xl shadow-slate-200/50 overflow-hidden">
                 <div className="p-6 md:p-8 border-b border-slate-100 flex items-center justify-between">
-                    <h3 className="text-lg md:text-xl font-black text-slate-900 flex items-center gap-3">
+                    <h3 className="text-lg md:text-xl font-medium text-slate-900 flex items-center gap-3">
                         <div className="w-1.5 h-6 bg-slate-900 rounded-full" />
                         {language === 'ar' ? 'سجل العمليات' : 'Transaction History'}
                     </h3>
@@ -120,10 +120,10 @@ export default function WalletTab() {
                         <table className="w-full text-right">
                             <thead className="bg-slate-50/50">
                                 <tr>
-                                    <th className="px-8 py-4 text-xs font-black text-slate-400 uppercase tracking-widest">{language === 'ar' ? 'العملية' : 'Transaction'}</th>
-                                    <th className="px-8 py-4 text-xs font-black text-slate-400 uppercase tracking-widest">{language === 'ar' ? 'المبلغ' : 'Amount'}</th>
-                                    <th className="px-8 py-4 text-xs font-black text-slate-400 uppercase tracking-widest">{language === 'ar' ? 'الحالة' : 'Status'}</th>
-                                    <th className="px-8 py-4 text-xs font-black text-slate-400 uppercase tracking-widest">{language === 'ar' ? 'التاريخ' : 'Date'}</th>
+                                    <th className="px-8 py-4 text-xs font-medium text-slate-400 uppercase tracking-widest">{language === 'ar' ? 'العملية' : 'Transaction'}</th>
+                                    <th className="px-8 py-4 text-xs font-medium text-slate-400 uppercase tracking-widest">{language === 'ar' ? 'المبلغ' : 'Amount'}</th>
+                                    <th className="px-8 py-4 text-xs font-medium text-slate-400 uppercase tracking-widest">{language === 'ar' ? 'الحالة' : 'Status'}</th>
+                                    <th className="px-8 py-4 text-xs font-medium text-slate-400 uppercase tracking-widest">{language === 'ar' ? 'التاريخ' : 'Date'}</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-50">
@@ -143,19 +143,19 @@ export default function WalletTab() {
                                                         {tx.type === 'credit' ? <ArrowDownLeft className="w-5 h-5" /> : <ArrowUpRight className="w-5 h-5" />}
                                                     </div>
                                                     <div>
-                                                        <p className="font-black text-slate-900 text-sm leading-tight">{tx.description}</p>
+                                                        <p className="font-medium text-slate-900 text-sm leading-tight">{tx.description}</p>
                                                         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">ID: #{tx.relatedId || 'N/A'}</p>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td className="px-8 py-5">
-                                                <span className={`text-lg font-black tabular-nums ${tx.type === 'credit' ? 'text-emerald-600' : 'text-red-600'
+                                                <span className={`text-lg font-medium tabular-nums ${tx.type === 'credit' ? 'text-emerald-600' : 'text-red-600'
                                                     }`}>
                                                     {tx.type === 'credit' ? '+' : '-'}{formatPrice(Math.abs(tx.amount))}
                                                 </span>
                                             </td>
                                             <td className="px-8 py-5">
-                                                <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-black tracking-wide uppercase ${tx.status === 'completed' ? 'bg-emerald-100 text-emerald-700' :
+                                                <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-medium tracking-wide uppercase ${tx.status === 'completed' ? 'bg-emerald-100 text-emerald-700' :
                                                     tx.status === 'pending' ? 'bg-blue-100 text-blue-700' :
                                                         'bg-red-100 text-red-700'
                                                     }`}>
@@ -205,10 +205,10 @@ export default function WalletTab() {
                                         <div className="flex-1 min-w-0">
                                             <div className="flex justify-between items-start mb-2">
                                                 <div>
-                                                    <p className="font-black text-slate-900 text-sm leading-snug mb-1">{tx.description}</p>
+                                                    <p className="font-medium text-slate-900 text-sm leading-snug mb-1">{tx.description}</p>
                                                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">ID: #{tx.relatedId || 'N/A'}</p>
                                                 </div>
-                                                <span className={`text-lg font-black tabular-nums whitespace-nowrap ${tx.type === 'credit' ? 'text-emerald-600' : 'text-red-600'
+                                                <span className={`text-lg font-medium tabular-nums whitespace-nowrap ${tx.type === 'credit' ? 'text-emerald-600' : 'text-red-600'
                                                     }`}>
                                                     {tx.type === 'credit' ? '+' : '-'}{formatPrice(Math.abs(tx.amount))}
                                                 </span>
@@ -227,7 +227,7 @@ export default function WalletTab() {
                                                         }
                                                     })()}
                                                 </p>
-                                                <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-black tracking-wide uppercase ${tx.status === 'completed' ? 'bg-emerald-100 text-emerald-700' :
+                                                <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-medium tracking-wide uppercase ${tx.status === 'completed' ? 'bg-emerald-100 text-emerald-700' :
                                                     tx.status === 'pending' ? 'bg-blue-100 text-blue-700' :
                                                         'bg-red-100 text-red-700'
                                                     }`}>

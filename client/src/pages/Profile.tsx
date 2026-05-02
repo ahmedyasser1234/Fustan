@@ -126,7 +126,7 @@ export default function Profile() {
                         </div>
                     </div>
                     <div className="flex-1">
-                        <h1 className="text-3xl md:text-5xl font-black text-gray-900 mb-2 tracking-tight">{user.name}</h1>
+                        <h1 className="text-3xl md:text-3xl font-medium text-gray-900 mb-2 tracking-tight">{user.name}</h1>
                         <p className="text-gray-500 text-base md:text-lg font-medium">{user.email}</p>
                         <div className={`mt-4 md:mt-6 flex flex-wrap justify-center md:justify-start gap-3`}>
                             <Button
@@ -151,8 +151,8 @@ export default function Profile() {
                             className="bg-white p-6 rounded-[2.5rem] shadow-sm border border-gray-100 flex flex-col md:flex-row items-center justify-between hover:shadow-md transition-all cursor-default text-center md:text-start"
                         >
                             <div className="order-2 md:order-1 mt-3 md:mt-0">
-                                <p className="text-[10px] md:text-xs text-gray-400 font-black uppercase tracking-widest mb-1">{stat.label}</p>
-                                <p className="text-xl md:text-3xl font-black text-gray-900">{stat.value}</p>
+                                <p className="text-[10px] md:text-xs text-gray-400 font-medium uppercase tracking-widest mb-1">{stat.label}</p>
+                                <p className="text-xl md:text-3xl font-medium text-gray-900">{stat.value}</p>
                             </div>
                             <div className={`w-12 h-12 md:w-14 md:h-14 ${stat.bg} ${stat.color} rounded-2xl flex items-center justify-center order-1 md:order-2`}>
                                 <stat.icon size={24} />
@@ -167,7 +167,7 @@ export default function Profile() {
                     {user.role === 'admin' && (
                         <section>
                             <div className="flex items-center justify-between mb-6 px-4">
-                                <h2 className="text-2xl font-black text-gray-900">{t('adminDashboard')}</h2>
+                                <h2 className="text-2xl font-medium text-gray-900">{t('adminDashboard')}</h2>
                             </div>
                             <Card className="rounded-[2.5rem] border-0 shadow-sm overflow-hidden">
                                 <CardContent className="p-8">
@@ -176,7 +176,7 @@ export default function Profile() {
                                             <Settings size={40} className="text-white" />
                                         </div>
                                         <div>
-                                            <h3 className="text-2xl font-black text-gray-900 mb-2">
+                                            <h3 className="text-2xl font-medium text-gray-900 mb-2">
                                                 {language === 'ar' ? "مرحباً بك في لوحة التحكم" : "Welcome to Admin Dashboard"}
                                             </h3>
                                             <p className="text-gray-500 font-medium">
@@ -199,13 +199,13 @@ export default function Profile() {
                     {user.role !== 'admin' && (
                         <section>
                             <div className="flex items-center justify-between mb-6 px-4">
-                                <h2 className="text-2xl font-black text-gray-900">
+                                <h2 className="text-2xl font-medium text-gray-900">
                                     {user.role === 'vendor'
                                         ? (language === 'ar' ? "آخر طلبات المتجر" : "Recent Store Orders")
                                         : (language === 'ar' ? "آخر الطلبات" : "Recent Orders")}
                                 </h2>
                                 <Link href={user.role === 'vendor' ? "/vendor?tab=orders" : "/orders"}>
-                                    <Button variant="link" className="text-rose-600 font-black flex items-center gap-2">
+                                    <Button variant="link" className="text-rose-600 font-medium flex items-center gap-2">
                                         {language === 'ar' ? "عرض الكل" : "View All"}
                                         <ChevronLeft size={16} className={language === 'en' ? 'rotate-180' : ''} />
                                     </Button>
@@ -237,7 +237,7 @@ export default function Profile() {
                                                 return (
                                                     <div key={order.id} className="p-6 flex items-center justify-between hover:bg-gray-50 transition-colors">
                                                         <div>
-                                                            <p className="font-black text-gray-900">#{order.id}</p>
+                                                            <p className="font-medium text-gray-900">#{order.id}</p>
                                                             <p className="text-sm text-gray-500 font-bold">
                                                                 {(() => {
                                                                     try {
@@ -251,7 +251,7 @@ export default function Profile() {
                                                             </p>
                                                         </div>
                                                         <div className="text-left text-end">
-                                                            <p className="font-black text-rose-600">{formatPrice(order.total)}</p>
+                                                            <p className="font-medium text-rose-600">{formatPrice(order.total)}</p>
                                                             <div className={`mt-1 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold ${statusColors[statusKey] || 'bg-gray-100 text-gray-600'}`}>
                                                                 {translatedStatus}
                                                             </div>
@@ -275,7 +275,7 @@ export default function Profile() {
 
                     {/* Quick Settings */}
                     <section>
-                        <h2 className="text-2xl font-black text-gray-900 mb-6 px-4">{t('settings')}</h2>
+                        <h2 className="text-2xl font-medium text-gray-900 mb-6 px-4">{t('settings')}</h2>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div
                                 onClick={() => setIsEditModalOpen(true)}
@@ -286,7 +286,7 @@ export default function Profile() {
                                         <User size={20} />
                                     </div>
                                     <div className="text-start">
-                                        <p className="font-black text-gray-900 leading-none mb-1">{t('personalInfo')}</p>
+                                        <p className="font-medium text-gray-900 leading-none mb-1">{t('personalInfo')}</p>
                                         <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{t('updateNameEmail')}</p>
                                     </div>
                                 </div>
@@ -301,7 +301,7 @@ export default function Profile() {
                                         <Bell size={20} />
                                     </div>
                                     <div className="text-start">
-                                        <p className="font-black text-gray-900 leading-none mb-1">{language === 'ar' ? "تنبيهات النظام" : "System Notifications"}</p>
+                                        <p className="font-medium text-gray-900 leading-none mb-1">{language === 'ar' ? "تنبيهات النظام" : "System Notifications"}</p>
                                         <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{language === 'ar' ? "إدارة الإشعارات" : "Manage notifications"}</p>
                                     </div>
                                 </div>
@@ -491,7 +491,7 @@ function EditProfileModal({ isOpen, onClose, user, vendor, language, queryClient
                     {/* Sidebar Tabs */}
                     <div className={`w-full md:w-80 bg-gray-50/50 p-4 md:p-8 border-b md:border-b-0 md:border-e border-gray-100 overflow-x-auto md:overflow-y-auto shrink-0 no-scrollbar`}>
                         <DialogHeader className="mb-6 md:mb-10 text-start hidden md:block">
-                            <DialogTitle className="text-2xl md:text-3xl font-black text-gray-900 tracking-tight">
+                            <DialogTitle className="text-2xl md:text-3xl font-medium text-gray-900 tracking-tight">
                                 {language === 'ar' ? "إعدادات الحساب" : "Account Settings"}
                             </DialogTitle>
                         </DialogHeader>
@@ -502,7 +502,7 @@ function EditProfileModal({ isOpen, onClose, user, vendor, language, queryClient
                                     key={tab.id}
                                     type="button"
                                     onClick={() => setActiveTab(tab.id)}
-                                    className={`flex items-center gap-3 md:gap-4 px-4 md:px-6 py-3 md:py-5 rounded-xl md:rounded-2xl font-black transition-all text-start group shrink-0 ${activeTab === tab.id
+                                    className={`flex items-center gap-3 md:gap-4 px-4 md:px-6 py-3 md:py-5 rounded-xl md:rounded-2xl font-medium transition-all text-start group shrink-0 ${activeTab === tab.id
                                         ? "bg-rose-600 text-white shadow-lg md:shadow-xl shadow-rose-200 scale-100 md:scale-[1.02]"
                                         : "text-gray-500 hover:bg-white hover:text-gray-900 bg-white md:bg-transparent"
                                         }`}
@@ -542,22 +542,22 @@ function EditProfileModal({ isOpen, onClose, user, vendor, language, queryClient
                                             </div>
                                             <input type="file" ref={fileInputRefs.avatar} onChange={(e) => handleFileChange('avatar', e)} accept="image/*" className="hidden" />
                                             <div className="text-center">
-                                                <p className="text-base font-black text-gray-900 mb-1">{language === 'ar' ? "تغيير الصورة الشخصية" : "Change Profile Picture"}</p>
+                                                <p className="text-base font-medium text-gray-900 mb-1">{language === 'ar' ? "تغيير الصورة الشخصية" : "Change Profile Picture"}</p>
                                                 <p className="text-xs text-gray-400 font-bold uppercase tracking-widest">{language === 'ar' ? "يفضل صورة مربعة 500x500" : "Square image 500x500 recommended"}</p>
                                             </div>
                                         </div>
 
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pb-4">
                                             <div className="text-start space-y-2">
-                                                <label className="text-xs font-black text-gray-700 px-1 uppercase tracking-wider">{language === 'ar' ? "الاسم الكامل" : "Full Name"}</label>
+                                                <label className="text-xs font-medium text-gray-700 px-1 uppercase tracking-wider">{language === 'ar' ? "الاسم الكامل" : "Full Name"}</label>
                                                 <Input value={name} onChange={(e) => setName(e.target.value)} className="w-full bg-gray-50 border-0 rounded-2xl h-14 px-6 font-bold focus:ring-2 focus:ring-rose-500 transition-all text-gray-900" required />
                                             </div>
                                             <div className="text-start space-y-2">
-                                                <label className="text-xs font-black text-gray-700 px-1 uppercase tracking-wider">{language === 'ar' ? "البريد الإلكتروني" : "Email Address"}</label>
+                                                <label className="text-xs font-medium text-gray-700 px-1 uppercase tracking-wider">{language === 'ar' ? "البريد الإلكتروني" : "Email Address"}</label>
                                                 <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full bg-gray-50 border-0 rounded-2xl h-14 px-6 font-bold focus:ring-2 focus:ring-rose-500 transition-all text-gray-900" required dir="ltr" />
                                             </div>
                                             <div className="text-start md:col-span-2 space-y-2">
-                                                <label className="text-xs font-black text-gray-700 px-1 uppercase tracking-wider">{language === 'ar' ? "كلمة المرور الجديدة" : "New Password"}</label>
+                                                <label className="text-xs font-medium text-gray-700 px-1 uppercase tracking-wider">{language === 'ar' ? "كلمة المرور الجديدة" : "New Password"}</label>
                                                 <div className="relative">
                                                     <Input type={showPassword ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" className="w-full bg-gray-50 border-0 rounded-2xl h-14 px-6 font-bold focus:ring-2 focus:ring-rose-500 transition-all text-gray-900" dir="ltr" />
                                                     <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-rose-500 transition-colors p-2">
@@ -579,29 +579,29 @@ function EditProfileModal({ isOpen, onClose, user, vendor, language, queryClient
                                         exit={{ opacity: 0, x: -20 }}
                                         className="space-y-8"
                                     >
-                                        <h3 className="text-2xl font-black text-gray-900 mb-6 flex items-center gap-3">
+                                        <h3 className="text-2xl font-medium text-gray-900 mb-6 flex items-center gap-3">
                                             <span className="w-8 h-8 bg-rose-50 text-rose-600 rounded-lg flex items-center justify-center"><Store size={20} /></span>
                                             {t('storeDetails')}
                                         </h3>
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                             <div className="text-start space-y-2">
-                                                <label className="text-xs font-black text-gray-700 px-1 uppercase tracking-wider">{t('storeNameAr')}</label>
+                                                <label className="text-xs font-medium text-gray-700 px-1 uppercase tracking-wider">{t('storeNameAr')}</label>
                                                 <Input value={vendorFields.storeNameAr} onChange={(e) => setVendorFields({ ...vendorFields, storeNameAr: e.target.value })} className="w-full bg-gray-50 border-0 rounded-2xl h-14 px-6 font-bold" />
                                             </div>
                                             <div className="text-start space-y-2">
-                                                <label className="text-xs font-black text-gray-700 px-1 uppercase tracking-wider">{t('storeNameEn')}</label>
+                                                <label className="text-xs font-medium text-gray-700 px-1 uppercase tracking-wider">{t('storeNameEn')}</label>
                                                 <Input value={vendorFields.storeNameEn} onChange={(e) => setVendorFields({ ...vendorFields, storeNameEn: e.target.value })} className="w-full bg-gray-50 border-0 rounded-2xl h-14 px-6 font-bold" dir="ltr" />
                                             </div>
                                             <div className="text-start md:col-span-2 space-y-2">
-                                                <label className="text-xs font-black text-gray-700 px-1 uppercase tracking-wider">{t('descriptionAr')}</label>
+                                                <label className="text-xs font-medium text-gray-700 px-1 uppercase tracking-wider">{t('descriptionAr')}</label>
                                                 <Textarea value={vendorFields.descriptionAr} onChange={(e) => setVendorFields({ ...vendorFields, descriptionAr: e.target.value })} className="w-full bg-gray-50 border-0 rounded-3xl p-6 min-h-[140px] font-bold resize-none leading-relaxed" />
                                             </div>
                                             <div className="text-start md:col-span-2 space-y-2">
-                                                <label className="text-xs font-black text-gray-700 px-1 uppercase tracking-wider">{t('descriptionEn')}</label>
+                                                <label className="text-xs font-medium text-gray-700 px-1 uppercase tracking-wider">{t('descriptionEn')}</label>
                                                 <Textarea value={vendorFields.descriptionEn} onChange={(e) => setVendorFields({ ...vendorFields, descriptionEn: e.target.value })} className="w-full bg-gray-50 border-0 rounded-3xl p-6 min-h-[140px] font-bold resize-none leading-relaxed" dir="ltr" />
                                             </div>
                                             <div className="text-start md:col-span-2 space-y-2">
-                                                <label className="text-xs font-black text-gray-700 px-1 uppercase tracking-wider">{t('website')}</label>
+                                                <label className="text-xs font-medium text-gray-700 px-1 uppercase tracking-wider">{t('website')}</label>
                                                 <Input value={vendorFields.website} onChange={(e) => setVendorFields({ ...vendorFields, website: e.target.value })} className="w-full bg-gray-50 border-0 rounded-2xl h-14 px-6 font-bold" placeholder="https://example.com" dir="ltr" />
                                             </div>
                                         </div>
@@ -617,33 +617,33 @@ function EditProfileModal({ isOpen, onClose, user, vendor, language, queryClient
                                         exit={{ opacity: 0, x: -20 }}
                                         className="space-y-8"
                                     >
-                                        <h3 className="text-2xl font-black text-gray-900 mb-6 flex items-center gap-3">
+                                        <h3 className="text-2xl font-medium text-gray-900 mb-6 flex items-center gap-3">
                                             <span className="w-8 h-8 bg-rose-50 text-rose-600 rounded-lg flex items-center justify-center"><MapPin size={20} /></span>
                                             {t('locationContact')}
                                         </h3>
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                             <div className="text-start space-y-2">
-                                                <label className="text-xs font-black text-gray-700 px-1 uppercase tracking-wider">{language === 'ar' ? "رقم الهاتف" : "Phone Number"}</label>
+                                                <label className="text-xs font-medium text-gray-700 px-1 uppercase tracking-wider">{language === 'ar' ? "رقم الهاتف" : "Phone Number"}</label>
                                                 <Input value={vendorFields.phone} onChange={(e) => setVendorFields({ ...vendorFields, phone: e.target.value })} className="w-full bg-gray-50 border-0 rounded-2xl h-14 px-6 font-bold text-gray-900" dir="ltr" />
                                             </div>
                                             <div className="text-start space-y-2">
-                                                <label className="text-xs font-black text-gray-700 px-1 uppercase tracking-wider">{t('zipCode')}</label>
+                                                <label className="text-xs font-medium text-gray-700 px-1 uppercase tracking-wider">{t('zipCode')}</label>
                                                 <Input value={vendorFields.zipCode} onChange={(e) => setVendorFields({ ...vendorFields, zipCode: e.target.value })} className="w-full bg-gray-50 border-0 rounded-2xl h-14 px-6 font-bold text-gray-900" />
                                             </div>
                                             <div className="text-start space-y-2">
-                                                <label className="text-xs font-black text-gray-700 px-1 uppercase tracking-wider">{t('cityAr')}</label>
+                                                <label className="text-xs font-medium text-gray-700 px-1 uppercase tracking-wider">{t('cityAr')}</label>
                                                 <Input value={vendorFields.cityAr} onChange={(e) => setVendorFields({ ...vendorFields, cityAr: e.target.value })} className="w-full bg-gray-50 border-0 rounded-2xl h-14 px-6 font-bold text-gray-900" />
                                             </div>
                                             <div className="text-start space-y-2">
-                                                <label className="text-xs font-black text-gray-700 px-1 uppercase tracking-wider">{t('cityEn')}</label>
+                                                <label className="text-xs font-medium text-gray-700 px-1 uppercase tracking-wider">{t('cityEn')}</label>
                                                 <Input value={vendorFields.cityEn} onChange={(e) => setVendorFields({ ...vendorFields, cityEn: e.target.value })} className="w-full bg-gray-50 border-0 rounded-2xl h-14 px-6 font-bold text-gray-900" dir="ltr" />
                                             </div>
                                             <div className="text-start space-y-2 px-1 md:col-span-2">
-                                                <label className="text-xs font-black text-gray-700 uppercase tracking-wider">{t('addressAr')}</label>
+                                                <label className="text-xs font-medium text-gray-700 uppercase tracking-wider">{t('addressAr')}</label>
                                                 <Input value={vendorFields.addressAr} onChange={(e) => setVendorFields({ ...vendorFields, addressAr: e.target.value })} className="w-full bg-gray-50 border-0 rounded-2xl h-14 px-6 font-bold text-gray-900" />
                                             </div>
                                             <div className="text-start space-y-2 px-1 md:col-span-2">
-                                                <label className="text-xs font-black text-gray-700 uppercase tracking-wider">{t('addressEn')}</label>
+                                                <label className="text-xs font-medium text-gray-700 uppercase tracking-wider">{t('addressEn')}</label>
                                                 <Input value={vendorFields.addressEn} onChange={(e) => setVendorFields({ ...vendorFields, addressEn: e.target.value })} className="w-full bg-gray-50 border-0 rounded-2xl h-14 px-6 font-bold text-gray-900" dir="ltr" />
                                             </div>
                                         </div>
@@ -659,14 +659,14 @@ function EditProfileModal({ isOpen, onClose, user, vendor, language, queryClient
                                         exit={{ opacity: 0, x: -20 }}
                                         className="space-y-8"
                                     >
-                                        <h3 className="text-2xl font-black text-gray-900 mb-6 flex items-center gap-3">
+                                        <h3 className="text-2xl font-medium text-gray-900 mb-6 flex items-center gap-3">
                                             <span className="w-8 h-8 bg-rose-50 text-rose-600 rounded-lg flex items-center justify-center"><Share2 size={20} /></span>
                                             {t('socialLinks')}
                                         </h3>
                                         <div className="grid grid-cols-1 gap-8">
                                             {Object.keys(vendorFields.socialLinks).map((platform) => (
                                                 <div key={platform} className="text-start space-y-3 group">
-                                                    <label className="text-xs font-black text-gray-700 px-1 capitalize group-focus-within:text-rose-600 transition-colors tracking-widest">{platform}</label>
+                                                    <label className="text-xs font-medium text-gray-700 px-1 capitalize group-focus-within:text-rose-600 transition-colors tracking-widest">{platform}</label>
                                                     <div className="relative">
                                                         <Input
                                                             value={vendorFields.socialLinks[platform]}
@@ -697,13 +697,13 @@ function EditProfileModal({ isOpen, onClose, user, vendor, language, queryClient
                                     >
                                         {/* Images Section */}
                                         <div className="space-y-8">
-                                            <h4 className="text-xl font-black text-gray-900 border-b border-gray-100 pb-4 flex items-center gap-3">
+                                            <h4 className="text-xl font-medium text-gray-900 border-b border-gray-100 pb-4 flex items-center gap-3">
                                                 <ImageIcon size={26} className="text-rose-600" />
                                                 {language === 'ar' ? "صور المتجر والهوية" : "Branding & Images"}
                                             </h4>
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                                                 <div className="space-y-4 text-start">
-                                                    <label className="text-xs font-black text-gray-700 px-1 uppercase tracking-wider">{language === 'ar' ? "شعار المتجر" : "Store Logo"}</label>
+                                                    <label className="text-xs font-medium text-gray-700 px-1 uppercase tracking-wider">{language === 'ar' ? "شعار المتجر" : "Store Logo"}</label>
                                                     <div
                                                         onClick={() => fileInputRefs.logo.current?.click()}
                                                         className="h-44 bg-gray-50 rounded-[3rem] border-2 border-dashed border-gray-200 flex items-center justify-center cursor-pointer hover:border-rose-400 hover:bg-rose-50/10 transition-all group overflow-hidden relative shadow-inner"
@@ -715,14 +715,14 @@ function EditProfileModal({ isOpen, onClose, user, vendor, language, queryClient
                                                                 <div className="w-16 h-16 bg-white rounded-3xl flex items-center justify-center mx-auto mb-3 shadow-md border border-gray-50">
                                                                     <Plus size={32} className="text-gray-300 group-hover:text-rose-500 transition-colors" />
                                                                 </div>
-                                                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{language === 'ar' ? "رفع الشعار" : "Upload Logo"}</p>
+                                                                <p className="text-[10px] font-medium text-gray-400 uppercase tracking-widest">{language === 'ar' ? "رفع الشعار" : "Upload Logo"}</p>
                                                             </div>
                                                         )}
                                                     </div>
                                                     <input type="file" ref={fileInputRefs.logo} onChange={(e) => handleFileChange('logo', e)} className="hidden" />
                                                 </div>
                                                 <div className="space-y-4 text-start">
-                                                    <label className="text-xs font-black text-gray-700 px-1 uppercase tracking-wider">{language === 'ar' ? "غلاف المتجر" : "Store Banner"}</label>
+                                                    <label className="text-xs font-medium text-gray-700 px-1 uppercase tracking-wider">{language === 'ar' ? "غلاف المتجر" : "Store Banner"}</label>
                                                     <div
                                                         onClick={() => fileInputRefs.banner.current?.click()}
                                                         className="h-44 bg-gray-50 rounded-[3rem] border-2 border-dashed border-gray-200 flex items-center justify-center cursor-pointer hover:border-rose-400 hover:bg-rose-50/10 transition-all group overflow-hidden relative shadow-inner"
@@ -734,7 +734,7 @@ function EditProfileModal({ isOpen, onClose, user, vendor, language, queryClient
                                                                 <div className="w-16 h-16 bg-white rounded-3xl flex items-center justify-center mx-auto mb-3 shadow-md border border-gray-50">
                                                                     <ImageIcon size={32} className="text-gray-300 group-hover:text-rose-500 transition-colors" />
                                                                 </div>
-                                                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{language === 'ar' ? "رفع الغلاف" : "Upload Banner"}</p>
+                                                                <p className="text-[10px] font-medium text-gray-400 uppercase tracking-widest">{language === 'ar' ? "رفع الغلاف" : "Upload Banner"}</p>
                                                             </div>
                                                         )}
                                                     </div>
@@ -757,7 +757,7 @@ function EditProfileModal({ isOpen, onClose, user, vendor, language, queryClient
                             type="button"
                             variant="ghost"
                             onClick={onClose}
-                            className="flex-1 rounded-[2rem] h-16 font-black text-gray-400 hover:bg-white transition-all border border-transparent hover:border-gray-200 text-lg"
+                            className="flex-1 rounded-[2rem] h-16 font-medium text-gray-400 hover:bg-white transition-all border border-transparent hover:border-gray-200 text-lg"
                         >
                             {t('cancel')}
                         </Button>
@@ -765,7 +765,7 @@ function EditProfileModal({ isOpen, onClose, user, vendor, language, queryClient
                             form="profile-form"
                             type="submit"
                             disabled={updateProfileMutation.isPending}
-                            className="flex-[2] bg-rose-600 hover:bg-rose-700 text-white rounded-[2rem] h-16 font-black shadow-2xl shadow-rose-200 transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3 text-lg"
+                            className="flex-[2] bg-rose-600 hover:bg-rose-700 text-white rounded-[2rem] h-16 font-medium shadow-2xl shadow-rose-200 transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3 text-lg"
                         >
                             {updateProfileMutation.isPending ? (
                                 <Loader2 className="animate-spin w-7 h-7" />

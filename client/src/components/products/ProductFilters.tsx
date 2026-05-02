@@ -27,7 +27,7 @@ export function ProductFilters({
         <div className="w-full space-y-10">
             {/* Price Filter */}
             <div className="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm">
-                <h3 className="text-xl font-black text-gray-900 mb-6 uppercase tracking-wider relative inline-block">
+                <h3 className="text-xl font-medium text-gray-900 mb-6 uppercase tracking-wider relative inline-block">
                     {t('filterByPrice')}
                     <span className="absolute -bottom-2 right-0 w-1/2 h-1 bg-rose-500 rounded-full"></span>
                 </h3>
@@ -54,7 +54,7 @@ export function ProductFilters({
             {/* Top Rated Products Widget */}
             {topRatedProducts.length > 0 && (
                 <div className="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm">
-                    <h3 className="text-xl font-black text-gray-900 mb-6 uppercase tracking-wider relative inline-block">
+                    <h3 className="text-xl font-medium text-gray-900 mb-6 uppercase tracking-wider relative inline-block">
                         {t('topRatedWidget')}
                         <span className="absolute -bottom-2 right-0 w-1/2 h-1 bg-yellow-400 rounded-full"></span>
                     </h3>

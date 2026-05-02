@@ -62,7 +62,7 @@ export default function Wishlist() {
         <div className="min-h-screen bg-gray-50 pt-32 pb-20 px-4">
             <div className="max-w-7xl mx-auto">
                 <header className="mb-12 text-center md:text-right" dir={language === 'ar' ? 'rtl' : 'ltr'}>
-                    <h1 className="text-4xl md:text-5xl font-black text-gray-900 mb-4">
+                    <h1 className="text-4xl md:text-3xl font-medium text-gray-900 mb-4">
                         {language === 'ar' ? "قائمة أمنياتي" : "My Wishlist"}
                     </h1>
                     <p className="text-gray-500 text-lg max-w-2xl">
@@ -79,7 +79,7 @@ export default function Wishlist() {
                             <Share2 size={28} />
                         </div>
                         <div className="text-start">
-                            <h3 className="text-xl font-black text-gray-900 leading-tight">
+                            <h3 className="text-xl font-medium text-gray-900 leading-tight">
                                 {language === 'ar' ? "مشاركة قائمتكِ" : "Share Your List"}
                             </h3>
                             <p className="text-sm font-bold text-gray-400">
@@ -92,7 +92,7 @@ export default function Wishlist() {
 
                     <div className="flex flex-col md:flex-row items-center gap-6 w-full md:w-auto">
                         <div className="flex items-center gap-3 bg-gray-50 px-6 py-3 rounded-2xl border border-gray-100 w-full md:w-auto justify-between">
-                            <span className="text-sm font-black text-gray-600">
+                            <span className="text-sm font-medium text-gray-600">
                                 {language === 'ar' ? "عامة" : "Public"}
                             </span>
                             <Switch
@@ -113,7 +113,7 @@ export default function Wishlist() {
                                     <Button
                                         onClick={handleCopy}
                                         variant="outline"
-                                        className="h-14 px-8 rounded-2xl font-black gap-3 border-rose-200 text-rose-600 hover:bg-rose-50 w-full"
+                                        className="h-14 px-8 rounded-2xl font-medium gap-3 border-rose-200 text-rose-600 hover:bg-rose-50 w-full"
                                     >
                                         {copied ? <Check size={20} /> : <Copy size={20} />}
                                         {language === 'ar' ? "نسخ رابط المشاركة" : "Copy Share Link"}
@@ -129,7 +129,7 @@ export default function Wishlist() {
                         <div className="w-24 h-24 bg-rose-50 rounded-full flex items-center justify-center mx-auto mb-8 text-rose-500">
                             <Heart size={40} className="fill-current" />
                         </div>
-                        <h2 className="text-3xl font-black text-gray-900 mb-4">
+                        <h2 className="text-3xl font-medium text-gray-900 mb-4">
                             {language === 'ar' ? "قائمتكِ فارغة" : "Your list is empty"}
                         </h2>
                         <p className="text-gray-500 text-xl mb-12 max-w-md mx-auto">
@@ -138,7 +138,7 @@ export default function Wishlist() {
                                 : "Start exploring our unique collection and add your favorite touches here."}
                         </p>
                         <Link href="/products">
-                            <Button size="lg" className="h-16 px-12 rounded-full bg-gray-900 hover:bg-black text-white text-xl font-black group">
+                            <Button size="lg" className="h-16 px-12 rounded-full bg-gray-900 hover:bg-black text-white text-xl font-medium group">
                                 {language === 'ar' ? "اكتشفي المجموعة" : "Explore Collection"}
                                 <ArrowRight className={`mr-3 h-6 w-6 transition-transform group-hover:translate-x-1 ${language === 'ar' ? 'rotate-180' : ''}`} />
                             </Button>

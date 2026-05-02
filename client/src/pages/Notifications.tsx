@@ -185,7 +185,7 @@ export default function Notifications() {
             <div className="w-24 h-24 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-6">
               <Bell className="w-12 h-12 text-blue-400" />
             </div>
-            <h3 className="text-2xl font-black text-gray-900 mb-2">
+            <h3 className="text-2xl font-medium text-gray-900 mb-2">
               {filter === "unread" ? (language === 'ar' ? "لا توجد إشعارات جديدة" : "No new notifications") : (language === 'ar' ? "لا توجد إشعارات" : "No notifications")}
             </h3>
             <p className="text-gray-500 font-medium max-w-sm mx-auto mb-8">

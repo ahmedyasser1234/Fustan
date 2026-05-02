@@ -49,7 +49,7 @@ export default function UserPointsView() {
                                 <p className="text-purple-100 font-bold text-sm mb-1 uppercase tracking-[0.2em]">
                                     {language === 'ar' ? 'رصيد نقاطك الحالي' : 'Current Points Balance'}
                                 </p>
-                                <h3 className="text-5xl font-black tabular-nums flex items-baseline gap-2">
+                                <h3 className="text-3xl font-medium tabular-nums flex items-baseline gap-2">
                                     {points.toLocaleString()}
                                     <span className="text-xl font-bold text-purple-200">{language === 'ar' ? 'نقطة' : 'Pts'}</span>
                                 </h3>
@@ -58,15 +58,15 @@ export default function UserPointsView() {
 
                         <div className="flex gap-4">
                             <div className="bg-white/10 backdrop-blur-md px-6 py-4 rounded-3xl border border-white/20 text-center">
-                                <p className="text-[10px] font-black text-purple-200 uppercase mb-1">{language === 'ar' ? 'المستوى القادم' : 'Next Reward'}</p>
-                                <p className="font-black flex items-center gap-2">
+                                <p className="text-[10px] font-medium text-purple-200 uppercase mb-1">{language === 'ar' ? 'المستوى القادم' : 'Next Reward'}</p>
+                                <p className="font-medium flex items-center gap-2">
                                     <Gift className="w-4 h-4 text-pink-300" />
                                     {language === 'ar' ? 'خصم 50 ر.س' : '50 SAR Off'}
                                 </p>
                             </div>
                             <div className="bg-white/10 backdrop-blur-md px-6 py-4 rounded-3xl border border-white/20 text-center">
-                                <p className="text-[10px] font-black text-purple-200 uppercase mb-1">{language === 'ar' ? 'حالة الحساب' : 'Account Status'}</p>
-                                <p className="font-black flex items-center gap-2">
+                                <p className="text-[10px] font-medium text-purple-200 uppercase mb-1">{language === 'ar' ? 'حالة الحساب' : 'Account Status'}</p>
+                                <p className="font-medium flex items-center gap-2">
                                     <Star className="w-4 h-4 text-yellow-300" />
                                     {language === 'ar' ? 'بلاتيني' : 'Platinum'}
                                 </p>
@@ -79,7 +79,7 @@ export default function UserPointsView() {
             {/* Points History */}
             <div className="space-y-6">
                 <div className="flex items-center justify-between px-2">
-                    <h3 className="text-2xl font-black text-slate-900 flex items-center gap-3">
+                    <h3 className="text-2xl font-medium text-slate-900 flex items-center gap-3">
                         <div className="w-2 h-8 bg-purple-600 rounded-full" />
                         {language === 'ar' ? 'سجل النقاط' : 'Points History'}
                     </h3>
@@ -111,7 +111,7 @@ export default function UserPointsView() {
                                             {tx.type === 'earn' ? <ArrowDownCircle className="w-7 h-7" /> : <ArrowUpCircle className="w-7 h-7" />}
                                         </div>
                                         <div>
-                                            <h4 className="font-black text-slate-900 text-lg leading-tight uppercase group-hover:text-purple-600 transition-colors">
+                                            <h4 className="font-medium text-slate-900 text-lg leading-tight uppercase group-hover:text-purple-600 transition-colors">
                                                 {tx.description}
                                             </h4>
                                             <p className="text-sm font-bold text-slate-400 mt-1">
@@ -132,11 +132,11 @@ export default function UserPointsView() {
                                         </div>
                                     </div>
                                     <div className="text-right">
-                                        <span className={`text-2xl font-black tabular-nums ${tx.type === 'earn' ? 'text-emerald-500' : 'text-red-500'
+                                        <span className={`text-2xl font-medium tabular-nums ${tx.type === 'earn' ? 'text-emerald-500' : 'text-red-500'
                                             }`}>
                                             {tx.type === 'earn' ? '+' : ''}{tx.amount}
                                         </span>
-                                        <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest leading-none mt-1">
+                                        <p className="text-[10px] font-medium text-slate-300 uppercase tracking-widest leading-none mt-1">
                                             {language === 'ar' ? 'نقطة' : 'Points'}
                                         </p>
                                     </div>

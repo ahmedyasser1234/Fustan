@@ -36,15 +36,15 @@ export default function ProductPreviewView({ productId, onBack }: ProductPreview
     if (isLoading) return (
         <div className="flex flex-col items-center justify-center p-20 space-y-4">
             <Loader2 className="w-10 h-10 animate-spin text-purple-600" />
-            <p className="text-slate-400 font-black">{language === 'ar' ? "تحميل معاينة المنتج..." : "Loading preview..."}</p>
+            <p className="text-slate-400 font-medium">{language === 'ar' ? "تحميل معاينة المنتج..." : "Loading preview..."}</p>
         </div>
     );
 
     if (!product) return (
         <div className="text-center p-20 bg-white rounded-[40px] shadow-xl">
             <Package className="w-16 h-16 text-slate-100 mx-auto mb-6" />
-            <h3 className="text-xl font-black text-slate-800">{language === 'ar' ? "المنتج غير موجود" : "Product Not Found"}</h3>
-            <Button onClick={onBack} variant="link" className="text-purple-600 font-black mt-4 underline underline-offset-8">
+            <h3 className="text-xl font-medium text-slate-800">{language === 'ar' ? "المنتج غير موجود" : "Product Not Found"}</h3>
+            <Button onClick={onBack} variant="link" className="text-purple-600 font-medium mt-4 underline underline-offset-8">
                 {language === 'ar' ? "العودة للقائمة" : "Back to List"}
             </Button>
         </div>
@@ -65,7 +65,7 @@ export default function ProductPreviewView({ productId, onBack }: ProductPreview
                     <ArrowRight className="w-6 h-6 text-slate-600" />
                 </Button>
                 <div>
-                    <h2 className="text-3xl font-black text-slate-900 mb-1">
+                    <h2 className="text-3xl font-medium text-slate-900 mb-1">
                         {language === 'ar' ? product.nameAr : product.nameEn}
                     </h2>
                     <p className="text-slate-400 font-bold">{language === 'ar' ? "معاينة حية للمنتج كما يظهر للمشترين" : "Live preview of how customers see your dress"}</p>
@@ -108,35 +108,35 @@ export default function ProductPreviewView({ productId, onBack }: ProductPreview
                     <Card className="border-0 shadow-xl shadow-slate-100/50 rounded-[40px] p-10 bg-white">
                         <div className="space-y-10">
                             <div>
-                                <h3 className="text-sm font-black text-slate-400 uppercase tracking-widest mb-6 flex items-center gap-3">
+                                <h3 className="text-sm font-medium text-slate-400 uppercase tracking-widest mb-6 flex items-center gap-3">
                                     <Tag className="w-4 h-4 text-[#e91e63]" />
                                     {language === 'ar' ? "تفاصيل القطعة" : "Dressing Details"}
                                 </h3>
 
                                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-8 mb-10">
                                     <div>
-                                        <p className="text-xs font-black text-slate-400 uppercase mb-1">{language === 'ar' ? "السعر النهائي" : "PRICE"}</p>
-                                        <p className="text-3xl font-black text-[#e91e63]">{product.price} <span className="text-sm">{t('currency')}</span></p>
+                                        <p className="text-xs font-medium text-slate-400 uppercase mb-1">{language === 'ar' ? "السعر النهائي" : "PRICE"}</p>
+                                        <p className="text-3xl font-medium text-[#e91e63]">{product.price} <span className="text-sm">{t('currency')}</span></p>
                                         {product.originalPrice > product.price && (
                                             <p className="text-sm text-slate-400 line-through font-bold">{product.originalPrice} {t('currency')}</p>
                                         )}
                                     </div>
                                     <div>
-                                        <p className="text-xs font-black text-slate-400 uppercase mb-1">{language === 'ar' ? "الخصم" : "SAVING"}</p>
-                                        <p className="text-2xl font-black text-emerald-500">%{product.discount || 0}</p>
+                                        <p className="text-xs font-medium text-slate-400 uppercase mb-1">{language === 'ar' ? "الخصم" : "SAVING"}</p>
+                                        <p className="text-2xl font-medium text-emerald-500">%{product.discount || 0}</p>
                                     </div>
                                     <div className="col-span-full sm:col-span-1">
-                                        <p className="text-xs font-black text-slate-400 uppercase mb-1">{language === 'ar' ? "التصنيف" : "CATEGORY"}</p>
+                                        <p className="text-xs font-medium text-slate-400 uppercase mb-1">{language === 'ar' ? "التصنيف" : "CATEGORY"}</p>
                                         <div className="flex items-center gap-2 mt-2">
                                             <Layers className="w-4 h-4 text-purple-600" />
-                                            <span className="font-black text-slate-800">{language === 'ar' ? collection?.nameAr || category?.nameAr : collection?.nameEn || category?.nameEn}</span>
+                                            <span className="font-medium text-slate-800">{language === 'ar' ? collection?.nameAr || category?.nameAr : collection?.nameEn || category?.nameEn}</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
                             <div className="space-y-4 pt-10 border-t border-slate-50">
-                                <h4 className="font-black text-slate-900">{language === 'ar' ? "وصف الفستان" : "The Story"}</h4>
+                                <h4 className="font-medium text-slate-900">{language === 'ar' ? "وصف الفستان" : "The Story"}</h4>
                                 <p className="text-slate-500 font-bold leading-relaxed text-lg" style={{ whiteSpace: 'pre-wrap' }}>
                                     {language === 'ar' ? product.descriptionAr : product.descriptionEn}
                                 </p>
@@ -150,8 +150,8 @@ export default function ProductPreviewView({ productId, onBack }: ProductPreview
                                     { label: language === 'ar' ? "المناسبة" : "Event", value: product.occasion }
                                 ].map((attr, i) => attr.value && (
                                     <div key={i} className="bg-slate-50 p-6 rounded-3xl border border-slate-100">
-                                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">{attr.label}</p>
-                                        <p className="font-black text-slate-800 text-lg">{attr.value}</p>
+                                        <p className="text-[10px] font-medium text-slate-400 uppercase tracking-widest mb-1">{attr.label}</p>
+                                        <p className="font-medium text-slate-800 text-lg">{attr.value}</p>
                                     </div>
                                 ))}
                             </div>
@@ -161,15 +161,15 @@ export default function ProductPreviewView({ productId, onBack }: ProductPreview
                     {/* Stock Overview */}
                     <Card className="border-0 shadow-xl shadow-slate-100/50 rounded-[40px] p-8 bg-slate-900 text-white relative overflow-hidden">
                         <div className="flex items-center justify-between relative z-10">
-                            <h4 className="text-xl font-black">{language === 'ar' ? "المخزون المتوفر" : "Stock Levels"}</h4>
-                            <span className="px-4 py-1 bg-white/10 rounded-full text-xs font-black uppercase tracking-widest">Live Inventory</span>
+                            <h4 className="text-xl font-medium">{language === 'ar' ? "المخزون المتوفر" : "Stock Levels"}</h4>
+                            <span className="px-4 py-1 bg-white/10 rounded-full text-xs font-medium uppercase tracking-widest">Live Inventory</span>
                         </div>
 
                         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-8 relative z-10">
                             {product.sizes?.map((s: any, i: number) => (
                                 <div key={i} className="bg-white/5 border border-white/10 p-4 rounded-2xl text-center">
-                                    <p className="text-[10px] font-black text-white/40 mb-1">{language === 'ar' ? "مقاس" : "SIZE"} {s.size}</p>
-                                    <p className="text-2xl font-black">{s.quantity}</p>
+                                    <p className="text-[10px] font-medium text-white/40 mb-1">{language === 'ar' ? "مقاس" : "SIZE"} {s.size}</p>
+                                    <p className="text-2xl font-medium">{s.quantity}</p>
                                     <p className="text-[10px] font-bold text-white/30 uppercase">{language === 'ar' ? "قطعة" : "PCS"}</p>
                                 </div>
                             ))}

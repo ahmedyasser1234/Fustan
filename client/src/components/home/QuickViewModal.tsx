@@ -87,7 +87,7 @@ export function QuickViewModal({ initialProduct, isOpen, onClose }: QuickViewMod
                     <div className="p-6 md:p-10 flex flex-col h-full overflow-y-auto custom-scrollbar">
                         <div className="flex justify-between items-start mb-4">
                             <div>
-                                <h2 className="text-2xl md:text-3xl font-black text-gray-900 mb-2 leading-tight">{name}</h2>
+                                <h2 className="text-2xl md:text-3xl font-medium text-gray-900 mb-2 leading-tight">{name}</h2>
                                 <div className="flex items-center gap-2 mb-4">
                                     <div className="flex text-yellow-400">
                                         {Array(5).fill(0).map((_, i) => (
@@ -102,7 +102,7 @@ export function QuickViewModal({ initialProduct, isOpen, onClose }: QuickViewMod
                             </button>
                         </div>
 
-                        <div className="text-3xl font-black text-rose-600 mb-6 flex items-center gap-3">
+                        <div className="text-3xl font-medium text-rose-600 mb-6 flex items-center gap-3">
                             {price} {t('currency')}
                             {product.originalPrice && (
                                 <span className="text-lg text-gray-300 line-through font-bold">

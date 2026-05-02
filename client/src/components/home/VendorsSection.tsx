@@ -32,7 +32,7 @@ export function VendorsSection() {
             <div className="container mx-auto px-4 relative z-10">
                 <div className="text-center mb-10 md:mb-16">
                     <span className="text-xl md:text-2xl text-rose-500 mb-2 block font-bold">{language === 'ar' ? "شركاؤنا" : "Our Partners"}</span>
-                    <h2 className="text-3xl md:text-5xl font-black text-gray-900">{language === 'ar' ? "بيوت الأزياء" : "Fashion Houses"}</h2>
+                    <h2 className="text-3xl md:text-3xl font-medium text-gray-900">{language === 'ar' ? "بيوت الأزياء" : "Fashion Houses"}</h2>
                 </div>
 
                 <div className="flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 overflow-x-auto no-scrollbar pb-8 md:pb-0 px-4 md:px-0 -mx-4 md:mx-0">
@@ -59,7 +59,7 @@ export function VendorsSection() {
                                             <Store className="w-10 h-10 text-gray-300 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
                                         )}
                                     </div>
-                                    <h3 className="text-xl font-black text-gray-900 mb-2">{language === 'ar' ? vendor.storeNameAr : vendor.storeNameEn}</h3>
+                                    <h3 className="text-xl font-medium text-gray-900 mb-2">{language === 'ar' ? vendor.storeNameAr : vendor.storeNameEn}</h3>
                                     <p className="text-gray-500 text-sm line-clamp-2 mb-4">{language === 'ar' ? vendor.descriptionAr : vendor.descriptionEn}</p>
                                     <div className="mt-auto flex items-center gap-2 text-rose-600 font-bold group-hover:gap-3 transition-all">
                                         <span>{language === 'ar' ? 'زيارة المتجر' : 'Visit Store'}</span>

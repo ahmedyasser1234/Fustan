@@ -31,7 +31,7 @@ export function CollectionHero({ title, description, image, itemCount }: Collect
                     transition={{ duration: 0.8 }}
                 >
                     <div className="flex flex-col items-center space-y-4">
-                        <h1 className="text-5xl md:text-7xl font-serif font-black mb-4 tracking-tight drop-shadow-xl text-white">
+                        <h1 className="text-3xl md:text-4xl font-serif font-medium mb-4 tracking-tight drop-shadow-xl text-white">
                             {title}
                         </h1>
                         {description && (

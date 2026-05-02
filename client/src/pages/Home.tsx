@@ -230,9 +230,9 @@ export default function Home() {
               }`}
           >
             <div className="flex flex-col items-start space-y-6">
-              <h2 className="text-white leading-tight drop-shadow-2xl font-black w-full text-center sm:text-start">
+              <h2 className="text-white leading-tight drop-shadow-2xl font-medium w-full text-center sm:text-start">
                 <span className="text-lg sm:text-3xl lg:text-4xl block mb-1 lg:mb-2">{t(heroSlides[currentVideo].title1 as any)}</span>
-                <span className="text-2xl sm:text-5xl lg:text-6xl text-white/90 leading-[1.1] sm:leading-tight">{t(heroSlides[currentVideo].title2 as any)}</span>
+                <span className="text-2xl sm:text-3xl lg:text-3xl text-white/90 leading-[1.1] sm:leading-tight">{t(heroSlides[currentVideo].title2 as any)}</span>
               </h2>
 
               <p className="hidden sm:block text-lg lg:text-2xl text-white/95 max-w-xl leading-relaxed font-bold drop-shadow-md">
@@ -241,7 +241,7 @@ export default function Home() {
 
               <div className="flex justify-center sm:justify-start pt-4 sm:pt-8 pb-12 sm:pb-0 w-full">
                 <Link href={getCategoryLink(heroSlides[currentVideo].categoryName)}>
-                  <Button size="lg" className="h-10 sm:h-16 px-8 sm:px-14 rounded-full bg-[oklch(58.6%_0.253_17.585)] hover:bg-[oklch(58.6%_0.253_17.585)]/90 text-white text-xs sm:text-xl font-black shadow-2xl transition-all hover:scale-110 active:scale-95">
+                  <Button size="lg" className="h-10 sm:h-16 px-8 sm:px-14 rounded-full bg-[oklch(58.6%_0.253_17.585)] hover:bg-[oklch(58.6%_0.253_17.585)]/90 text-white text-xs sm:text-xl font-medium shadow-2xl transition-all hover:scale-110 active:scale-95">
                     {t('shopNow')}
                   </Button>
                 </Link>
@@ -267,7 +267,7 @@ export default function Home() {
                 </div>
               </div>
               
-              <h2 className="text-3xl md:text-5xl font-black text-gray-900 leading-tight">
+              <h2 className="text-3xl md:text-3xl font-medium text-gray-900 leading-tight">
                 {language === 'ar' ? 'صممي فستانك' : 'Design Your Dress'}
               </h2>
               <p className="text-lg md:text-xl text-slate-500 font-bold max-w-xl mx-auto leading-relaxed">
@@ -286,7 +286,7 @@ export default function Home() {
                 href="https://wa.me/966538050410" 
                 target="_blank" 
                 rel="noreferrer"
-                className="group flex items-center justify-center gap-4 bg-[oklch(58.6%_0.253_17.585)] hover:bg-[oklch(58.6%_0.253_17.585)]/90 text-white p-6 md:p-8 rounded-[2.5rem] text-lg md:text-xl font-black shadow-[0_25px_60px_-15px_rgba(233,30,99,0.4)] transition-all hover:scale-105 active:scale-95"
+                className="group flex items-center justify-center gap-4 bg-[oklch(58.6%_0.253_17.585)] hover:bg-[oklch(58.6%_0.253_17.585)]/90 text-white p-6 md:p-8 rounded-[2.5rem] text-lg md:text-xl font-medium shadow-[0_25px_60px_-15px_rgba(233,30,99,0.4)] transition-all hover:scale-105 active:scale-95"
               >
                 <div className="bg-white/25 p-3 rounded-2xl group-hover:rotate-12 transition-transform">
                   <svg className="w-8 h-8 fill-current" viewBox="0 0 24 24">
@@ -319,7 +319,7 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-center mb-10 md:mb-16 pt-10 md:pt-20"
           >
-            <h2 className="text-3xl md:text-5xl font-black mb-4">{t('mostFeatured')}</h2>
+            <h2 className="text-3xl md:text-3xl font-medium mb-4">{t('mostFeatured')}</h2>
             <p className="text-slate-500 text-base md:text-lg font-bold">{t('mostFeaturedDesc')}</p>
           </motion.div>
 
@@ -414,7 +414,7 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-center mb-10 md:mb-16 pt-10 md:pt-20"
           >
-            <h2 className="text-3xl md:text-5xl font-black mb-4">{t('shopByOccasion')}</h2>
+            <h2 className="text-3xl md:text-3xl font-medium mb-4">{t('shopByOccasion')}</h2>
             <p className="text-slate-500 text-base md:text-lg font-bold">{t('shopByOccasionDesc')}</p>
           </motion.div>
 
@@ -446,7 +446,7 @@ export default function Home() {
                       
                       {/* Name Overlay - Centered for Luxury Look */}
                       <div className="absolute inset-0 flex flex-col items-center justify-center p-4 text-center">
-                        <h3 className="text-white text-xl md:text-3xl lg:text-4xl font-black drop-shadow-lg tracking-tight transition-transform duration-500 group-hover:scale-110">
+                        <h3 className="text-white text-xl md:text-3xl lg:text-4xl font-medium drop-shadow-lg tracking-tight transition-transform duration-500 group-hover:scale-110">
                           {language === 'ar' ? category.nameAr : category.nameEn}
                         </h3>
                         <div className="mt-2 text-white/80 text-xs md:text-base font-bold opacity-0 group-hover:opacity-100 transition-opacity duration-500 translate-y-2 group-hover:translate-y-0">
@@ -499,7 +499,7 @@ export default function Home() {
               className="w-full lg:w-1/2 text-center lg:text-left rtl:lg:text-right"
             >
               <span className="text-xl md:text-3xl text-rose-500 mb-4 block font-bold">{language === 'ar' ? "أناقة خالدة" : "Timeless Charm"}</span>
-              <h2 className="text-4xl lg:text-6xl text-gray-900 mb-6 leading-tight font-black">
+              <h2 className="text-4xl lg:text-3xl text-gray-900 mb-6 leading-tight font-medium">
                 {t('classicStyles')}
               </h2>
               <p className="text-gray-600 text-base md:text-lg mb-8 leading-relaxed max-w-lg mx-auto lg:mx-0">
@@ -520,7 +520,7 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <span className="text-2xl text-rose-500 mb-2 block font-bold">{language === 'ar' ? "أحدث الصيحات" : "Shop the Latest"}</span>
-            <h2 className="text-4xl md:text-5xl font-black text-gray-900">{t('trendingProducts')}</h2>
+            <h2 className="text-4xl md:text-3xl font-medium text-gray-900">{t('trendingProducts')}</h2>
           </div>
 
           <Tabs defaultValue="all" value={selectedCategory === null ? "all" : selectedCategory.toString()} onValueChange={(val) => setSelectedCategory(val === 'all' ? null : Number(val))} className="w-full" dir={language === 'ar' ? 'rtl' : 'ltr'}>
@@ -614,7 +614,7 @@ export default function Home() {
             <span className="text-2xl text-[oklch(58.6%_0.253_17.585)] mb-2 block font-bold">
               {language === 'ar' ? "من خزانة عميلاتنا" : "From Our Community"}
             </span>
-            <h2 className="text-4xl md:text-5xl font-black text-gray-900">
+            <h2 className="text-4xl md:text-3xl font-medium text-gray-900">
               {language === 'ar' ? "فساتين معروضة للبيع" : "Pre-loved & Exclusive"}
             </h2>
             <p className="mt-4 text-slate-500 font-bold max-w-2xl mx-auto text-lg">
@@ -634,7 +634,7 @@ export default function Home() {
 
           <div className="mt-16 text-center">
             <Link href="/sell-dress">
-              <Button size="lg" className="h-16 px-12 rounded-full bg-slate-900 hover:bg-black text-white font-black text-xl shadow-2xl transition-all hover:scale-105 active:scale-95">
+              <Button size="lg" className="h-16 px-12 rounded-full bg-slate-900 hover:bg-black text-white font-medium text-xl shadow-2xl transition-all hover:scale-105 active:scale-95">
                 {language === 'ar' ? "اعرضي فستانك للبيع الآن" : "Sell Your Dress Now"}
               </Button>
             </Link>
@@ -653,7 +653,7 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl md:text-5xl font-black mb-4">{t('newArrivals')}</h2>
+            <h2 className="text-4xl md:text-3xl font-medium mb-4">{t('newArrivals')}</h2>
             <p className="text-slate-500 text-lg font-bold">{t('newArrivalsDesc')}</p>
           </motion.div>
 
@@ -700,13 +700,13 @@ export default function Home() {
                           />
                         </div>
                         <div className="absolute bottom-0 left-0 right-0 h-0 opacity-0 bg-[oklch(58.6%_0.253_17.585)]/20 backdrop-blur-md flex flex-col items-center justify-center text-center p-6 transition-all duration-300 group-hover:h-[40%] group-hover:opacity-100 overflow-hidden z-20">
-                          <h3 className="text-2xl font-black text-white mb-2 leading-tight">
+                          <h3 className="text-2xl font-medium text-white mb-2 leading-tight">
                             {language === 'ar' ? product.nameAr : product.nameEn}
                           </h3>
                           <p className="text-white/90 text-lg font-bold mb-4">
                             {formatPrice(product.price)}
                           </p>
-                          <Button className="bg-[oklch(58.6%_0.253_17.585)] text-white hover:bg-[oklch(58.6%_0.253_17.585)]/90 rounded-full px-8 py-2 h-10 text-base font-black shadow-lg transition-transform hover:scale-105">
+                          <Button className="bg-[oklch(58.6%_0.253_17.585)] text-white hover:bg-[oklch(58.6%_0.253_17.585)]/90 rounded-full px-8 py-2 h-10 text-base font-medium shadow-lg transition-transform hover:scale-105">
                             {t('more')}
                           </Button>
                         </div>
@@ -730,7 +730,7 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-center mb-16 pt-20"
           >
-            <h2 className="text-4xl md:text-5xl font-black mb-4">{t('bestSellers')}</h2>
+            <h2 className="text-4xl md:text-3xl font-medium mb-4">{t('bestSellers')}</h2>
             <p className="text-slate-500 text-lg font-bold">{t('bestSellersDesc')}</p>
           </motion.div>
 
@@ -775,13 +775,13 @@ export default function Home() {
                             />
                           </div>
                           <div className="absolute bottom-0 left-0 right-0 h-0 opacity-0 bg-[oklch(58.6%_0.253_17.585)]/10 backdrop-blur-md flex flex-col items-center justify-center text-center p-6 transition-all duration-300 group-hover:h-[45%] group-hover:opacity-100 overflow-hidden">
-                            <h3 className="text-2xl md:text-3xl font-black text-white mb-2">
+                            <h3 className="text-2xl md:text-3xl font-medium text-white mb-2">
                               {language === 'ar' ? product.nameAr : product.nameEn}
                             </h3>
                             <p className="text-white/90 text-lg font-bold mb-4">
                               {formatPrice(product.price)}
                             </p>
-                            <Button className="bg-white text-[oklch(58.6%_0.253_17.585)] hover:bg-white/90 rounded-full px-8 py-1 h-8 text-sm font-black shadow-sm transition-transform hover:scale-105">
+                            <Button className="bg-white text-[oklch(58.6%_0.253_17.585)] hover:bg-white/90 rounded-full px-8 py-1 h-8 text-sm font-medium shadow-sm transition-transform hover:scale-105">
                               {t('more')}
                             </Button>
                           </div>
@@ -814,7 +814,7 @@ export default function Home() {
               <motion.h2
                 initial={{ opacity: 0, x: 50 }}
                 whileInView={{ opacity: 1, x: 0 }}
-                className="text-3xl sm:text-5xl md:text-6xl font-black text-gray-900 mb-4 sm:mb-8 leading-tight"
+                className="text-3xl sm:text-3xl md:text-3xl font-medium text-gray-900 mb-4 sm:mb-8 leading-tight"
               >
                 {t('exclusiveExperience')}
               </motion.h2>
@@ -837,7 +837,7 @@ export default function Home() {
             <span className="text-2xl text-rose-500 mb-2 block font-bold">
               {language === 'ar' ? "آراء عملائنا" : "Customer Reviews"}
             </span>
-            <h2 className="text-4xl md:text-5xl font-black text-white">
+            <h2 className="text-4xl md:text-3xl font-medium text-white">
               {language === 'ar' ? "تجارب التسوق" : "Shopping Experiences"}
             </h2>
           </div>
@@ -865,7 +865,7 @@ export default function Home() {
                   transition={{ delay: i * 0.1 }}
                   className="bg-white rounded-[3rem] p-10 shadow-xl relative group hover:-translate-y-2 transition-transform duration-300"
                 >
-                  <div className="absolute top-10 right-10 text-6xl text-rose-100 opacity-50 font-black">"</div>
+                  <div className="absolute top-10 right-10 text-3xl text-rose-100 opacity-50 font-medium">"</div>
 
                   <div className="flex gap-1 mb-6 text-yellow-400">
                     {Array(review.rating).fill(0).map((_, i) => (
@@ -898,7 +898,7 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center justify-between mb-12 gap-6">
             <div>
-              <h2 className="text-3xl font-black mb-2 flex items-center gap-3">
+              <h2 className="text-3xl font-medium mb-2 flex items-center gap-3">
                 <Instagram className="text-rose-600" size={32} />
                 @ahmedkrishna
               </h2>
@@ -952,7 +952,7 @@ export default function Home() {
                 {t('exclusiveInvitation')}
               </span>
 
-              <h2 className="text-4xl md:text-6xl text-white mb-6 leading-tight font-black">
+              <h2 className="text-4xl md:text-3xl text-white mb-6 leading-tight font-medium">
                 {t('joinElite')}
               </h2>
 

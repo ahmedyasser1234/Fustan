@@ -19,7 +19,7 @@ export default function TermsOfService() {
                             <FileSignature className="w-8 h-8 md:w-10 md:h-10" />
                         </div>
                         <div>
-                            <h1 className="text-2xl md:text-3xl font-black text-gray-900">
+                            <h1 className="text-2xl md:text-3xl font-medium text-gray-900">
                                 {isAr ? 'الشروط والأحكام' : 'Terms of Service'}
                             </h1>
                             <p className="text-sm md:text-base text-gray-500 font-bold mt-1 md:mt-2">
@@ -30,7 +30,7 @@ export default function TermsOfService() {
 
                     <div className="space-y-12 text-gray-600 leading-relaxed">
                         <section>
-                            <h2 className="text-xl font-black text-gray-900 mb-4 flex items-center gap-3">
+                            <h2 className="text-xl font-medium text-gray-900 mb-4 flex items-center gap-3">
                                 <Scale className="text-indigo-500" size={24} />
                                 {isAr ? '1. شروط الاستخدام' : '1. Terms of Use'}
                             </h2>
@@ -42,7 +42,7 @@ export default function TermsOfService() {
                         </section>
 
                         <section>
-                            <h2 className="text-xl font-black text-gray-900 mb-4 flex items-center gap-3">
+                            <h2 className="text-xl font-medium text-gray-900 mb-4 flex items-center gap-3">
                                 <CreditCard className="text-indigo-500" size={24} />
                                 {isAr ? '2. الأسعار والمدفوعات' : '2. Pricing & Payments'}
                             </h2>
@@ -54,7 +54,7 @@ export default function TermsOfService() {
                         </section>
 
                         <section>
-                            <h2 className="text-xl font-black text-gray-900 mb-4 flex items-center gap-3">
+                            <h2 className="text-xl font-medium text-gray-900 mb-4 flex items-center gap-3">
                                 <AlertCircle className="text-indigo-500" size={24} />
                                 {isAr ? '3. سياسة الاستبدال والاسترجاع' : '3. Returns & Refunds Policy'}
                             </h2>
@@ -65,7 +65,7 @@ export default function TermsOfService() {
                             </p>
                         </section>
 
-                        <section className="border-t border-gray-100 pt-8 font-black text-sm">
+                        <section className="border-t border-gray-100 pt-8 font-medium text-sm">
                             <p>{isAr ? 'ملاحظة: يحق لإدارة "فستان" تحديث هذه الشروط في أي وقت لتتواكب مع القوانين المحلية وتطور الخدمة.' : 'Note: Fustan moderation reserves the right to update these terms at any time to comply with local laws and service evolution.'}</p>
                         </section>
                     </div>

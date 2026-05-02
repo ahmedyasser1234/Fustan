@@ -39,7 +39,7 @@ export function HomeFAQ() {
                     <span className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-rose-50 text-rose-600 mb-6">
                         <HelpCircle size={24} />
                     </span>
-                    <h2 className="text-4xl font-black text-gray-900 mb-4">
+                    <h2 className="text-4xl font-medium text-gray-900 mb-4">
                         {t('faqTitle')}
                     </h2>
                     <p className="text-gray-500 font-bold">

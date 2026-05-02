@@ -54,7 +54,7 @@ export function ChatHistory({ isOpen, onOpenChange }: ChatHistoryProps) {
         <Sheet open={isOpen} onOpenChange={onOpenChange}>
             <SheetContent side="right" className="w-full sm:w-[540px] p-0 flex flex-col" dir="rtl">
                 <SheetHeader className="p-6 border-b">
-                    <SheetTitle className="text-xl font-black flex items-center justify-between gap-2 w-full">
+                    <SheetTitle className="text-xl font-medium flex items-center justify-between gap-2 w-full">
                         <div className="flex items-center gap-2">
                             <MessageSquare className="text-rose-600" />
                             {isSelectingVendor ? 'بدء محادثة جديدة' : 'محادثاتي'}
@@ -170,12 +170,12 @@ export function ChatHistory({ isOpen, onOpenChange }: ChatHistoryProps) {
                                                         <User size={20} />
                                                     )}
                                                 </div>
-                                                <div className="w-12 h-12 rounded-full border-2 border-white bg-rose-50 flex items-center justify-center text-rose-600 font-black text-xs ring-4 ring-rose-50/50 overflow-hidden shadow-sm">
+                                                <div className="w-12 h-12 rounded-full border-2 border-white bg-rose-50 flex items-center justify-center text-rose-600 font-medium text-xs ring-4 ring-rose-50/50 overflow-hidden shadow-sm">
                                                     {conv.counterpartName?.substring(0, 1)}
                                                 </div>
                                             </div>
                                             <div className="text-right" dir="rtl">
-                                                <h4 className="font-black text-slate-900 text-base group-hover:text-rose-600 transition-colors flex items-center gap-2">
+                                                <h4 className="font-medium text-slate-900 text-base group-hover:text-rose-600 transition-colors flex items-center gap-2">
                                                     {conv.counterpartName}
                                                     {conv.unread && <span className="w-2 h-2 bg-rose-500 rounded-full animate-pulse"></span>}
                                                 </h4>

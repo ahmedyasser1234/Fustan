@@ -116,7 +116,7 @@ export default function CollectionsTab({ vendorId, categoryId, onCollectionClick
     if (isLoading) return (
         <div className="flex flex-col items-center justify-center p-20 space-y-4">
             <Loader2 className="w-10 h-10 animate-spin text-purple-600" />
-            <p className="text-slate-400 font-black">{language === 'ar' ? "تحميل المجموعات..." : "Loading collections..."}</p>
+            <p className="text-slate-400 font-medium">{language === 'ar' ? "تحميل المجموعات..." : "Loading collections..."}</p>
         </div>
     );
 
@@ -129,7 +129,7 @@ export default function CollectionsTab({ vendorId, categoryId, onCollectionClick
                             <Plus className="w-6 h-6 text-amber-600" />
                         </div>
                         <div className="text-right">
-                            <h4 className="font-black text-slate-900">
+                            <h4 className="font-medium text-slate-900">
                                 {t('newCollectionRequestsTitle')}
                             </h4>
                             <p className="text-xs text-slate-500 font-bold">
@@ -139,7 +139,7 @@ export default function CollectionsTab({ vendorId, categoryId, onCollectionClick
                     </div>
                     <Button 
                         variant="outline" 
-                        className="border-amber-200 text-amber-700 font-black rounded-xl hover:bg-amber-100"
+                        className="border-amber-200 text-amber-700 font-medium rounded-xl hover:bg-amber-100"
                         onClick={() => {
                             const params = new URLSearchParams(window.location.search);
                             params.set("tab", "requests");
@@ -152,11 +152,11 @@ export default function CollectionsTab({ vendorId, categoryId, onCollectionClick
             )}
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div className={`w-full sm:w-auto ${language === 'ar' ? 'text-center sm:text-right' : 'text-center sm:text-left'}`}>
-                    <h2 className="text-2xl sm:text-3xl font-black text-slate-900 mb-2">{language === 'ar' ? "مجموعات المتجر" : "Brand Collections"}</h2>
+                    <h2 className="text-2xl sm:text-3xl font-medium text-slate-900 mb-2">{language === 'ar' ? "مجموعات المتجر" : "Brand Collections"}</h2>
                     <p className="text-slate-400 font-bold text-sm sm:text-base">{language === 'ar' ? "نظم منتجاتك في مجموعات موسمية أو مميزة" : "Organize your dresses into seasonal or themed collections"}</p>
                 </div>
                 {!isFormOpen && (
-                    <Button onClick={() => setIsFormOpen(true)} className="w-full sm:w-auto bg-slate-900 hover:bg-black h-12 sm:h-14 px-8 rounded-full text-base sm:text-lg font-black shadow-lg transition-all hover:scale-105 active:scale-95 group">
+                    <Button onClick={() => setIsFormOpen(true)} className="w-full sm:w-auto bg-slate-900 hover:bg-black h-12 sm:h-14 px-8 rounded-full text-base sm:text-lg font-medium shadow-lg transition-all hover:scale-105 active:scale-95 group">
                         <Plus className={`w-5 h-5 sm:w-6 sm:h-6 ${language === 'ar' ? 'ml-2' : 'mr-2'}`} />
                         {language === 'ar' ? "مجموعة جديدة" : "New Collection"}
                     </Button>
@@ -167,7 +167,7 @@ export default function CollectionsTab({ vendorId, categoryId, onCollectionClick
                 <Card className="border-0 shadow-2xl shadow-purple-100/50 rounded-[24px] md:rounded-[40px] bg-white overflow-hidden animate-in zoom-in-95 duration-500">
                     <CardContent className="p-6 md:p-10">
                         <div className="flex flex-col-reverse md:flex-row items-start md:items-center justify-between mb-6 md:mb-10 gap-4">
-                            <h3 className="text-xl font-black text-slate-900">{editingCollection ? (language === 'ar' ? 'تعديل المجموعة' : 'Edit Collection') : (language === 'ar' ? 'إنشاء مجموعة جديدة' : 'Add New Collection')}</h3>
+                            <h3 className="text-xl font-medium text-slate-900">{editingCollection ? (language === 'ar' ? 'تعديل المجموعة' : 'Edit Collection') : (language === 'ar' ? 'إنشاء مجموعة جديدة' : 'Add New Collection')}</h3>
                             <Button variant="ghost" size="icon" onClick={handleResetForm} className="rounded-xl hover:bg-slate-50 self-end md:self-auto">
                                 <X className="w-5 h-5 text-slate-400" />
                             </Button>
@@ -176,7 +176,7 @@ export default function CollectionsTab({ vendorId, categoryId, onCollectionClick
                         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12">
                             {/* Image Upload */}
                             <div className="lg:col-span-4 space-y-4">
-                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{language === 'ar' ? "صورة المجموعة" : "Collection Poster"}</label>
+                                <label className="text-[10px] font-medium text-slate-400 uppercase tracking-widest">{language === 'ar' ? "صورة المجموعة" : "Collection Poster"}</label>
                                 <div className="aspect-square bg-slate-50 rounded-[32px] border-2 border-dashed border-slate-200 flex flex-col items-center justify-center overflow-hidden relative group transition-all hover:border-purple-300">
                                     {newCollectionImage ? (
                                         <img src={URL.createObjectURL(newCollectionImage)} className="w-full h-full object-cover" />
@@ -188,7 +188,7 @@ export default function CollectionsTab({ vendorId, categoryId, onCollectionClick
                                                 <ImageIcon className="w-6 h-6" />
                                             </div>
                                             <p className="text-xs font-bold text-slate-400">{language === 'ar' ? "اضغط للتحميل" : "Tap to upload"}</p>
-                                            <p className="text-[9px] font-black text-purple-500 mt-2 bg-purple-50 px-2 py-0.5 rounded-full inline-block">
+                                            <p className="text-[9px] font-medium text-purple-500 mt-2 bg-purple-50 px-2 py-0.5 rounded-full inline-block">
                                                 {language === 'ar' ? "الأبعاد المنصوح بها: 1000 × 1000 (1:1)" : "Recommended: 1000 x 1000 (1:1)"}
                                             </p>
                                         </div>
@@ -205,17 +205,17 @@ export default function CollectionsTab({ vendorId, categoryId, onCollectionClick
                             <div className="lg:col-span-8 space-y-8">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{language === 'ar' ? "الاسم بالعربية" : "NAME (AR)"}</label>
+                                        <label className="text-[10px] font-medium text-slate-400 uppercase tracking-widest">{language === 'ar' ? "الاسم بالعربية" : "NAME (AR)"}</label>
                                         <Input value={nameAr} onChange={e => setNameAr(e.target.value)} className="h-14 rounded-2xl border-slate-100 bg-slate-50/50 shadow-sm font-bold px-6 focus:ring-4 focus:ring-purple-50" />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{language === 'ar' ? "NAME (EN)" : "NAME (EN)"}</label>
+                                        <label className="text-[10px] font-medium text-slate-400 uppercase tracking-widest">{language === 'ar' ? "NAME (EN)" : "NAME (EN)"}</label>
                                         <Input value={nameEn} onChange={e => setNameEn(e.target.value)} dir="ltr" className="h-14 rounded-2xl border-slate-100 bg-slate-50/50 shadow-sm font-bold px-6 focus:ring-4 focus:ring-purple-50" />
                                     </div>
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                                    <label className="text-[10px] font-medium text-slate-400 uppercase tracking-widest flex items-center gap-2">
                                         <Tag className="w-3 h-3" />
                                         {language === 'ar' ? "تصنيف المجموعة" : "GLOBAL CATEGORY"}
                                     </label>
@@ -234,11 +234,11 @@ export default function CollectionsTab({ vendorId, categoryId, onCollectionClick
                                 </div>
 
                                 <div className="pt-6 flex flex-col-reverse sm:flex-row justify-end gap-4">
-                                    <Button variant="ghost" onClick={handleResetForm} className="h-14 px-8 rounded-2xl font-black text-slate-400 w-full sm:w-auto">
+                                    <Button variant="ghost" onClick={handleResetForm} className="h-14 px-8 rounded-2xl font-medium text-slate-400 w-full sm:w-auto">
                                         {language === 'ar' ? "إلغاء" : "Discard"}
                                     </Button>
                                     <Button
-                                        className="h-14 px-12 rounded-2xl bg-purple-600 hover:bg-purple-700 font-black text-white shadow-xl shadow-purple-100 transition-all hover:scale-105 w-full sm:w-auto"
+                                        className="h-14 px-12 rounded-2xl bg-purple-600 hover:bg-purple-700 font-medium text-white shadow-xl shadow-purple-100 transition-all hover:scale-105 w-full sm:w-auto"
                                         disabled={!nameAr || !nameEn || !categoryIdLocal || createCollection.isPending}
                                         onClick={() => createCollection.mutate({ nameAr, nameEn, image: newCollectionImage, categoryId: parseInt(categoryIdLocal) })}
                                     >
@@ -265,7 +265,7 @@ export default function CollectionsTab({ vendorId, categoryId, onCollectionClick
                         >
                             <div className="aspect-[3/4] bg-slate-50 relative overflow-hidden">
                                 {collection.coverImage ? (
-                                    <img src={collection.coverImage} className="w-full h-full object-contain group-hover:scale-105 transition duration-700 font-black" alt={collection.nameEn} />
+                                    <img src={collection.coverImage} className="w-full h-full object-contain group-hover:scale-105 transition duration-700 font-medium" alt={collection.nameEn} />
                                 ) : (
                                     <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-purple-50 to-pink-50 group-hover:from-purple-100 group-hover:to-pink-100 transition-colors duration-500">
                                         <div className="w-16 h-16 rounded-full bg-white shadow-sm flex items-center justify-center mb-2">
@@ -277,7 +277,7 @@ export default function CollectionsTab({ vendorId, categoryId, onCollectionClick
 
                                 {vendorId !== 0 && collection.vendorId === 0 ? (
                                     <div className="absolute top-4 left-4 z-10 px-3 py-1 bg-purple-600 rounded-full shadow-lg">
-                                        <span className="text-[10px] font-black text-white uppercase tracking-widest">
+                                        <span className="text-[10px] font-medium text-white uppercase tracking-widest">
                                             {language === 'ar' ? "مجموعة عالمية" : "Global Collection"}
                                         </span>
                                     </div>
@@ -294,10 +294,10 @@ export default function CollectionsTab({ vendorId, categoryId, onCollectionClick
                                 <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                             </div>
                             <CardContent className={`p-6 ${language === 'ar' ? 'text-right' : 'text-left'} relative`}>
-                                <span className={`absolute -top-3 ${language === 'ar' ? 'right-8' : 'left-8'} px-3 py-1 bg-white shadow-sm border border-slate-50 rounded-full text-[10px] font-black text-purple-600 uppercase tracking-widest`}>
+                                <span className={`absolute -top-3 ${language === 'ar' ? 'right-8' : 'left-8'} px-3 py-1 bg-white shadow-sm border border-slate-50 rounded-full text-[10px] font-medium text-purple-600 uppercase tracking-widest`}>
                                     {language === 'ar' ? (Array.isArray(categories) ? categories.find((c: any) => c.id === collection.categoryId)?.nameAr || "قسم" : "قسم") : (Array.isArray(categories) ? categories.find((c: any) => c.id === collection.categoryId)?.nameEn || "Category" : "Category")}
                                 </span>
-                                <h3 className="font-black text-xl text-slate-900 mb-1 group-hover:text-purple-600 transition-colors">
+                                <h3 className="font-medium text-xl text-slate-900 mb-1 group-hover:text-purple-600 transition-colors">
                                     {language === 'ar' ? collection.nameAr : collection.nameEn}
                                 </h3>
                                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{language === 'ar' ? "اضغط لاستعراض الفساتين" : "Tap to explore products"}</p>

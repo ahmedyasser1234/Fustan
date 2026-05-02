@@ -63,7 +63,7 @@ export default function VendorRequestsTab() {
         <div className="space-y-6">
             <div className="flex items-center justify-between mb-8">
                 <div>
-                    <h2 className="text-3xl font-black text-slate-900 mb-2">{language === 'ar' ? "إدارة طلبات المتاجر" : "Vendor Request Center"}</h2>
+                    <h2 className="text-3xl font-medium text-slate-900 mb-2">{language === 'ar' ? "إدارة طلبات المتاجر" : "Vendor Request Center"}</h2>
                     <p className="text-slate-400 font-bold">{language === 'ar' ? "راجع طلبات الانضمام، الأقسام، وبوستات السوشيال ميديا" : "Review join requests, categories, and social media posts"}</p>
                 </div>
             </div>
@@ -71,25 +71,25 @@ export default function VendorRequestsTab() {
             <div className="flex flex-wrap p-1.5 bg-slate-100 rounded-2xl w-fit mb-8 gap-1">
                 <button 
                     onClick={() => setActiveSection('stores')}
-                    className={`px-6 py-3 rounded-xl font-black text-sm transition-all duration-300 ${activeSection === 'stores' ? 'bg-white text-orange-600 shadow-md' : 'text-slate-400 hover:text-slate-600'}`}
+                    className={`px-6 py-3 rounded-xl font-medium text-sm transition-all duration-300 ${activeSection === 'stores' ? 'bg-white text-orange-600 shadow-md' : 'text-slate-400 hover:text-slate-600'}`}
                 >
                     {t('stores')} ({pendingVendors?.length || 0})
                 </button>
                 <button 
                     onClick={() => setActiveSection('collections')}
-                    className={`px-6 py-3 rounded-xl font-black text-sm transition-all duration-300 ${activeSection === 'collections' ? 'bg-white text-indigo-600 shadow-md' : 'text-slate-400 hover:text-slate-600'}`}
+                    className={`px-6 py-3 rounded-xl font-medium text-sm transition-all duration-300 ${activeSection === 'collections' ? 'bg-white text-indigo-600 shadow-md' : 'text-slate-400 hover:text-slate-600'}`}
                 >
                     {t('collections')} ({pendingCollections.length})
                 </button>
                 <button 
                     onClick={() => setActiveSection('categories')}
-                    className={`px-6 py-3 rounded-xl font-black text-sm transition-all duration-300 ${activeSection === 'categories' ? 'bg-white text-teal-600 shadow-md' : 'text-slate-400 hover:text-slate-600'}`}
+                    className={`px-6 py-3 rounded-xl font-medium text-sm transition-all duration-300 ${activeSection === 'categories' ? 'bg-white text-teal-600 shadow-md' : 'text-slate-400 hover:text-slate-600'}`}
                 >
                     {t('categories')} ({pendingCategories.length})
                 </button>
                 <button 
                     onClick={() => setActiveSection('social')}
-                    className={`px-6 py-3 rounded-xl font-black text-sm transition-all duration-300 ${activeSection === 'social' ? 'bg-white text-purple-600 shadow-md' : 'text-slate-400 hover:text-slate-600'}`}
+                    className={`px-6 py-3 rounded-xl font-medium text-sm transition-all duration-300 ${activeSection === 'social' ? 'bg-white text-purple-600 shadow-md' : 'text-slate-400 hover:text-slate-600'}`}
                 >
                     {t('social')} ({pendingSocial.length})
                 </button>
@@ -183,11 +183,11 @@ function VendorCard({ vendor, onApprove, onReject, isPending }: any) {
             <CardContent className="p-8">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                     <div className="flex items-start gap-5">
-                        <div className="w-20 h-20 rounded-[24px] bg-amber-50 flex items-center justify-center text-amber-500 font-black text-3xl group-hover:scale-110 transition-transform">
+                        <div className="w-20 h-20 rounded-[24px] bg-amber-50 flex items-center justify-center text-amber-500 font-medium text-3xl group-hover:scale-110 transition-transform">
                             {(vendor.storeNameAr || 'S').substring(0, 1)}
                         </div>
                         <div>
-                            <h3 className="text-xl font-black text-slate-900 mb-2">
+                            <h3 className="text-xl font-medium text-slate-900 mb-2">
                                 {language === 'ar' ? (vendor.storeNameAr || vendor.storeNameEn) : (vendor.storeNameEn || vendor.storeNameAr)}
                             </h3>
                             <div className="flex flex-wrap gap-5 text-sm text-slate-400 font-bold">
@@ -216,7 +216,7 @@ function VendorCard({ vendor, onApprove, onReject, isPending }: any) {
                     <div className="flex items-center gap-3 self-end md:self-center">
                         <Button
                             variant="outline"
-                            className="h-12 px-6 rounded-xl border-red-50 text-red-500 hover:bg-red-50 font-black"
+                            className="h-12 px-6 rounded-xl border-red-50 text-red-500 hover:bg-red-50 font-medium"
                             onClick={onReject}
                             disabled={isPending}
                         >
@@ -224,7 +224,7 @@ function VendorCard({ vendor, onApprove, onReject, isPending }: any) {
                             {t('rejectStore')}
                         </Button>
                         <Button
-                            className="h-12 px-8 rounded-xl bg-green-600 hover:bg-green-700 text-white font-black shadow-lg shadow-green-100"
+                            className="h-12 px-8 rounded-xl bg-green-600 hover:bg-green-700 text-white font-medium shadow-lg shadow-green-100"
                             onClick={onApprove}
                             disabled={isPending}
                         >
@@ -271,7 +271,7 @@ function RequestCard({ request, onApprove, onReject, isPending, categories }: an
                             )
                         )}
                         <div className="absolute top-3 left-3 px-3 py-1 bg-white/90 backdrop-blur-md rounded-full shadow-sm">
-                            <span className="text-[10px] font-black uppercase tracking-wider text-slate-500">
+                            <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500">
                                 {isSocial ? t('socialPostRequest') : isCollection ? t('collectionRequest') : t('categoryRequest')}
                             </span>
                         </div>
@@ -281,7 +281,7 @@ function RequestCard({ request, onApprove, onReject, isPending, categories }: an
                     <div className="flex-1 space-y-4">
                         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                             <div>
-                                <div className="flex items-center gap-2 text-slate-300 text-[10px] font-black uppercase mb-1">
+                                <div className="flex items-center gap-2 text-slate-300 text-[10px] font-medium uppercase mb-1">
                                     <Store className="w-3 h-3" />
                                     <span>Vendor ID: {request.vendorId}</span>
                                     {category && (
@@ -292,7 +292,7 @@ function RequestCard({ request, onApprove, onReject, isPending, categories }: an
                                     )}
                                 </div>
                                 <div className="space-y-1">
-                                    <h3 className="text-lg font-black text-slate-800">
+                                    <h3 className="text-lg font-medium text-slate-800">
                                         {(isCollection || request.type === 'category_request') ? request.data.nameAr : (isSocial ? (language === 'ar' ? "منشور ترويجي جديد" : "New Promotional Post") : (request.data.nameAr || request.data.nameEn))}
                                     </h3>
                                     {(isCollection || request.type === 'category_request') && (
@@ -306,7 +306,7 @@ function RequestCard({ request, onApprove, onReject, isPending, categories }: an
                             <div className="flex items-center gap-2">
                                 <Button
                                     variant="outline"
-                                    className="h-10 px-4 rounded-xl border-red-50 text-red-500 hover:bg-red-50 font-black text-xs"
+                                    className="h-10 px-4 rounded-xl border-red-50 text-red-500 hover:bg-red-50 font-medium text-xs"
                                     onClick={onReject}
                                     disabled={isPending}
                                 >
@@ -314,7 +314,7 @@ function RequestCard({ request, onApprove, onReject, isPending, categories }: an
                                 </Button>
                                 <Button
                                     className={cn(
-                                        "h-10 px-6 rounded-xl text-white font-black shadow-lg text-xs",
+                                        "h-10 px-6 rounded-xl text-white font-medium shadow-lg text-xs",
                                         isCollection ? "bg-indigo-600 hover:bg-indigo-700 shadow-indigo-100" : "bg-purple-600 hover:bg-purple-700 shadow-purple-100"
                                     )}
                                     onClick={onApprove}
@@ -331,11 +331,11 @@ function RequestCard({ request, onApprove, onReject, isPending, categories }: an
                             ) : (isCollection || request.type === 'category_request') ? (
                                 <>
                                     <div className="space-y-1">
-                                        <label className="text-[9px] font-black text-slate-300 uppercase tracking-widest">{t('arabicDescription')}</label>
+                                        <label className="text-[9px] font-medium text-slate-300 uppercase tracking-widest">{t('arabicDescription')}</label>
                                         <p className="text-slate-600 font-bold text-sm leading-relaxed">{request.data.descriptionAr || "---"}</p>
                                     </div>
                                     <div className="space-y-1">
-                                        <label className="text-[9px] font-black text-slate-300 uppercase tracking-widest">{t('englishDescription')}</label>
+                                        <label className="text-[9px] font-medium text-slate-300 uppercase tracking-widest">{t('englishDescription')}</label>
                                         <p className="text-slate-400 font-bold text-sm italic leading-relaxed">{request.data.descriptionEn || "---"}</p>
                                     </div>
                                 </>
@@ -344,7 +344,7 @@ function RequestCard({ request, onApprove, onReject, isPending, categories }: an
                             )}
                         </div>
 
-                        <div className="flex flex-wrap gap-4 text-xs font-black text-slate-400">
+                        <div className="flex flex-wrap gap-4 text-xs font-medium text-slate-400">
                             {isSocial && request.data.platforms?.map((p: string) => (
                                 <div key={p} className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 rounded-lg">
                                     {p === 'instagram' && <Instagram className="w-3.5 h-3.5 text-pink-500" />}

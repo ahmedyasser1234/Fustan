@@ -215,7 +215,7 @@ export default function Cart() {
           <div className="w-32 h-32 bg-white rounded-full flex items-center justify-center mx-auto mb-8 shadow-xl shadow-rose-50 border border-rose-50">
             <ShoppingCart size={48} className="text-rose-600" />
           </div>
-          <h1 className="text-4xl font-black text-gray-900 mb-4">{language === 'ar' ? 'سلّتك مشتاقة إليك' : 'Your cart is missing you'}</h1>
+          <h1 className="text-4xl font-medium text-gray-900 mb-4">{language === 'ar' ? 'سلّتك مشتاقة إليك' : 'Your cart is missing you'}</h1>
           <p className="text-lg text-gray-500 mb-10 leading-relaxed">{language === 'ar' ? 'بإمكانكِ إضافة أجمل التصاميم الحصرية من مجموعتنا الجديدة الآن.' : 'You can add the most beautiful exclusive designs from our new collection now.'}</p>
           <Link href="/products">
             <Button size="lg" className="h-16 px-12 rounded-full bg-rose-600 hover:bg-rose-700 text-xl font-bold">{language === 'ar' ? 'ابدئي التسوق' : 'Start Shopping'}</Button>
@@ -229,14 +229,14 @@ export default function Cart() {
     <div className={`min-h-screen bg-[#fafafa] pb-32 ${language === 'ar' ? 'text-right' : 'text-left'}`} dir={language === 'ar' ? 'rtl' : 'ltr'}>
       <header className="bg-white border-b border-gray-100 pt-8 md:pt-12 pb-10 md:pb-16">
         <div className={`container mx-auto px-4 ${language === 'ar' ? 'text-right' : 'text-left'}`}>
-          <h1 className="text-3xl md:text-5xl font-black text-gray-900 mb-2 md:mb-4">{language === 'ar' ? 'حقيبة التسوق' : 'Shopping Cart'}</h1>
+          <h1 className="text-3xl md:text-3xl font-medium text-gray-900 mb-2 md:mb-4">{language === 'ar' ? 'حقيبة التسوق' : 'Shopping Cart'}</h1>
           <p className="text-base md:text-xl text-gray-500">{language === 'ar' ? `لديكِ ${items.length} قطع مختارة بعناية` : `You have ${items.length} carefully selected pieces`}</p>
         </div>
       </header>
 
       <div className="container mx-auto px-4 mt-12">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
-          <h2 className="text-2xl md:text-3xl font-black text-gray-900">{language === 'ar' ? 'محتويات الحقيبة' : 'Cart Contents'}</h2>
+          <h2 className="text-2xl md:text-3xl font-medium text-gray-900">{language === 'ar' ? 'محتويات الحقيبة' : 'Cart Contents'}</h2>
           <Button
             variant="outline"
             size="sm"
@@ -274,7 +274,7 @@ export default function Cart() {
                       />
 
                       <div className={`grow w-full ${language === 'ar' ? 'text-right' : 'text-left'}`}>
-                        <h3 className="text-xl md:text-2xl font-black text-gray-900 mb-1 md:mb-2">
+                        <h3 className="text-xl md:text-2xl font-medium text-gray-900 mb-1 md:mb-2">
                           {language === 'ar' ? (item.product?.nameAr || 'منتج مميز') : (item.product?.nameEn || 'Premium Product')}
                         </h3>
                         <div className="flex flex-wrap items-center gap-2 mb-3 md:mb-4">
@@ -295,7 +295,7 @@ export default function Cart() {
                           </div>
                         )}
 
-                        <div className={`flex items-center ${language === 'ar' ? 'justify-end md:justify-start' : 'justify-start'} gap-2 md:gap-3 text-lg md:text-2xl font-black text-rose-600`}>
+                        <div className={`flex items-center ${language === 'ar' ? 'justify-end md:justify-start' : 'justify-start'} gap-2 md:gap-3 text-lg md:text-2xl font-medium text-rose-600`}>
                           {formatPrice(item.product?.price)}
                         </div>
                       </div>
@@ -304,7 +304,7 @@ export default function Cart() {
                     <div className={`flex flex-row md:flex-col ${language === 'ar' ? 'items-end' : 'items-start'} gap-6 shrink-0 w-full md:w-auto justify-between md:justify-center`}>
                       <div className="flex items-center bg-gray-50 rounded-2xl p-1 border border-gray-100">
                         <Button variant="ghost" size="icon" onClick={() => updateQuantityMutation.mutate({ cartItemId: item.id, quantity: item.quantity + 1 })} className="text-rose-600 hover:bg-white rounded-xl w-8 h-8 md:w-10 md:h-10"><Plus size={16} /></Button>
-                        <span className="w-8 md:w-12 text-center text-lg md:text-xl font-black text-gray-900">{item.quantity}</span>
+                        <span className="w-8 md:w-12 text-center text-lg md:text-xl font-medium text-gray-900">{item.quantity}</span>
                         <Button variant="ghost" size="icon" onClick={() => item.quantity > 1 ? updateQuantityMutation.mutate({ cartItemId: item.id, quantity: item.quantity - 1 }) : removeItemMutation.mutate(item.id)} className="text-gray-400 hover:bg-white rounded-xl w-8 h-8 md:w-10 md:h-10"><Minus size={16} /></Button>
                       </div>
 
@@ -320,14 +320,14 @@ export default function Cart() {
 
           <div className="lg:col-span-4">
             <div className={`bg-white p-8 md:p-10 rounded-[3rem] shadow-2xl border border-gray-50 ${language === 'ar' ? 'text-right' : 'text-left'} sticky top-24`}>
-              <h2 className="text-2xl md:text-3xl font-black text-gray-900 mb-8 md:mb-10">{language === 'ar' ? 'ملخص الحقيبة' : 'Bag Summary'}</h2>
+              <h2 className="text-2xl md:text-3xl font-medium text-gray-900 mb-8 md:mb-10">{language === 'ar' ? 'ملخص الحقيبة' : 'Bag Summary'}</h2>
               <div className="space-y-4 md:space-y-6 mb-8 md:mb-10 border-b border-gray-50 pb-8 md:pb-10">
                 <div className="flex justify-between items-center text-lg md:text-xl">
-                  <span className="font-black text-rose-600">{formatPrice(subtotal)}</span>
+                  <span className="font-medium text-rose-600">{formatPrice(subtotal)}</span>
                   <span className="text-gray-500 font-bold">{language === 'ar' ? 'المجموع الفرعي' : 'Subtotal'}</span>
                 </div>
                 <div className="flex justify-between items-center text-lg md:text-xl">
-                  <span className={`font-black ${shipping === 0 ? 'text-green-500' : 'text-gray-900'}`}>{shipping === 0 ? (language === 'ar' ? 'مجانـاً' : 'Free') : formatPrice(shipping)}</span>
+                  <span className={`font-medium ${shipping === 0 ? 'text-green-500' : 'text-gray-900'}`}>{shipping === 0 ? (language === 'ar' ? 'مجانـاً' : 'Free') : formatPrice(shipping)}</span>
                   <span className="text-gray-500 font-bold">{language === 'ar' ? 'تكلفة الشحن' : 'Shipping Cost'}</span>
                 </div>
 
@@ -346,11 +346,11 @@ export default function Cart() {
               </div>
 
               <div className="flex justify-between items-center mb-10 md:mb-12">
-                <span className="text-3xl md:text-4xl font-black text-rose-600">{formatPrice(total)}</span>
-                <span className="text-xl md:text-2xl font-black text-gray-900">{language === 'ar' ? 'الإجمالي' : 'Total'}</span>
+                <span className="text-3xl md:text-4xl font-medium text-rose-600">{formatPrice(total)}</span>
+                <span className="text-xl md:text-2xl font-medium text-gray-900">{language === 'ar' ? 'الإجمالي' : 'Total'}</span>
               </div>
 
-              <Button onClick={handleCheckoutClick} className="w-full h-16 md:h-20 rounded-full bg-rose-600 hover:bg-rose-700 text-xl md:text-2xl font-black shadow-xl">
+              <Button onClick={handleCheckoutClick} className="w-full h-16 md:h-20 rounded-full bg-rose-600 hover:bg-rose-700 text-xl md:text-2xl font-medium shadow-xl">
                 {language === 'ar' ? 'إتمام الشراء' : 'Checkout'}
               </Button>
             </div>

@@ -76,7 +76,7 @@ export default function OrderDetailsView({ orderId, onClose }: OrderDetailsViewP
                             <X className="w-6 h-6 text-slate-500" />
                         </Button>
                         <div>
-                            <h2 className="text-2xl font-black text-slate-900 flex items-center gap-3">
+                            <h2 className="text-2xl font-medium text-slate-900 flex items-center gap-3">
                                 {language === 'ar' ? "تفاصيل الطلب" : "Order Details"}
                                 <span className="text-lg text-slate-400 font-bold">#{order.orderNumber}</span>
                             </h2>
@@ -95,7 +95,7 @@ export default function OrderDetailsView({ orderId, onClose }: OrderDetailsViewP
                         </div>
                     </div>
                     <div className="flex items-center gap-3">
-                        <Badge className={cn("px-4 py-1.5 text-sm font-black rounded-xl", STATUS_COLORS[order.status] || "bg-slate-100 text-slate-700")}>
+                        <Badge className={cn("px-4 py-1.5 text-sm font-medium rounded-xl", STATUS_COLORS[order.status] || "bg-slate-100 text-slate-700")}>
                             {STATUS_LABELS[order.status] || order.status}
                         </Badge>
                         <Button onClick={handlePrint} className="bg-slate-900 text-white rounded-xl gap-2 font-bold hover:bg-slate-800 print:hidden">
@@ -111,18 +111,18 @@ export default function OrderDetailsView({ orderId, onClose }: OrderDetailsViewP
                         <div className="grid md:grid-cols-2 gap-6">
                             <Card className="border-0 shadow-sm rounded-3xl overflow-hidden bg-white">
                                 <CardHeader className="pb-3 border-b border-slate-50">
-                                    <CardTitle className="text-lg font-black flex items-center gap-2 text-slate-800">
+                                    <CardTitle className="text-lg font-medium flex items-center gap-2 text-slate-800">
                                         <User className="w-5 h-5 text-purple-600" />
                                         {language === 'ar' ? "بيانات العميل" : "Customer Info"}
                                     </CardTitle>
                                 </CardHeader>
                                 <CardContent className="pt-4 space-y-4">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-full bg-purple-50 flex items-center justify-center text-purple-600 font-black">
+                                        <div className="w-10 h-10 rounded-full bg-purple-50 flex items-center justify-center text-purple-600 font-medium">
                                             {order.customer?.name?.[0]?.toUpperCase() || "U"}
                                         </div>
                                         <div>
-                                            <p className="font-black text-slate-900">{order.customer?.name || "Guest"}</p>
+                                            <p className="font-medium text-slate-900">{order.customer?.name || "Guest"}</p>
                                             <p className="text-xs text-slate-400 font-bold">{language === 'ar' ? "عميل مسجل" : "Registered Customer"}</p>
                                         </div>
                                     </div>
@@ -145,7 +145,7 @@ export default function OrderDetailsView({ orderId, onClose }: OrderDetailsViewP
 
                             <Card className="border-0 shadow-sm rounded-3xl overflow-hidden bg-white">
                                 <CardHeader className="pb-3 border-b border-slate-50">
-                                    <CardTitle className="text-lg font-black flex items-center gap-2 text-slate-800">
+                                    <CardTitle className="text-lg font-medium flex items-center gap-2 text-slate-800">
                                         <MapPin className="w-5 h-5 text-pink-600" />
                                         {language === 'ar' ? "عنوان التوصيل" : "Shipping Address"}
                                     </CardTitle>
@@ -153,7 +153,7 @@ export default function OrderDetailsView({ orderId, onClose }: OrderDetailsViewP
                                 <CardContent className="pt-4 space-y-3">
                                     {order.shippingAddress ? (
                                         <>
-                                            <p className="font-black text-slate-900">{order.shippingAddress.name}</p>
+                                            <p className="font-medium text-slate-900">{order.shippingAddress.name}</p>
                                             <p className="text-sm font-bold text-slate-600 leading-relaxed">
                                                 {order.shippingAddress.address}
                                                 <br />
@@ -176,7 +176,7 @@ export default function OrderDetailsView({ orderId, onClose }: OrderDetailsViewP
                         {/* Order Items */}
                         <Card className="border-0 shadow-sm rounded-3xl overflow-hidden bg-white">
                             <CardHeader className="pb-3 border-b border-slate-50">
-                                <CardTitle className="text-lg font-black flex items-center gap-2 text-slate-800">
+                                <CardTitle className="text-lg font-medium flex items-center gap-2 text-slate-800">
                                     <Package className="w-5 h-5 text-blue-600" />
                                     {language === 'ar' ? "محتويات الطلب" : "Order Items"}
                                 </CardTitle>
@@ -186,10 +186,10 @@ export default function OrderDetailsView({ orderId, onClose }: OrderDetailsViewP
                                     <table className="w-full text-right">
                                         <thead className="bg-slate-50/50">
                                             <tr>
-                                                <th className="py-4 px-6 text-xs font-black text-slate-400 uppercase tracking-wider">{language === 'ar' ? "المنتج" : "Product"}</th>
-                                                <th className="py-4 px-4 text-center text-xs font-black text-slate-400 uppercase tracking-wider">{language === 'ar' ? "المواصفات" : "Specs"}</th>
-                                                <th className="py-4 px-4 text-center text-xs font-black text-slate-400 uppercase tracking-wider">{language === 'ar' ? "الكمية" : "Qty"}</th>
-                                                <th className="py-4 px-6 text-left text-xs font-black text-slate-400 uppercase tracking-wider">{language === 'ar' ? "الإجمالي" : "Total"}</th>
+                                                <th className="py-4 px-6 text-xs font-medium text-slate-400 uppercase tracking-wider">{language === 'ar' ? "المنتج" : "Product"}</th>
+                                                <th className="py-4 px-4 text-center text-xs font-medium text-slate-400 uppercase tracking-wider">{language === 'ar' ? "المواصفات" : "Specs"}</th>
+                                                <th className="py-4 px-4 text-center text-xs font-medium text-slate-400 uppercase tracking-wider">{language === 'ar' ? "الكمية" : "Qty"}</th>
+                                                <th className="py-4 px-6 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">{language === 'ar' ? "الإجمالي" : "Total"}</th>
                                             </tr>
                                         </thead>
                                         <tbody className="divide-y divide-slate-50">
@@ -203,7 +203,7 @@ export default function OrderDetailsView({ orderId, onClose }: OrderDetailsViewP
                                                                 )}
                                                             </div>
                                                             <div>
-                                                                <p className="font-black text-slate-800 text-sm mb-1">
+                                                                <p className="font-medium text-slate-800 text-sm mb-1">
                                                                     {language === 'ar' ? item.productNameAr : item.productNameEn}
                                                                 </p>
                                                                 <p className="text-xs font-bold text-slate-400">
@@ -221,10 +221,10 @@ export default function OrderDetailsView({ orderId, onClose }: OrderDetailsViewP
                                                             <span className="text-slate-300">-</span>
                                                         )}
                                                     </td>
-                                                    <td className="py-4 px-4 text-center font-black text-slate-900">
+                                                    <td className="py-4 px-4 text-center font-medium text-slate-900">
                                                         {item.quantity}
                                                     </td>
-                                                    <td className="py-4 px-6 text-left font-black text-slate-900">
+                                                    <td className="py-4 px-6 text-left font-medium text-slate-900">
                                                         {Number(item.total).toFixed(2)} {t('currency')}
                                                     </td>
                                                 </tr>
@@ -232,22 +232,22 @@ export default function OrderDetailsView({ orderId, onClose }: OrderDetailsViewP
                                         </tbody>
                                         <tfoot className="bg-slate-50/80 border-t border-slate-100">
                                             <tr>
-                                                <td colSpan={3} className="py-4 px-6 text-right font-black text-slate-500">{language === 'ar' ? "المجموع الفرعي" : "Subtotal"}</td>
-                                                <td className="py-4 px-6 text-left font-black text-slate-900">{Number(order.subtotal).toFixed(2)} {t('currency')}</td>
+                                                <td colSpan={3} className="py-4 px-6 text-right font-medium text-slate-500">{language === 'ar' ? "المجموع الفرعي" : "Subtotal"}</td>
+                                                <td className="py-4 px-6 text-left font-medium text-slate-900">{Number(order.subtotal).toFixed(2)} {t('currency')}</td>
                                             </tr>
                                             <tr>
-                                                <td colSpan={3} className="py-4 px-6 text-right font-black text-slate-500">{language === 'ar' ? "الشحن" : "Shipping"}</td>
-                                                <td className="py-4 px-6 text-left font-black text-slate-900">{Number(order.shippingCost).toFixed(2)} {t('currency')}</td>
+                                                <td colSpan={3} className="py-4 px-6 text-right font-medium text-slate-500">{language === 'ar' ? "الشحن" : "Shipping"}</td>
+                                                <td className="py-4 px-6 text-left font-medium text-slate-900">{Number(order.shippingCost).toFixed(2)} {t('currency')}</td>
                                             </tr>
                                             {Number(order.discount) > 0 && (
                                                 <tr>
-                                                    <td colSpan={3} className="py-4 px-6 text-right font-black text-red-500">{language === 'ar' ? "الخصم" : "Discount"}</td>
-                                                    <td className="py-4 px-6 text-left font-black text-red-500">-{Number(order.discount).toFixed(2)} {t('currency')}</td>
+                                                    <td colSpan={3} className="py-4 px-6 text-right font-medium text-red-500">{language === 'ar' ? "الخصم" : "Discount"}</td>
+                                                    <td className="py-4 px-6 text-left font-medium text-red-500">-{Number(order.discount).toFixed(2)} {t('currency')}</td>
                                                 </tr>
                                             )}
                                             <tr className="bg-slate-100/50">
-                                                <td colSpan={3} className="py-6 px-6 text-right font-black text-slate-900 text-lg">{language === 'ar' ? "الإجمالي الكلي" : "Grand Total"}</td>
-                                                <td className="py-6 px-6 text-left font-black text-pink-600 text-xl">{Number(order.total).toFixed(2)} {t('currency')}</td>
+                                                <td colSpan={3} className="py-6 px-6 text-right font-medium text-slate-900 text-lg">{language === 'ar' ? "الإجمالي الكلي" : "Grand Total"}</td>
+                                                <td className="py-6 px-6 text-left font-medium text-pink-600 text-xl">{Number(order.total).toFixed(2)} {t('currency')}</td>
                                             </tr>
                                         </tfoot>
                                     </table>
@@ -258,18 +258,18 @@ export default function OrderDetailsView({ orderId, onClose }: OrderDetailsViewP
                         {/* Payment Info */}
                         <Card className="border-0 shadow-sm rounded-3xl overflow-hidden bg-white">
                             <CardHeader className="pb-3 border-b border-slate-50">
-                                <CardTitle className="text-lg font-black flex items-center gap-2 text-slate-800">
+                                <CardTitle className="text-lg font-medium flex items-center gap-2 text-slate-800">
                                     <CreditCard className="w-5 h-5 text-emerald-600" />
                                     {language === 'ar' ? "معلومات الدفع" : "Payment Info"}
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="pt-4 flex items-center justify-between">
                                 <div className="flex flex-col">
-                                    <span className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">{language === 'ar' ? "طريقة الدفع" : "Payment Method"}</span>
-                                    <span className="font-black text-slate-900 capitalize">{order.paymentMethod || "Card"}</span>
+                                    <span className="text-xs font-medium text-slate-400 uppercase tracking-widest mb-1">{language === 'ar' ? "طريقة الدفع" : "Payment Method"}</span>
+                                    <span className="font-medium text-slate-900 capitalize">{order.paymentMethod || "Card"}</span>
                                 </div>
                                 <div className="flex flex-col items-end">
-                                    <span className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">{language === 'ar' ? "حالة الدفع" : "Payment Status"}</span>
+                                    <span className="text-xs font-medium text-slate-400 uppercase tracking-widest mb-1">{language === 'ar' ? "حالة الدفع" : "Payment Status"}</span>
                                     <Badge variant={(order.paymentStatus === 'paid' ? 'default' : 'secondary') as any} className={cn(
                                         "capitalize font-bold",
                                         order.paymentStatus === 'paid' ? "bg-emerald-100 text-emerald-700 hover:bg-emerald-200" : "bg-slate-100 text-slate-700"

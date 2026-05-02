@@ -25,7 +25,7 @@ export function AppointmentSection() {
                         <span className="inline-block px-4 py-2 rounded-full bg-rose-100 text-rose-600 font-bold text-sm mb-6">
                             {t('vipService')}
                         </span>
-                        <h2 className="text-4xl lg:text-5xl font-black text-gray-900 mb-6 leading-tight">
+                        <h2 className="text-4xl lg:text-3xl font-medium text-gray-900 mb-6 leading-tight">
                             {t('bookAppointmentTitle')}
                         </h2>
                         <p className="text-gray-500 text-lg mb-10 leading-relaxed max-w-md">
