@@ -31,13 +31,8 @@ export default function ContactUs() {
             />
             {/* Hero Section */}
             <section className="relative h-[60vh] min-h-[400px] pt-24 overflow-hidden flex items-center justify-center">
-                <div className="absolute inset-0">
-                    <img
-                        src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=2070&auto=format&fit=crop"
-                        className="w-full h-full object-cover object-center"
-                        alt="Contact Us Background"
-                    />
-                    <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px]"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-slate-900 to-rose-900">
+                    <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-20"></div>
                 </div>
 
                 <div className="container mx-auto px-4 relative z-10 text-center text-white">
@@ -46,14 +41,14 @@ export default function ContactUs() {
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ duration: 0.8 }}
                     >
-                        <div className="flex flex-col items-center space-y-6">
-                            <Badge className="bg-white/20 text-white hover:bg-white/30 backdrop-blur-md mb-4 border-white/30 px-6 py-2 text-xs font-bold uppercase tracking-[0.2em]">
+                        <div className="flex flex-col items-center space-y-6 pb-16 md:pb-24">
+                            <Badge className="bg-white/10 text-white hover:bg-white/20 backdrop-blur-md mb-4 border-white/20 px-6 py-2 text-xs font-medium uppercase tracking-[0.2em]">
                                 {language === 'ar' ? "تواصل معنا" : "Contact Us"}
                             </Badge>
-                            <h1 className="text-3xl md:text-3xl font-medium mb-6 leading-tight">
+                            <h1 className="text-3xl md:text-5xl font-medium mb-6 leading-tight">
                                 {language === 'ar' ? "نحن هنا لمساعدتك" : "We're Here to Help"}
                             </h1>
-                            <p className="text-lg md:text-2xl text-white/90 max-w-2xl mx-auto leading-relaxed font-bold">
+                            <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto leading-relaxed font-medium">
                                 {language === 'ar'
                                     ? "لديك استفسار عن فستان معين أو تريدين حجز موعد للقياس؟ لا تترددي في التواصل معنا."
                                     : "Have a question about a specific dress or want to book a fitting appointment? Don't hesitate to reach out."}

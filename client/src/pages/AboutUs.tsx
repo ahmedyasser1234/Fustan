@@ -22,13 +22,8 @@ export default function AboutUs() {
             />
             {/* Hero Section */}
             <section className="relative h-[60vh] min-h-[400px] pt-24 overflow-hidden flex items-center justify-center">
-                <div className="absolute inset-0">
-                    <img
-                        src="/about.png"
-                        className="w-full h-full object-cover object-top"
-                        alt="Atelier Background"
-                    />
-                    <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]"></div>
+                <div className="absolute inset-0 bg-gradient-to-l from-slate-900 to-rose-900">
+                    <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-20"></div>
                 </div>
 
                 <div className="container mx-auto px-4 relative z-10 text-center text-white">
@@ -37,15 +32,15 @@ export default function AboutUs() {
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ duration: 0.8 }}
                     >
-                        <div className="flex flex-col items-center space-y-6">
-                            <Badge className="bg-white/20 text-white hover:bg-white/30 backdrop-blur-md mb-6 border-white/30 px-6 py-2 text-sm font-bold uppercase tracking-[0.2em]">
+                        <div className="flex flex-col items-center space-y-6 pb-16 md:pb-24">
+                            <Badge className="bg-white/10 text-white hover:bg-white/20 backdrop-blur-md mb-6 border-white/20 px-6 py-2 text-sm font-medium uppercase tracking-[0.2em]">
                                 {language === 'ar' ? "قصتنا" : "Our Story"}
                             </Badge>
-                            <h1 className="text-3xl md:text-3xl lg:text-3xl font-medium mb-4 md:mb-6 leading-tight">
+                            <h1 className="text-3xl md:text-5xl lg:text-5xl font-medium mb-4 md:mb-6 leading-tight">
                                 {language === 'ar' ? "حيث تلتقي الفخامة" : "Where Luxury Meets"} <br />
                                 <span className="text-rose-200">{language === 'ar' ? "بالتقاليد العريقة" : "Timeless Traditions"}</span>
                             </h1>
-                            <p className="text-lg md:text-2xl text-white/90 max-w-2xl mx-auto leading-relaxed font-bold px-4">
+                            <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto leading-relaxed font-medium px-4">
                                 {language === 'ar'
                                     ? "رحلة في عالم الأزياء الراقية، ننسج فيها خيوط الإبداع لنصنع لكِ إطلالة تخلد في الذاكرة."
                                     : "A journey into the world of haute couture, weaving threads of creativity to craft a look preserved in memory."}
