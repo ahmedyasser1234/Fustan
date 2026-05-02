@@ -188,7 +188,7 @@ export default function SellDress() {
                         <SelectValue placeholder={language === 'ar' ? "اختر الفئة" : "Select Category"} />
                       </SelectTrigger>
                       <SelectContent className="rounded-2xl border-slate-100 shadow-2xl font-bold">
-                        {categories?.map((cat: any) => (
+                        {(Array.isArray(categories) ? categories : []).map((cat: any) => (
                           <SelectItem key={cat.id} value={cat.id.toString()}>
                             {language === 'ar' ? cat.nameAr : cat.nameEn}
                           </SelectItem>

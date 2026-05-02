@@ -75,7 +75,7 @@ export default function Home() {
   ];
 
   const getCategoryLink = (categoryArName: string) => {
-    const category = categories?.find((c: any) => c.nameAr === categoryArName);
+    const category = Array.isArray(categories) ? categories.find((c: any) => c.nameAr === categoryArName) : null;
     if (category) return `/products?category=${category.id}`;
 
     return "/products";
@@ -543,7 +543,7 @@ export default function Home() {
                   >
                     {t('all')}
                   </TabsTrigger>
-                  {categories?.map((cat: any) => (
+                  {(Array.isArray(categories) ? categories : []).map((cat: any) => (
                     <TabsTrigger
                       key={cat.id}
                       value={cat.id.toString()}

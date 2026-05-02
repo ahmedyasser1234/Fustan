@@ -1092,7 +1092,7 @@ export default function AdminDashboard() {
                             <div>
                               <h3 className="font-bold text-gray-900">{product.nameAr} / {product.nameEn}</h3>
                               <p className="text-xs text-gray-500 mt-1">
-                                {vendors?.find((v: any) => v.id === product.vendorId)?.storeNameAr || t('never')}
+                                {Array.isArray(vendors) ? vendors.find((v: any) => v.id === product.vendorId)?.storeNameAr || t('never') : t('never')}
                               </p>
                             </div>
                             <span className="font-black text-rose-600 bg-rose-50 px-2 py-1 rounded-lg text-sm">
@@ -1158,7 +1158,7 @@ export default function AdminDashboard() {
                                 {product.nameAr} / {product.nameEn}
                               </td>
                               <td className="py-3 px-6 text-gray-600 text-start">
-                                {vendors?.find((v: any) => v.id === product.vendorId)?.storeNameAr || t('never')}
+                                {Array.isArray(vendors) ? vendors.find((v: any) => v.id === product.vendorId)?.storeNameAr || t('never') : t('never')}
                               </td>
                               <td className="py-3 px-6 text-gray-900 text-center font-bold">{Number(product.price).toFixed(2)} {t('currency')}</td>
                               <td className="py-3 px-6 text-gray-900 text-center font-medium">{product.stock}</td>

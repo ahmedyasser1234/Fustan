@@ -219,7 +219,7 @@ export default function ProductDetail() {
   const handleSizeQtyChange = (size: string, delta: number) => {
     setSizeQuantities(prev => {
       const current = prev[size] || 0;
-      const maxStock = product?.sizes?.find((s: any) => s.size === size)?.quantity || 0;
+      const maxStock = Array.isArray(product?.sizes) ? product.sizes.find((s: any) => s.size === size)?.quantity || 0 : 0;
       const next = Math.max(0, Math.min(maxStock, current + delta));
       return { ...prev, [size]: next };
     });

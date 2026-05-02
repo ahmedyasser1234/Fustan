@@ -95,7 +95,7 @@ export default function VendorProfile() {
   if (!match) return null;
 
   // Find active collection name
-  const activeCollection = collections?.find((c: any) => c.id === selectedCollectionId);
+  const activeCollection = Array.isArray(collections) ? collections.find((c: any) => c.id === selectedCollectionId) : null;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -504,7 +504,7 @@ export default function VendorProfile() {
       <div className="container mx-auto px-4 py-8 border-t border-gray-100">
         <h2 className="text-2xl font-bold text-gray-900 mb-6">المجموعات</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-          {collections?.map((collection: any) => (
+          {(Array.isArray(collections) ? collections : [])?.map((collection: any) => (
             <Card
               key={collection.id}
               className={`cursor-pointer transition group ${selectedCollectionId === collection.id ? 'ring-2 ring-purple-600' : 'hover:shadow-lg'}`}

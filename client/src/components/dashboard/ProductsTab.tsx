@@ -163,7 +163,7 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
             const result = await endpoints.ai.generateDescription({
                 nameAr,
                 nameEn,
-                categoryName: categories?.find((c: any) => c.id === categoryId)?.nameAr,
+                categoryName: Array.isArray(categories) ? categories.find((c: any) => c.id === categoryId)?.nameAr : undefined,
                 occasion,
                 availability,
                 price: price || salePrice || rentPrice

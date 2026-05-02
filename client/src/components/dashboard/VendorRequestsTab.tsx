@@ -243,7 +243,7 @@ function RequestCard({ request, onApprove, onReject, isPending, categories }: an
     const isSocial = request.type === 'social_post_request';
     const isCollection = request.type === 'collection_request';
     
-    const category = categories?.find((c: any) => c.id.toString() === request.data.categoryId?.toString());
+    const category = Array.isArray(categories) ? categories.find((c: any) => c.id.toString() === request.data.categoryId?.toString()) : null;
 
     return (
         <Card className="border-0 shadow-sm hover:shadow-md transition-all duration-300 rounded-[32px] overflow-hidden group">

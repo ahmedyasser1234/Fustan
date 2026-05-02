@@ -295,7 +295,7 @@ export default function CollectionsTab({ vendorId, categoryId, onCollectionClick
                             </div>
                             <CardContent className={`p-6 ${language === 'ar' ? 'text-right' : 'text-left'} relative`}>
                                 <span className={`absolute -top-3 ${language === 'ar' ? 'right-8' : 'left-8'} px-3 py-1 bg-white shadow-sm border border-slate-50 rounded-full text-[10px] font-black text-purple-600 uppercase tracking-widest`}>
-                                    {language === 'ar' ? (categories?.find((c: any) => c.id === collection.categoryId)?.nameAr || "قسم") : (categories?.find((c: any) => c.id === collection.categoryId)?.nameEn || "Category")}
+                                    {language === 'ar' ? (Array.isArray(categories) ? categories.find((c: any) => c.id === collection.categoryId)?.nameAr || "قسم" : "قسم") : (Array.isArray(categories) ? categories.find((c: any) => c.id === collection.categoryId)?.nameEn || "Category" : "Category")}
                                 </span>
                                 <h3 className="font-black text-xl text-slate-900 mb-1 group-hover:text-purple-600 transition-colors">
                                     {language === 'ar' ? collection.nameAr : collection.nameEn}

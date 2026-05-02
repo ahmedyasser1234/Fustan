@@ -125,12 +125,12 @@ export function ChatWidget({ vendorId, recipientId: explicitRecipientId, vendorN
 
     useEffect(() => {
         if (conversations && (vendorId || explicitRecipientId)) {
-            const existing = conversations.find((c: any) => {
+            const existing = Array.isArray(conversations) ? conversations.find((c: any) => {
                 if (vendorId) {
                     return c.recipientId === presenceUserId && (c.vendorId === vendorId || !c.vendorId);
                 }
                 return c.recipientId === presenceUserId || c.counterpartName === vendorName;
-            });
+            }) : null;
 
             if (existing) {
                 setConversationId(existing.id);
