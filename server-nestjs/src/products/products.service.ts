@@ -128,7 +128,7 @@ export class ProductsService {
       where: eq(vendors.id, vendorId),
     });
     const commissionRate = vendor?.commissionRate || 15;
-    const commissionFixed = vendor?.commissionFixed || 0;
+    const commissionFixed = 0; // vendor?.commissionFixed || 0;
 
     const vendorPrice = parseFloat(data.price || '0');
     // Final Price = (Vendor Price * (1 + Commission%)) + Fixed Commission
@@ -263,7 +263,7 @@ export class ProductsService {
           status: 'approved',
           isActive: true,
           commissionRate: 20, // Default higher commission for customers
-          commissionFixed: 0,
+          // commissionFixed: 0,
         })
         .returning();
       vendor = newVendor;
@@ -508,7 +508,7 @@ export class ProductsService {
 
     // Calculate Price with Commission
     const commissionRate = vendor?.commissionRate || 15;
-    const commissionFixed = vendor?.commissionFixed || 0;
+    const commissionFixed = 0; // vendor?.commissionFixed || 0;
 
     const vendorPrice = parseFloat(
       data.price || (product as any).price?.toString() || '0',
