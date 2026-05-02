@@ -1085,7 +1085,7 @@ export default function AdminDashboard() {
 
                   {/* Mobile Product Cards */}
                   <div className="md:hidden space-y-4 p-4">
-                    {products?.map((product: any) => (
+                    {(Array.isArray(products) ? products : []).map((product: any) => (
                       <Card key={product.id} className="border border-gray-100 shadow-sm rounded-2xl overflow-hidden">
                         <CardContent className="p-4 space-y-3">
                           <div className="flex justify-between items-start">
@@ -1152,7 +1152,7 @@ export default function AdminDashboard() {
                             </tr>
                           ))
                         ) : (
-                          products?.map((product: any) => (
+                          {(Array.isArray(products) ? products : []).map((product: any) => (
                             <tr key={product.id} className="border-b border-gray-200 hover:bg-gray-50">
                               <td className="py-3 px-6 text-gray-900 font-medium text-start">
                                 {product.nameAr} / {product.nameEn}
@@ -1213,7 +1213,7 @@ export default function AdminDashboard() {
                 <CardContent className="p-0">
                   {/* Mobile Order Cards */}
                   <div className="md:hidden space-y-4 p-4">
-                    {adminOrders?.filter((o: any) => o.paymentStatus === 'paid').map((order: any) => (
+                    {(Array.isArray(adminOrders) ? adminOrders : []).filter((o: any) => o.paymentStatus === 'paid').map((order: any) => (
                       <Card key={order.id} className="border border-rose-100 shadow-sm rounded-2xl overflow-hidden bg-white">
                         <CardContent className="p-4 space-y-3">
                           <div className="flex justify-between items-start">
@@ -1261,7 +1261,7 @@ export default function AdminDashboard() {
                         </tr>
                       </thead>
                       <tbody>
-                        {adminOrders?.filter((o: any) => o.paymentStatus === 'paid').map((order: any) => (
+                        {(Array.isArray(adminOrders) ? adminOrders : []).filter((o: any) => o.paymentStatus === 'paid').map((order: any) => (
                           <tr key={order.id} className="border-b border-slate-50 hover:bg-slate-50/50 transition-colors">
                             <td className="py-4 px-6 font-bold text-slate-900 text-start">{order.orderNumber}</td>
                             <td className="py-4 px-6 text-slate-600 font-medium text-start">{order.customerName || `${t('customer')} #${order.customerId}`}</td>
@@ -1529,7 +1529,7 @@ export default function AdminDashboard() {
                 </div>
                 <CardContent className="p-0">
                   <div className="divide-y divide-slate-50">
-                    {adminConversations?.map((conv: any) => (
+                    {(Array.isArray(adminConversations) ? adminConversations : []).map((conv: any) => (
                       <div key={conv.id} className="p-4 flex items-center justify-between hover:bg-slate-50 transition-colors cursor-pointer group">
                         <div className="flex items-center gap-4">
                           <div className="flex -space-x-3 rtl:space-x-reverse">
