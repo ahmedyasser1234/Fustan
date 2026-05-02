@@ -279,7 +279,7 @@ export class PixVerseService {
         await this.databaseService.db
           .update(schema.products)
           .set({
-            // aiQualifiedImage: resultUrl,
+          aiQualifiedImage: resultUrl,
             images: [
               resultUrl,
               ...currentImages.filter((img) => img !== resultUrl),

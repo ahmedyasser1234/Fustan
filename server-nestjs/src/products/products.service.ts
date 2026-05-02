@@ -382,7 +382,7 @@ export class ProductsService {
           totalReviews: vendors.totalReviews,
           shippingCost: vendors.shippingCost,
           commissionRate: vendors.commissionRate,
-          commissionFixed: vendors.commissionFixed,
+          // commissionFixed: vendors.commissionFixed, // NOT in production DB
           userId: vendors.userId,
         },
         collection: {
