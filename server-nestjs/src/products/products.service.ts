@@ -45,6 +45,7 @@ export class ProductsService {
     }
 
     const categoryId = data.categoryId ? parseInt(data.categoryId) : null;
+    const collectionId = data.collectionId ? parseInt(data.collectionId) : null;
 
     if (isNaN(vendorId)) {
       throw new BadRequestException('Invalid vendor ID');
@@ -106,11 +107,13 @@ export class ProductsService {
       .map((r) => (r as any).secure_url);
     pointer += mainFiles.length;
 
+    /*
     let aiQualifiedImageUrl: string | null = null;
     if (aiFile) {
       aiQualifiedImageUrl = (uploadResults[pointer] as any).secure_url;
       pointer += 1;
     }
+    */
 
     const variantImageMap: Record<number, string[]> = {};
     const variantResults = uploadResults.slice(pointer);
@@ -210,11 +213,13 @@ export class ProductsService {
     });
 
     // 7. Background AI Task (Non-blocking)
+    /*
     if (aiQualifiedImageUrl) {
       this.pixVerseService
         .createBackgroundChangeTask(newProduct.id, aiQualifiedImageUrl)
         .catch((err) => console.error('   - ❌ PixVerse failed:', err));
     }
+    */
 
     console.log(
       '✅ [Products Service] Create completed for product:',
@@ -268,7 +273,7 @@ export class ProductsService {
     const productData = {
       ...data,
       vendorId: vendor.id,
-      isCustomerListing: true,
+      // isCustomerListing: true,
       isActive: true, // Show immediately
     };
 
@@ -471,7 +476,7 @@ export class ProductsService {
     }
 
     // Upload AI-Ready Image if provided
-    let aiQualifiedImageUrl = product.aiQualifiedImage;
+    let aiQualifiedImageUrl = null;
     const aiFile = files?.find((f) => f.fieldname === 'aiQualifiedImage');
     if (aiFile) {
       const result = await this.cloudinary.uploadFile(aiFile);
@@ -505,7 +510,7 @@ export class ProductsService {
     const commissionFixed = vendor?.commissionFixed || 0;
 
     const vendorPrice = parseFloat(
-      data.price || product.vendorPrice?.toString() || '0',
+      data.price || (product as any).price?.toString() || '0',
     );
     const finalPrice =
       vendorPrice * (1 + commissionRate / 100) + commissionFixed;
@@ -529,15 +534,24 @@ export class ProductsService {
       const [updatedProduct] = await tx
         .update(products)
         .set({
-          ...data,
+          categoryId,
+          collectionId,
+          nameAr: data.nameAr,
+          nameEn: data.nameEn,
+          descriptionAr: data.descriptionAr,
+          descriptionEn: data.descriptionEn,
+          shortDescription: data.shortDescription,
+          price: finalPrice,
+          originalPrice,
+          discount: parseFloat(data.discount || '0'),
           sku: data.sku,
-          tags: tagsArr,
+          stock: totalStock,
+          images: imageUrls,
+          specifications: data.specifications,
           cutType: data.cutType,
           bodyShape: data.bodyShape,
           impression: data.impression,
           occasion: data.occasion,
-          images: imageUrls,
-          aiQualifiedImage: aiQualifiedImageUrl,
           isActive: data.isActive === 'true' || data.isActive === true,
           isFeatured: data.isFeatured === 'true' || data.isFeatured === true,
           sizes: sizesArr,
@@ -609,9 +623,10 @@ export class ProductsService {
       }
 
       // Handle AI Background Change automatically if AI-Ready image is updated
+      /*
       if (
         aiQualifiedImageUrl &&
-        aiQualifiedImageUrl !== product.aiQualifiedImage
+        aiQualifiedImageUrl !== (product as any).aiQualifiedImage
       ) {
         try {
           console.log(
@@ -621,10 +636,11 @@ export class ProductsService {
             id,
             aiQualifiedImageUrl,
           );
-        } catch (error) {
-          console.error('   - ❌ Automatic PixVerse trigger failed:', error);
+        } catch (err) {
+          console.error('   - ❌ PixVerse failed:', err);
         }
       }
+      */
 
       return updatedProduct;
     });
