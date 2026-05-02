@@ -37,9 +37,11 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
         return (translations[language] as any)[key] || key;
     };
 
-    const formatPrice = (amount: number | string) => {
+    const formatPrice = (amount: number | string | null | undefined) => {
+        if (amount === null || amount === undefined) return language === 'ar' ? `0.00 ر.س` : `0.00 R.S`;
         const num = typeof amount === 'string' ? parseFloat(amount) : amount;
-        const formatted = (num || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        const safeNum = isNaN(num) ? 0 : num;
+        const formatted = safeNum.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         return language === 'ar' ? `${formatted} ر.س` : `${formatted} R.S`;
     };
 

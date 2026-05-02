@@ -47,8 +47,8 @@ export default function Products() {
     retry: 1,
   });
 
-  // Derived state for UI
-  const productData = (products as any[]) || [];
+  // Derived state for UI with strict array check
+  const productData = Array.isArray(products) ? products : [];
 
   // Filter & Sort
   const filteredProducts = useMemo(() => {
@@ -80,7 +80,8 @@ export default function Products() {
   const visibleProducts = filteredProducts.slice(0, displayCount);
 
   // Get active hero data
-  const currentCategory = categories?.find((c: any) => c.id === selectedCategory);
+  // Get active hero data safely
+  const currentCategory = Array.isArray(categories) ? categories.find((c: any) => c.id === selectedCategory) : null;
 
   const heroTitle = currentCategory
       ? (language === 'ar' ? (currentCategory.nameAr || currentCategory.name) : (currentCategory.nameEn || currentCategory.name))
@@ -91,7 +92,7 @@ export default function Products() {
   // Nav Items
   const navItems = [
     { id: 0, name: t('all'), isActive: !selectedCategory, onClick: () => { setSelectedCategory(undefined); } },
-    ...(categories as any[] || []).map((cat: any) => ({
+    ...(Array.isArray(categories) ? categories : []).map((cat: any) => ({
       id: cat.id,
       name: language === 'ar' ? (cat.nameAr || cat.name) : (cat.nameEn || cat.name),
       isActive: selectedCategory === cat.id,
@@ -99,7 +100,7 @@ export default function Products() {
     }))
   ];
 
-  const topRated = productData.sort((a, b) => b.rating - a.rating).slice(0, 3);
+  const topRated = Array.isArray(productData) ? [...productData].sort((a, b) => (b.rating || 0) - (a.rating || 0)).slice(0, 3) : [];
 
   return (
     <div className="min-h-screen bg-white pb-20">

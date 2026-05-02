@@ -31,7 +31,9 @@ export function ProductCard({ product, index = 0, loading = false, onQuickView }
         staleTime: 5 * 60 * 1000,
     });
 
-    const isFavorite = wishlistItems?.some((item: any) => item.productId === product.id);
+    if (!product) return null;
+
+    const isFavorite = Array.isArray(wishlistItems) && wishlistItems.some((item: any) => item.productId === product.id);
 
     const toggleWishlistMutation = useMutation({
         mutationFn: () => isFavorite

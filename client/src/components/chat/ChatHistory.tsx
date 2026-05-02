@@ -185,7 +185,15 @@ export function ChatHistory({ isOpen, onOpenChange }: ChatHistoryProps) {
                                                     </p>
                                                     <span className="text-[10px] text-slate-300">•</span>
                                                     <span className="text-[10px] text-slate-300 whitespace-nowrap">
-                                                        {formatDistanceToNow(new Date(conv.lastMessageTime), { addSuffix: true, locale: ar })}
+                                                        {(() => {
+                                                            try {
+                                                                const date = new Date(conv.lastMessageTime);
+                                                                if (isNaN(date.getTime())) return '';
+                                                                return formatDistanceToNow(date, { addSuffix: true, locale: ar });
+                                                            } catch (e) {
+                                                                return '';
+                                                            }
+                                                        })()}
                                                     </span>
                                                 </div>
                                             </div>

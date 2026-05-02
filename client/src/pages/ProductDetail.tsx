@@ -209,7 +209,7 @@ export default function ProductDetail() {
   const handleSizeQtyChange = (size: string, delta: number) => {
     setSizeQuantities(prev => {
       const current = prev[size] || 0;
-      const maxStock = product.sizes?.find((s: any) => s.size === size)?.quantity || 0;
+      const maxStock = product?.sizes?.find((s: any) => s.size === size)?.quantity || 0;
       const next = Math.max(0, Math.min(maxStock, current + delta));
       return { ...prev, [size]: next };
     });
@@ -223,7 +223,7 @@ export default function ProductDetail() {
       return;
     }
 
-    if (product.sizes && product.sizes.length > 0) {
+    if (product?.sizes && product.sizes.length > 0) {
       if (totalSelectedItems === 0) {
         toast.error(language === 'ar' ? "الرجاء اختيار الكمية والمقاس" : "Please select quantity and size");
         return;
@@ -330,15 +330,15 @@ export default function ProductDetail() {
 
   if (!productData) return null;
 
-  const product = productData.product;
-  const vendor = productData.vendor;
-  const collection = productData.collection;
-  const category = productData.category;
-  const colors = productData.colors || [];
+  const product = productData?.product || productData;
+  const vendor = productData?.vendor;
+  const collection = productData?.collection;
+  const category = productData?.category;
+  const colors = productData?.colors || [];
 
   const galleryImages = (selectedColor && selectedColor.images && selectedColor.images.length > 0)
     ? selectedColor.images
-    : (product.images?.slice(1) || []);
+    : (product?.images?.slice(1) || []);
 
   const displayImage = galleryImages[selectedImage] || galleryImages[0] || (product.images?.[0]);
 

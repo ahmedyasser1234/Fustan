@@ -248,7 +248,7 @@ export function ChatWidget({ vendorId, recipientId: explicitRecipientId, vendorN
                     <div className="relative">
                         <Avatar className="w-8 h-8 border border-gray-100">
                             <AvatarImage src={vendorLogo} />
-                            <AvatarFallback>{vendorName[0]}</AvatarFallback>
+                            <AvatarFallback>{(vendorName || '?')[0]}</AvatarFallback>
                         </Avatar>
                         {isRecipientOnline && (
                             <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full"></span>
@@ -274,7 +274,7 @@ export function ChatWidget({ vendorId, recipientId: explicitRecipientId, vendorN
                     <div className="relative">
                         <Avatar className="w-10 h-10 border-2 border-white/20 shadow-sm">
                             <AvatarImage src={vendorLogo} />
-                            <AvatarFallback className="text-rose-600 bg-white font-bold">{vendorName[0]}</AvatarFallback>
+                            <AvatarFallback className="text-rose-600 bg-white font-bold">{(vendorName || '?')[0]}</AvatarFallback>
                         </Avatar>
                         {isRecipientOnline && (
                             <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-400 border-2 border-rose-600 rounded-full shadow-sm animate-pulse"></span>
