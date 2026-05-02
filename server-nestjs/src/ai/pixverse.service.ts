@@ -112,7 +112,7 @@ export class PixVerseService {
           where: eq(schema.categories.id, product.categoryId),
         },
       );
-      backgroundUrl = category?.aiBackgroundImage;
+      backgroundUrl = null; // aiBackgroundImage column not yet in production DB
     }
 
     this.logger.log(
