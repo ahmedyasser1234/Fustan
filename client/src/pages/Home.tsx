@@ -342,7 +342,7 @@ export default function Home() {
               ref={featuredRef}
               className="flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-10 overflow-x-auto no-scrollbar pb-8 md:pb-0 px-2 md:px-0 -mx-2 md:mx-0 items-stretch scroll-smooth"
             >
-            {(featuredLoading ? Array(4).fill({}) : (featuredProducts as any[] || [])).map((product: any, i: number) => (
+            {(featuredLoading ? Array(4).fill({}) : (Array.isArray(featuredProducts) ? featuredProducts : [])).map((product: any, i: number) => (
               featuredLoading ? (
                 <div key={i} className="space-y-6 w-[46%] flex-shrink-0 md:w-auto">
                   <Skeleton className="aspect-[2/3] w-full rounded-[40px]" />
@@ -420,7 +420,7 @@ export default function Home() {
 
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-10">
             {((!Array.isArray(categories) || categories.length === 0) ? Array(3).fill({}) : categories.filter(cat => ['فساتين زفاف', 'فساتين سهرة', 'فساتين غمرة'].includes(cat.nameAr)).slice(0, 4)).map((category: any, i: number) => (
-              (!categories || (categories as any[]).length === 0) ? (
+              (!Array.isArray(categories) || categories.length === 0) ? (
                 <Skeleton key={i} className="aspect-[3/4] md:aspect-[2/3] w-full rounded-[20px] md:rounded-[40px]" />
               ) : (
                 <motion.div
@@ -582,7 +582,7 @@ export default function Home() {
                   ref={trendingRef}
                   className="flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-8 overflow-x-auto no-scrollbar pb-8 md:pb-0 px-2 md:px-0 -mx-2 md:mx-0 scroll-smooth"
                 >
-                  {(productsLoading ? Array(8).fill({}) : (products as any[] || [])).map((product: any, i: number) => (
+                  {(productsLoading ? Array(8).fill({}) : (Array.isArray(products) ? products : [])).map((product: any, i: number) => (
                     <div key={i} className="w-[46%] flex-shrink-0 md:w-auto">
                       <ProductCard product={product} loading={productsLoading} onQuickView={setQuickViewProduct} />
                     </div>
@@ -625,7 +625,7 @@ export default function Home() {
           </motion.div>
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-10">
-            {(communityLoading ? Array(4).fill({}) : (communityProducts as any[] || [])).map((product: any, i: number) => (
+            {(communityLoading ? Array(4).fill({}) : (Array.isArray(communityProducts) ? communityProducts : [])).map((product: any, i: number) => (
               <div key={i}>
                 <ProductCard product={product} loading={communityLoading} onQuickView={setQuickViewProduct} />
               </div>
@@ -681,7 +681,7 @@ export default function Home() {
                   <Skeleton key={i} className="aspect-[3/4] w-[46%] flex-shrink-0 md:w-auto rounded-[45px]" />
                 ))
               ) : (
-                (newArrivals as any[] || []).map((product: any, i: number) => (
+                (Array.isArray(newArrivals) ? newArrivals : []).map((product: any, i: number) => (
                   <motion.div
                     key={product.id}
                     initial={{ opacity: 0, y: 50 }}
@@ -917,7 +917,7 @@ export default function Home() {
             </div>
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-              {(socialFeedData as any[] || []).map((item: any, i: number) => (
+              {(Array.isArray(socialFeedData) ? socialFeedData : []).map((item: any, i: number) => (
                 <a
                   key={i}
                   href={item.data.link}
