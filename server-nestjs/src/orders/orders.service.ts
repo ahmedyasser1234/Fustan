@@ -306,7 +306,7 @@ export class OrdersService {
             .select({
               shippingCost: vendors.shippingCost,
               commissionRate: vendors.commissionRate,
-              commissionFixed: vendors.commissionFixed,
+              // commissionFixed: vendors.commissionFixed,
             })
             .from(vendors)
             .where(eq(vendors.id, vendorId))
@@ -315,7 +315,7 @@ export class OrdersService {
           if (vendorData.length > 0) {
             shippingCost = vendorData[0].shippingCost;
             commissionRate = vendorData[0].commissionRate || 0;
-            const commissionFixed = vendorData[0].commissionFixed || 0;
+            const commissionFixed = 0; // vendorData[0].commissionFixed || 0;
 
             // Calculate total items in this order group to apply fixed commission per item
             const totalItemsCount = group.items.reduce(

@@ -307,7 +307,7 @@ export class AdminService {
           cityAr: data.city,
           cityEn: data.city,
           commissionRate: data.commissionRate ?? 10, // Default 10% for professional vendors
-          commissionFixed: data.commissionFixed ?? 0,
+          // commissionFixed: data.commissionFixed ?? 0,
           status: 'approved', // Auto-approve admin-created vendors
         })
         .returning();
@@ -472,7 +472,7 @@ export class AdminService {
 
       // Recalculate all product prices for this vendor
       const rateMultiplier = 1 + commissionRate / 100;
-      const commissionFixed = updated.commissionFixed || 0;
+      const commissionFixed = 0; // updated.commissionFixed || 0;
 
       // We use sql helper for dynamic calculation in update
       // Final Price = (Vendor Price * (1 + Commission%)) + Fixed Commission
@@ -493,7 +493,7 @@ export class AdminService {
     return await this.databaseService.db.transaction(async (tx) => {
       const [updated] = await tx
         .update(vendors)
-        .set({ commissionFixed, updatedAt: new Date() })
+        .set({ updatedAt: new Date() /* commissionFixed */ })
         .where(eq(vendors.id, vendorId))
         .returning();
 
