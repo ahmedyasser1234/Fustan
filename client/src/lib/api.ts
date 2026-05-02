@@ -25,8 +25,10 @@ api.interceptors.response.use(
     (response) => response,
     (error) => {
         if (error.response?.status === 401) {
-            // Broadcast event to clear auth state
-            window.dispatchEvent(new Event('fustan-unauthorized'));
+            // Don't broadcast for /auth/me to prevent potential loops
+            if (!error.config?.url?.includes('/auth/me')) {
+                window.dispatchEvent(new Event('fustan-unauthorized'));
+            }
         }
         return Promise.reject(error);
     }
