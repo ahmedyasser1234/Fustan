@@ -38,11 +38,13 @@ export default function Notifications() {
   const queryClient = useQueryClient();
   const [filter, setFilter] = useState<"all" | "unread">("all");
 
-  const { data: notifications = [], isLoading } = useQuery({
+  const { data: notificationsData, isLoading } = useQuery({
     queryKey: ['notifications'],
     queryFn: () => endpoints.notifications.list(),
     enabled: !!user,
   });
+
+  const notifications = Array.isArray(notificationsData) ? notificationsData : [];
 
   const markAsReadMutation = useMutation({
     mutationFn: (id: number) => endpoints.notifications.markAsRead(id),

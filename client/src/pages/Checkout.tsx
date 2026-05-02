@@ -88,7 +88,7 @@ export default function Checkout() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const items = (cartItems as any[]) || [];
+  const items = Array.isArray(cartItems) ? cartItems : [];
   const subtotal = items.reduce((total: number, item: any) => total + (item.quantity * Number(item.product?.price || 0)), 0);
 
   // --- Automatic Discount Logic (Duplicated from Cart.tsx) ---
