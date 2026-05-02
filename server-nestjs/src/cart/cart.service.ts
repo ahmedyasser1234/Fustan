@@ -66,7 +66,7 @@ export class CartService {
           eq(cartItems.customerId, customerId),
           eq(cartItems.productId, productId),
           size ? eq(cartItems.size, size) : isNull(cartItems.size),
-          color ? eq(cartItems.color, color) : isNull(cartItems.color),
+          // color ? eq(cartItems.color, color) : isNull(cartItems.color),
         ),
       )
       .limit(1);
@@ -86,7 +86,7 @@ export class CartService {
       productId,
       quantity,
       size,
-      color,
+      // color,
     });
   }
 

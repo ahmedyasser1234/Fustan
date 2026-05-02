@@ -161,31 +161,38 @@ export class ProductsService {
 
     // 6. Save to Database
     const newProduct = await this.databaseService.db.transaction(async (tx) => {
+      // Clean data object to only include safe columns
+      const safeData = {
+        vendorId,
+        collectionId,
+        categoryId,
+        nameAr: data.nameAr,
+        nameEn: data.nameEn,
+        slug,
+        descriptionAr: data.descriptionAr,
+        descriptionEn: data.descriptionEn,
+        shortDescription: data.shortDescription,
+        price: finalPrice,
+        originalPrice,
+        discount: parseFloat(data.discount || '0'),
+        sku: data.sku,
+        stock: totalStock,
+        images: mainImageUrls,
+        specifications: data.specifications,
+        cutType: data.cutType,
+        bodyShape: data.bodyShape,
+        impression: data.impression,
+        occasion: data.occasion,
+        rating: 0,
+        reviewCount: 0,
+        isActive: true,
+        isFeatured: data.isFeatured === 'true' || data.isFeatured === true,
+        sizes: sizesArr,
+      };
+
       const [insertedProduct] = await tx
         .insert(products)
-        .values({
-          ...data,
-          slug,
-          vendorId,
-          categoryId,
-          images: mainImageUrls,
-          aiQualifiedImage: aiQualifiedImageUrl,
-          discount: parseFloat(data.discount || '0'),
-          vendorPrice,
-          vendorOriginalPrice: parseFloat(
-            data.originalPrice || data.price || '0',
-          ),
-          price: finalPrice,
-          originalPrice,
-          rentPrice,
-          salePrice,
-          availability: data.availability || 'sale',
-          condition: data.condition || 'new',
-          usageCount: parseInt(data.usageCount || '0'),
-          usagePrices: usagePricesArr,
-          stock: totalStock,
-          sizes: sizesArr,
-        })
+        .values(safeData)
         .returning();
 
       if (Array.isArray(colorVariantsArr)) {
@@ -531,25 +538,9 @@ export class ProductsService {
           occasion: data.occasion,
           images: imageUrls,
           aiQualifiedImage: aiQualifiedImageUrl,
-          stock: totalStock,
+          isActive: data.isActive === 'true' || data.isActive === true,
+          isFeatured: data.isFeatured === 'true' || data.isFeatured === true,
           sizes: sizesArr,
-          categoryId: categoryId || product.categoryId,
-          vendorPrice: vendorPrice,
-          vendorOriginalPrice: parseFloat(
-            data.originalPrice || vendorPrice.toString(),
-          ),
-          price: finalPrice,
-          originalPrice:
-            parseFloat(data.originalPrice || vendorPrice.toString()) *
-            (1 + commissionRate / 100),
-          rentPrice: finalRentPrice,
-          salePrice: finalSalePrice,
-          availability: data.availability || product.availability,
-          condition: data.condition || product.condition,
-          usageCount: parseInt(
-            data.usageCount || product.usageCount?.toString() || '0',
-          ),
-          usagePrices: usagePricesArr || product.usagePrices,
           updatedAt: new Date(),
         })
         .where(eq(products.id, id))
