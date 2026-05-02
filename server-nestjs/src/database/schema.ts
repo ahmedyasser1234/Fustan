@@ -46,7 +46,7 @@ export const vendors = pgTable(
     descriptionEn: text('descriptionEn'),
     logo: text('logo'),
     banner: text('banner'),
-    coverImage: text('coverImage'),
+    // coverImage: text('coverImage'),
     email: text('email').notNull(),
     phone: text('phone'),
     addressAr: text('addressAr'),
@@ -121,7 +121,7 @@ export const categories = pgTable('categories', {
   parentId: integer('parentId'),
   isActive: boolean('isActive').default(true),
   displayOrder: integer('displayOrder').default(0),
-  aiBackgroundImage: text('aiBackgroundImage'),
+  // aiBackgroundImage: text('aiBackgroundImage'),
   createdAt: timestamp('createdAt').defaultNow().notNull(),
   updatedAt: timestamp('updatedAt').defaultNow().notNull(),
 });
