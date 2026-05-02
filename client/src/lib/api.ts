@@ -20,9 +20,20 @@ api.interceptors.request.use(
     }
 );
 
-// Add a response interceptor to handle 401 errors
+// Add a response interceptor to handle 401 errors and unwrap API envelope
 api.interceptors.response.use(
-    (response) => response,
+    (response) => {
+        // Unwrap NestJS TransformInterceptor envelope: { success, statusCode, message, data }
+        if (
+            response.data &&
+            typeof response.data === 'object' &&
+            'success' in response.data &&
+            'data' in response.data
+        ) {
+            response.data = response.data.data;
+        }
+        return response;
+    },
     (error) => {
         if (error.response?.status === 401) {
             // Don't broadcast for /auth/me to prevent potential loops
