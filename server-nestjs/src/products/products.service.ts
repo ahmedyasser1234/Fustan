@@ -13,7 +13,7 @@ import {
   productColors,
   users,
 } from '../database/schema';
-import { eq, and, like, desc, or, SQL } from 'drizzle-orm';
+import { eq, and, like, desc, or, SQL, inArray } from 'drizzle-orm';
 import { CloudinaryService } from '../media/cloudinary.provider';
 import { PixVerseService } from '../ai/pixverse.service';
 
@@ -333,7 +333,7 @@ export class ProductsService {
       const allColors = await this.databaseService.db
         .select()
         .from(productColors)
-        .where(or(...productIds.map((id) => eq(productColors.productId, id))));
+        .where(inArray(productColors.productId, productIds));
 
       allColors.forEach((c) => {
         if (!colorsMap.has(c.productId)) {

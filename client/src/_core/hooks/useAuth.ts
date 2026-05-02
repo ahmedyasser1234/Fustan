@@ -26,7 +26,6 @@ export function useAuth(options?: UseAuthOptions) {
   useEffect(() => {
     const handleUnauthorized = () => {
       queryClient.setQueryData(['auth', 'me'], null);
-      queryClient.invalidateQueries({ queryKey: ['auth', 'me'] });
       if (typeof window !== "undefined") {
         localStorage.removeItem('app_token');
       }
