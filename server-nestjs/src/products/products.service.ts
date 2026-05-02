@@ -303,9 +303,11 @@ export class ProductsService {
       conditions.push(eq(products.collectionId, collectionId));
     }
 
+    /*
     if (isCustomerListing !== undefined) {
       conditions.push(eq(products.isCustomerListing, isCustomerListing));
     }
+    */
 
     try {
       const foundProducts = await this.databaseService.db

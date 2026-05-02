@@ -166,7 +166,7 @@ export const products = pgTable(
     reviewCount: integer('reviewCount').default(0),
     isActive: boolean('isActive').default(true),
     isFeatured: boolean('isFeatured').default(false),
-    isCustomerListing: boolean('isCustomerListing').default(false),
+    // isCustomerListing: boolean('isCustomerListing').default(false),
     aiQualifiedImage: text('aiQualifiedImage'),
     tags: jsonb('tags').$type<string[]>(),
     createdAt: timestamp('createdAt').defaultNow().notNull(),
