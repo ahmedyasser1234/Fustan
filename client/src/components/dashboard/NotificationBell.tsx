@@ -110,7 +110,7 @@ export default function NotificationBell() {
         }
     });
 
-    const notifications = notificationsData || [];
+    const notifications = Array.isArray(notificationsData) ? notificationsData : [];
     const unreadCount = unreadData?.count || 0;
 
     const handleNotificationClick = (notification: any) => {

@@ -134,7 +134,9 @@ export function ChatWidget({ vendorId, recipientId: explicitRecipientId, vendorN
 
             if (existing) {
                 setConversationId(existing.id);
-                endpoints.chat.getMessages(existing.id).then(setMessages);
+                endpoints.chat.getMessages(existing.id).then(res => {
+                    setMessages(Array.isArray(res) ? res : []);
+                });
             } else {
                 setConversationId(null);
                 setMessages([]);
@@ -305,7 +307,7 @@ export function ChatWidget({ vendorId, recipientId: explicitRecipientId, vendorN
                         <p className="text-sm">ابدأ المحادثة الآن</p>
                     </div>
                 ) : (
-                    messages.map((msg, idx) => {
+                    (Array.isArray(messages) ? messages : []).map((msg, idx) => {
                         const isMe = Number(msg.senderId) === Number(user?.id);
                         return (
                             <div key={idx} className={`flex ${isMe ? "justify-end" : "justify-start"}`}>

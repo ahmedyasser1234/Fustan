@@ -50,7 +50,7 @@ export default function OffersTab({ vendorId }: OffersTabProps) {
     });
 
     const filteredProducts = useMemo(() => {
-        if (!products) return [];
+        if (!Array.isArray(products)) return [];
         return products.filter((p: any) =>
             (p.nameAr + p.nameEn).toLowerCase().includes(productSearch.toLowerCase())
         );
@@ -316,7 +316,7 @@ export default function OffersTab({ vendorId }: OffersTabProps) {
             </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {offers?.map((offer: any) => {
+                {(Array.isArray(offers) ? offers : []).map((offer: any) => {
                     const isUpcoming = (() => {
                         try {
                             return isAfter(new Date(offer.startDate), new Date());

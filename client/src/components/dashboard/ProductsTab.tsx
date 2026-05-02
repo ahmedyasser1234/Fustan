@@ -467,7 +467,7 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
 
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                {products?.map((product: any) => (
+                {(Array.isArray(products) ? products : []).map((product: any) => (
                     <Card
                         key={product.id}
                         className="group border-0 shadow-xl shadow-slate-100/50 rounded-[40px] overflow-hidden bg-white hover:scale-[1.02] transition-all duration-500 cursor-pointer"
@@ -826,7 +826,7 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
                                                         <SelectValue placeholder={language === 'ar' ? "اختر القسم" : "Select Category"} />
                                                     </SelectTrigger>
                                                     <SelectContent className="rounded-2xl shadow-xl border-slate-100">
-                                                        {categories?.map((c: any) => (
+                                                        {(Array.isArray(categories) ? categories : []).map((c: any) => (
                                                             <SelectItem key={c.id} value={c.id.toString()} className="font-bold py-3">
                                                                 {language === 'ar' ? c.nameAr : c.nameEn}
                                                             </SelectItem>

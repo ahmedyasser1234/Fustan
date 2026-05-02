@@ -230,7 +230,7 @@ export function CouponsTab({ vendorId }: { vendorId: number }) {
                                     </td>
                                 </tr>
                             ) : (
-                                coupons?.map((coupon: any) => {
+                                (Array.isArray(coupons) ? coupons : []).map((coupon: any) => {
                                     const status = getStatus(coupon);
                                     return (
                                         <tr key={coupon.id} className="hover:bg-gray-50/50 transition-colors group">
@@ -339,7 +339,7 @@ export function CouponsTab({ vendorId }: { vendorId: number }) {
                             </div>
                         </div>
                     ) : (
-                        coupons?.map((coupon: any) => {
+                        (Array.isArray(coupons) ? coupons : []).map((coupon: any) => {
                             const status = getStatus(coupon);
                             return (
                                 <div key={coupon.id} className="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm space-y-4">
