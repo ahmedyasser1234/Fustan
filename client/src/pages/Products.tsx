@@ -70,7 +70,13 @@ export default function Products() {
         case "price-low": return Number(a.price) - Number(b.price);
         case "price-high": return Number(b.price) - Number(a.price);
         case "rating": return Number(b.rating) - Number(a.rating);
-        default: return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+        default: {
+          const dateA = new Date(a.createdAt).getTime();
+          const dateB = new Date(b.createdAt).getTime();
+          if (isNaN(dateA)) return 1;
+          if (isNaN(dateB)) return -1;
+          return dateB - dateA;
+        }
       }
     });
 

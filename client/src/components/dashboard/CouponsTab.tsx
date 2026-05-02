@@ -252,7 +252,15 @@ export function CouponsTab({ vendorId }: { vendorId: number }) {
                                                             </button>
                                                         </div>
                                                         <span className="text-[10px] text-gray-400 font-medium">
-                                                            {language === 'ar' ? `أنشئ في ${format(new Date(coupon.createdAt), 'dd MMMM yyyy', { locale: ar })}` : `Created at ${format(new Date(coupon.createdAt), 'dd MMMM yyyy')}`}
+                                                            {(() => {
+                                                                try {
+                                                                    const date = new Date(coupon.createdAt);
+                                                                    if (isNaN(date.getTime())) return '';
+                                                                    return language === 'ar' 
+                                                                        ? `أنشئ في ${format(date, 'dd MMMM yyyy', { locale: ar })}` 
+                                                                        : `Created at ${format(date, 'dd MMMM yyyy')}`;
+                                                                } catch (e) { return ''; }
+                                                            })()}
                                                         </span>
                                                     </div>
                                                 </div>
@@ -353,7 +361,15 @@ export function CouponsTab({ vendorId }: { vendorId: number }) {
                                                     </button>
                                                 </div>
                                                 <span className="text-[10px] text-gray-400 font-medium block">
-                                                    {language === 'ar' ? `أنشئ في ${format(new Date(coupon.createdAt), 'dd MMMM yyyy', { locale: ar })}` : `Created at ${format(new Date(coupon.createdAt), 'dd MMMM yyyy')}`}
+                                                    {(() => {
+                                                        try {
+                                                            const date = new Date(coupon.createdAt);
+                                                            if (isNaN(date.getTime())) return '';
+                                                            return language === 'ar' 
+                                                                ? `أنشئ في ${format(date, 'dd MMMM yyyy', { locale: ar })}` 
+                                                                : `Created at ${format(date, 'dd MMMM yyyy')}`;
+                                                        } catch (e) { return ''; }
+                                                    })()}
                                                 </span>
                                             </div>
                                         </div>

@@ -173,7 +173,15 @@ export default function NotificationBell() {
                                         {notification.message}
                                     </p>
                                     <span className="text-[10px] font-black text-slate-300">
-                                        {formatDistanceToNow(new Date(notification.createdAt), { addSuffix: true, locale: language === 'ar' ? ar : undefined })}
+                                        {(() => {
+                                            try {
+                                                const date = new Date(notification.createdAt);
+                                                if (isNaN(date.getTime())) return '';
+                                                return formatDistanceToNow(date, { addSuffix: true, locale: language === 'ar' ? ar : undefined });
+                                            } catch (e) {
+                                                return '';
+                                            }
+                                        })()}
                                     </span>
                                 </div>
                             ))}

@@ -201,7 +201,13 @@ function VendorCard({ vendor, onApprove, onReject, isPending }: any) {
                                 </div>
                                 <div className="flex items-center gap-2 text-slate-300">
                                     <Calendar className="w-4 h-4" />
-                                    {format(new Date(vendor.createdAt), "dd MMM yyyy", { locale: language === 'ar' ? ar : undefined })}
+                                    {(() => {
+                                        try {
+                                            const date = new Date(vendor.createdAt);
+                                            if (isNaN(date.getTime())) return '';
+                                            return format(date, "dd MMM yyyy", { locale: language === 'ar' ? ar : undefined });
+                                        } catch (e) { return ''; }
+                                    })()}
                                 </div>
                             </div>
                         </div>
@@ -348,7 +354,13 @@ function RequestCard({ request, onApprove, onReject, isPending, categories }: an
                             {request.scheduledAt && (
                                 <div className="flex items-center gap-1.5 px-3 py-1.5 bg-orange-50 text-orange-600 rounded-lg">
                                     <Calendar className="w-3.5 h-3.5" />
-                                    <span>{language === 'ar' ? "مجدول بتاريخ: " : "SCHEDULED: "}{format(new Date(request.scheduledAt), "dd/MM/yyyy HH:mm")}</span>
+                                    <span>{language === 'ar' ? "مجدول بتاريخ: " : "SCHEDULED: "}{(() => {
+                                        try {
+                                            const date = new Date(request.scheduledAt);
+                                            if (isNaN(date.getTime())) return '';
+                                            return format(date, "dd/MM/yyyy HH:mm");
+                                        } catch (e) { return ''; }
+                                    })()}</span>
                                 </div>
                             )}
                         </div>

@@ -335,10 +335,18 @@ export function ChatWidget({ vendorId, recipientId: explicitRecipientId, vendorN
                                         )}
                                     </div>
                                     <span className={cn(
-                                        "text-[10px] mt-1.5 font-bold opacity-0 group-hover:opacity-100 transition-opacity",
+                                        "text-[10px] mt-1.5 font-bold",
                                         isMe ? "text-rose-400 self-end" : "text-gray-400 self-start"
                                     )}>
-                                        {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                        {(() => {
+                                            try {
+                                                const date = new Date(msg.createdAt);
+                                                if (isNaN(date.getTime())) return '';
+                                                return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                                            } catch (e) {
+                                                return '';
+                                            }
+                                        })()}
                                     </span>
                                 </div>
                             </div>

@@ -143,7 +143,15 @@ export default function SocialTab() {
                                     <div className="flex items-center gap-2 text-slate-400">
                                         <Calendar className="w-4 h-4" />
                                         <span className="text-xs font-bold">
-                                            {request.scheduledAt ? format(new Date(request.scheduledAt), "dd/MM/yyyy") : (language === 'ar' ? "نشر فوري" : "Instant")}
+                                            {(() => {
+                                                try {
+                                                    const date = new Date(request.scheduledAt);
+                                                    if (isNaN(date.getTime())) return language === 'ar' ? "نشر فوري" : "Instant";
+                                                    return format(date, "dd/MM/yyyy");
+                                                } catch (e) {
+                                                    return language === 'ar' ? "نشر فوري" : "Instant";
+                                                }
+                                            })()}
                                         </span>
                                     </div>
                                     {request.status === 'approved' && (

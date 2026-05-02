@@ -219,13 +219,21 @@ export default function Notifications() {
                           {notification.title}
                         </h3>
                         <span className="text-xs text-gray-500">
-                          {new Date(notification.createdAt).toLocaleString("ar-SA", {
-                            year: "numeric",
-                            month: "short",
-                            day: "numeric",
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}
+                          {(() => {
+                            try {
+                              const date = new Date(notification.createdAt);
+                              if (isNaN(date.getTime())) return '';
+                              return date.toLocaleString(language === 'ar' ? "ar-SA" : "en-US", {
+                                year: "numeric",
+                                month: "short",
+                                day: "numeric",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              });
+                            } catch (e) {
+                              return '';
+                            }
+                          })()}
                         </span>
                       </div>
                       <p className="text-gray-700 mb-3">{notification.message}</p>

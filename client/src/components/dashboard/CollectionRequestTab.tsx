@@ -187,7 +187,15 @@ export default function CollectionRequestTab() {
                                     <div className="flex items-center gap-2 text-slate-300">
                                         <Calendar className="w-4 h-4" />
                                         <span className="text-xs font-bold">
-                                            {format(new Date(request.createdAt), "dd/MM/yyyy")}
+                                            {(() => {
+                                                try {
+                                                    const date = new Date(request.createdAt);
+                                                    if (isNaN(date.getTime())) return '';
+                                                    return format(date, "dd/MM/yyyy");
+                                                } catch (e) {
+                                                    return '';
+                                                }
+                                            })()}
                                         </span>
                                     </div>
                                     {request.adminNotes && (

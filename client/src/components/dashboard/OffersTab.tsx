@@ -119,8 +119,8 @@ export default function OffersTab({ vendorId }: OffersTabProps) {
         setDiscountPercent(offer.discountPercent.toString());
         setUsageLimit(offer.usageLimit ? offer.usageLimit.toString() : "");
         setMinQuantity(offer.minQuantity ? offer.minQuantity.toString() : "1");
-        setStartDate(format(new Date(offer.startDate), "yyyy-MM-dd"));
-        setEndDate(format(new Date(offer.endDate), "yyyy-MM-dd"));
+        setStartDate(offer.startDate ? format(new Date(offer.startDate), "yyyy-MM-dd") : "");
+        setEndDate(offer.endDate ? format(new Date(offer.endDate), "yyyy-MM-dd") : "");
         setSelectedProducts(offer.productIds || []);
         setIsFlashSale(offer.type === 'flash_sale');
         setIsCreateOpen(true);
@@ -317,8 +317,16 @@ export default function OffersTab({ vendorId }: OffersTabProps) {
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {offers?.map((offer: any) => {
-                    const isUpcoming = isAfter(new Date(offer.startDate), new Date());
-                    const isExpired = isBefore(new Date(offer.endDate), new Date());
+                    const isUpcoming = (() => {
+                        try {
+                            return isAfter(new Date(offer.startDate), new Date());
+                        } catch (e) { return false; }
+                    })();
+                    const isExpired = (() => {
+                        try {
+                            return isBefore(new Date(offer.endDate), new Date());
+                        } catch (e) { return false; }
+                    })();
                     const isActive = !isUpcoming && !isExpired;
                     const typeFlash = offer.type === 'flash_sale';
 
@@ -357,7 +365,14 @@ export default function OffersTab({ vendorId }: OffersTabProps) {
                                 </CardTitle>
                                 <CardDescription className="flex items-center gap-1.5 pt-2 text-slate-400 font-bold">
                                     <Clock className="w-3.5 h-3.5" />
-                                    {format(new Date(offer.startDate), 'dd MMM', { locale: ar })} - {format(new Date(offer.endDate), 'dd MMM', { locale: ar })}
+                                    {(() => {
+                                        try {
+                                            const start = new Date(offer.startDate);
+                                            const end = new Date(offer.endDate);
+                                            if (isNaN(start.getTime()) || isNaN(end.getTime())) return '';
+                                            return `${format(start, 'dd MMM', { locale: ar })} - ${format(end, 'dd MMM', { locale: ar })}`;
+                                        } catch (e) { return ''; }
+                                    })()}
                                 </CardDescription>
                             </CardHeader>
 

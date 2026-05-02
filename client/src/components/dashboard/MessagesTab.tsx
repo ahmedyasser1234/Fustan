@@ -227,7 +227,15 @@ export default function MessagesTab() {
                                             {conv.counterpartName}
                                         </h4>
                                         <span className="text-xs text-slate-400 font-medium whitespace-nowrap">
-                                            {formatDistanceToNow(new Date(conv.lastMessageTime), { addSuffix: true, locale: language === 'ar' ? ar : undefined })}
+                                            {(() => {
+                                                try {
+                                                    const date = new Date(conv.lastMessageTime);
+                                                    if (isNaN(date.getTime())) return '';
+                                                    return formatDistanceToNow(date, { addSuffix: true, locale: language === 'ar' ? ar : undefined });
+                                                } catch (e) {
+                                                    return '';
+                                                }
+                                            })()}
                                         </span>
                                     </div>
                                     <p className={cn("text-sm truncate leading-relaxed", conv.unread ? "text-primary font-bold" : "text-slate-400 font-medium")}>
@@ -312,7 +320,15 @@ export default function MessagesTab() {
                                             {isLastInGroup && (
                                                 <div className={cn("flex items-center gap-1.5 mt-1 px-1", isMe ? 'flex-row-reverse' : 'flex-row')}>
                                                     <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">
-                                                        {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                        {(() => {
+                                                            try {
+                                                                const date = new Date(msg.createdAt);
+                                                                if (isNaN(date.getTime())) return '';
+                                                                return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                                                            } catch (e) {
+                                                                return '';
+                                                            }
+                                                        })()}
                                                     </span>
                                                     {isMe && (
                                                         <span className={msg.isRead ? 'text-emerald-500' : 'text-slate-300'}>

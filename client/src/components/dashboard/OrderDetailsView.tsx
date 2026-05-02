@@ -82,7 +82,15 @@ export default function OrderDetailsView({ orderId, onClose }: OrderDetailsViewP
                             </h2>
                             <p className="text-slate-500 text-sm font-bold flex items-center gap-2 mt-1">
                                 <Calendar className="w-4 h-4" />
-                                {format(new Date(order.createdAt), "dd MMMM yyyy, h:mm a", { locale: language === 'ar' ? ar : undefined })}
+                                {(() => {
+                                    try {
+                                        const date = new Date(order.createdAt);
+                                        if (isNaN(date.getTime())) return '';
+                                        return format(date, "dd MMMM yyyy, h:mm a", { locale: language === 'ar' ? ar : undefined });
+                                    } catch (e) {
+                                        return '';
+                                    }
+                                })()}
                             </p>
                         </div>
                     </div>
