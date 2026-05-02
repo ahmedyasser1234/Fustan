@@ -113,7 +113,7 @@ export default function SellDress() {
       <SEO title={language === 'ar' ? "اعرض فستانك للبيع | فستان" : "Sell Your Dress | Fustan"} />
       
       {/* Hero Section */}
-      <section className="relative py-20 bg-slate-900 overflow-hidden">
+      <section className="relative min-h-[400px] pt-24 bg-slate-900 overflow-hidden">
         <div className="absolute inset-0 opacity-20">
           <img 
             src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=1600&q=80" 
@@ -129,7 +129,7 @@ export default function SellDress() {
             animate={{ opacity: 1, y: 0 }}
             className="max-w-3xl mx-auto space-y-6"
           >
-            <h1 className="text-4xl md:text-6xl font-black text-white leading-tight">
+            <h1 className="text-3xl md:text-5xl font-black text-white leading-tight">
               {language === 'ar' ? "حولي خزانة ملابسك إلى أرباح" : "Turn Your Wardrobe Into Profit"}
             </h1>
             <p className="text-xl text-slate-300 font-medium">

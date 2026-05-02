@@ -21,7 +21,7 @@ export default function AboutUs() {
                 description={language === 'ar' ? "تعرفي على قصة فستان ورؤيتنا في تقديم أرقى الأزياء." : "Learn about Fustan's story and our vision in providing the finest fashion."}
             />
             {/* Hero Section */}
-            <section className="relative h-[60vh] overflow-hidden flex items-center justify-center">
+            <section className="relative h-[60vh] min-h-[400px] pt-24 overflow-hidden flex items-center justify-center">
                 <div className="absolute inset-0">
                     <img
                         src="/about.png"
@@ -41,7 +41,7 @@ export default function AboutUs() {
                             <Badge className="bg-white/20 text-white hover:bg-white/30 backdrop-blur-md mb-6 border-white/30 px-6 py-2 text-sm font-bold uppercase tracking-[0.2em]">
                                 {language === 'ar' ? "قصتنا" : "Our Story"}
                             </Badge>
-                            <h1 className="text-3xl md:text-7xl font-black mb-4 md:mb-6 leading-tight">
+                            <h1 className="text-3xl md:text-5xl lg:text-6xl font-black mb-4 md:mb-6 leading-tight">
                                 {language === 'ar' ? "حيث تلتقي الفخامة" : "Where Luxury Meets"} <br />
                                 <span className="text-rose-200">{language === 'ar' ? "بالتقاليد العريقة" : "Timeless Traditions"}</span>
                             </h1>

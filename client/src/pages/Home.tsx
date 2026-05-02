@@ -231,8 +231,8 @@ export default function Home() {
           >
             <div className="flex flex-col items-start space-y-6">
               <h2 className="text-white leading-tight drop-shadow-2xl font-black w-full text-center sm:text-start">
-                <span className="text-xl sm:text-4xl lg:text-5xl block mb-1 lg:mb-2">{t(heroSlides[currentVideo].title1 as any)}</span>
-                <span className="text-3xl sm:text-6xl lg:text-7xl text-white/90 leading-[1.1] sm:leading-tight">{t(heroSlides[currentVideo].title2 as any)}</span>
+                <span className="text-lg sm:text-3xl lg:text-4xl block mb-1 lg:mb-2">{t(heroSlides[currentVideo].title1 as any)}</span>
+                <span className="text-2xl sm:text-5xl lg:text-6xl text-white/90 leading-[1.1] sm:leading-tight">{t(heroSlides[currentVideo].title2 as any)}</span>
               </h2>
 
               <p className="hidden sm:block text-lg lg:text-2xl text-white/95 max-w-xl leading-relaxed font-bold drop-shadow-md">

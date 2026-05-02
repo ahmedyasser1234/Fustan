@@ -100,7 +100,7 @@ export default function VendorProfile() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section with Banner */}
-      <div className="relative bg-gradient-to-r from-purple-600 to-blue-600 h-64 md:h-80">
+      <div className="relative bg-gradient-to-r from-purple-600 to-blue-600 h-80 md:h-[400px] pt-24">
         {(vendor?.coverImage || vendor?.banner) ? (
           <img
             src={vendor.coverImage || vendor.banner}

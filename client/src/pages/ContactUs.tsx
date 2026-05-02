@@ -30,7 +30,7 @@ export default function ContactUs() {
                 description={language === 'ar' ? "نحن هنا لمساعدتك. تواصلي معنا لأي استفسار بخصوص الفساتين أو حجز المواعيد." : "We're here to help. Contact us for any inquiries about dresses or booking appointments."}
             />
             {/* Hero Section */}
-            <section className="relative h-[60vh] overflow-hidden flex items-center justify-center">
+            <section className="relative h-[60vh] min-h-[400px] pt-24 overflow-hidden flex items-center justify-center">
                 <div className="absolute inset-0">
                     <img
                         src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=2070&auto=format&fit=crop"
@@ -50,7 +50,7 @@ export default function ContactUs() {
                             <Badge className="bg-white/20 text-white hover:bg-white/30 backdrop-blur-md mb-4 border-white/30 px-6 py-2 text-xs font-bold uppercase tracking-[0.2em]">
                                 {language === 'ar' ? "تواصل معنا" : "Contact Us"}
                             </Badge>
-                            <h1 className="text-4xl md:text-7xl font-black mb-6 leading-tight">
+                            <h1 className="text-3xl md:text-5xl font-black mb-6 leading-tight">
                                 {language === 'ar' ? "نحن هنا لمساعدتك" : "We're Here to Help"}
                             </h1>
                             <p className="text-lg md:text-2xl text-white/90 max-w-2xl mx-auto leading-relaxed font-bold">
