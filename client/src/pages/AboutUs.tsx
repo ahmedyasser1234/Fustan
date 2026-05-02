@@ -37,6 +37,7 @@ export default function AboutUs() {
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ duration: 0.8 }}
                     >
+                        <div className="flex flex-col items-center space-y-6">
                             <Badge className="bg-rose-600/90 text-white hover:bg-rose-600 backdrop-blur-md mb-6 border-rose-500 px-6 py-2 text-sm font-medium uppercase tracking-[0.2em]">
                                 {language === 'ar' ? "قصتنا" : "Our Story"}
                             </Badge>

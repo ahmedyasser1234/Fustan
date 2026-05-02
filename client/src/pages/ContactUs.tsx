@@ -46,6 +46,7 @@ export default function ContactUs() {
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ duration: 0.8 }}
                     >
+                        <div className="flex flex-col items-center space-y-6 pb-16 md:pb-24">
                             <Badge className="bg-rose-600/90 text-white hover:bg-rose-600 backdrop-blur-md mb-4 border-rose-500 px-6 py-2 text-xs font-medium uppercase tracking-[0.2em]">
                                 {language === 'ar' ? "تواصل معنا" : "Contact Us"}
                             </Badge>
