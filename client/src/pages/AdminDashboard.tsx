@@ -1152,7 +1152,7 @@ export default function AdminDashboard() {
                             </tr>
                           ))
                         ) : (
-                          {(Array.isArray(products) ? products : []).map((product: any) => (
+                          (Array.isArray(products) ? products : []).map((product: any) => (
                             <tr key={product.id} className="border-b border-gray-200 hover:bg-gray-50">
                               <td className="py-3 px-6 text-gray-900 font-medium text-start">
                                 {product.nameAr} / {product.nameEn}
