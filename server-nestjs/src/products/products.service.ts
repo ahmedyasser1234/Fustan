@@ -307,48 +307,51 @@ export class ProductsService {
       conditions.push(eq(products.isCustomerListing, isCustomerListing));
     }
 
-    const foundProducts = await this.databaseService.db
-      .select()
-      .from(products)
-      .where(and(...conditions))
-      .limit(limit)
-      .offset(offset)
-      .orderBy(desc(products.createdAt));
-
-    // Fetch colors for these products
-    const productIds = foundProducts.map((p) => p.id);
-
-    if (productIds.length > 0) {
-      // Check if inArray is imported, if not use Promise.all or import it
-      // Assuming we can use db.query or select from productColors
-      const colorsMap = new Map<number, any[]>();
-
-      // We need to import 'inArray' from drizzle-orm if not present.
-      // Since I cannot easily add top-level imports in this tool block without risking context,
-      // I will use a loop if strict imports are an issue, BUT 'inArray' is standard.
-      // Let's assume I need to handle imports separately or use a safe approach.
-      // Safer approach without risking missing 'inArray' import if not already there (it is NOT in line 4):
-      // I will fetch colors for each product or fetch all.
-
-      const allColors = await this.databaseService.db
+    try {
+      const foundProducts = await this.databaseService.db
         .select()
-        .from(productColors)
-        .where(inArray(productColors.productId, productIds));
+        .from(products)
+        .where(and(...conditions))
+        .limit(limit)
+        .offset(offset)
+        .orderBy(desc(products.createdAt));
 
-      allColors.forEach((c) => {
-        if (!colorsMap.has(c.productId)) {
-          colorsMap.set(c.productId, []);
-        }
-        colorsMap.get(c.productId)?.push(c);
+      // Fetch colors for these products
+      const productIds = foundProducts.map((p) => p.id);
+
+      if (productIds.length > 0) {
+        const colorsMap = new Map<number, any[]>();
+
+        const allColors = await this.databaseService.db
+          .select()
+          .from(productColors)
+          .where(inArray(productColors.productId, productIds));
+
+        allColors.forEach((c) => {
+          if (!colorsMap.has(c.productId)) {
+            colorsMap.set(c.productId, []);
+          }
+          colorsMap.get(c.productId)?.push(c);
+        });
+
+        return foundProducts.map((p) => ({
+          ...p,
+          colors: colorsMap.get(p.id) || [],
+        }));
+      }
+
+      return foundProducts;
+    } catch (error: any) {
+      console.error('❌ [Products Service] Database Query Failed:', {
+        message: error.message,
+        detail: error.detail,
+        hint: error.hint,
+        code: error.code,
+        query: error.query,
+        params: error.params,
       });
-
-      return foundProducts.map((p) => ({
-        ...p,
-        colors: colorsMap.get(p.id) || [],
-      }));
+      throw error;
     }
-
-    return foundProducts;
   }
 
   async findOne(id: number) {
