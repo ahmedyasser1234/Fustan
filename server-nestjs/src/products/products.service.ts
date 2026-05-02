@@ -499,6 +499,7 @@ export class ProductsService {
     }
 
     const categoryId = data.categoryId ? parseInt(data.categoryId) : null;
+    const collectionId = data.collectionId ? parseInt(data.collectionId) : null;
 
     const colorVariantsArr =
       typeof data.colorVariants === 'string'
@@ -514,6 +515,15 @@ export class ProductsService {
     );
     const finalPrice =
       vendorPrice * (1 + commissionRate / 100) + commissionFixed;
+
+    const vendorOriginalPrice = parseFloat(
+      data.originalPrice ||
+        data.price ||
+        (product as any).price?.toString() ||
+        '0',
+    );
+    const originalPrice =
+      vendorOriginalPrice * (1 + commissionRate / 100) + commissionFixed;
 
     const rentPrice = parseFloat(data.rentPrice || '0');
     const salePrice = parseFloat(data.salePrice || '0');
