@@ -115,11 +115,19 @@ export default function UserPointsView() {
                                                 {tx.description}
                                             </h4>
                                             <p className="text-sm font-bold text-slate-400 mt-1">
-                                                {new Date(tx.createdAt).toLocaleDateString(language === 'ar' ? 'ar-SA' : 'en-US', {
-                                                    year: 'numeric',
-                                                    month: 'long',
-                                                    day: 'numeric'
-                                                })}
+                                                {(() => {
+                                                    try {
+                                                        const date = new Date(tx.createdAt);
+                                                        if (isNaN(date.getTime())) return '';
+                                                        return date.toLocaleDateString(language === 'ar' ? 'ar-SA' : 'en-US', {
+                                                            year: 'numeric',
+                                                            month: 'long',
+                                                            day: 'numeric'
+                                                        });
+                                                    } catch (e) {
+                                                        return '';
+                                                    }
+                                                })()}
                                             </p>
                                         </div>
                                     </div>

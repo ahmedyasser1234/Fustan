@@ -1379,7 +1379,13 @@ export default function AdminDashboard() {
                               </div>
                               <div>
                                 <span className="block text-xs text-gray-400 font-medium mb-1">{t('lastSeen')}</span>
-                                <span className="font-bold text-gray-700">{c.lastSignedIn ? new Date(c.lastSignedIn).toLocaleDateString() : t('never')}</span>
+                                <span className="font-bold text-gray-700">
+                                  {(() => {
+                                    if (!c.lastSignedIn) return t('never');
+                                    const date = new Date(c.lastSignedIn);
+                                    return isNaN(date.getTime()) ? t('never') : date.toLocaleDateString();
+                                  })()}
+                                </span>
                               </div>
                             </div>
 
@@ -1449,7 +1455,13 @@ export default function AdminDashboard() {
                                 </div>
                               </td>
                               <td className="py-4 px-6 text-slate-600 text-start">{c.email}</td>
-                              <td className="py-4 px-6 text-slate-400 text-xs text-center">{c.lastSignedIn ? new Date(c.lastSignedIn).toLocaleDateString() : t('never')}</td>
+                              <td className="py-4 px-6 text-slate-400 text-xs text-center">
+                                {(() => {
+                                  if (!c.lastSignedIn) return t('never');
+                                  const date = new Date(c.lastSignedIn);
+                                  return isNaN(date.getTime()) ? t('never') : date.toLocaleDateString();
+                                })()}
+                              </td>
                               <td className="py-4 px-6 text-slate-600 text-center">{c.phone || '-'}</td>
                               <td className="py-4 px-6 text-end">
                                 <div className="flex items-center justify-end gap-2" onClick={(e) => e.stopPropagation()}>
@@ -1871,7 +1883,12 @@ export default function AdminDashboard() {
                 <div>
                   <h3 className="font-bold text-lg text-gray-900">{customerDetails.name}</h3>
                   <p className="text-sm text-gray-500">{customerDetails.email}</p>
-                  <p className="text-xs text-slate-400 mt-1">Joined {new Date(customerDetails.createdAt).toLocaleDateString()}</p>
+                  <p className="text-xs text-slate-400 mt-1">
+                    Joined {(() => {
+                      const date = new Date(customerDetails.createdAt);
+                      return isNaN(date.getTime()) ? '' : date.toLocaleDateString();
+                    })()}
+                  </p>
                 </div>
               </div>
 
@@ -1897,7 +1914,12 @@ export default function AdminDashboard() {
                       <div key={order.id} className="border border-gray-100 rounded-xl p-4 flex items-center justify-between">
                         <div>
                           <p className="font-bold text-sm text-gray-900">{order.orderNumber}</p>
-                          <p className="text-xs text-gray-400">{new Date(order.createdAt).toLocaleDateString()}</p>
+                          <p className="text-xs text-gray-400">
+                            {(() => {
+                              const date = new Date(order.createdAt);
+                              return isNaN(date.getTime()) ? '' : date.toLocaleDateString();
+                            })()}
+                          </p>
                         </div>
                         <div className="text-right">
                           <p className="font-black text-sm text-blue-600">{order.total?.toLocaleString()} {t('currency')}</p>

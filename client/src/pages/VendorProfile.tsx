@@ -325,7 +325,15 @@ export default function VendorProfile() {
                           </div>
                         </div>
                         <span className="text-sm text-gray-500">
-                          {new Date(review.createdAt).toLocaleDateString('ar-EG')}
+                          {(() => {
+                            try {
+                              const date = new Date(review.createdAt);
+                              if (isNaN(date.getTime())) return '';
+                              return date.toLocaleDateString('ar-EG');
+                            } catch (e) {
+                              return '';
+                            }
+                          })()}
                         </span>
                       </div>
                       {review.comment && (

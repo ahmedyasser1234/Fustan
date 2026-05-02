@@ -124,7 +124,17 @@ function OffersDisplay({ vendorId, productId, language }: { vendorId?: number, p
             </div>
             <div className="text-center bg-white/50 p-2 rounded-lg">
               <span className="block text-xs text-gray-500 font-bold">{language === 'ar' ? "ينتهي في" : "Ends on"}</span>
-              <span className="font-mono text-rose-600 font-bold">{new Date(offer.endDate).toLocaleDateString(language === 'ar' ? 'ar-SA' : 'en-GB')}</span>
+              <span className="font-mono text-rose-600 font-bold">
+                {(() => {
+                  try {
+                    const date = new Date(offer.endDate);
+                    if (isNaN(date.getTime())) return '';
+                    return date.toLocaleDateString(language === 'ar' ? 'ar-SA' : 'en-GB');
+                  } catch (e) {
+                    return '';
+                  }
+                })()}
+              </span>
             </div>
           </div>
         ))}

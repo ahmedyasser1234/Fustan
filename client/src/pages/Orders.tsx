@@ -53,10 +53,12 @@ export default function Orders() {
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const { data: orders, isLoading } = useQuery({
+  const { data: ordersData, isLoading } = useQuery({
     queryKey: ['orders'],
     queryFn: async () => await endpoints.orders.list(),
   });
+
+  const orders = Array.isArray(ordersData) ? ordersData : [];
 
   const getStatusColorClass = (color: string) => {
     switch (color) {
@@ -163,7 +165,15 @@ export default function Orders() {
                         <p className="text-sm text-gray-600 mb-1">{language === 'ar' ? 'رقم الطلب' : 'Order Number'}</p>
                         <p className="font-semibold text-gray-900">{order.orderNumber}</p>
                         <p className="text-xs text-gray-500 mt-2">
-                          {new Date(order.createdAt).toLocaleDateString(language === 'ar' ? "ar-SA" : "en-US")}
+                          {(() => {
+                            try {
+                              const date = new Date(order.createdAt);
+                              if (isNaN(date.getTime())) return '';
+                              return date.toLocaleDateString(language === 'ar' ? "ar-SA" : "en-US");
+                            } catch (e) {
+                              return '';
+                            }
+                          })()}
                         </p>
                       </div>
 

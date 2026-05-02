@@ -170,7 +170,15 @@ export default function WalletTab() {
                                             </td>
                                             <td className="px-8 py-5">
                                                 <p className="font-bold text-slate-500 text-sm">
-                                                    {new Date(tx.createdAt).toLocaleDateString(language === 'ar' ? 'ar-SA' : 'en-US')}
+                                                    {(() => {
+                                                        try {
+                                                            const date = new Date(tx.createdAt);
+                                                            if (isNaN(date.getTime())) return '';
+                                                            return date.toLocaleDateString(language === 'ar' ? 'ar-SA' : 'en-US');
+                                                        } catch (e) {
+                                                            return '';
+                                                        }
+                                                    })()}
                                                 </p>
                                             </td>
                                         </tr>
@@ -209,7 +217,15 @@ export default function WalletTab() {
                                             <div className="flex items-center justify-between">
                                                 <p className="font-bold text-slate-400 text-xs flex items-center gap-1.5">
                                                     <Clock className="w-3 h-3" />
-                                                    {new Date(tx.createdAt).toLocaleDateString(language === 'ar' ? 'ar-SA' : 'en-US')}
+                                                    {(() => {
+                                                        try {
+                                                            const date = new Date(tx.createdAt);
+                                                            if (isNaN(date.getTime())) return '';
+                                                            return date.toLocaleDateString(language === 'ar' ? 'ar-SA' : 'en-US');
+                                                        } catch (e) {
+                                                            return '';
+                                                        }
+                                                    })()}
                                                 </p>
                                                 <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-black tracking-wide uppercase ${tx.status === 'completed' ? 'bg-emerald-100 text-emerald-700' :
                                                     tx.status === 'pending' ? 'bg-blue-100 text-blue-700' :

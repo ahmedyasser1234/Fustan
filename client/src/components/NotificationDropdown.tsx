@@ -19,11 +19,13 @@ export function NotificationDropdown({ unreadCount }: NotificationDropdownProps)
     const { user } = useAuth();
     const queryClient = useQueryClient();
 
-    const { data: notifications = [], isLoading } = useQuery({
+    const { data: notificationsData, isLoading } = useQuery({
         queryKey: ['notifications'],
         queryFn: () => endpoints.notifications.list(),
         enabled: !!user,
     });
+
+    const notifications = Array.isArray(notificationsData) ? notificationsData : [];
 
     const markAsReadMutation = useMutation({
         mutationFn: (id: number) => endpoints.notifications.markAsRead(id),
@@ -117,10 +119,18 @@ export function NotificationDropdown({ unreadCount }: NotificationDropdownProps)
                                             </p>
                                             <div className="flex items-center justify-between">
                                                 <span className="text-[10px] text-gray-400 font-bold">
-                                                    {new Date(notif.createdAt).toLocaleDateString(language === 'ar' ? 'ar-SA' : 'en-US', {
-                                                        month: 'short',
-                                                        day: 'numeric'
-                                                    })}
+                                                    {(() => {
+                                                        try {
+                                                            const date = new Date(notif.createdAt);
+                                                            if (isNaN(date.getTime())) return '';
+                                                            return date.toLocaleDateString(language === 'ar' ? 'ar-SA' : 'en-US', {
+                                                                month: 'short',
+                                                                day: 'numeric'
+                                                            });
+                                                        } catch (e) {
+                                                            return '';
+                                                        }
+                                                    })()}
                                                 </span>
                                                 <div className="flex items-center gap-1">
                                                     {!notif.isRead && (

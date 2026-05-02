@@ -238,7 +238,17 @@ export default function Profile() {
                                                     <div key={order.id} className="p-6 flex items-center justify-between hover:bg-gray-50 transition-colors">
                                                         <div>
                                                             <p className="font-black text-gray-900">#{order.id}</p>
-                                                            <p className="text-sm text-gray-500 font-bold">{new Date(order.createdAt).toLocaleDateString(language === 'ar' ? 'ar-EG' : 'en-US')}</p>
+                                                            <p className="text-sm text-gray-500 font-bold">
+                                                                {(() => {
+                                                                    try {
+                                                                        const date = new Date(order.createdAt);
+                                                                        if (isNaN(date.getTime())) return '';
+                                                                        return date.toLocaleDateString(language === 'ar' ? 'ar-EG' : 'en-US');
+                                                                    } catch (e) {
+                                                                        return '';
+                                                                    }
+                                                                })()}
+                                                            </p>
                                                         </div>
                                                         <div className="text-left text-end">
                                                             <p className="font-black text-rose-600">{formatPrice(order.total)}</p>

@@ -126,7 +126,15 @@ export default function OrdersTab({ vendorId, onCustomerClick }: OrdersTabProps)
                                             <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{language === 'ar' ? "التاريخ" : "Date"}</span>
                                             <span className="text-sm font-bold text-slate-600 flex items-center gap-2">
                                                 <Clock className="w-4 h-4 text-slate-400" />
-                                                {new Date(order.createdAt).toLocaleDateString(language === 'ar' ? 'ar-SA' : 'en-US', { day: 'numeric', month: 'long', year: 'numeric' })}
+                                                {(() => {
+                                                    try {
+                                                        const date = new Date(order.createdAt);
+                                                        if (isNaN(date.getTime())) return '';
+                                                        return date.toLocaleDateString(language === 'ar' ? 'ar-SA' : 'en-US', { day: 'numeric', month: 'long', year: 'numeric' });
+                                                    } catch (e) {
+                                                        return '';
+                                                    }
+                                                })()}
                                             </span>
                                         </div>
                                     </div>

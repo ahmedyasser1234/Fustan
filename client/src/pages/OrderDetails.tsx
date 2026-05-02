@@ -94,13 +94,21 @@ export default function OrderDetails() {
                             <div>
                                 <h1 className="text-xl font-bold text-gray-900">{language === 'ar' ? 'طلب' : 'Order'} #{order.orderNumber}</h1>
                                 <p className="text-sm text-gray-500">
-                                    {new Date(order.createdAt).toLocaleDateString(language === 'ar' ? 'ar-SA' : 'en-US', {
-                                        year: 'numeric',
-                                        month: 'long',
-                                        day: 'numeric',
-                                        hour: '2-digit',
-                                        minute: '2-digit'
-                                    })}
+                                    {(() => {
+                                        try {
+                                            const date = new Date(order.createdAt);
+                                            if (isNaN(date.getTime())) return '';
+                                            return date.toLocaleDateString(language === 'ar' ? 'ar-SA' : 'en-US', {
+                                                year: 'numeric',
+                                                month: 'long',
+                                                day: 'numeric',
+                                                hour: '2-digit',
+                                                minute: '2-digit'
+                                            });
+                                        } catch (e) {
+                                            return '';
+                                        }
+                                    })()}
                                 </p>
                             </div>
                         </div>
