@@ -155,11 +155,11 @@ export default function VendorProfile() {
                   <Button
                     className="bg-purple-600 hover:bg-purple-700"
                     onClick={() => openChat({
-                      vendorId: vendor.id,
-                      recipientId: vendor.userId,
-                      vendorName: language === 'ar' ? vendor.storeNameAr : vendor.storeNameEn,
-                      vendorLogo: vendor.logo,
-                      sessionId: `vendor-${vendor.id}`
+                      vendorId: vendor?.id,
+                      recipientId: vendor?.userId,
+                      vendorName: language === 'ar' ? vendor?.storeNameAr : vendor?.storeNameEn,
+                      vendorLogo: vendor?.logo,
+                      sessionId: `vendor-${vendor?.id}`
                     })}
                   >
                     <MessageSquare className="w-4 h-4 ml-2" />
@@ -277,7 +277,7 @@ export default function VendorProfile() {
               </div>
             ) : products && products.length > 0 ? (
               <div className="grid md:grid-cols-4 gap-6">
-                {products.map((product: any, i: number) => (
+                {(Array.isArray(products) ? products : []).map((product: any, i: number) => (
                   <ProductCard
                     key={product.id}
                     product={product}
@@ -307,7 +307,7 @@ export default function VendorProfile() {
             <h2 className="text-2xl font-bold text-gray-900 mb-6">تقييمات العملاء</h2>
             {reviews && reviews.length > 0 ? (
               <div className="space-y-4">
-                {reviews.map((review: any) => (
+                {(Array.isArray(reviews) ? reviews : []).map((review: any) => (
                   <Card key={review.id} className="border-0 shadow-sm">
                     <CardContent className="p-6">
                       <div className="flex items-start justify-between mb-3">
@@ -504,7 +504,7 @@ export default function VendorProfile() {
       <div className="container mx-auto px-4 py-8 border-t border-gray-100">
         <h2 className="text-2xl font-bold text-gray-900 mb-6">المجموعات</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-          {(Array.isArray(collections) ? collections : [])?.map((collection: any) => (
+          {(Array.isArray(collections) ? collections : []).map((collection: any) => (
             <Card
               key={collection.id}
               className={`cursor-pointer transition group ${selectedCollectionId === collection.id ? 'ring-2 ring-purple-600' : 'hover:shadow-lg'}`}
