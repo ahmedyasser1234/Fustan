@@ -419,7 +419,7 @@ export default function Home() {
           </motion.div>
 
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-10">
-            {((!categories || (categories as any[]).length === 0) ? Array(3).fill({}) : (categories as any[]).filter(cat => ['فساتين زفاف', 'فساتين سهرة', 'فساتين غمرة'].includes(cat.nameAr)).slice(0, 4)).map((category: any, i: number) => (
+            {((!Array.isArray(categories) || categories.length === 0) ? Array(3).fill({}) : categories.filter(cat => ['فساتين زفاف', 'فساتين سهرة', 'فساتين غمرة'].includes(cat.nameAr)).slice(0, 4)).map((category: any, i: number) => (
               (!categories || (categories as any[]).length === 0) ? (
                 <Skeleton key={i} className="aspect-[3/4] md:aspect-[2/3] w-full rounded-[20px] md:rounded-[40px]" />
               ) : (
@@ -752,7 +752,7 @@ export default function Home() {
               ref={bestSellersRef}
               className="flex md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-10 overflow-x-auto no-scrollbar pb-8 md:pb-0 px-2 md:px-0 -mx-2 md:mx-0 scroll-smooth"
             >
-              {(bestSellersLoading ? Array(3).fill({}) : (bestSellers as any[] || []).slice(0, 3)).map((product: any, i: number) => (
+              {(bestSellersLoading ? Array(3).fill({}) : (Array.isArray(bestSellers) ? bestSellers : [])).slice(0, 3).map((product: any, i: number) => (
                 bestSellersLoading ? (
                   <Skeleton key={i} className="aspect-[2/3] w-[46%] sm:w-72 flex-shrink-0 md:w-auto rounded-[40px]" />
                 ) : (
@@ -856,7 +856,7 @@ export default function Home() {
                 {language === 'ar' ? "كن أول من يقيمنا!" : "Be the first to review us!"}
               </div>
             ) : (
-              (storeReviews as any[])?.slice(0, 3).map((review: any, i: number) => (
+              (Array.isArray(storeReviews) ? storeReviews : []).slice(0, 3).map((review: any, i: number) => (
                 <motion.div
                   key={review.id}
                   initial={{ opacity: 0, y: 30 }}

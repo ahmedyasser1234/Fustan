@@ -205,11 +205,11 @@ export default function OrderDetails() {
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
                                 <ShoppingBag className="w-5 h-5 text-rose-500" />
-                                {language === 'ar' ? 'المنتجات' : 'Products'} ({order.items.length})
+                                {language === 'ar' ? 'المنتجات' : 'Products'} ({Array.isArray(order.items) ? order.items.length : 0})
                             </CardTitle>
                         </CardHeader>
                         <CardContent className="divide-y divide-gray-100">
-                            {order.items.map((item: any) => (
+                            {(Array.isArray(order.items) ? order.items : []).map((item: any) => (
                                 <div key={item.id} className="py-4 flex gap-4">
                                     <div className="w-20 h-24 bg-gray-100 rounded-lg overflow-hidden shrink-0">
                                         <img
