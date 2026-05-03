@@ -161,8 +161,8 @@ export default function AdminAnalyticsTab() {
                             <AreaChart data={salesHistory}>
                                 <defs>
                                     <linearGradient id="colorTotal" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#e11d48" stopOpacity={0.1} />
-                                        <stop offset="95%" stopColor="#e11d48" stopOpacity={0} />
+                                        <stop offset="5%" stopColor="#673698" stopOpacity={0.1} />
+                                        <stop offset="95%" stopColor="#673698" stopOpacity={0} />
                                     </linearGradient>
                                 </defs>
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
@@ -181,13 +181,13 @@ export default function AdminAnalyticsTab() {
                                 />
                                 <Tooltip
                                     contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 25px -5px rgba(0,0,0,0.1)', textAlign: 'right' }}
-                                    cursor={{ stroke: '#e11d48', strokeWidth: 2 }}
+                                    cursor={{ stroke: '#673698', strokeWidth: 2 }}
                                     formatter={(value: number) => [`${value.toLocaleString()} ${t('currency')}`, t('revenue')]}
                                 />
                                 <Area
                                     type="monotone"
                                     dataKey="total"
-                                    stroke="#e11d48"
+                                    stroke="#673698"
                                     strokeWidth={4}
                                     fillOpacity={1}
                                     fill="url(#colorTotal)"

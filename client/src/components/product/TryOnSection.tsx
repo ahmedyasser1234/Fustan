@@ -269,7 +269,7 @@ export function TryOnSection({ productName, productImage, productDescription }: 
                 {/* Section Header */}
                 <div className="text-center mb-16 pt-20">
                     <div className="flex items-center justify-center gap-3 mb-4">
-                        <Sparkles className="w-8 h-8 text-[oklch(58.6%_0.253_17.585)]" />
+                        <Sparkles className="w-8 h-8 text-[oklch(44.2%_0.173_285.5)]" />
                         <h2 className="text-4xl md:text-3xl font-bold">
                             {language === 'ar' ? 'جربي الفستان بالذكاء الاصطناعي' : 'AI Virtual Try-On'}
                         </h2>

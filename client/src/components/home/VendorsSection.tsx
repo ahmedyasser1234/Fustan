@@ -86,7 +86,7 @@ export function VendorsSection() {
                     className="mt-12 text-center"
                 >
                     <Link href="/vendors">
-                        <Button variant="outline" className="rounded-full px-8 md:px-12 h-12 md:h-16 border-2 border-gray-200 hover:border-[oklch(58.6%_0.253_17.585)] text-gray-900 hover:bg-transparent hover:text-[oklch(58.6%_0.253_17.585)] transition-all duration-500 text-base md:text-lg font-bold group">
+                        <Button variant="outline" className="rounded-full px-8 md:px-12 h-12 md:h-16 border-2 border-gray-200 hover:border-[oklch(44.2%_0.173_285.5)] text-gray-900 hover:bg-transparent hover:text-[oklch(44.2%_0.173_285.5)] transition-all duration-500 text-base md:text-lg font-bold group">
                             {language === 'ar' ? 'عرض جميع بيوت الأزياء' : 'Explore All Fashion Houses'}
                             <ArrowRight className={`ml-2 md:ml-3 group-hover:translate-x-2 transition-transform ${language === 'ar' ? 'rotate-180 mr-2 md:mr-3 ml-0' : ''}`} size={18} />
                         </Button>

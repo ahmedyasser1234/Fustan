@@ -250,7 +250,7 @@ export default function Home() {
 
               <div className="flex justify-center sm:justify-start pt-4 sm:pt-8 pb-12 sm:pb-0 w-full">
                 <Link href={getCategoryLink(heroSlides[currentVideo].categoryName)}>
-                  <Button size="lg" className="h-10 sm:h-16 px-8 sm:px-14 rounded-full bg-[oklch(58.6%_0.253_17.585)] hover:bg-[oklch(58.6%_0.253_17.585)]/90 text-white text-xs sm:text-xl font-medium shadow-2xl transition-all hover:scale-110 active:scale-95">
+                  <Button size="lg" className="h-10 sm:h-16 px-8 sm:px-14 rounded-full bg-[oklch(44.2%_0.173_285.5)] hover:bg-[oklch(44.2%_0.173_285.5)]/90 text-white text-xs sm:text-xl font-medium shadow-2xl transition-all hover:scale-110 active:scale-95">
                     {t('shopNow')}
                   </Button>
                 </Link>
@@ -295,7 +295,7 @@ export default function Home() {
                 href="https://wa.me/966538050410" 
                 target="_blank" 
                 rel="noreferrer"
-                className="group flex items-center justify-center gap-4 bg-[oklch(58.6%_0.253_17.585)] hover:bg-[oklch(58.6%_0.253_17.585)]/90 text-white p-6 md:p-8 rounded-[2.5rem] text-lg md:text-xl font-medium shadow-[0_25px_60px_-15px_rgba(233,30,99,0.4)] transition-all hover:scale-105 active:scale-95"
+                className="group flex items-center justify-center gap-4 bg-[oklch(44.2%_0.173_285.5)] hover:bg-[oklch(44.2%_0.173_285.5)]/90 text-white p-6 md:p-8 rounded-[2.5rem] text-lg md:text-xl font-medium shadow-[0_25px_60px_-15px_rgba(103,54,152,0.4)] transition-all hover:scale-105 active:scale-95"
               >
                 <div className="bg-white/25 p-3 rounded-2xl group-hover:rotate-12 transition-transform">
                   <svg className="w-8 h-8 fill-current" viewBox="0 0 24 24">
@@ -384,7 +384,7 @@ export default function Home() {
                         </div>
 
                         {/* Purple Bottom Overlay */}
-                        <div className="absolute bottom-0 left-0 right-0 h-0 opacity-0 bg-[oklch(58.6%_0.253_17.585)]/10 backdrop-blur-md flex flex-col items-center justify-center text-center p-6 transition-all duration-300 group-hover:h-[40%] group-hover:opacity-100 overflow-hidden">
+                        <div className="absolute bottom-0 left-0 right-0 h-0 opacity-0 bg-[oklch(44.2%_0.173_285.5)]/10 backdrop-blur-md flex flex-col items-center justify-center text-center p-6 transition-all duration-300 group-hover:h-[40%] group-hover:opacity-100 overflow-hidden">
                           {/* Product Name */}
                           <h3 className="text-2xl font-bold text-white mb-2 leading-tight opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100">
                             {language === 'ar' ? product.nameAr : product.nameEn}
@@ -396,7 +396,7 @@ export default function Home() {
                           </p>
 
                           {/* More Button */}
-                          <Button className="bg-[oklch(58.6%_0.253_17.585)] text-white hover:bg-[oklch(58.6%_0.253_17.585)]/90 rounded-full px-8 py-1 h-8 text-sm font-bold shadow-sm transition-transform hover:scale-105 opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-200">
+                          <Button className="bg-[oklch(44.2%_0.173_285.5)] text-white hover:bg-[oklch(44.2%_0.173_285.5)]/90 rounded-full px-8 py-1 h-8 text-sm font-bold shadow-sm transition-transform hover:scale-105 opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-200">
                             {t('more')}
                           </Button>
                         </div>
@@ -663,7 +663,7 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <span className="text-2xl text-[oklch(58.6%_0.253_17.585)] mb-2 block font-bold">
+            <span className="text-2xl text-[oklch(44.2%_0.173_285.5)] mb-2 block font-bold">
               {language === 'ar' ? "من خزانة عميلاتنا" : "From Our Community"}
             </span>
             <h2 className="text-4xl md:text-3xl font-medium text-gray-900">
@@ -751,14 +751,14 @@ export default function Home() {
                             className="w-full h-full object-contain object-bottom transition-transform duration-700 group-hover:scale-110"
                           />
                         </div>
-                        <div className="absolute bottom-0 left-0 right-0 h-0 opacity-0 bg-[oklch(58.6%_0.253_17.585)]/20 backdrop-blur-md flex flex-col items-center justify-center text-center p-6 transition-all duration-300 group-hover:h-[40%] group-hover:opacity-100 overflow-hidden z-20">
+                        <div className="absolute bottom-0 left-0 right-0 h-0 opacity-0 bg-[oklch(44.2%_0.173_285.5)]/20 backdrop-blur-md flex flex-col items-center justify-center text-center p-6 transition-all duration-300 group-hover:h-[40%] group-hover:opacity-100 overflow-hidden z-20">
                           <h3 className="text-2xl font-medium text-white mb-2 leading-tight">
                             {language === 'ar' ? product.nameAr : product.nameEn}
                           </h3>
                           <p className="text-white/90 text-lg font-bold mb-4">
                             {formatPrice(product.price)}
                           </p>
-                          <Button className="bg-[oklch(58.6%_0.253_17.585)] text-white hover:bg-[oklch(58.6%_0.253_17.585)]/90 rounded-full px-8 py-2 h-10 text-base font-medium shadow-lg transition-transform hover:scale-105">
+                          <Button className="bg-[oklch(44.2%_0.173_285.5)] text-white hover:bg-[oklch(44.2%_0.173_285.5)]/90 rounded-full px-8 py-2 h-10 text-base font-medium shadow-lg transition-transform hover:scale-105">
                             {t('more')}
                           </Button>
                         </div>
@@ -826,14 +826,14 @@ export default function Home() {
                               className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-110"
                             />
                           </div>
-                          <div className="absolute bottom-0 left-0 right-0 h-0 opacity-0 bg-[oklch(58.6%_0.253_17.585)]/10 backdrop-blur-md flex flex-col items-center justify-center text-center p-6 transition-all duration-300 group-hover:h-[45%] group-hover:opacity-100 overflow-hidden">
+                          <div className="absolute bottom-0 left-0 right-0 h-0 opacity-0 bg-[oklch(44.2%_0.173_285.5)]/10 backdrop-blur-md flex flex-col items-center justify-center text-center p-6 transition-all duration-300 group-hover:h-[45%] group-hover:opacity-100 overflow-hidden">
                             <h3 className="text-2xl md:text-3xl font-medium text-white mb-2">
                               {language === 'ar' ? product.nameAr : product.nameEn}
                             </h3>
                             <p className="text-white/90 text-lg font-bold mb-4">
                               {formatPrice(product.price)}
                             </p>
-                            <Button className="bg-white text-[oklch(58.6%_0.253_17.585)] hover:bg-white/90 rounded-full px-8 py-1 h-8 text-sm font-medium shadow-sm transition-transform hover:scale-105">
+                            <Button className="bg-white text-[oklch(44.2%_0.173_285.5)] hover:bg-white/90 rounded-full px-8 py-1 h-8 text-sm font-medium shadow-sm transition-transform hover:scale-105">
                               {t('more')}
                             </Button>
                           </div>

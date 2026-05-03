@@ -8,9 +8,12 @@ import compression from 'compression';
 import { TransformInterceptor } from './common/interceptors/response.interceptor';
 import { AllExceptionsFilter } from './common/filters/http-exception.filter';
 
+import { ConfigService } from '@nestjs/config';
+
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
   const app = await NestFactory.create(AppModule);
+  const configService = app.get(ConfigService);
 
   // Security & Middleware
   // Security headers are now handled by Nginx to avoid duplication.
@@ -33,15 +36,21 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
 
   // CORS Configuration
+  const allowedOrigins = configService.get<string>('ALLOWED_ORIGINS')?.split(',') || [
+    'https://fustan.cloud',
+    'https://www.fustan.cloud',
+  ];
+
   app.enableCors({
     origin:
       process.env.NODE_ENV === 'production'
-        ? ['https://fustan.cloud', 'https://www.fustan.cloud']
+        ? allowedOrigins
         : [
             'http://localhost:5173',
             'http://localhost:3000',
             'http://127.0.0.1:5173',
             'https://fustanecoomerce.netlify.app',
+            ...allowedOrigins,
           ],
     credentials: true,
   });
