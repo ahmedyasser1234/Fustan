@@ -1,5 +1,5 @@
 export const COOKIE_NAME = 'app_session_id';
-export const ONE_YEAR_MS = 365 * 24 * 60 * 60 * 1000;
+export const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
 
 export interface SessionPayload {
   id: number;

@@ -14,9 +14,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultTheme="light">
         <TooltipProvider>
-          {/* Note: LanguageProvider might need adjustments for Next.js hydration */}
-          {children}
-          <Toaster />
+          <LanguageProvider>
+            {children}
+            <Toaster />
+          </LanguageProvider>
         </TooltipProvider>
       </ThemeProvider>
     </QueryClientProvider>

@@ -1,7 +1,5 @@
-import {
-  Injectable,
-  NotFoundException,
   UnauthorizedException,
+  Logger,
 } from '@nestjs/common';
 import { DatabaseService } from '../database/database.service';
 import {
@@ -18,6 +16,7 @@ import { CloudinaryService } from '../media/cloudinary.provider';
 
 @Injectable()
 export class VendorsService {
+  private readonly logger = new Logger(VendorsService.name);
   constructor(
     private databaseService: DatabaseService,
     private cloudinaryService: CloudinaryService,
@@ -298,7 +297,7 @@ export class VendorsService {
       try {
         updateData.socialLinks = JSON.parse(updateData.socialLinks);
       } catch (e) {
-        console.error('Failed to parse socialLinks:', e);
+        this.logger.error(`Failed to parse socialLinks: ${e.message}`);
         // Keep as-is if parsing fails
       }
     }

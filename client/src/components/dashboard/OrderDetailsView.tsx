@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import DOMPurify from 'dompurify';
 import { X, Printer, MapPin, Phone, Mail, User, Package, Calendar, CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -284,7 +285,7 @@ export default function OrderDetailsView({ orderId, onClose }: OrderDetailsViewP
 
                 {/* Print Styles */}
                 <style dangerouslySetInnerHTML={{
-                    __html: `
+                    __html: DOMPurify.sanitize(`
                     @media print {
                         body * {
                             visibility: hidden;
@@ -314,7 +315,7 @@ export default function OrderDetailsView({ orderId, onClose }: OrderDetailsViewP
                             max-height: none !important;
                         }
                     }
-                `}} />
+                `)}} />
             </Card>
         </div>
     );

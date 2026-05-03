@@ -3,7 +3,7 @@ import { AppModule } from './app.module';
 import cookieParser from 'cookie-parser';
 import { ValidationPipe, Logger } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import helmet from 'helmet';
+
 import compression from 'compression';
 import { TransformInterceptor } from './common/interceptors/response.interceptor';
 import { AllExceptionsFilter } from './common/filters/http-exception.filter';
@@ -13,25 +13,8 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // Security & Middleware
-  app.use(
-    helmet({
-      contentSecurityPolicy: {
-        directives: {
-          defaultSrc: ["'self'"],
-          scriptSrc: ["'self'", "'unsafe-inline'"],
-          styleSrc: ["'self'", "'unsafe-inline'"],
-          imgSrc: ["'self'", "data:", "https:"],
-          fontSrc: ["'self'", "data:"],
-          connectSrc: ["'self'", "https://api.photoroom.com", "https://api.cloudinary.com", "ws:", "wss:"],
-        },
-      },
-      frameguard: { action: 'deny' },
-      xssFilter: true,
-      noSniff: true,
-      referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
-    }),
-  );
-
+  // Security headers are now handled by Nginx to avoid duplication.
+  
   // HTTPS Redirection Middleware (Production)
   app.use((req, res, next) => {
     if (process.env.NODE_ENV === 'production' && req.headers['x-forwarded-proto'] !== 'https') {
@@ -42,10 +25,10 @@ async function bootstrap() {
   app.use(compression());
   app.use(cookieParser());
 
-  // Increase body parser limits for large image uploads
+  // Increase body parser limits for large image uploads (within safe bounds)
   const { json, urlencoded } = require('express');
-  app.use(json({ limit: '50mb' }));
-  app.use(urlencoded({ extended: true, limit: '50mb' }));
+  app.use(json({ limit: '5mb' }));
+  app.use(urlencoded({ extended: true, limit: '10mb' }));
 
   app.setGlobalPrefix('api');
 
@@ -53,7 +36,7 @@ async function bootstrap() {
   app.enableCors({
     origin:
       process.env.NODE_ENV === 'production'
-        ? true
+        ? ['https://fustan.cloud', 'https://www.fustan.cloud']
         : [
             'http://localhost:5173',
             'http://localhost:3000',
@@ -78,26 +61,28 @@ async function bootstrap() {
   );
 
   // Swagger Documentation
-  const config = new DocumentBuilder()
-    .setTitle('Fustan API')
-    .setDescription('The Fustan E-commerce Platform API documentation')
-    .setVersion('1.0')
-    .addBearerAuth()
-    .addTag('fustan')
-    .build();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api/docs', app, document, {
-    swaggerOptions: {
-      persistAuthorization: true,
-    },
-  });
+  if (process.env.NODE_ENV !== 'production') {
+    const config = new DocumentBuilder()
+      .setTitle('Fustan API')
+      .setDescription('The Fustan E-commerce Platform API documentation')
+      .setVersion('1.0')
+      .addBearerAuth()
+      .addTag('fustan')
+      .build();
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('api/docs', app, document, {
+      swaggerOptions: {
+        persistAuthorization: true,
+      },
+    });
+    logger.log(
+      `📚 Swagger documentation available at: ${await app.getUrl()}/api/docs`,
+    );
+  }
 
   const port = process.env.PORT || 3001;
   await app.listen(port, '0.0.0.0');
 
   logger.log(`🚀 Application is running on: ${await app.getUrl()}`);
-  logger.log(
-    `📚 Swagger documentation available at: ${await app.getUrl()}/api/docs`,
-  );
 }
 bootstrap();

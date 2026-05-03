@@ -45,7 +45,7 @@ export class AuthService {
     return await new SignJWT(payload as any)
       .setProtectedHeader({ alg: 'HS256' })
       .setIssuedAt()
-      .setExpirationTime('365d')
+      .setExpirationTime('7d')
       .sign(this.jwtSecret);
   }
 
@@ -62,6 +62,16 @@ export class AuthService {
     } catch (error) {
       return null;
     }
+  }
+
+  async refreshSession(payload: SessionPayload): Promise<string> {
+    return this.createSessionToken(
+      payload.id,
+      payload.openId,
+      payload.name,
+      payload.role,
+      payload.email,
+    );
   }
 
   // --- Password Hashing Utilities (using native crypto) ---
@@ -264,6 +274,12 @@ export class AuthService {
       if (!response.ok) throw new Error('Invalid Google Token');
       const googleData = await response.json();
 
+      // Verify audience (aud) to prevent cross-app token reuse
+      const googleClientId = this.configService.get<string>('GOOGLE_CLIENT_ID');
+      if (googleClientId && googleData.aud !== googleClientId) {
+        throw new UnauthorizedException('Invalid Google token audience');
+      }
+
       const email = googleData.email.toLowerCase();
       const name = googleData.name;
       const openId = googleData.sub; // Google's unique user ID
@@ -375,5 +391,40 @@ export class AuthService {
     if (result.length === 0) return null;
     const { password: _, ...userWithoutPassword } = result[0];
     return userWithoutPassword;
+  }
+
+  async ensureAdminExists() {
+    const email = 'admin@fustan.com';
+    const password = 'admin';
+    const name = 'Admin User';
+
+    const existingAdmin = await this.databaseService.db
+      .select()
+      .from(users)
+      .where(sql`lower(${users.email}) = ${email.toLowerCase()}`)
+      .limit(1);
+
+    const hashedPassword = await this.hashPassword(password);
+
+    if (existingAdmin.length === 0) {
+      const openId = `admin_${Date.now()}`;
+      await this.databaseService.db.insert(users).values({
+        openId,
+        email: email.toLowerCase(),
+        name,
+        password: hashedPassword,
+        role: 'admin',
+        loginMethod: 'email',
+        lastSignedIn: new Date(),
+      });
+      return { message: 'Admin account created', email, password };
+    } else {
+      // Update password for existing admin
+      await this.databaseService.db
+        .update(users)
+        .set({ password: hashedPassword, updatedAt: new Date() })
+        .where(eq(users.id, existingAdmin[0].id));
+      return { message: 'Admin password reset', email, password };
+    }
   }
 }

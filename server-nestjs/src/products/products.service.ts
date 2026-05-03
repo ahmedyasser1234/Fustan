@@ -20,6 +20,7 @@ import { PhotoroomService } from '../photoroom/photoroom.service';
 
 @Injectable()
 export class ProductsService {
+  private readonly logger = new Logger(ProductsService.name);
   constructor(
     private databaseService: DatabaseService,
     private readonly cloudinary: CloudinaryService,
@@ -28,7 +29,7 @@ export class ProductsService {
   ) {}
 
   async create(data: any, files: Express.Multer.File[], userId?: number) {
-    console.log('⚙️ [Products Service] Processing Create Product...');
+    this.logger.log('⚙️ [Products Service] Processing Create Product...');
 
     let vendorId = data.vendorId ? parseInt(data.vendorId) : NaN;
 
@@ -91,7 +92,7 @@ export class ProductsService {
       }
     });
 
-    console.log(
+    this.logger.log(
       `   - 📷 Uploading ${mainFiles.length + (aiFile ? 1 : 0) + allVariantFiles.length} files in parallel...`,
     );
 
@@ -109,7 +110,7 @@ export class ProductsService {
         // Only process the first image for now to save API credits and time
         if (idx === 0 && (bgUrl || bgPrompt)) {
           try {
-            console.log(`   - ✨ Applying PhotoRoom background for first image...`);
+            this.logger.log(`   - ✨ Applying PhotoRoom background for first image...`);
             const processedBuffer = await this.photoroomService.replaceBackground(
               f.buffer,
               bgUrl,
@@ -248,13 +249,12 @@ export class ProductsService {
     if (aiQualifiedImageUrl) {
       this.pixVerseService
         .createBackgroundChangeTask(newProduct.id, aiQualifiedImageUrl)
-        .catch((err) => console.error('   - ❌ PixVerse failed:', err));
+        .catch((err) => this.logger.error(`   - ❌ PixVerse failed: ${err.message}`));
     }
     */
 
-    console.log(
-      '✅ [Products Service] Create completed for product:',
-      newProduct.id,
+    this.logger.log(
+      `✅ [Products Service] Create completed for product: ${newProduct.id}`,
     );
     return newProduct;
   }
@@ -264,7 +264,7 @@ export class ProductsService {
     data: any,
     files: Express.Multer.File[],
   ) {
-    console.log(
+    this.logger.log(
       `⚙️ [Products Service] Processing Customer Listing for User ID: ${userId}`,
     );
 
@@ -274,7 +274,7 @@ export class ProductsService {
     });
 
     if (!vendor) {
-      console.log('   - Creating Lite Vendor Profile for Customer...');
+      this.logger.log('   - Creating Lite Vendor Profile for Customer...');
       const user = await this.databaseService.db.query.users.findFirst({
         where: eq(users.id, userId),
       });
@@ -387,14 +387,7 @@ export class ProductsService {
 
       return foundProducts;
     } catch (error: any) {
-      console.error('❌ [Products Service] Database Query Failed:', {
-        message: error.message,
-        detail: error.detail,
-        hint: error.hint,
-        code: error.code,
-        query: error.query,
-        params: error.params,
-      });
+      this.logger.error(`❌ [Products Service] Database Query Failed: ${error.message}`);
       throw error;
     }
   }
@@ -515,7 +508,7 @@ export class ProductsService {
               );
               return { buffer: processedBuffer };
             } catch (err) {
-              console.error(`   - ❌ PhotoRoom failed: ${err.message}`);
+              this.logger.error(`   - ❌ PhotoRoom failed: ${err.message}`);
               return { buffer: f.buffer };
             }
           }
@@ -706,7 +699,7 @@ export class ProductsService {
             aiQualifiedImageUrl,
           );
         } catch (err) {
-          console.error('   - ❌ PixVerse failed:', err);
+          this.logger.error(`   - ❌ PixVerse failed: ${err.message}`);
         }
       }
       */

@@ -1,9 +1,11 @@
+'use client';
+
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Heart, ShoppingCart, Star, ChevronRight, ChevronLeft, ShieldCheck, Zap, CreditCard, Truck, RefreshCw, Headset, Instagram, Scissors, Sparkles, PhoneCall } from "lucide-react";
-import { Link } from "wouter";
+import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { endpoints } from "@/lib/api";
 import { motion, AnimatePresence } from "framer-motion";
@@ -15,7 +17,7 @@ import { ReviewModal } from "@/components/home/ReviewModal";
 import { QuickViewModal } from "@/components/home/QuickViewModal";
 import { FlashSalesSection } from "@/components/home/FlashSalesSection";
 import { HomeFAQ } from "@/components/home/HomeFAQ";
-import { SEO } from "@/components/SEO";
+import { BackToTop } from "@/components/ui/BackToTop";
 import { 
   Carousel, 
   CarouselContent, 
@@ -30,22 +32,12 @@ const fadeInUp = {
   transition: { duration: 0.6 }
 };
 
-const staggerContainer = {
-  animate: {
-    transition: {
-      staggerChildren: 0.1
-    }
-  }
-};
-
 export default function Home() {
   const { user } = useAuth();
   const { t, language, formatPrice, dir } = useLanguage();
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [currentVideo, setCurrentVideo] = useState(0);
   const [currentProductIndex, setCurrentProductIndex] = useState(0);
-  const [currentFlowerIndex, setCurrentFlowerIndex] = useState(0);
-  const [currentArchedIndex, setCurrentArchedIndex] = useState(0);
   const [quickViewProduct, setQuickViewProduct] = useState<any>(null);
   const tabsRef = useRef<HTMLDivElement>(null);
   const featuredRef = useRef<HTMLDivElement>(null);
@@ -81,7 +73,6 @@ export default function Home() {
   const getCategoryLink = (categoryArName: string) => {
     const category = Array.isArray(categories) ? categories.find((c: any) => c.nameAr === categoryArName) : null;
     if (category) return `/products?category=${category.id}`;
-
     return "/products";
   };
 
@@ -91,21 +82,19 @@ export default function Home() {
     queryFn: () => endpoints.categories.list()
   });
 
-
-
-  // Fetch Featured Products (Limited to 4)
+  // Fetch Featured Products
   const { data: featuredProducts, isLoading: featuredLoading } = useQuery({
     queryKey: ['products', 'featured'],
     queryFn: () => endpoints.products.list({ limit: 4 })
   });
 
-  // Fetch New Arrivals (Latest products)
+  // Fetch New Arrivals
   const { data: newArrivals, isLoading: newArrivalsLoading } = useQuery({
     queryKey: ['products', 'new-arrivals'],
     queryFn: () => endpoints.products.list({ limit: 6, orderBy: 'createdAt' })
   });
 
-  // Fetch Best Sellers (Most viewed/popular products)
+  // Fetch Best Sellers
   const { data: bestSellers, isLoading: bestSellersLoading } = useQuery({
     queryKey: ['products', 'bestsellers'],
     queryFn: () => endpoints.products.list({ limit: 6 })
@@ -141,16 +130,6 @@ export default function Home() {
     return () => clearTimeout(timer);
   }, [currentVideo, heroSlides.length]);
 
-  const handleNextProduct = () => {
-    if (!featuredProducts) return;
-    setCurrentProductIndex((prev) => (prev + 1) % Math.ceil((featuredProducts.length || 1) / productsPerPage));
-  };
-
-  const handlePrevProduct = () => {
-    if (!featuredProducts) return;
-    setCurrentProductIndex((prev) => (prev - 1 + Math.ceil((featuredProducts.length || 1) / productsPerPage)) % Math.ceil((featuredProducts.length || 1) / productsPerPage));
-  };
-
   const scrollTabs = (direction: 'left' | 'right') => {
     if (tabsRef.current) {
       const scrollAmount = 200;
@@ -181,14 +160,8 @@ export default function Home() {
 
   return (
     <div className={`min-h-screen bg-[#fafafa] pb-24 ${language === 'ar' ? 'text-right' : 'text-left'}`} dir={dir}>
-      <SEO 
-        title={language === 'ar' ? 'الرئيسية' : 'Home'} 
-        description={language === 'ar' ? 'فستان هو وجهتك الأولى لاكتشاف أرقى فساتين الزفاف والسهرة. تصاميم فاخرة تناسب ذوقك الرفيع.' : 'Fustan is your premier destination for discovering the finest wedding and evening dresses. Luxurious designs for your sophisticated taste.'}
-        url="/"
-      />
       {/* Ultra-Premium Hero Section */}
       <section className="relative min-h-[50vh] md:min-h-[90vh] flex items-center overflow-hidden">
-        {/* Main Background Video */}
         <div className="absolute inset-0 z-0">
           <AnimatePresence mode="wait">
             <motion.video
@@ -208,7 +181,6 @@ export default function Home() {
           </AnimatePresence>
           <div className="absolute inset-0 bg-black/40"></div>
 
-          {/* Video Navigation Dots */}
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 flex gap-3">
             {heroSlides.map((_, index) => (
               <button
@@ -224,9 +196,6 @@ export default function Home() {
           </div>
         </div>
 
-
-
-        {/* Content Container */}
         <div className="container mx-auto px-4 relative z-20 h-full flex flex-col justify-center pt-20">
           <motion.div
             initial={{ opacity: 0, x: language === 'ar' ? 50 : -50 }}
@@ -316,7 +285,6 @@ export default function Home() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[url('/noise.png')] opacity-[0.03] pointer-events-none -z-10" />
       </section>
 
-
       {/* Featured Products */}
       < section className="pt-20 pb-0 relative z-20" >
         <div className="absolute inset-x-0 top-0 bottom-[200px] bg-white -z-10" />
@@ -332,7 +300,6 @@ export default function Home() {
           </motion.div>
 
           <div className="relative group/scroll">
-            {/* Scroll Buttons - Mobile Focus */}
             <button 
               onClick={() => handleHorizontalScroll(featuredRef, 'left')}
               className={`absolute top-1/2 -translate-y-1/2 z-30 w-8 h-8 flex items-center justify-center bg-white/90 backdrop-blur-md rounded-full shadow-lg border border-gray-100 ${language === 'ar' ? '-right-2' : '-left-2'} md:hidden hover:bg-rose-50 transition-colors text-gray-600`}
@@ -368,12 +335,9 @@ export default function Home() {
                   transition={{ delay: i * 0.1, duration: 0.5 }}
                   className="group relative w-[46%] flex-shrink-0 md:w-auto aspect-[2/3]"
                 >
-
-                  {/* Product Content 'Capsule' */}
                   <Link href={`/products/${product.id}`}>
                     <div className="relative z-10 h-full w-full rounded-[30px] overflow-hidden shadow-2xl hover:shadow-purple-200/50 transition-all duration-500">
                       <div className="h-full w-full relative flex flex-col">
-                        {/* Product Image - Full Height */}
                         <div className="flex-grow w-full relative h-full overflow-hidden bg-white">
                           <img
                             src={product.images?.[0] || "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=800&q=80"}
@@ -382,19 +346,15 @@ export default function Home() {
                           />
                         </div>
 
-                        {/* Purple Bottom Overlay */}
                         <div className="absolute bottom-0 left-0 right-0 h-0 opacity-0 bg-[oklch(58.6%_0.253_17.585)]/10 backdrop-blur-md flex flex-col items-center justify-center text-center p-6 transition-all duration-300 group-hover:h-[40%] group-hover:opacity-100 overflow-hidden">
-                          {/* Product Name */}
                           <h3 className="text-2xl font-bold text-white mb-2 leading-tight opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100">
                             {language === 'ar' ? product.nameAr : product.nameEn}
                           </h3>
 
-                          {/* Price */}
                           <p className="text-white/90 text-lg font-medium mb-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-150">
                             {formatPrice(product.price)}
                           </p>
 
-                          {/* More Button */}
                           <Button className="bg-[oklch(58.6%_0.253_17.585)] text-white hover:bg-[oklch(58.6%_0.253_17.585)]/90 rounded-full px-8 py-1 h-8 text-sm font-bold shadow-sm transition-transform hover:scale-105 opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-200">
                             {t('more')}
                           </Button>
@@ -414,8 +374,6 @@ export default function Home() {
       < section className="pt-0 pb-24 relative z-20" >
         <div className="absolute inset-x-0 top-0 bottom-0 bg-[#f2f2f2] -z-10" />
         <div className="container mx-auto px-4 relative z-10">
-
-          {/* Section Header */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -446,7 +404,7 @@ export default function Home() {
                   <Link href={`/products?category=${category.id}`}>
                     <div className="relative h-full w-full cursor-pointer overflow-hidden">
                       <img
-                        src={category.image || `https://images.unsplash.com/photo-${i === 0 ? '1511795409834-ef04bbd61622' : i === 1 ? '1566174053879-31528523f8ae' : '1533035353820-28b3a027964b'}?auto=format&fit=crop&q=80`}
+                        src={category.image || `https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80`}
                         alt={language === 'ar' ? category.nameAr : category.nameEn}
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                       />
@@ -513,11 +471,10 @@ export default function Home() {
         </div>
       </section >
 
-      {/* Split Banner Section (Classic Stocking Styles) */}
+      {/* Split Banner Section */}
       < section className="py-24 bg-[#FDF8F6] relative overflow-hidden" >
         <div className="container mx-auto px-4">
           <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-24">
-            {/* Image Side */}
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -532,7 +489,6 @@ export default function Home() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
               </div>
-              {/* Floating Element */}
               <div className="absolute -bottom-12 -right-12 w-48 h-48 hidden lg:block">
                 <img
                   src="https://res.cloudinary.com/dk3wwuy5d/image/upload/v1771353452/fustan-products/e8dabjs0ub3v6klomsvz.jpg"
@@ -542,7 +498,6 @@ export default function Home() {
               </div>
             </motion.div>
 
-            {/* Text Side */}
             <motion.div
               initial={{ opacity: 0, x: 50 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -640,11 +595,6 @@ export default function Home() {
                   ))}
                 </div>
               </div>
-              {!productsLoading && (!products || products.length === 0) && (
-                <div className="w-full py-20 text-center text-gray-400 bg-gray-50 rounded-[3rem]">
-                  <p className="text-xl font-bold">{t('noProductsInCollection')}</p>
-                </div>
-              )}
             </TabsContent>
           </Tabs>
         </div>
@@ -668,11 +618,6 @@ export default function Home() {
             <h2 className="text-4xl md:text-3xl font-medium text-gray-900">
               {language === 'ar' ? "فساتين معروضة للبيع" : "Pre-loved & Exclusive"}
             </h2>
-            <p className="mt-4 text-slate-500 font-bold max-w-2xl mx-auto text-lg">
-              {language === 'ar' 
-                ? "اكتشفي تشكيلة فريدة من الفساتين المعروضة مباشرة من عميلاتنا بأسعار مميزة" 
-                : "Discover a unique collection of dresses listed directly by our customers at special prices"}
-            </p>
           </motion.div>
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-10">
@@ -693,8 +638,6 @@ export default function Home() {
         </div>
       </section>
 
-
-
       {/* New Arrivals Section */}
       < section className="bg-white relative overflow-hidden pb-32 z-10 pt-0" >
         <div className="container mx-auto px-4 relative z-10">
@@ -708,7 +651,6 @@ export default function Home() {
             <p className="text-slate-500 text-lg font-bold">{t('newArrivalsDesc')}</p>
           </motion.div>
 
-          {/* New Arrivals Grid / Slider */}
           <div className="relative group/scroll">
             <button 
               onClick={() => handleHorizontalScroll(newArrivalsRef, 'left')}
@@ -846,7 +788,6 @@ export default function Home() {
           </div>
         </div>
       </section >
-
 
       {/* Luxury Collection Banner */}
       <section className="py-12 md:py-24 bg-white container mx-auto px-4 max-w-7xl">
@@ -987,15 +928,12 @@ export default function Home() {
         </div>
       </section >
 
-      {/* Professional Newsletter - Elite Club Design */}
+      {/* Professional Newsletter */}
       <section className="py-24 bg-white relative z-20">
         <div className="container mx-auto px-4">
           <div className="relative overflow-hidden rounded-[3rem] bg-[#1a0f16] shadow-2xl isolate">
-            {/* Background Decor */}
             <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-[500px] h-[500px] bg-rose-500/20 blur-[100px] rounded-full" />
             <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-purple-500/10 blur-[100px] rounded-full" />
-
-            {/* Texture Overlay */}
             <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.03]" />
 
             <div className="relative z-10 px-6 py-20 md:px-20 md:py-24 text-center">
@@ -1033,9 +971,8 @@ export default function Home() {
           </div>
         </div>
       </section>
-      {/* FAQ Section */}
-      <HomeFAQ />
 
+      <HomeFAQ />
       <BackToTop />
 
       <QuickViewModal

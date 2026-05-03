@@ -8,6 +8,7 @@ import {
   Query,
   ParseIntPipe,
   UseGuards,
+  Logger,
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -15,6 +16,7 @@ import { User } from '../common/decorators/user.decorator';
 
 @Controller('orders')
 export class OrdersController {
+  private readonly logger = new Logger(OrdersController.name);
   constructor(private ordersService: OrdersService) {}
 
   @Get()
@@ -24,8 +26,12 @@ export class OrdersController {
   }
 
   @Get(':id')
-  async findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.ordersService.findOne(id);
+  @UseGuards(JwtAuthGuard)
+  async findOne(
+    @User('id') userId: number,
+    @Param('id', ParseIntPipe) id: number,
+  ) {
+    return this.ordersService.findOne(id, userId);
   }
 
   @Post()
@@ -36,7 +42,7 @@ export class OrdersController {
     @Body('paymentMethod') paymentMethod?: string,
     @Body('couponCode') couponCode?: string,
   ) {
-    console.log('📦 Creating order with couponCode:', couponCode);
+    this.logger.log(`📦 Creating order for user ${userId}`);
     return this.ordersService.create(
       userId,
       shippingAddress,

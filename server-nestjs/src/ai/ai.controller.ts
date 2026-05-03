@@ -6,13 +6,19 @@ import {
   Post,
   UseInterceptors,
   UploadedFiles,
+  UseGuards,
+  Logger,
 } from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { AiService } from './ai.service';
 import { PixVerseService } from './pixverse.service';
 
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+
 @Controller('ai')
+@UseGuards(JwtAuthGuard)
 export class AiController {
+  private readonly logger = new Logger(AiController.name);
   constructor(
     private readonly aiService: AiService,
     private readonly pixVerseService: PixVerseService,
@@ -43,12 +49,10 @@ export class AiController {
 
   @Get('try-on/result/:imageId')
   async getTryOnResult(@Param('imageId') imageId: string) {
-    console.log(`🔍 [AiController] Polling result for imageId: ${imageId}`);
+    this.logger.log(`🔍 [AiController] Polling result for imageId: ${imageId}`);
     try {
       const result = await this.pixVerseService.getImageResult(imageId);
-      console.log(
-        `  -> PixVerse Result for ${imageId}: ${JSON.stringify(result)}`,
-      );
+      this.logger.log(`  -> PixVerse Result received for ${imageId}`);
 
       if (result.ErrCode !== 0) {
         return {
@@ -86,7 +90,7 @@ export class AiController {
         error: 'Invalid response structure from PixVerse',
       };
     } catch (err: any) {
-      console.error(`  -> Polling Error for ${imageId}:`, err);
+      this.logger.error(`  -> Polling Error for ${imageId}: ${err.message}`);
       return { status: 'failed', error: err.message };
     }
   }
@@ -173,14 +177,12 @@ export class AiController {
 
   @Get('pixverse/video/result/:videoId')
   async getPixVerseVideoResult(@Param('videoId') videoId: string) {
-    console.log(
+    this.logger.log(
       `🔍 [AiController] Polling video result for videoId: ${videoId}`,
     );
     try {
       const result = await this.pixVerseService.getVideoResult(videoId);
-      console.log(
-        `  -> PixVerse Video Result for ${videoId}: ${JSON.stringify(result)}`,
-      );
+      this.logger.log(`  -> PixVerse Video Result received for ${videoId}`);
 
       if (result.ErrCode !== 0) {
         return {
@@ -216,7 +218,7 @@ export class AiController {
         error: 'Invalid response structure from PixVerse',
       };
     } catch (err: any) {
-      console.error(`  -> Video Polling Error for ${videoId}:`, err);
+      this.logger.error(`  -> Video Polling Error for ${videoId}: ${err.message}`);
       return { status: 'failed', error: err.message };
     }
   }

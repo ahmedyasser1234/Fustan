@@ -1,5 +1,6 @@
 {
   "include": [
+    "src/**/*",
     "client/src/**/*",
     "shared/**/*",
     "server-nestjs/src/database/schema.ts"
@@ -33,6 +34,7 @@
     ],
     "paths": {
       "@/*": [
+        "./src/*",
         "./client/src/*"
       ],
       "@shared/*": [

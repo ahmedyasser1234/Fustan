@@ -12,7 +12,8 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import type { Response, Request } from 'express';
-import { COOKIE_NAME, ONE_YEAR_MS } from '../common/constants';
+import { COOKIE_NAME, SEVEN_DAYS_MS } from '../common/constants';
+import { Logger } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CloudinaryService } from '../media/cloudinary.provider';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
@@ -20,6 +21,8 @@ import { FileValidationPipe } from '../common/pipes/file-validation.pipe';
 
 @Controller('auth')
 export class AuthController {
+  private readonly logger = new Logger(AuthController.name);
+
   constructor(
     private authService: AuthService,
     private readonly cloudinary: CloudinaryService,
@@ -28,17 +31,23 @@ export class AuthController {
   @Throttle({ auth: { limit: 5, ttl: 60000 } })
   @Post('login')
   async login(@Body() body: any, @Res({ passthrough: true }) res: Response) {
+    const isProd = process.env.NODE_ENV === 'production';
     const { token, user } = await this.authService.login(body);
 
     res.cookie(COOKIE_NAME, token, {
       httpOnly: true,
       path: '/',
-      sameSite: 'none',
-      secure: true,
-      maxAge: ONE_YEAR_MS,
+      sameSite: isProd ? 'none' : 'lax',
+      secure: isProd,
+      maxAge: SEVEN_DAYS_MS,
     });
 
     return { user, token };
+  }
+
+  @Get('seed-admin')
+  async seedAdmin() {
+    return await this.authService.ensureAdminExists();
   }
 
   @Post('google')
@@ -46,14 +55,15 @@ export class AuthController {
     @Body('token') googleToken: string,
     @Res({ passthrough: true }) res: Response,
   ) {
+    const isProd = process.env.NODE_ENV === 'production';
     const { token, user } = await this.authService.loginWithGoogle(googleToken);
 
     res.cookie(COOKIE_NAME, token, {
       httpOnly: true,
       path: '/',
-      sameSite: 'none',
-      secure: true,
-      maxAge: ONE_YEAR_MS,
+      sameSite: isProd ? 'none' : 'lax',
+      secure: isProd,
+      maxAge: SEVEN_DAYS_MS,
     });
 
     return { user, token };
@@ -67,11 +77,8 @@ export class AuthController {
     @UploadedFile(new FileValidationPipe()) logo: Express.Multer.File,
     @Res({ passthrough: true }) res: Response,
   ) {
-    console.log('Register request received:', body);
+    const isProd = process.env.NODE_ENV === 'production';
     try {
-      // If body is from FormData, some fields might need parsing if they are objects,
-      // but for now we expect flat strings from the registration form.
-
       // Upload logo if present
       let logoUrl = null;
       if (logo) {
@@ -85,30 +92,30 @@ export class AuthController {
         ...body,
         logo: logoUrl,
       });
-      console.log('Register success, token created');
 
       res.cookie(COOKIE_NAME, token, {
         httpOnly: true,
         path: '/',
-        sameSite: 'none',
-        secure: true,
-        maxAge: ONE_YEAR_MS,
+        sameSite: isProd ? 'none' : 'lax',
+        secure: isProd,
+        maxAge: SEVEN_DAYS_MS,
       });
 
       return { user, token };
     } catch (error) {
-      console.error('Register Controller Error:', error);
+      this.logger.error(`Register Controller Error: ${error.message}`);
       throw error;
     }
   }
 
   @Post('logout')
   async logout(@Res({ passthrough: true }) res: Response) {
+    const isProd = process.env.NODE_ENV === 'production';
     res.clearCookie(COOKIE_NAME, {
       httpOnly: true,
       path: '/',
-      sameSite: 'none',
-      secure: true,
+      sameSite: isProd ? 'none' : 'lax',
+      secure: isProd,
     });
     return { success: true };
   }
@@ -171,5 +178,30 @@ export class AuthController {
     }
 
     return this.authService.updateProfile(payload.id, updateData);
+  }
+
+  @Post('refresh')
+  async refresh(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+    const isProd = process.env.NODE_ENV === 'production';
+    const token = req.headers.authorization?.startsWith('Bearer ')
+      ? req.headers.authorization.split(' ')[1]
+      : req.cookies?.[COOKIE_NAME];
+
+    if (!token) throw new UnauthorizedException('No token provided');
+
+    const payload = await this.authService.verifySession(token);
+    if (!payload) throw new UnauthorizedException('Invalid or expired token');
+
+    const newToken = await this.authService.refreshSession(payload);
+
+    res.cookie(COOKIE_NAME, newToken, {
+      httpOnly: true,
+      path: '/',
+      sameSite: isProd ? 'none' : 'lax',
+      secure: isProd,
+      maxAge: SEVEN_DAYS_MS,
+    });
+
+    return { token: newToken };
   }
 }
