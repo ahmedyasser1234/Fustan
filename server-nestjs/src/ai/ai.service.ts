@@ -342,7 +342,7 @@ export class AiService {
             `;
 
       const result = await (this.gemini as any).models.generateContent({
-        model: 'gemini-1.5-flash',
+        model: 'gemini-2.5-flash',
         contents: [{ role: 'user', parts: [{ text: prompt }] }],
       });
 
@@ -355,7 +355,7 @@ export class AiService {
 
       return {
         ...parsed,
-        provider: 'gemini-1.5-flash',
+        provider: 'gemini-2.5-flash',
       };
     } catch (error) {
       this.logger.error(
