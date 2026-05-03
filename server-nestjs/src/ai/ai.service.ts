@@ -518,16 +518,16 @@ export class AiService {
   }
 
   async generateVirtualModel(
-    imageBuffer: Buffer,
-    modelPreset: string,
+    productImageBuffer: Buffer,
+    customerImageBuffer: Buffer,
     scenePreset: string,
     pose: string,
   ) {
     try {
-      this.logger.log(`Starting PhotoRoom Virtual Model generation...`);
+      this.logger.log(`Starting PhotoRoom Virtual Try-On generation...`);
       const resultBuffer = await this.photoroomService.generateVirtualModel(
-        imageBuffer,
-        modelPreset,
+        productImageBuffer,
+        customerImageBuffer,
         scenePreset,
         pose,
       );

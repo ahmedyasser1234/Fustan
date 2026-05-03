@@ -224,19 +224,22 @@ export class AiController {
   }
 
   @Post('virtual-model')
-  @UseInterceptors(FileFieldsInterceptor([{ name: 'image', maxCount: 1 }]))
+  @UseInterceptors(FileFieldsInterceptor([
+    { name: 'dressImage', maxCount: 1 },
+    { name: 'customerImage', maxCount: 1 },
+  ]))
   async generateVirtualModel(
-    @UploadedFiles() files: { image?: Express.Multer.File[] },
-    @Body() body: { modelPreset?: string; scenePreset?: string; pose?: string },
+    @UploadedFiles() files: { dressImage?: Express.Multer.File[]; customerImage?: Express.Multer.File[] },
+    @Body() body: { scenePreset?: string; pose?: string },
   ) {
-    const imageFile = files.image?.[0];
-    if (!imageFile) {
-      throw new Error('Image file is required');
-    }
+    const dressFile = files.dressImage?.[0];
+    const customerFile = files.customerImage?.[0];
+    if (!dressFile) throw new Error('Dress image is required');
+    if (!customerFile) throw new Error('Customer image is required');
 
     return this.aiService.generateVirtualModel(
-      imageFile.buffer,
-      body.modelPreset || 'avery',
+      dressFile.buffer,
+      customerFile.buffer,
       body.scenePreset || 'random',
       body.pose || 'random',
     );

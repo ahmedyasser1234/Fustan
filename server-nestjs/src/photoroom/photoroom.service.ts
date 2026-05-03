@@ -63,7 +63,7 @@ export class PhotoroomService {
 
   async generateVirtualModel(
     productImageBuffer: Buffer,
-    modelPreset: string = 'avery',
+    customerImageBuffer: Buffer,
     scenePreset: string = 'random',
     pose: string = 'random',
   ): Promise<Buffer> {
@@ -73,19 +73,23 @@ export class PhotoroomService {
     }
 
     const formData = new FormData();
-    
-    // Create a Blob from the buffer for the image file
-    const imageBlob = new Blob([new Uint8Array(productImageBuffer)], { type: 'image/png' });
-    formData.append('imageFile', imageBlob, 'product.png');
+
+    // Product (clothing) image - this is the main image
+    const productBlob = new Blob([new Uint8Array(productImageBuffer)], { type: 'image/png' });
+    formData.append('imageFile', productBlob, 'product.png');
+
+    // Customer image - used as the custom model
+    const customerBlob = new Blob([new Uint8Array(customerImageBuffer)], { type: 'image/png' });
+    formData.append('virtualModel.model.custom.imageFile', customerBlob, 'customer.png');
+
     formData.append('removeBackground', 'false');
     formData.append('referenceBox', 'originalImage');
     formData.append('virtualModel.mode', 'ai.auto');
-    formData.append('virtualModel.model.preset.name', modelPreset);
     formData.append('virtualModel.scene.preset.name', scenePreset);
     formData.append('virtualModel.pose', pose);
 
     try {
-      this.logger.log(`Calling PhotoRoom Virtual Model API (Model: ${modelPreset}, Scene: ${scenePreset}, Pose: ${pose})...`);
+      this.logger.log(`Calling PhotoRoom Virtual Try-On API (Scene: ${scenePreset}, Pose: ${pose})...`);
       const response = await fetch(this.apiUrl, {
         method: 'POST',
         headers: {
