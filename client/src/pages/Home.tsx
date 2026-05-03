@@ -14,6 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ReviewModal } from "@/components/home/ReviewModal";
 import { QuickViewModal } from "@/components/home/QuickViewModal";
 import { FlashSalesSection } from "@/components/home/FlashSalesSection";
+import { BackToTop } from "@/components/ui/BackToTop";
 import { HomeFAQ } from "@/components/home/HomeFAQ";
 import { SEO } from "@/components/SEO";
 import { 

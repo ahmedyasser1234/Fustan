@@ -19,7 +19,7 @@ function CheckoutContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const queryClient = useQueryClient();
-  const { language, t } = useLanguage();
+  const { language, t, formatPrice } = useLanguage();
   const [step, setStep] = useState<"shipping" | "payment" | "review">("shipping");
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
   const [mounted, setMounted] = useState(false);
