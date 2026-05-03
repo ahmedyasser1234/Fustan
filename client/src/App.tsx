@@ -603,7 +603,7 @@ function Router() {
 
       <Route path="/vendor/login" component={VendorLogin} />
       <Route path="/vendor/register" component={VendorRegister} />
-      <ProtectedRoute path="/vendor/pending" component={PendingApproval} />
+      <Route path="/vendor/pending" component={PendingApproval} />
 
       {/* Admin Auth */}
       <Route path="/admin/login" component={AdminLogin} />
