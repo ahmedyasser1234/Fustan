@@ -7,6 +7,7 @@ import { GoogleGenAI, HarmCategory, HarmBlockThreshold } from '@google/genai';
 import { v2 as cloudinary } from 'cloudinary';
 import { Readable } from 'stream';
 import { PixVerseService } from './pixverse.service';
+import { PhotoroomService } from '../photoroom/photoroom.service';
 
 @Injectable()
 export class AiService {
@@ -18,6 +19,7 @@ export class AiService {
   constructor(
     private configService: ConfigService,
     private readonly pixVerseService: PixVerseService,
+    private readonly photoroomService: PhotoroomService,
   ) {
     const apiKey = this.configService.get<string>('OPENAI_API_KEY');
     const geminiApiKey = this.configService.get<string>('GEMINI_API_KEY');
@@ -514,4 +516,46 @@ export class AiService {
 
     throw new Error('Polling timed out after 5 minutes');
   }
+
+  async generateVirtualModel(
+    imageBuffer: Buffer,
+    modelPreset: string,
+    scenePreset: string,
+    pose: string,
+  ) {
+    try {
+      this.logger.log(`Starting PhotoRoom Virtual Model generation...`);
+      const resultBuffer = await this.photoroomService.generateVirtualModel(
+        imageBuffer,
+        modelPreset,
+        scenePreset,
+        pose,
+      );
+
+      // Upload the resulting buffer to Cloudinary
+      const uploadResult = await new Promise<any>((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+          { folder: 'fustan-photoroom-results' },
+          (error, result) => {
+            if (error) reject(error);
+            else resolve(result);
+          },
+        );
+        const stream = new Readable();
+        stream.push(resultBuffer);
+        stream.push(null);
+        stream.pipe(uploadStream);
+      });
+
+      return {
+        imageUrl: uploadResult.secure_url,
+        provider: 'photoroom-virtual-model',
+        status: 'completed',
+      };
+    } catch (error) {
+      this.logger.error('PhotoRoom Virtual Model failed:', error);
+      throw error;
+    }
+  }
 }
+

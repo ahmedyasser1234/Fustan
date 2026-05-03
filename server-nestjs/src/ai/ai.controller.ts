@@ -223,6 +223,25 @@ export class AiController {
     }
   }
 
+  @Post('virtual-model')
+  @UseInterceptors(FileFieldsInterceptor([{ name: 'image', maxCount: 1 }]))
+  async generateVirtualModel(
+    @UploadedFiles() files: { image?: Express.Multer.File[] },
+    @Body() body: { modelPreset?: string; scenePreset?: string; pose?: string },
+  ) {
+    const imageFile = files.image?.[0];
+    if (!imageFile) {
+      throw new Error('Image file is required');
+    }
+
+    return this.aiService.generateVirtualModel(
+      imageFile.buffer,
+      body.modelPreset || 'avery',
+      body.scenePreset || 'random',
+      body.pose || 'random',
+    );
+  }
+
   @Post('pixverse/account/balance')
   async pixVerseAccountBalance() {
     return this.pixVerseService.getAccountBalance();
