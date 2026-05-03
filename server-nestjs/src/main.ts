@@ -16,15 +16,8 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
 
   // Security & Middleware
-  // Security headers are now handled by Nginx to avoid duplication.
+  // Security headers and HTTPS redirection are handled by Nginx.
   
-  // HTTPS Redirection Middleware (Production)
-  app.use((req, res, next) => {
-    if (process.env.NODE_ENV === 'production' && req.headers['x-forwarded-proto'] !== 'https') {
-      return res.redirect(301, `https://${req.get('host')}${req.url}`);
-    }
-    next();
-  });
   app.use(compression());
   app.use(cookieParser());
 
