@@ -31,8 +31,9 @@ export class PhotoroomService {
 
     if (backgroundImageUrl) {
       formData.append('background.guidance.imageUrl', backgroundImageUrl);
-      formData.append('background.guidance.scale', '0.8');
-    } else if (backgroundPrompt) {
+      formData.append('background.guidance.scale', '1.0');
+    }
+    if (backgroundPrompt) {
       formData.append('background.prompt', backgroundPrompt);
     }
 
