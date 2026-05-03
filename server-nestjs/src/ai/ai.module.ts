@@ -5,9 +5,10 @@ import { ConfigModule } from '@nestjs/config';
 import { PixVerseService } from './pixverse.service';
 import { PixVerseWebhookController } from './pixverse-webhook.controller';
 import { DatabaseModule } from '../database/database.module';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
-  imports: [ConfigModule, DatabaseModule],
+  imports: [ConfigModule, DatabaseModule, AuthModule],
   controllers: [AiController, PixVerseWebhookController],
   providers: [AiService, PixVerseService],
   exports: [AiService, PixVerseService],
