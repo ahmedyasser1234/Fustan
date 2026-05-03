@@ -38,10 +38,7 @@ export class CollectionsController {
     },
     @UploadedFile(new FileValidationPipe()) image?: Express.Multer.File,
   ) {
-    console.log('Controller Received Request:', {
-      body: createCollectionDto,
-      file: image ? 'File Present' : 'No File',
-    });
+
     return this.collectionsService.create({
       ...createCollectionDto,
       vendorId: Number(createCollectionDto.vendorId),

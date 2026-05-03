@@ -22,11 +22,11 @@ export class NotificationsGateway
   server: Server;
 
   handleConnection(client: Socket) {
-    console.log(`Client connected: ${client.id}`);
+
   }
 
   handleDisconnect(client: Socket) {
-    console.log(`Client disconnected: ${client.id}`);
+
   }
 
   sendNotification(userId: string, data: any) {
@@ -35,9 +35,7 @@ export class NotificationsGateway
 
   @SubscribeMessage('join')
   handleJoinRoom(client: Socket, userId: string) {
-    console.log(
-      `Notifications: User joining room user_${userId} (client: ${client.id})`,
-    );
+
     client.join(`user_${userId}`);
     return { event: 'joined', data: userId };
   }

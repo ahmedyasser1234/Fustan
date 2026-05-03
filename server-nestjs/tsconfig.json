@@ -1,13 +1,13 @@
 {
   "compilerOptions": {
     "module": "commonjs",
+    "target": "ES2021",
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "declaration": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "allowSyntheticDefaultImports": true,
-    "target": "ES2021",
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
@@ -25,8 +25,6 @@
   "exclude": [
     "node_modules",
     "dist",
-    "scripts",
-    "*.ts",
-    "*.js"
+    "scripts"
   ]
 }

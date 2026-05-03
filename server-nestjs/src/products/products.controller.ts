@@ -49,9 +49,7 @@ export class ProductsController {
     @UploadedFiles(new FileValidationPipe(50 * 1024 * 1024))
     files: Express.Multer.File[],
   ) {
-    console.log(
-      `📥 [Products Controller] Customer Listing Request from User: ${userId}`,
-    );
+
     return this.productsService.createCustomerListing(userId, body, files);
   }
 

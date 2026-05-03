@@ -14,7 +14,7 @@ export class ContentService implements OnModuleInit {
       .from(contentItems)
       .limit(1);
     if (count.length === 0) {
-      console.log('Seeding initial content items...');
+
 
       // Seed Testimonials
       await this.databaseService.db.insert(contentItems).values([

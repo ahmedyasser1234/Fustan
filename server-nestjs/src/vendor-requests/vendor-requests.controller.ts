@@ -83,12 +83,7 @@ export class VendorRequestsController {
       }
     }
 
-    console.log('Creating Vendor Request:', {
-      vendorId: vendor.id,
-      type,
-      dataType: typeof data,
-      dataKeys: Object.keys(data),
-    });
+
 
     const scheduledAt = body.scheduledAt
       ? new Date(body.scheduledAt)

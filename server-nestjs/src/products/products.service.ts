@@ -3,6 +3,7 @@ import {
   NotFoundException,
   BadRequestException,
   UnauthorizedException,
+  Logger,
 } from '@nestjs/common';
 import { DatabaseService } from '../database/database.service';
 import {
@@ -26,7 +27,7 @@ export class ProductsService {
     private readonly cloudinary: CloudinaryService,
     private readonly pixVerseService: PixVerseService,
     private readonly photoroomService: PhotoroomService,
-  ) {}
+  ) { }
 
   async create(data: any, files: Express.Multer.File[], userId?: number) {
     this.logger.log('⚙️ [Products Service] Processing Create Product...');
@@ -500,7 +501,7 @@ export class ProductsService {
         mainFiles.map(async (f, idx) => {
           if (idx === 0 && (bgUrl || bgPrompt)) {
             try {
-              console.log(`   - ✨ Applying PhotoRoom background for updated first image...`);
+
               const processedBuffer = await this.photoroomService.replaceBackground(
                 f.buffer,
                 bgUrl,
@@ -570,9 +571,9 @@ export class ProductsService {
 
     const vendorOriginalPrice = parseFloat(
       data.originalPrice ||
-        data.price ||
-        (product as any).price?.toString() ||
-        '0',
+      data.price ||
+      (product as any).price?.toString() ||
+      '0',
     );
     const originalPrice =
       vendorOriginalPrice * (1 + commissionRate / 100) + commissionFixed;
@@ -691,9 +692,7 @@ export class ProductsService {
         aiQualifiedImageUrl !== (product as any).aiQualifiedImage
       ) {
         try {
-          console.log(
-            `   - ✨ Triggering automatic PixVerse background change for updated product ${id}`,
-          );
+
           await this.pixVerseService.createBackgroundChangeTask(
             id,
             aiQualifiedImageUrl,

@@ -170,9 +170,7 @@ export class AdminService {
     // Admin acts as a user (customerId) when talking to vendors
     // or potentially as a vendor (vendorId) if they manage a store directly (though less common for super admin)
 
-    console.log(
-      `AdminService: getAllConversations called for adminId: ${adminId}`,
-    );
+
 
     const results = await this.databaseService.db
       .select({

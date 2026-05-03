@@ -27,7 +27,7 @@ export class StoreReviewsService {
     }
 
     try {
-      console.log('Creating review for user:', user.id, 'Data:', data);
+
       return await this.drizzle.db
         .insert(storeReviews)
         .values({

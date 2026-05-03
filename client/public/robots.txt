@@ -1,5 +1,7 @@
 User-agent: *
 Allow: /
+Disallow: /api/
+Disallow: /admin/
 
 # Sitemap
-Sitemap: https://fustan.cloud/sitemap.xml
+Sitemap: https://fustan.cloud/api/seo/sitemap.xml

@@ -205,7 +205,7 @@ export class ChatService {
             convId = newConv.id;
           }
         } else if (recipientId) {
-          console.log('ChatService: Admin -> Customer path');
+
           // Admin chatting with customer
           // Find or create "Fustan Support" vendor
           let [supportVendor] = await this.databaseService.db
@@ -215,7 +215,7 @@ export class ChatService {
             .limit(1);
 
           if (!supportVendor) {
-            console.log('ChatService: Creating Fustan Support vendor...');
+
             [supportVendor] = await this.databaseService.db
               .insert(vendors)
               .values({
@@ -235,7 +235,7 @@ export class ChatService {
               .returning();
           }
 
-          console.log(`ChatService: Using Support Vendor ${supportVendor.id}`);
+
 
           if (supportVendor) {
             const [existing] = await this.databaseService.db
@@ -385,9 +385,7 @@ export class ChatService {
 
     // Send notification to recipient if offline/not focusing chat
     if (finalRecipientId) {
-      console.log(
-        `ChatService: Notifying recipient ${finalRecipientId} about message ${message.id} (Type: new_message)`,
-      );
+
       await this.notificationsService.notify(
         finalRecipientId,
         'new_message',

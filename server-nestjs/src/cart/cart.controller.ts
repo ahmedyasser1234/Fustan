@@ -41,9 +41,9 @@ export class CartController {
   @Get()
   async getItems(@Req() req: Request) {
     const userId = await this.getUserId(req);
-    console.log(`🛒 [CartController] Get Items for User ID: ${userId}`);
+
     const items = await this.cartService.getItems(userId);
-    console.log(`   - Found ${items.length} items`);
+
     return items;
   }
 
@@ -56,10 +56,7 @@ export class CartController {
     @Body('color') color?: string,
   ) {
     const userId = await this.getUserId(req);
-    console.log(`➕ [CartController] Add Item for User ID: ${userId}`);
-    console.log(
-      `   - Product: ${productId}, Qty: ${quantity}, Size: ${size}, Color: ${color}`,
-    );
+
     return this.cartService.addItem(userId, productId, quantity, size, color);
   }
 

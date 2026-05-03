@@ -40,21 +40,7 @@ export class CategoriesController {
     @Body() body: any,
     @UploadedFiles(new FileValidationPipe()) files: Express.Multer.File[],
   ) {
-    console.log(
-      '📥 [Categories Controller] POST /categories - Request Received',
-    );
-    console.log('   - Payload Keys:', Object.keys(body));
-    console.log('   - Files Count:', files?.length || 0);
-    if (files && files.length > 0) {
-      console.log(
-        '   - Files Map:',
-        files.map((f) => ({
-          field: f.fieldname,
-          name: f.originalname,
-          size: f.size,
-        })),
-      );
-    }
+
     return this.categoriesService.create(body, files);
   }
 

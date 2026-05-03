@@ -24,7 +24,7 @@ export class CollectionsService {
     if (data.image) {
       try {
         const upload = await this.cloudinary.uploadFile(data.image);
-        console.log('Cloudinary Upload Result:', upload);
+
         if ('secure_url' in upload) {
           coverImage = upload.secure_url;
         }
@@ -55,11 +55,7 @@ export class CollectionsService {
     if (!slug) slug = `collection-${Date.now()}`;
 
     try {
-      console.log('Creating collection with data:', {
-        ...data,
-        image: data.image ? 'File present' : 'No file',
-        slug,
-      });
+
 
       const [collection] = await this.db.db
         .insert(collections)
@@ -112,7 +108,7 @@ export class CollectionsService {
       .leftJoin(pc, eq(collections.id, pc.collectionId));
 
     const conditions = [];
-    console.log('Collections findAll Params:', { vendorId, categoryId });
+
 
     // Correctly handle vendorId 0 (Admin) vs specific Vendor
     if (vendorId !== undefined && vendorId !== null && !isNaN(vendorId)) {
@@ -122,7 +118,7 @@ export class CollectionsService {
           sql`(${collections.vendorId} = ${vendorId} OR ${collections.vendorId} = 0)`,
         );
       } else {
-        console.log('   - Admin View (vendorId 0): No vendor filter applied.');
+
       }
     }
 
@@ -144,9 +140,7 @@ export class CollectionsService {
       results = await query.orderBy(desc(collections.createdAt));
     }
 
-    console.log(
-      `   - Query Execution Finished. Found ${results.length} collections.`,
-    );
+
     return results;
   }
 

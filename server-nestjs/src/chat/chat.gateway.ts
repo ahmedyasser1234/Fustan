@@ -59,20 +59,14 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       }
 
       if (!token) {
-        console.log(
-          `Chat: Disconnecting client ${client.id} (No token). Handshake:`,
-          {
-            hasCookie: !!cookieHeader,
-            hasAuth: !!client.handshake.auth?.token,
-          },
-        );
+
         client.disconnect();
         return;
       }
 
       const payload = await this.authService.verifySession(token);
       if (!payload) {
-        console.log(`Chat: Disconnecting client ${client.id} (Invalid token)`);
+
         client.disconnect();
         return;
       }
@@ -99,9 +93,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         onlineSet.add(client.id);
       }
 
-      console.log(
-        `Chat: User ${user.name} (${user.id}) connected. Total online: ${ChatGateway.onlineUsers.size}`,
-      );
+
     } catch (error) {
       console.error('Chat Connection Error:', error);
       client.disconnect();
@@ -121,9 +113,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
             userId: user.id,
             status: 'offline',
           });
-          console.log(
-            `Chat: User ${user.name} (${user.id}) disconnected (last socket).`,
-          );
+
         }
       }
     }
@@ -187,9 +177,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     if (notificationRecipientId) {
       const recipientRoom = `user_${notificationRecipientId}`;
-      console.log(
-        `Chat: Notifying recipient ${notificationRecipientId} on namespace /chat (Room: ${recipientRoom})`,
-      );
+
       this.server.to(recipientRoom).emit('receiveMessage', result.message);
     }
 
@@ -199,9 +187,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       .except(client.id)
       .emit('receiveMessage', result.message);
 
-    console.log(
-      `Chat: Message from ${sender.name} sent successfully to conversation ${result.conversationId}. Room was user_${notificationRecipientId}`,
-    );
+
 
     // Return whole result to sender
     return result;

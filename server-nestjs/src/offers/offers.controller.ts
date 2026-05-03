@@ -54,29 +54,25 @@ export class OffersController {
 
   @Get()
   async findAll(@Req() req: Request) {
-    console.log('🔍 [OffersController] Request:', req.url, 'Query:', req.query);
+
 
     // 1. Try standard query param
     let vendorId = req.query.vendorId;
 
     // 2. Fallback: Parse from URL manually if missing (e.g. if query parser failed)
     if (!vendorId && req.url.includes('vendorId=')) {
-      console.log(
-        '⚠️ [OffersController] Query param missing, parsing URL manually...',
-      );
+
       const match = req.url.match(/vendorId=(\d+)/);
       if (match) vendorId = match[1];
     }
 
     if (vendorId) {
-      console.log(
-        `✅ [OffersController] Public Access via vendorId=${vendorId}`,
-      );
+
       return this.offersService.findAll(Number(vendorId));
     }
 
     // 3. Fallback: Vendor Dashboard (Auth required)
-    console.log('🔒 [OffersController] No vendorId param, checking Auth...');
+
     const authVendorId = await this.getVendorId(req);
     return this.offersService.findAll(authVendorId);
   }

@@ -102,7 +102,7 @@ export class AuthService {
 
   async register(data: any) {
     const email = data.email.toLowerCase();
-    console.log('AuthService.register called for:', email);
+
 
     // Check if user exists
     const existingUser = await this.databaseService.db

@@ -30,7 +30,7 @@ export class CategoriesService {
   }
 
   async create(data: any, files: Express.Multer.File[]) {
-    console.log('⚙️ [Categories Service] Processing Create Category...');
+
 
     let imageUrl = data.image || null;
     let aiBackgroundImageUrl = data.aiBackgroundImage || null;

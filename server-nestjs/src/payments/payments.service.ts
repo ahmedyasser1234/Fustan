@@ -50,9 +50,7 @@ export class PaymentsService {
   }
 
   async createTabbyCheckout(orderId: number, amount: number, customer: any) {
-    console.log(
-      `Initiating Tabby Checkout for Order #${orderId} - Amount: ${amount}`,
-    );
+
     // Tabby standard integration pattern:
     // 1. Send session request to Tabby API (requires secret key)
     // 2. Tabby returns a session ID and redirect URL
@@ -66,9 +64,7 @@ export class PaymentsService {
   }
 
   async createTamaraCheckout(orderId: number, amount: number, customer: any) {
-    console.log(
-      `Initiating Tamara Checkout for Order #${orderId} - Amount: ${amount}`,
-    );
+
     // Tamara standard integration pattern:
     // 1. Create checkout session via Tamara API
     // 2. Receive checkout URL
