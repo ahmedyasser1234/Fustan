@@ -7,9 +7,10 @@ import { DatabaseModule } from '../database/database.module';
 import { MediaModule } from '../media/media.module';
 import { AuthModule } from '../auth/auth.module';
 import { AiModule } from '../ai/ai.module';
+import { PhotoroomModule } from '../photoroom/photoroom.module';
 
 @Module({
-  imports: [DatabaseModule, MediaModule, AuthModule, AiModule],
+  imports: [DatabaseModule, MediaModule, AuthModule, AiModule, PhotoroomModule],
   providers: [ProductsService, CategoriesService],
   controllers: [ProductsController, CategoriesController],
   exports: [ProductsService, CategoriesService],

@@ -32,6 +32,8 @@ import { PointsModule } from './points/points.module';
 import { VendorRequestsModule } from './vendor-requests/vendor-requests.module';
 import { VirtualTryonModule } from './virtual-tryon/virtual-tryon.module';
 import { AiSubscriptionsModule } from './ai-subscriptions/ai-subscriptions.module';
+import { PhotoroomModule } from './photoroom/photoroom.module';
+import { SeoModule } from './seo/seo.module';
 
 @Module({
   imports: [
@@ -66,6 +68,8 @@ import { AiSubscriptionsModule } from './ai-subscriptions/ai-subscriptions.modul
     VendorRequestsModule,
     VirtualTryonModule,
     AiSubscriptionsModule,
+    PhotoroomModule,
+    SeoModule,
     ScheduleModule.forRoot(),
 
     ThrottlerModule.forRoot([

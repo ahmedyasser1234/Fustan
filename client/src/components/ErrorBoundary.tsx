@@ -1,6 +1,6 @@
-import { cn } from "@/lib/utils";
-import { AlertTriangle, RotateCcw } from "lucide-react";
-import { Component, ReactNode } from "react";
+import React, { Component, ReactNode } from "react";
+import { AlertTriangle, RotateCcw, Home } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface Props {
   children: ReactNode;
@@ -8,48 +8,60 @@ interface Props {
 
 interface State {
   hasError: boolean;
-  error: Error | null;
 }
 
 class ErrorBoundary extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = { hasError: false, error: null };
+    this.state = { hasError: false };
   }
 
-  static getDerivedStateFromError(error: Error): State {
-    return { hasError: true, error };
+  static getDerivedStateFromError(_: Error): State {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    // Log error to an error reporting service if available
+    console.error("ErrorBoundary caught an error", error, errorInfo);
   }
 
   render() {
     if (this.state.hasError) {
       return (
-        <div className="flex items-center justify-center min-h-screen p-8 bg-background">
-          <div className="flex flex-col items-center w-full max-w-2xl p-8">
-            <AlertTriangle
-              size={48}
-              className="text-destructive mb-6 flex-shrink-0"
-            />
-
-            <h2 className="text-xl mb-4">An unexpected error occurred.</h2>
-
-            <div className="p-4 w-full rounded bg-muted overflow-auto mb-6">
-              <pre className="text-sm text-muted-foreground whitespace-break-spaces">
-                {this.state.error?.stack}
-              </pre>
+        <div className="min-h-screen flex items-center justify-center bg-white p-4">
+          <div className="max-w-md w-full text-center space-y-8">
+            <div className="flex justify-center">
+              <div className="w-20 h-20 bg-rose-50 rounded-3xl flex items-center justify-center text-rose-600 shadow-inner">
+                <AlertTriangle size={40} />
+              </div>
+            </div>
+            
+            <div className="space-y-4">
+              <h2 className="text-2xl font-medium text-gray-900">
+                عذراً، حدث خطأ غير متوقع
+              </h2>
+              <p className="text-slate-500 font-bold">
+                Something went wrong. We are working on fixing it. Please try again or go back to the homepage.
+              </p>
             </div>
 
-            <button
-              onClick={() => window.location.reload()}
-              className={cn(
-                "flex items-center gap-2 px-4 py-2 rounded-lg",
-                "bg-primary text-primary-foreground",
-                "hover:opacity-90 cursor-pointer"
-              )}
-            >
-              <RotateCcw size={16} />
-              Reload Page
-            </button>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button 
+                onClick={() => window.location.reload()}
+                className="bg-rose-600 hover:bg-rose-700 text-white rounded-full px-8 h-12 flex items-center gap-2"
+              >
+                <RotateCcw size={18} />
+                تحديث الصفحة
+              </Button>
+              <Button 
+                variant="outline"
+                onClick={() => window.location.href = '/'}
+                className="rounded-full px-8 h-12 border-2 flex items-center gap-2"
+              >
+                <Home size={18} />
+                الرئيسية
+              </Button>
+            </div>
           </div>
         </div>
       );

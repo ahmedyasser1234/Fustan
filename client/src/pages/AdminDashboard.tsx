@@ -48,6 +48,8 @@ import {
   Users,
   X,
   XCircle,
+  Sparkles,
+  Upload,
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useState, useEffect, useRef, useMemo } from "react";
@@ -1970,6 +1972,9 @@ function CategoriesTab({
   const [descriptionEn, setDescriptionEn] = useState("");
   const [image, setImage] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [categoryBackgroundUrl, setCategoryBackgroundUrl] = useState("");
+  const [categoryBackgroundFile, setCategoryBackgroundFile] = useState<File | null>(null);
+  const [categoryBackgroundPrompt, setCategoryBackgroundPrompt] = useState("");
   const [search, setSearch] = useState("");
   const { t, language } = useLanguage();
 
@@ -2026,6 +2031,9 @@ function CategoriesTab({
     setDescriptionEn("");
     setImage("");
     setImageFile(null);
+    setCategoryBackgroundUrl("");
+    setCategoryBackgroundFile(null);
+    setCategoryBackgroundPrompt("");
     setEditingCategory(null);
   };
 
@@ -2046,6 +2054,13 @@ function CategoriesTab({
       console.log("   - Appending image URL to FormData");
       formData.append("image", image);
     }
+
+    if (categoryBackgroundFile) {
+      formData.append("categoryBackground", categoryBackgroundFile);
+    } else if (categoryBackgroundUrl) {
+      formData.append("categoryBackgroundUrl", categoryBackgroundUrl);
+    }
+    formData.append("categoryBackgroundPrompt", categoryBackgroundPrompt);
 
     // Debug FormData
     console.log("   - FormData Preview:");
@@ -2081,6 +2096,9 @@ function CategoriesTab({
     setDescriptionEn(category.descriptionEn || "");
     setImage(category.image || "");
     setImageFile(null);
+    setCategoryBackgroundUrl(category.categoryBackgroundUrl || "");
+    setCategoryBackgroundFile(null);
+    setCategoryBackgroundPrompt(category.categoryBackgroundPrompt || "");
     setIsModalOpen(true);
   };
 
@@ -2362,6 +2380,78 @@ function CategoriesTab({
                             </button>
                           )}
                         </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* AI Background Section */}
+                  <div className="text-start border-t border-gray-100 pt-6">
+                    <label className="block text-sm font-semibold text-rose-600 mb-2 flex items-center gap-2">
+                      <Sparkles className="w-4 h-4" />
+                      {t('aiBackground')}
+                    </label>
+                    <p className="text-[10px] text-gray-500 mb-4 font-bold">
+                      {t('aiEnhancementNote')}
+                    </p>
+                    
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-4">
+                        <input
+                          type="file"
+                          id="category-bg-upload"
+                          className="hidden"
+                          accept="image/*"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              setCategoryBackgroundFile(file);
+                              setCategoryBackgroundUrl(URL.createObjectURL(file));
+                            }
+                          }}
+                        />
+                        <label
+                          htmlFor="category-bg-upload"
+                          className="w-24 h-24 rounded-xl bg-rose-50 border-2 border-dashed border-rose-200 flex items-center justify-center overflow-hidden relative group cursor-pointer hover:border-rose-300 hover:bg-rose-100/50 transition-all"
+                        >
+                          {categoryBackgroundUrl ? (
+                            <>
+                              <img src={categoryBackgroundUrl} alt="" className="w-full h-full object-cover" />
+                              <div className="absolute inset-0 bg-black/40 items-center justify-center hidden group-hover:flex text-white transition-all">
+                                <Upload className="w-6 h-6" />
+                              </div>
+                            </>
+                          ) : (
+                            <div className="text-center p-2">
+                              <Upload className="w-6 h-6 text-rose-400 mx-auto mb-1" />
+                              <span className="text-[10px] text-rose-500 font-bold">{t('uploadImage')}</span>
+                            </div>
+                          )}
+                        </label>
+                        <div className="flex-1">
+                          <Input
+                            value={categoryBackgroundFile ? t('fileSelected') : categoryBackgroundUrl}
+                            onChange={(e) => {
+                              setCategoryBackgroundUrl(e.target.value);
+                              setCategoryBackgroundFile(null);
+                            }}
+                            placeholder={language === 'ar' ? "أو أدخل رابط الخلفية مباشرة" : "Or enter background URL directly"}
+                            className="w-full"
+                            readOnly={!!categoryBackgroundFile}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="text-xs font-bold text-slate-600">
+                          {t('categoryBackgroundPrompt')}
+                        </label>
+                        <textarea
+                          value={categoryBackgroundPrompt}
+                          onChange={(e) => setCategoryBackgroundPrompt(e.target.value)}
+                          placeholder={language === 'ar' ? "مثال: استوديو تصوير احترافي بإضاءة ناعمة..." : "e.g., Professional photo studio with soft lighting..."}
+                          className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500 text-sm"
+                          rows={2}
+                        />
                       </div>
                     </div>
                   </div>

@@ -1,5 +1,5 @@
 User-agent: *
 Allow: /
 
-# Sitemaps
-Sitemap: https://fustan.com/sitemap.xml
+# Sitemap
+Sitemap: https://fustan.cloud/sitemap.xml

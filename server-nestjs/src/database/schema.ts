@@ -122,6 +122,8 @@ export const categories = pgTable('categories', {
   isActive: boolean('isActive').default(true),
   displayOrder: integer('displayOrder').default(0),
   aiBackgroundImage: text('aiBackgroundImage'),
+  categoryBackgroundUrl: text('categoryBackgroundUrl'),
+  categoryBackgroundPrompt: text('categoryBackgroundPrompt'),
   createdAt: timestamp('createdAt').defaultNow().notNull(),
   updatedAt: timestamp('updatedAt').defaultNow().notNull(),
 });

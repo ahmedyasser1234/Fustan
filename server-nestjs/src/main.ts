@@ -15,10 +15,30 @@ async function bootstrap() {
   // Security & Middleware
   app.use(
     helmet({
-      crossOriginOpenerPolicy: { policy: 'same-origin-allow-popups' },
-      crossOriginResourcePolicy: { policy: 'cross-origin' },
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'self'"],
+          scriptSrc: ["'self'", "'unsafe-inline'"],
+          styleSrc: ["'self'", "'unsafe-inline'"],
+          imgSrc: ["'self'", "data:", "https:"],
+          fontSrc: ["'self'", "data:"],
+          connectSrc: ["'self'", "https://api.photoroom.com", "https://api.cloudinary.com", "ws:", "wss:"],
+        },
+      },
+      frameguard: { action: 'deny' },
+      xssFilter: true,
+      noSniff: true,
+      referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
     }),
   );
+
+  // HTTPS Redirection Middleware (Production)
+  app.use((req, res, next) => {
+    if (process.env.NODE_ENV === 'production' && req.headers['x-forwarded-proto'] !== 'https') {
+      return res.redirect(301, `https://${req.get('host')}${req.url}`);
+    }
+    next();
+  });
   app.use(compression());
   app.use(cookieParser());
 

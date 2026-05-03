@@ -45,6 +45,8 @@ import { useChat } from "@/contexts/ChatContext";
 import { ProductCard } from "@/components/ProductCard";
 import { SEO } from "@/components/SEO";
 import { TryOnSection } from "@/components/product/TryOnSection";
+import { TryOnModal } from "@/components/product/TryOnModal";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 
 function RelatedProducts({ collectionId, currentProductId, language }: { collectionId?: number, currentProductId: number, language: string }) {
   const { t } = useLanguage();
@@ -155,6 +157,7 @@ export default function ProductDetail() {
   const [activeTab, setActiveTab] = useState<"details" | "reviews">("details");
   const [reviewRating, setReviewRating] = useState(5);
   const [reviewComment, setReviewComment] = useState("");
+  const [isTryOnModalOpen, setIsTryOnModalOpen] = useState(false);
   const queryClient = useQueryClient();
   const { language, t } = useLanguage();
   const [, setLocation] = useLocation();
@@ -354,12 +357,37 @@ export default function ProductDetail() {
 
   return (
     <div className="min-h-screen bg-white pb-20 overflow-x-hidden">
-      <SEO 
-        title={language === 'ar' ? product.nameAr : product.nameEn} 
-        description={language === 'ar' ? product.descriptionAr : product.descriptionEn}
-        image={product.images?.[0]}
-        type="product"
-      />
+      {(() => {
+        const breadcrumbs = [
+          { name: language === 'ar' ? 'المنتجات' : 'Products', href: '/products' },
+          ...(category ? [{ name: language === 'ar' ? category.nameAr : category.nameEn, href: `/products?category=${category.id}` }] : []),
+          { name: language === 'ar' ? product.nameAr : product.nameEn, href: `/products/${product.id}` }
+        ];
+
+        return (
+          <>
+            <SEO 
+              title={language === 'ar' ? product.nameAr : product.nameEn}
+              description={language === 'ar' ? product.descriptionAr : product.descriptionEn}
+              image={product.images?.[0]}
+              url={`/products/${product.id}`}
+              type="product"
+              productData={{
+                name: language === 'ar' ? product.nameAr : product.nameEn,
+                price: product.price.toString(),
+                currency: 'EGP',
+                image: product.images?.[0],
+                availability: product.stock > 0 ? 'in_stock' : 'out_of_stock',
+                description: language === 'ar' ? product.descriptionAr : product.descriptionEn,
+              }}
+              breadcrumbs={breadcrumbs.map(b => ({ name: b.name, item: b.href }))}
+            />
+            <div className="container mx-auto px-4 py-4">
+              <Breadcrumbs items={breadcrumbs} />
+            </div>
+          </>
+        );
+      })()}
       <section className="pt-4">
         <OffersDisplay vendorId={vendor?.id} productId={product.id} language={language} />
       </section>
@@ -553,8 +581,8 @@ export default function ProductDetail() {
                           <span className="truncate">{language === 'ar' ? 'تواصل مع المصمم' : 'Contact Designer'}</span>
                         </Button>
                       </div>
-                      <Button onClick={() => document.getElementById('ai-try-on-section')?.scrollIntoView({ behavior: 'smooth' })} className="h-14 rounded-2xl bg-gradient-to-r from-purple-600 to-rose-600 text-white font-medium w-full text-lg shadow-lg shadow-rose-100">
-                        {language === 'ar' ? '✨ تجربة ذكية (AI)' : '✨ Magic Try-On (AI)'}
+                      <Button onClick={() => setIsTryOnModalOpen(true)} className="h-14 rounded-2xl bg-gradient-to-r from-purple-600 to-rose-600 text-white font-medium w-full text-lg shadow-lg shadow-rose-100">
+                        {language === 'ar' ? '✨ جربي الفستان' : '✨ Try It On'}
                       </Button>
                     </div>
                   </div>
@@ -600,6 +628,7 @@ export default function ProductDetail() {
             <div className="space-y-6">
               <Card className="border-0 shadow-sm">
                 <CardContent className="p-6">
+
                   <h4 className="font-semibold mb-4">{language === 'ar' ? "أضف تقييمك" : "Add Your Review"}</h4>
                   <div className="space-y-4">
                     <div className="flex gap-2 justify-end">
@@ -634,6 +663,13 @@ export default function ProductDetail() {
       <div className="container mx-auto px-4">
         <RelatedProducts collectionId={product.collectionId} currentProductId={product.id} language={language} />
       </div>
+
+      <TryOnModal
+        isOpen={isTryOnModalOpen}
+        onClose={() => setIsTryOnModalOpen(false)}
+        productImage={displayImage}
+        productName={language === 'ar' ? product.nameAr : product.nameEn}
+      />
     </div>
   );
 }

@@ -423,6 +423,14 @@ export const translations = {
         imageUrlPlaceholder: "أو ضعي رابط الصورة هنا...",
         imageUploadHint: "يمكنك وضع رابط مباشر للصورة هنا أو سيتم توفير خاصية الرفع قريباً",
         deleteCategoryConfirm: "هل أنت متأكد من حذف القسم",
+        aiBackground: "خلفية الذكاء الاصطناعي",
+        categoryBackgroundPrompt: "وصف الخلفية (AI)",
+        aiEnhancementNote: "سيتم تحسين خلفية صور المنتجات تلقائياً لهذا القسم.",
+        tryOn: "تجربة الفستان",
+        uploadYourPhoto: "ارفعي صورتك",
+        startTryOn: "ابدئي التجربة الآن",
+        magicResult: "النتيجة السحرية",
+        aiProcessing: "جاري المعالجة بالذكاء الاصطناعي...",
 
         // Chat Tab
         manageConversations: "إدارة المحادثات",
@@ -1178,6 +1186,14 @@ export const translations = {
         usageCount: "Usage Count",
         rentPrice: "Rent Price",
         salePrice: "Sale Price",
+        aiBackground: "AI Background",
+        categoryBackgroundPrompt: "Background Prompt (AI)",
+        aiEnhancementNote: "Product images will be automatically enhanced for this category.",
+        tryOn: "Try It On",
+        uploadYourPhoto: "Upload Your Photo",
+        startTryOn: "Start Try-On Now",
+        magicResult: "Magic Result",
+        aiProcessing: "Processing with AI...",
     }
 };
 

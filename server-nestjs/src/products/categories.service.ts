@@ -34,12 +34,14 @@ export class CategoriesService {
 
     let imageUrl = data.image || null;
     let aiBackgroundImageUrl = data.aiBackgroundImage || null;
+    let categoryBackgroundUrl = data.categoryBackgroundUrl || null;
 
     // Upload images if files are provided
     for (const file of files || []) {
       if (
-        file.fieldname === 'image' ||
-        file.fieldname === 'aiBackgroundImage'
+        ['image', 'aiBackgroundImage', 'categoryBackground'].includes(
+          file.fieldname,
+        )
       ) {
         try {
           const result = await this.cloudinary.uploadFile(file);
@@ -47,6 +49,8 @@ export class CategoriesService {
             if (file.fieldname === 'image') imageUrl = result.secure_url;
             if (file.fieldname === 'aiBackgroundImage')
               aiBackgroundImageUrl = result.secure_url;
+            if (file.fieldname === 'categoryBackground')
+              categoryBackgroundUrl = result.secure_url;
           }
         } catch (error) {
           console.error(
@@ -86,6 +90,8 @@ export class CategoriesService {
         descriptionEn: data.descriptionEn || null,
         image: imageUrl,
         aiBackgroundImage: aiBackgroundImageUrl,
+        categoryBackgroundUrl,
+        categoryBackgroundPrompt: data.categoryBackgroundPrompt || null,
         slug,
         displayOrder,
       };
@@ -108,18 +114,22 @@ export class CategoriesService {
   async update(id: number, data: any, files: Express.Multer.File[]) {
     let imageUrl = data.image;
     let aiBackgroundImageUrl = data.aiBackgroundImage;
+    let categoryBackgroundUrl = data.categoryBackgroundUrl;
 
     // Upload images if files are provided
     for (const file of files || []) {
       if (
-        file.fieldname === 'image' ||
-        file.fieldname === 'aiBackgroundImage'
+        ['image', 'aiBackgroundImage', 'categoryBackground'].includes(
+          file.fieldname,
+        )
       ) {
         const result = await this.cloudinary.uploadFile(file);
         if ('secure_url' in result) {
           if (file.fieldname === 'image') imageUrl = result.secure_url;
           if (file.fieldname === 'aiBackgroundImage')
             aiBackgroundImageUrl = result.secure_url;
+          if (file.fieldname === 'categoryBackground')
+            categoryBackgroundUrl = result.secure_url;
         }
       }
     }
@@ -130,6 +140,7 @@ export class CategoriesService {
         ...data,
         image: imageUrl,
         aiBackgroundImage: aiBackgroundImageUrl,
+        categoryBackgroundUrl,
         updatedAt: new Date(),
       })
       .where(eq(categories.id, id))

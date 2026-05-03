@@ -16,6 +16,7 @@ import {
 import { eq, and, like, desc, or, SQL, inArray } from 'drizzle-orm';
 import { CloudinaryService } from '../media/cloudinary.provider';
 import { PixVerseService } from '../ai/pixverse.service';
+import { PhotoroomService } from '../photoroom/photoroom.service';
 
 @Injectable()
 export class ProductsService {
@@ -23,6 +24,7 @@ export class ProductsService {
     private databaseService: DatabaseService,
     private readonly cloudinary: CloudinaryService,
     private readonly pixVerseService: PixVerseService,
+    private readonly photoroomService: PhotoroomService,
   ) {}
 
   async create(data: any, files: Express.Multer.File[], userId?: number) {
@@ -94,8 +96,37 @@ export class ProductsService {
     );
 
     // 3. Perform all uploads simultaneously
+    // Check if category has a background
+    const category = await this.databaseService.db.query.categories.findFirst({
+      where: eq(categories.id, categoryId),
+    });
+
+    const bgUrl = (category as any)?.categoryBackgroundUrl;
+    const bgPrompt = (category as any)?.categoryBackgroundPrompt;
+
+    const processedMainFiles = await Promise.all(
+      mainFiles.map(async (f, idx) => {
+        // Only process the first image for now to save API credits and time
+        if (idx === 0 && (bgUrl || bgPrompt)) {
+          try {
+            console.log(`   - ✨ Applying PhotoRoom background for first image...`);
+            const processedBuffer = await this.photoroomService.replaceBackground(
+              f.buffer,
+              bgUrl,
+              bgPrompt,
+            );
+            return { buffer: processedBuffer, original: f };
+          } catch (err) {
+            console.error(`   - ❌ PhotoRoom failed: ${err.message}`);
+            return { buffer: f.buffer, original: f };
+          }
+        }
+        return { buffer: f.buffer, original: f };
+      }),
+    );
+
     const uploadResults = await Promise.all([
-      ...mainFiles.map((f) => this.cloudinary.uploadFile(f)),
+      ...processedMainFiles.map((pf) => this.cloudinary.uploadBuffer(pf.buffer)),
       ...(aiFile ? [this.cloudinary.uploadFile(aiFile)] : []),
       ...allVariantFiles.map((vf) => this.cloudinary.uploadFile(vf.file)),
     ]);
@@ -464,8 +495,36 @@ export class ProductsService {
     let imageUrls = product.images || [];
     const mainFiles = files?.filter((f) => f.fieldname === 'images') || [];
     if (mainFiles.length > 0) {
-      const uploadPromises = mainFiles.map((file) =>
-        this.cloudinary.uploadFile(file),
+      // Check for category background
+      const categoryId = data.categoryId ? parseInt(data.categoryId) : product.categoryId;
+      const category = await this.databaseService.db.query.categories.findFirst({
+        where: eq(categories.id, categoryId),
+      });
+      const bgUrl = (category as any)?.categoryBackgroundUrl;
+      const bgPrompt = (category as any)?.categoryBackgroundPrompt;
+
+      const processedMainFiles = await Promise.all(
+        mainFiles.map(async (f, idx) => {
+          if (idx === 0 && (bgUrl || bgPrompt)) {
+            try {
+              console.log(`   - ✨ Applying PhotoRoom background for updated first image...`);
+              const processedBuffer = await this.photoroomService.replaceBackground(
+                f.buffer,
+                bgUrl,
+                bgPrompt,
+              );
+              return { buffer: processedBuffer };
+            } catch (err) {
+              console.error(`   - ❌ PhotoRoom failed: ${err.message}`);
+              return { buffer: f.buffer };
+            }
+          }
+          return { buffer: f.buffer };
+        }),
+      );
+
+      const uploadPromises = processedMainFiles.map((pf) =>
+        this.cloudinary.uploadBuffer(pf.buffer),
       );
       const results = await Promise.all(uploadPromises);
       const newUrls = results

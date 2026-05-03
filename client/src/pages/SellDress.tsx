@@ -195,6 +195,27 @@ export default function SellDress() {
                         ))}
                       </SelectContent>
                     </Select>
+                    {categoryId && (
+                      <motion.div 
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        className="bg-rose-50 border border-rose-100 p-4 rounded-2xl flex items-start gap-3 mt-2"
+                      >
+                        <Sparkles className="w-5 h-5 text-rose-500 shrink-0 mt-0.5" />
+                        <div>
+                          <p className="text-xs font-bold text-rose-700">
+                            {language === 'ar' 
+                              ? "سيتم تحسين خلفية فستانك تلقائياً لتناسب هذا القسم!" 
+                              : "Your dress background will be automatically enhanced to match this category!"}
+                          </p>
+                          <p className="text-[10px] text-rose-600/70 mt-1 font-medium">
+                            {language === 'ar'
+                              ? "نستخدم الذكاء الاصطناعي لجعل صورك تبدو أكثر احترافية."
+                              : "We use AI to make your photos look more professional."}
+                          </p>
+                        </div>
+                      </motion.div>
+                    )}
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

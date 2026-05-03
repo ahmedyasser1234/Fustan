@@ -70,6 +70,12 @@ export class CloudinaryService {
   async uploadFile(
     file: Express.Multer.File,
   ): Promise<UploadApiResponse | UploadApiErrorResponse> {
+    return this.uploadBuffer(file.buffer);
+  }
+
+  async uploadBuffer(
+    buffer: Buffer,
+  ): Promise<UploadApiResponse | UploadApiErrorResponse> {
     return new Promise((resolve, reject) => {
       const upload = cloudinary.uploader.upload_stream(
         {
@@ -86,7 +92,7 @@ export class CloudinaryService {
         },
       );
 
-      streamifier.createReadStream(file.buffer).pipe(upload);
+      streamifier.createReadStream(buffer).pipe(upload);
     });
   }
 }

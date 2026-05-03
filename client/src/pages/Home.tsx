@@ -177,7 +177,11 @@ export default function Home() {
 
   return (
     <div className={`min-h-screen bg-[#fafafa] pb-24 ${language === 'ar' ? 'text-right' : 'text-left'}`} dir={dir}>
-      <SEO />
+      <SEO 
+        title={language === 'ar' ? 'الرئيسية' : 'Home'} 
+        description={language === 'ar' ? 'فستان هو وجهتك الأولى لاكتشاف أرقى فساتين الزفاف والسهرة. تصاميم فاخرة تناسب ذوقك الرفيع.' : 'Fustan is your premier destination for discovering the finest wedding and evening dresses. Luxurious designs for your sophisticated taste.'}
+        url="/"
+      />
       {/* Ultra-Premium Hero Section */}
       <section className="relative min-h-[50vh] md:min-h-[90vh] flex items-center overflow-hidden">
         {/* Main Background Video */}

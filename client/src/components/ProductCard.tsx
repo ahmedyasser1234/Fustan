@@ -64,6 +64,7 @@ export function ProductCard({ product, index = 0, loading = false, onQuickView }
                         <img
                             src={product.images?.[0] || "https://images.unsplash.com/photo-1594465919760-441fe5908ab0?w=600&h=800&fit=crop"}
                             alt={name}
+                            loading="lazy"
                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                         />
                         {product.discount > 0 && (
