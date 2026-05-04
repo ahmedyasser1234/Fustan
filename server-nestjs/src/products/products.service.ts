@@ -145,11 +145,15 @@ export class ProductsService {
     let bgUrl = (category as any)?.categoryBackgroundUrl;
     let bgPrompt = (category as any)?.categoryBackgroundPrompt;
 
-    // Override with preset if provided
-    if (data.backgroundPreset && PRESET_PROMPTS[data.backgroundPreset]) {
+    // Background logic:
+    // 1. If user explicitly chose a specific preset (not 'category'), use it.
+    // 2. Otherwise, use category background if it exists.
+    // 3. Fallback to 'studio' preset if nothing else is available.
+    if (data.backgroundPreset && data.backgroundPreset !== 'category' && PRESET_PROMPTS[data.backgroundPreset]) {
       bgPrompt = PRESET_PROMPTS[data.backgroundPreset];
-      // If using a preset, we might want to clear bgUrl unless it's a specific guidance image
-      bgUrl = undefined; 
+      bgUrl = undefined;
+    } else if (!bgUrl && !bgPrompt) {
+      bgPrompt = PRESET_PROMPTS['studio'];
     }
 
     this.logger.log(`DEBUG: categoryId=${categoryId}, bgUrl=${bgUrl}, bgPrompt=${bgPrompt}`);
@@ -587,10 +591,15 @@ export class ProductsService {
     let bgUrl = (category as any)?.categoryBackgroundUrl;
     let bgPrompt = (category as any)?.categoryBackgroundPrompt;
 
-    // Override with preset if provided
-    if (data.backgroundPreset && PRESET_PROMPTS[data.backgroundPreset]) {
+    // Background logic:
+    // 1. If user explicitly chose a specific preset (not 'category'), use it.
+    // 2. Otherwise, use category background if it exists.
+    // 3. Fallback to 'studio' preset if nothing else is available.
+    if (data.backgroundPreset && data.backgroundPreset !== 'category' && PRESET_PROMPTS[data.backgroundPreset]) {
       bgPrompt = PRESET_PROMPTS[data.backgroundPreset];
       bgUrl = undefined;
+    } else if (!bgUrl && !bgPrompt) {
+      bgPrompt = PRESET_PROMPTS['studio'];
     }
 
     let imageUrls = product.images || [];

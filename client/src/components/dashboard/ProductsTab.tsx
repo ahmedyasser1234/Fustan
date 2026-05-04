@@ -127,7 +127,7 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
     const [colorVariants, setColorVariants] = useState<{ id?: number; colorName: string; colorCode: string; imageFiles: File[]; existingImages?: string[] }[]>([]);
     const [sku, setSku] = useState("");
     const [tags, setTags] = useState("");
-    const [backgroundPreset, setBackgroundPreset] = useState("studio");
+    const [backgroundPreset, setBackgroundPreset] = useState("category");
 
     // Queries
     const { data: products, isLoading } = useQuery({
@@ -402,7 +402,7 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
         setSku(""); setTags("");
         setColorVariants([]);
         setSelectedSystem("us");
-        setBackgroundPreset("studio");
+        setBackgroundPreset("category");
     };
 
     const handleAddSize = () => {
@@ -681,6 +681,7 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
                                             </div>
                                             <div className="grid grid-cols-2 gap-2">
                                                 {[
+                                                    { id: 'category', labelAr: 'الافتراضي (القسم)', labelEn: 'Default (Category)' },
                                                     { id: 'studio', labelAr: 'استوديو', labelEn: 'Studio' },
                                                     { id: 'beach', labelAr: 'شاطئ', labelEn: 'Beach' },
                                                     { id: 'sunset', labelAr: 'غروب', labelEn: 'Sunset' },
