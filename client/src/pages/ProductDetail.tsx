@@ -603,7 +603,10 @@ export default function ProductDetail() {
       </div>
 
       <div id="virtual-model-section">
-        <VirtualModelSection productImage={displayImage} />
+        <VirtualModelSection 
+          productImage={displayImage} 
+          allImages={product?.images || []}
+        />
       </div>
 
       <div className="container mx-auto px-4 mt-20">

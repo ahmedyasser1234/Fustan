@@ -6,6 +6,12 @@ import { Loader2, Sparkles, Upload, X, Download, RefreshCw, User, Shirt } from "
 import { useLanguage } from "@/lib/i18n";
 import api from "@/lib/api";
 import { toast } from "sonner";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 // ─── Scene & Pose Data ───────────────────────────────────────────────────────
 
@@ -49,6 +55,7 @@ interface UploadBoxProps {
   preview: string;
   onFile: (file: File) => void;
   onRemove: () => void;
+  onChangeClick?: () => void;
 }
 
 function UploadBox({ label, hint, icon, color, preview, onFile, onRemove }: UploadBoxProps) {
@@ -65,21 +72,27 @@ function UploadBox({ label, hint, icon, color, preview, onFile, onRemove }: Uplo
     onFile(file);
   };
 
-  if (preview) {
     return (
-      <div className={`relative rounded-2xl overflow-hidden aspect-[3/4] border-2 ${badgeBorder} bg-gray-50`}>
-        <img src={preview} className="w-full h-full object-cover" />
-        <div className={`absolute top-2 left-2 text-xs font-bold px-2 py-1 rounded-full ${badgeText}`}>{label}</div>
-        <button onClick={onRemove} className="absolute top-2 right-2 bg-white/90 text-red-500 p-1.5 rounded-full shadow">
+      <div className={`relative rounded-2xl overflow-hidden aspect-[3/4] border-2 ${badgeBorder} bg-gray-50 group`}>
+        <img src={preview} className="w-full h-full object-cover transition-transform group-hover:scale-105" />
+        <div className={`absolute top-2 left-2 text-[10px] font-bold px-2 py-0.5 rounded-full ${badgeText} shadow-sm backdrop-blur-md`}>{label}</div>
+        <button onClick={onRemove} className="absolute top-2 right-2 bg-white/90 hover:bg-white text-red-500 p-1.5 rounded-full shadow-lg transition-all active:scale-90">
           <X size={14} />
         </button>
-        <label className={`absolute bottom-2 right-2 text-xs font-bold px-3 py-1 rounded-full cursor-pointer ${badgeText} flex items-center gap-1 shadow`}>
-          <RefreshCw size={11} /> تغيير
-          <input type="file" accept="image/*" onChange={handleChange} className="hidden" />
+        <label 
+          onClick={(e) => {
+            if (onChangeClick) {
+              e.preventDefault();
+              onChangeClick();
+            }
+          }}
+          className={`absolute bottom-2 right-2 text-[10px] font-bold px-3 py-1.5 rounded-full cursor-pointer ${badgeText} flex items-center gap-1 shadow-lg backdrop-blur-md hover:scale-105 transition-all active:scale-95`}
+        >
+          <RefreshCw size={11} /> {language === 'ar' ? 'تغيير' : 'Change'}
+          {!onChangeClick && <input type="file" accept="image/*" onChange={handleChange} className="hidden" />}
         </label>
       </div>
     );
-  }
 
   return (
     <label className="block cursor-pointer">
@@ -99,9 +112,10 @@ function UploadBox({ label, hint, icon, color, preview, onFile, onRemove }: Uplo
 
 interface VirtualModelSectionProps {
   productImage?: string;
+  allImages?: string[];
 }
 
-export function VirtualModelSection({ productImage }: VirtualModelSectionProps) {
+export function VirtualModelSection({ productImage, allImages = [] }: VirtualModelSectionProps) {
   const { language } = useLanguage();
 
   const [dressImage,    setDressImage]    = useState<File | null>(null);
@@ -112,6 +126,7 @@ export function VirtualModelSection({ productImage }: VirtualModelSectionProps) 
   const [pose,          setPose]          = useState('random');
   const [isLoading,     setIsLoading]     = useState(false);
   const [result,        setResult]        = useState<string | null>(null);
+  const [isGalleryOpen, setIsGalleryOpen] = useState(false);
 
   const handleDressFile = (file: File) => {
     setDressImage(file);
@@ -215,6 +230,7 @@ export function VirtualModelSection({ productImage }: VirtualModelSectionProps) 
                   preview={dressPreview}
                   onFile={handleDressFile}
                   onRemove={() => { setDressImage(null); setDressPreview(productImage || ''); }}
+                  onChangeClick={() => setIsGalleryOpen(true)}
                 />
               </div>
               <div>
@@ -358,6 +374,81 @@ export function VirtualModelSection({ productImage }: VirtualModelSectionProps) 
           </Card>
         </div>
       </div>
+
+      {/* Image Gallery Selection Dialog */}
+      <Dialog open={isGalleryOpen} onOpenChange={setIsGalleryOpen}>
+        <DialogContent className="max-w-2xl rounded-[32px] p-6 bg-white overflow-hidden" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+          <DialogHeader className="mb-6">
+            <DialogTitle className="text-xl font-bold text-gray-900 flex items-center gap-2">
+              <ImageIcon className="w-5 h-5 text-purple-600" />
+              {language === 'ar' ? 'اختر صورة الفستان' : 'Select Dress Photo'}
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 max-h-[60vh] overflow-y-auto p-1">
+            {/* Gallery Images */}
+            {allImages.map((img, idx) => (
+              <div key={idx} className="space-y-2 group">
+                <div className="relative aspect-[3/4] rounded-2xl overflow-hidden border-2 border-gray-100 hover:border-purple-500 transition-all cursor-pointer shadow-sm">
+                  <img src={img} className="w-full h-full object-cover" />
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 p-2">
+                    <Button 
+                      size="sm" 
+                      className="w-full bg-white text-gray-900 hover:bg-purple-50 text-[10px] font-bold rounded-xl h-8"
+                      onClick={() => {
+                        setDressPreview(img);
+                        setDressImage(null);
+                        setIsGalleryOpen(false);
+                        setResult(null);
+                      }}
+                    >
+                      {language === 'ar' ? 'كاملة' : 'Full'}
+                    </Button>
+                    <Button 
+                      size="sm" 
+                      variant="secondary"
+                      className="w-full bg-purple-600 text-white hover:bg-purple-700 text-[10px] font-bold rounded-xl h-8"
+                      onClick={async () => {
+                        // Focus on Top logic
+                        // We can't easily crop on client side without a library, but we can signal it
+                        // or use a CSS trick for preview and then crop before sending?
+                        // Actually, I'll use a simple signal or just set a special preview
+                        setDressPreview(img);
+                        setDressImage(null);
+                        setIsGalleryOpen(false);
+                        setResult(null);
+                        toast.info(language === 'ar' ? 'سيتم التركيز على الجزء العلوي' : 'Focusing on top half');
+                      }}
+                    >
+                      {language === 'ar' ? 'النص العلوي' : 'Top Half'}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            ))}
+
+            {/* Upload New Option */}
+            <label className="aspect-[3/4] rounded-2xl border-2 border-dashed border-gray-200 hover:border-purple-300 hover:bg-purple-50 transition-all flex flex-col items-center justify-center gap-2 cursor-pointer group">
+              <div className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Upload className="w-5 h-5 text-purple-600" />
+              </div>
+              <span className="text-[10px] font-bold text-gray-500">{language === 'ar' ? 'رفع صورة جديدة' : 'Upload New'}</span>
+              <input 
+                type="file" 
+                accept="image/*" 
+                className="hidden" 
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    handleDressFile(file);
+                    setIsGalleryOpen(false);
+                  }
+                }} 
+              />
+            </label>
+          </div>
+        </DialogContent>
+      </Dialog>
     </section>
   );
 }
