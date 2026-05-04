@@ -19,7 +19,7 @@ export default function Login() {
     const [isLoading, setIsLoading] = useState(false);
 
     const [, setLocation] = useLocation();
-    const { refresh } = useAuth();
+    const { refresh, setUser } = useAuth();
 
     const handleGoogleSuccess = async (credentialResponse: any) => {
         setIsLoading(true);
@@ -29,13 +29,18 @@ export default function Login() {
             if (response.data.token) {
                 localStorage.setItem('app_token', response.data.token);
             }
+            
+            // Set user data in cache immediately
+            setUser(response.data.user || response.data);
+            
             await refresh();
             toast.success(language === 'ar' ? 'تم تسجيل الدخول بنجاح' : 'Logged in successfully');
+            
             const userRole = response.data.user?.role;
             if (userRole === 'vendor') {
-                setLocation("/vendor-dashboard");
+                window.location.href = "/vendor-dashboard";
             } else {
-                setLocation("/");
+                window.location.href = "/";
             }
         } catch (error) {
             toast.error(language === 'ar' ? 'فشل تسجيل الدخول بواسطة جوجل' : 'Google Login failed');
@@ -58,9 +63,13 @@ export default function Login() {
             if (response.data.token) {
                 localStorage.setItem('app_token', response.data.token);
             }
+            
+            // Set user data in cache immediately
+            setUser(response.data.user || response.data);
+            
             await refresh(); // Refresh auth state
             toast.success(language === 'ar' ? 'تم تسجيل الدخول بنجاح' : 'Logged in successfully');
-            setLocation("/");
+            window.location.href = "/";
         } catch (error: any) {
             const message = error.response?.data?.message || (language === 'ar' ? 'فشل تسجيل الدخول. تحقق من بياناتك' : 'Login failed. Check your credentials');
             toast.error(message);

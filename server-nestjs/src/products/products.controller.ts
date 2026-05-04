@@ -60,6 +60,8 @@ export class ProductsController {
     @Query('vendorId') vendorId?: string,
     @Query('collectionId') collectionId?: string,
     @Query('isCustomerListing') isCustomerListing?: string,
+    @Query('isFeatured') isFeatured?: string,
+    @Query('orderBy') orderBy?: 'createdAt' | 'rating' | 'price-low' | 'price-high',
     @Query('limit') limit?: string,
     @Query('offset') offset?: string,
   ) {
@@ -70,11 +72,9 @@ export class ProductsController {
       offset ? parseInt(offset) : 0,
       vendorId ? parseInt(vendorId) : undefined,
       collectionId ? parseInt(collectionId) : undefined,
-      isCustomerListing === 'true'
-        ? true
-        : isCustomerListing === 'false'
-          ? false
-          : undefined,
+      isCustomerListing === 'true',
+      isFeatured === 'true',
+      orderBy,
     );
   }
 

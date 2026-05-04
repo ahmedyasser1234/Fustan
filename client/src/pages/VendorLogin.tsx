@@ -10,32 +10,39 @@ import api from "@/lib/api";
 import { Loader2, Store } from "lucide-react";
 import { toast } from "sonner";
 
-export default function VendorLogin() {
+function VendorLogin() {
     const { t, language } = useLanguage();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [, setLocation] = useLocation();
-    const { refresh } = useAuth();
+    const { refresh, setUser } = useAuth();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
 
         try {
-            // Pass the expected role to the backend
             const response = await api.post("/auth/login", {
                 email: email.toLowerCase(),
                 password,
                 role: 'vendor'
             });
+            
             if (response.data.token) {
                 localStorage.setItem('app_token', response.data.token);
             }
+
+            // Set user data in cache immediately to avoid race conditions
+            setUser(response.data.user || response.data);
+            
             await refresh();
+            
             toast.success(language === 'ar' ? 'أهلاً بك في بوابة التجار' : 'Welcome to the Vendor Portal');
-            setLocation("/vendor-dashboard");
+            
+            // Use window.location.href for a hard redirect to ensure all states are fresh
+            window.location.href = "/vendor-dashboard";
         } catch (error: any) {
             const message = error.response?.data?.message || (language === 'ar' ? 'فشل تسجيل الدخول' : 'Login failed');
 
@@ -87,7 +94,7 @@ export default function VendorLogin() {
                             />
                         </div>
                         <div className={`space-y-2 text-${language === 'ar' ? 'right' : 'left'}`}>
-                            <Label htmlFor="password font-bold text-gray-700">{language === 'ar' ? 'كلمة المرور' : 'Password'}</Label>
+                            <Label htmlFor="password" className="font-bold text-gray-700">{language === 'ar' ? 'كلمة المرور' : 'Password'}</Label>
                             <Input
                                 id="password"
                                 type="password"

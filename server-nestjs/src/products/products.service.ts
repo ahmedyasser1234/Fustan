@@ -21,7 +21,7 @@ import {
   orderItems,
   aiTasks,
 } from '../database/schema';
-import { eq, and, like, desc, or, SQL, inArray, sql } from 'drizzle-orm';
+import { eq, and, like, notLike, desc, or, SQL, inArray, sql } from 'drizzle-orm';
 import { CloudinaryService } from '../media/cloudinary.provider';
 import { PixVerseService } from '../ai/pixverse.service';
 import { PhotoroomService } from '../photoroom/photoroom.service';
@@ -346,16 +346,23 @@ export class ProductsService {
     vendorId?: number,
     collectionId?: number,
     isCustomerListing?: boolean,
+    isFeatured?: boolean,
+    orderBy: 'createdAt' | 'rating' | 'price-low' | 'price-high' = 'createdAt',
   ) {
     const conditions: SQL[] = [];
 
-    // Default to showing only active products unless a specific vendor is requested (dashboard context)
+    // 1. Base visibility conditions
     if (!vendorId) {
+      // Public view: only active products from approved & active vendors
       conditions.push(eq(products.isActive, true));
+      conditions.push(eq(vendors.status, 'approved'));
+      conditions.push(eq(vendors.isActive, true));
     } else {
+      // Dashboard view: show all products for this vendor
       conditions.push(eq(products.vendorId, vendorId));
     }
 
+    // 2. Specific Filters
     if (query) {
       conditions.push(
         or(
@@ -373,20 +380,43 @@ export class ProductsService {
       conditions.push(eq(products.collectionId, collectionId));
     }
 
-    /*
-    if (isCustomerListing !== undefined) {
-      conditions.push(eq(products.isCustomerListing, isCustomerListing));
+    if (isFeatured !== undefined) {
+      conditions.push(eq(products.isFeatured, isFeatured));
     }
-    */
+
+    // Handle isCustomerListing (Marketplace)
+    if (isCustomerListing !== undefined) {
+      if (isCustomerListing) {
+        conditions.push(like(vendors.storeSlug, 'customer-%'));
+      } else {
+        conditions.push(notLike(vendors.storeSlug, 'customer-%'));
+      }
+    }
+
+    // 3. Sorting logic
+    let order: SQL = desc(products.createdAt);
+    if (orderBy === 'rating') {
+      order = desc(products.rating);
+    } else if (orderBy === 'price-low') {
+      order = sql`${products.price} ASC`;
+    } else if (orderBy === 'price-high') {
+      order = desc(products.price);
+    }
 
     try {
-      const foundProducts = await this.databaseService.db
-        .select()
+      // Use query builder for join to check vendor status
+      const results = await this.databaseService.db
+        .select({
+          product: products,
+        })
         .from(products)
+        .leftJoin(vendors, eq(products.vendorId, vendors.id))
         .where(and(...conditions))
         .limit(limit)
         .offset(offset)
-        .orderBy(desc(products.createdAt));
+        .orderBy(order);
+
+      const foundProducts = results.map(r => r.product);
 
       // Fetch colors for these products
       const productIds = foundProducts.map((p) => p.id);

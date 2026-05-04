@@ -617,16 +617,44 @@ export default function ProductDetail() {
 
         <div className="max-w-4xl mx-auto text-right">
           {activeTab === "details" && (
-            <div className="bg-white p-6 md:p-12 rounded-[3rem] shadow-sm border border-gray-50 leading-relaxed text-xl text-gray-700 whitespace-pre-wrap">
-              {language === 'ar' ? product.descriptionAr : product.descriptionEn}
-              {product.specifications && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-16">
-                  {Object.entries(product.specifications).map(([key, val]: any) => (
-                    <div key={key} className="flex justify-between items-center border-b border-gray-50 py-4">
-                      <span className="text-gray-900 font-bold">{val}</span>
-                      <span className="text-gray-400 font-medium">{key}</span>
-                    </div>
-                  ))}
+            <div className="space-y-12">
+              <div className="bg-white p-6 md:p-12 rounded-[3rem] shadow-sm border border-gray-50 leading-relaxed text-xl text-gray-700 whitespace-pre-wrap">
+                <h3 className="text-2xl font-bold mb-6 text-gray-900 border-b border-gray-100 pb-4">
+                  {language === 'ar' ? 'الوصف' : 'Description'}
+                </h3>
+                {language === 'ar' ? product.descriptionAr : product.descriptionEn}
+              </div>
+
+              {/* Product Attributes Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[
+                  { label: language === 'ar' ? 'نوع القصة' : 'Cut Type', value: product.cutType },
+                  { label: language === 'ar' ? 'شكل الجسم' : 'Body Shape', value: product.bodyShape },
+                  { label: language === 'ar' ? 'المناسبة' : 'Occasion', value: product.occasion },
+                  { label: language === 'ar' ? 'الانطباع' : 'Impression', value: product.impression },
+                  { label: language === 'ar' ? 'الخيال' : 'Silhouette', value: product.silhouette },
+                  { label: language === 'ar' ? 'الحالة' : 'Condition', value: product.condition === 'new' ? (language === 'ar' ? 'جديد' : 'New') : (language === 'ar' ? 'مستعمل' : 'Used') },
+                ].map((attr, idx) => attr.value && (
+                  <div key={idx} className="bg-gray-50/50 p-6 rounded-3xl border border-gray-100">
+                    <p className="text-gray-400 text-sm font-bold mb-1">{attr.label}</p>
+                    <p className="text-gray-900 font-medium text-lg">{attr.value}</p>
+                  </div>
+                ))}
+              </div>
+
+              {product.specifications && Object.keys(product.specifications).length > 0 && (
+                <div className="bg-white p-6 md:p-12 rounded-[3rem] shadow-sm border border-gray-50">
+                   <h3 className="text-2xl font-bold mb-6 text-gray-900 border-b border-gray-100 pb-4">
+                    {language === 'ar' ? 'المواصفات الإضافية' : 'Additional Specifications'}
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4">
+                    {Object.entries(product.specifications).map(([key, val]: any) => (
+                      <div key={key} className="flex justify-between items-center border-b border-gray-50 py-4">
+                        <span className="text-gray-900 font-bold">{val}</span>
+                        <span className="text-gray-400 font-medium">{key}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>

@@ -97,7 +97,7 @@ export default function Home() {
   // Fetch Featured Products (Limited to 4)
   const { data: featuredProducts, isLoading: featuredLoading } = useQuery({
     queryKey: ['products', 'featured'],
-    queryFn: () => endpoints.products.list({ limit: 4 })
+    queryFn: () => endpoints.products.list({ isFeatured: true, limit: 4 })
   });
 
   // Fetch New Arrivals (Latest products)
@@ -109,7 +109,7 @@ export default function Home() {
   // Fetch Best Sellers (Most viewed/popular products)
   const { data: bestSellers, isLoading: bestSellersLoading } = useQuery({
     queryKey: ['products', 'bestsellers'],
-    queryFn: () => endpoints.products.list({ limit: 6 })
+    queryFn: () => endpoints.products.list({ limit: 6, orderBy: 'rating' })
   });
 
   // Fetch All/Filtered Products
