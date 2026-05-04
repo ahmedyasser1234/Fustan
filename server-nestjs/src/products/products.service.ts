@@ -13,8 +13,15 @@ import {
   collections,
   productColors,
   users,
+  reviews,
+  wishlist,
+  cartItems,
+  shipping,
+  offerItems,
+  orderItems,
+  aiTasks,
 } from '../database/schema';
-import { eq, and, like, desc, or, SQL, inArray } from 'drizzle-orm';
+import { eq, and, like, desc, or, SQL, inArray, sql } from 'drizzle-orm';
 import { CloudinaryService } from '../media/cloudinary.provider';
 import { PixVerseService } from '../ai/pixverse.service';
 import { PhotoroomService } from '../photoroom/photoroom.service';
@@ -730,6 +737,8 @@ export class ProductsService {
     const result = await this.findOne(id);
     const product = result.product;
 
+    if (!product) throw new NotFoundException('Product not found');
+
     // Security check: Ownership validation
     if (userId) {
       const user = await this.databaseService.db.query.users.findFirst({
@@ -747,8 +756,42 @@ export class ProductsService {
       }
     }
 
-    await this.databaseService.db.delete(products).where(eq(products.id, id));
-    return { success: true };
+    // Check if product is in any orders
+    const [orderCountResult] = await this.databaseService.db
+      .select({ count: sql<number>`count(*)` })
+      .from(orderItems)
+      .where(eq(orderItems.productId, id));
+    
+    const count = Number(orderCountResult?.count || 0);
+    if (count > 0) {
+      throw new BadRequestException(
+        'Cannot delete product because it has associated orders. Please mark it as inactive instead.',
+      );
+    }
+    
+    // Actually, I should use the schema if possible. Let me check if orderItems is imported.
+    // It's not. I'll just use raw SQL for this check to avoid more imports if needed, 
+    // but better to import it for consistency.
+
+    // I'll update the method to use the transaction properly.
+    return await this.databaseService.db.transaction(async (tx) => {
+      // 1. Delete dependent records
+      await tx.delete(productColors).where(eq(productColors.productId, id));
+      await tx.delete(reviews).where(eq(reviews.productId, id));
+      await tx.delete(wishlist).where(eq(wishlist.productId, id));
+      await tx.delete(cartItems).where(eq(cartItems.productId, id));
+      await tx.delete(shipping).where(eq(shipping.productId, id));
+      await tx.delete(offerItems).where(eq(offerItems.productId, id));
+      await tx.delete(aiTasks).where(and(eq(aiTasks.targetId, id), eq(aiTasks.type, 'background_change')));
+      // also virtual try on tasks? they might be linked to product or user. 
+      // if targetId is productId, delete them.
+      await tx.delete(aiTasks).where(and(eq(aiTasks.targetId, id), eq(aiTasks.type, 'virtual_try_on')));
+
+      // 2. Finally delete the product
+      const deleteResult = await tx.delete(products).where(eq(products.id, id));
+      
+      return { success: true };
+    });
   }
 
   // ==================== Product Colors Management ====================

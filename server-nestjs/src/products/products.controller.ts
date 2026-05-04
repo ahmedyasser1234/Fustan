@@ -107,6 +107,9 @@ export class ProductsController {
     return this.productsService.update(id, body, files, userId);
   }
 
+  @Delete(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin', 'vendor')
   async remove(
     @User('id') userId: number,
     @Param('id', ParseIntPipe) id: number,

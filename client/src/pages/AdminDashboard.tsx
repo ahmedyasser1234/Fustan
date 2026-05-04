@@ -412,7 +412,7 @@ export default function AdminDashboard() {
   const deleteProduct = useMutation({
     mutationFn: (id: number) => endpoints.products.delete(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['products'] });
+      queryClient.invalidateQueries({ queryKey: ['admin', 'products'] });
       toast.success(t('productDeleted') || 'Product deleted successfully');
     },
     onError: () => {
