@@ -47,6 +47,17 @@ export function generateSKU(vendorId: number, categoryId: number): string {
   return `${prefix}-V${vendor}-C${category}-${random}`;
 }
 
+const PRESET_PROMPTS: Record<string, string> = {
+  studio:
+    'high-end professional fashion studio with soft lighting, minimalist clean background',
+  beach: 'beautiful sunny beach with white sand, turquoise water, tropical vibes, bokeh background',
+  sunset: 'golden hour sunset, warm glowing light, elegant outdoor setting',
+  street: 'chic urban city street, fashionable bokeh background, daylight',
+  flowers:
+    'luxurious floral garden, blooming flowers, romantic spring atmosphere',
+  goldenlight: 'soft golden light, ethereal atmosphere, luxury indoor setting',
+};
+
 @Injectable()
 export class ProductsService {
   private readonly logger = new Logger(ProductsService.name);
@@ -126,22 +137,28 @@ export class ProductsService {
     );
 
     // 3. Perform all uploads simultaneously
-    // Check if category has a background
+    // Check if category has a background or use preset from body
     const category = await this.databaseService.db.query.categories.findFirst({
       where: eq(categories.id, categoryId),
     });
 
-    const bgUrl = (category as any)?.categoryBackgroundUrl;
-    const bgPrompt = (category as any)?.categoryBackgroundPrompt;
+    let bgUrl = (category as any)?.categoryBackgroundUrl;
+    let bgPrompt = (category as any)?.categoryBackgroundPrompt;
+
+    // Override with preset if provided
+    if (data.backgroundPreset && PRESET_PROMPTS[data.backgroundPreset]) {
+      bgPrompt = PRESET_PROMPTS[data.backgroundPreset];
+      // If using a preset, we might want to clear bgUrl unless it's a specific guidance image
+      bgUrl = undefined; 
+    }
 
     this.logger.log(`DEBUG: categoryId=${categoryId}, bgUrl=${bgUrl}, bgPrompt=${bgPrompt}`);
 
     const processedMainFiles = await Promise.all(
-      mainFiles.map(async (f, idx) => {
-        // Only process the first image for now to save API credits and time
-        if (idx === 0 && (bgUrl || bgPrompt)) {
+      mainFiles.map(async (f) => {
+        if (bgUrl || bgPrompt) {
           try {
-            this.logger.log(`   - ✨ Applying PhotoRoom background for first image...`);
+            this.logger.log(`   - ✨ Applying PhotoRoom background for image...`);
             const processedBuffer = await this.photoroomService.replaceBackground(
               f.buffer,
               bgUrl,
@@ -157,10 +174,30 @@ export class ProductsService {
       }),
     );
 
+    const processedVariantFiles = await Promise.all(
+      allVariantFiles.map(async (vf) => {
+        if (bgUrl || bgPrompt) {
+          try {
+            this.logger.log(`   - ✨ Applying PhotoRoom background for variant image...`);
+            const processedBuffer = await this.photoroomService.replaceBackground(
+              vf.file.buffer,
+              bgUrl,
+              bgPrompt,
+            );
+            return { ...vf, buffer: processedBuffer };
+          } catch (err) {
+            this.logger.error(`   - ❌ PhotoRoom failed for variant: ${err.message}`);
+            return { ...vf, buffer: vf.file.buffer };
+          }
+        }
+        return { ...vf, buffer: vf.file.buffer };
+      }),
+    );
+
     const uploadResults = await Promise.all([
       ...processedMainFiles.map((pf) => this.cloudinary.uploadBuffer(pf.buffer)),
       ...(aiFile ? [this.cloudinary.uploadFile(aiFile)] : []),
-      ...allVariantFiles.map((vf) => this.cloudinary.uploadFile(vf.file)),
+      ...processedVariantFiles.map((pvf) => this.cloudinary.uploadBuffer(pvf.buffer)),
     ]);
 
     // 4. Map results back
@@ -542,22 +579,27 @@ export class ProductsService {
     }
     const vendor = result.vendor; // Get vendor from findOne
 
+    // Fetch category background (if any)
+    const categoryId = data.categoryId ? parseInt(data.categoryId) : product.categoryId;
+    const category = categoryId ? await this.databaseService.db.query.categories.findFirst({
+      where: eq(categories.id, categoryId),
+    }) : null;
+    let bgUrl = (category as any)?.categoryBackgroundUrl;
+    let bgPrompt = (category as any)?.categoryBackgroundPrompt;
+
+    // Override with preset if provided
+    if (data.backgroundPreset && PRESET_PROMPTS[data.backgroundPreset]) {
+      bgPrompt = PRESET_PROMPTS[data.backgroundPreset];
+      bgUrl = undefined;
+    }
+
     let imageUrls = product.images || [];
     const mainFiles = files?.filter((f) => f.fieldname === 'images') || [];
     if (mainFiles.length > 0) {
-      // Check for category background
-      const categoryId = data.categoryId ? parseInt(data.categoryId) : product.categoryId;
-      const category = await this.databaseService.db.query.categories.findFirst({
-        where: eq(categories.id, categoryId),
-      });
-      const bgUrl = (category as any)?.categoryBackgroundUrl;
-      const bgPrompt = (category as any)?.categoryBackgroundPrompt;
-
       const processedMainFiles = await Promise.all(
-        mainFiles.map(async (f, idx) => {
-          if (idx === 0 && (bgUrl || bgPrompt)) {
+        mainFiles.map(async (f) => {
+          if (bgUrl || bgPrompt) {
             try {
-
               const processedBuffer = await this.photoroomService.replaceBackground(
                 f.buffer,
                 bgUrl,
@@ -607,7 +649,6 @@ export class ProductsService {
       );
     }
 
-    const categoryId = data.categoryId ? parseInt(data.categoryId) : null;
     const collectionId = data.collectionId ? parseInt(data.collectionId) : null;
 
     const colorVariantsArr =
@@ -706,8 +747,27 @@ export class ProductsService {
                 f.fieldname.startsWith(variant.imageFieldPrefix),
               ) || [];
             if (variantFiles.length > 0) {
-              const uploadPromises = variantFiles.map((file) =>
-                this.cloudinary.uploadFile(file),
+              const processedVariantFiles = await Promise.all(
+                variantFiles.map(async (file) => {
+                  if (bgUrl || bgPrompt) {
+                    try {
+                      const processedBuffer = await this.photoroomService.replaceBackground(
+                        file.buffer,
+                        bgUrl,
+                        bgPrompt,
+                      );
+                      return { buffer: processedBuffer };
+                    } catch (err) {
+                      this.logger.error(`   - ❌ PhotoRoom failed for variant: ${err.message}`);
+                      return { buffer: file.buffer };
+                    }
+                  }
+                  return { buffer: file.buffer };
+                }),
+              );
+
+              const uploadPromises = processedVariantFiles.map((pf) =>
+                this.cloudinary.uploadBuffer(pf.buffer),
               );
               const results = await Promise.all(uploadPromises);
 

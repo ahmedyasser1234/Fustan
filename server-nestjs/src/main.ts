@@ -14,6 +14,9 @@ async function bootstrap() {
   const logger = new Logger('Bootstrap');
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
+  
+  // Enable trust proxy for Nginx
+  (app.getHttpAdapter().getInstance() as any).set('trust proxy', 1);
 
   // Security & Middleware
   // Security headers and HTTPS redirection are handled by Nginx.

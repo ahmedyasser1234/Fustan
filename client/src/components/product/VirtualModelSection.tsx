@@ -96,7 +96,15 @@ function UploadBox({ label, hint, icon, color, preview, onFile, onRemove, onChan
     );
 
   return (
-    <label className="block cursor-pointer">
+    <label 
+      className="block cursor-pointer"
+      onClick={(e) => {
+        if (onChangeClick) {
+          e.preventDefault();
+          onChangeClick();
+        }
+      }}
+    >
       <div className={`border-2 border-dashed ${borderColor} ${bgColor} rounded-2xl aspect-[3/4] flex flex-col items-center justify-center gap-3 transition-all`}>
         <div className={`w-14 h-14 rounded-2xl bg-gray-100 flex items-center justify-center ${iconColor}`}>{icon}</div>
         <div className="text-center px-4">
@@ -104,7 +112,7 @@ function UploadBox({ label, hint, icon, color, preview, onFile, onRemove, onChan
           <p className="text-xs text-gray-400">{hint}</p>
         </div>
       </div>
-      <input type="file" accept="image/*" onChange={handleChange} className="hidden" />
+      {!onChangeClick && <input type="file" accept="image/*" onChange={handleChange} className="hidden" />}
     </label>
   );
 }
@@ -428,25 +436,6 @@ export function VirtualModelSection({ productImage, allImages = [] }: VirtualMod
               </div>
             ))}
 
-            {/* Upload New Option */}
-            <label className="aspect-[3/4] rounded-2xl border-2 border-dashed border-gray-200 hover:border-purple-300 hover:bg-purple-50 transition-all flex flex-col items-center justify-center gap-2 cursor-pointer group">
-              <div className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center group-hover:scale-110 transition-transform">
-                <Upload className="w-5 h-5 text-purple-600" />
-              </div>
-              <span className="text-[10px] font-bold text-gray-500">{language === 'ar' ? 'رفع صورة جديدة' : 'Upload New'}</span>
-              <input 
-                type="file" 
-                accept="image/*" 
-                className="hidden" 
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file) {
-                    handleDressFile(file);
-                    setIsGalleryOpen(false);
-                  }
-                }} 
-              />
-            </label>
           </div>
         </DialogContent>
       </Dialog>

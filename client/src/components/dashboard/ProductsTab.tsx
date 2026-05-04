@@ -127,6 +127,7 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
     const [colorVariants, setColorVariants] = useState<{ id?: number; colorName: string; colorCode: string; imageFiles: File[]; existingImages?: string[] }[]>([]);
     const [sku, setSku] = useState("");
     const [tags, setTags] = useState("");
+    const [backgroundPreset, setBackgroundPreset] = useState("studio");
 
     // Queries
     const { data: products, isLoading } = useQuery({
@@ -301,6 +302,9 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
                 };
             });
             formData.append("colorVariants", JSON.stringify(processedVariants));
+            
+            // AI Background Processing settings
+            formData.append("backgroundPreset", backgroundPreset);
             console.log("   - FormData prepared. Sending request...");
             
             if (editingProduct) {
@@ -398,6 +402,7 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
         setSku(""); setTags("");
         setColorVariants([]);
         setSelectedSystem("us");
+        setBackgroundPreset("studio");
     };
 
     const handleAddSize = () => {
@@ -668,9 +673,44 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
                                         )}
                                     </div>
 
-                                    <div className="mt-auto p-6 bg-slate-50 rounded-[32px] border border-slate-100 space-y-4">
-                                        <h5 className="font-medium text-[10px] text-slate-400 uppercase tracking-widest">{language === 'ar' ? "تلميح العرض" : "Photography Tip"}</h5>
-                                        <p className="text-xs font-bold text-slate-600 leading-relaxed italic">"الفساتين المصورة في ضوء النهار الطبيعي تحقق مبيعات أعلى بنسبة 40%."</p>
+                                    <div className="mt-auto space-y-4">
+                                        <div className="p-6 bg-slate-50 rounded-[32px] border border-slate-100 space-y-4">
+                                            <div className="flex items-center gap-2 mb-2">
+                                                <ImageIcon className="w-4 h-4 text-purple-600" />
+                                                <h5 className="font-medium text-[10px] text-slate-900 uppercase tracking-widest">{language === 'ar' ? "خلفية الاستوديو (AI)" : "AI Studio Background"}</h5>
+                                            </div>
+                                            <div className="grid grid-cols-2 gap-2">
+                                                {[
+                                                    { id: 'studio', labelAr: 'استوديو', labelEn: 'Studio' },
+                                                    { id: 'beach', labelAr: 'شاطئ', labelEn: 'Beach' },
+                                                    { id: 'sunset', labelAr: 'غروب', labelEn: 'Sunset' },
+                                                    { id: 'street', labelAr: 'شارع', labelEn: 'Street' },
+                                                    { id: 'flowers', labelAr: 'زهور', labelEn: 'Flowers' },
+                                                    { id: 'goldenlight', labelAr: 'ضوء ذهبي', labelEn: 'Golden' },
+                                                ].map(preset => (
+                                                    <button
+                                                        key={preset.id}
+                                                        onClick={() => setBackgroundPreset(preset.id)}
+                                                        className={cn(
+                                                            "px-3 py-2 rounded-xl text-[10px] font-bold transition-all border-2",
+                                                            backgroundPreset === preset.id 
+                                                                ? "bg-purple-600 text-white border-purple-600" 
+                                                                : "bg-white text-slate-600 border-slate-100 hover:border-purple-200"
+                                                        )}
+                                                    >
+                                                        {language === 'ar' ? preset.labelAr : preset.labelEn}
+                                                    </button>
+                                                ))}
+                                            </div>
+                                            <p className="text-[9px] font-bold text-slate-400 leading-relaxed italic">
+                                                {language === 'ar' ? "* سيتم تطبيق الخلفية المختارة على جميع صور المنتج تلقائياً." : "* The selected background will be applied to all product photos automatically."}
+                                            </p>
+                                        </div>
+
+                                        <div className="p-6 bg-slate-900 rounded-[32px] border border-slate-100 space-y-4">
+                                            <h5 className="font-medium text-[10px] text-slate-400 uppercase tracking-widest">{language === 'ar' ? "تلميح العرض" : "Photography Tip"}</h5>
+                                            <p className="text-xs font-bold text-slate-600 leading-relaxed italic">"الفساتين المصورة في ضوء النهار الطبيعي تحقق مبيعات أعلى بنسبة 40%."</p>
+                                        </div>
                                     </div>
                                 </div>
 

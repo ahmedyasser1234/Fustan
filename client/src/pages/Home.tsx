@@ -319,97 +319,99 @@ export default function Home() {
 
 
       {/* Featured Products */}
-      < section className="pt-20 pb-0 relative z-20" >
-        <div className="absolute inset-x-0 top-0 bottom-[200px] bg-white -z-10" />
-        <div className="container mx-auto px-4 relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-10 md:mb-16 pt-10 md:pt-20"
-          >
-            <h2 className="text-3xl md:text-3xl font-medium mb-4">{t('mostFeatured')}</h2>
-            <p className="text-slate-500 text-base md:text-lg font-bold">{t('mostFeaturedDesc')}</p>
-          </motion.div>
+      {(featuredLoading || (featuredProducts && featuredProducts.length > 0)) && (
+        <section className="pt-20 pb-0 relative z-20">
+          <div className="absolute inset-x-0 top-0 bottom-[200px] bg-white -z-10" />
+          <div className="container mx-auto px-4 relative z-10">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center mb-10 md:mb-16 pt-10 md:pt-20"
+            >
+              <h2 className="text-3xl md:text-3xl font-medium mb-4">{t('mostFeatured')}</h2>
+              <p className="text-slate-500 text-base md:text-lg font-bold">{t('mostFeaturedDesc')}</p>
+            </motion.div>
 
-          <div className="relative group/scroll">
-            {/* Scroll Buttons - Mobile Focus */}
-            <button 
-              onClick={() => handleHorizontalScroll(featuredRef, 'left')}
-              className={`absolute top-1/2 -translate-y-1/2 z-30 w-8 h-8 flex items-center justify-center bg-white/90 backdrop-blur-md rounded-full shadow-lg border border-gray-100 ${language === 'ar' ? '-right-2' : '-left-2'} md:hidden hover:bg-rose-50 transition-colors text-gray-600`}
-            >
-              <ChevronLeft size={16} />
-            </button>
-            <button 
-              onClick={() => handleHorizontalScroll(featuredRef, 'right')}
-              className={`absolute top-1/2 -translate-y-1/2 z-30 w-8 h-8 flex items-center justify-center bg-white/90 backdrop-blur-md rounded-full shadow-lg border border-gray-100 ${language === 'ar' ? '-left-2' : '-right-2'} md:hidden hover:bg-rose-50 transition-colors text-gray-600`}
-            >
-              <ChevronRight size={16} />
-            </button>
+            <div className="relative group/scroll">
+              {/* Scroll Buttons - Mobile Focus */}
+              <button 
+                onClick={() => handleHorizontalScroll(featuredRef, 'left')}
+                className={`absolute top-1/2 -translate-y-1/2 z-30 w-8 h-8 flex items-center justify-center bg-white/90 backdrop-blur-md rounded-full shadow-lg border border-gray-100 ${language === 'ar' ? '-right-2' : '-left-2'} md:hidden hover:bg-rose-50 transition-colors text-gray-600`}
+              >
+                <ChevronLeft size={16} />
+              </button>
+              <button 
+                onClick={() => handleHorizontalScroll(featuredRef, 'right')}
+                className={`absolute top-1/2 -translate-y-1/2 z-30 w-8 h-8 flex items-center justify-center bg-white/90 backdrop-blur-md rounded-full shadow-lg border border-gray-100 ${language === 'ar' ? '-left-2' : '-right-2'} md:hidden hover:bg-rose-50 transition-colors text-gray-600`}
+              >
+                <ChevronRight size={16} />
+              </button>
 
-            <div 
-              ref={featuredRef}
-              className="flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-10 overflow-x-auto no-scrollbar pb-8 md:pb-0 px-2 md:px-0 -mx-2 md:mx-0 items-stretch scroll-smooth"
-            >
-            {(featuredLoading ? Array(4).fill({}) : (Array.isArray(featuredProducts) ? featuredProducts : [])).map((product: any, i: number) => (
-              featuredLoading ? (
-                <div key={i} className="space-y-6 w-[46%] flex-shrink-0 md:w-auto">
-                  <Skeleton className="aspect-[2/3] w-full rounded-[40px]" />
-                  <div className="space-y-3 px-4">
-                    <Skeleton className="h-6 w-3/4 mr-auto" />
-                    <Skeleton className="h-4 w-1/2 mr-auto" />
+              <div 
+                ref={featuredRef}
+                className="flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-10 overflow-x-auto no-scrollbar pb-8 md:pb-0 px-2 md:px-0 -mx-2 md:mx-0 items-stretch scroll-smooth"
+              >
+              {(featuredLoading ? Array(4).fill({}) : (Array.isArray(featuredProducts) ? featuredProducts : [])).map((product: any, i: number) => (
+                featuredLoading ? (
+                  <div key={i} className="space-y-6 w-[46%] flex-shrink-0 md:w-auto">
+                    <Skeleton className="aspect-[2/3] w-full rounded-[40px]" />
+                    <div className="space-y-3 px-4">
+                      <Skeleton className="h-6 w-3/4 mr-auto" />
+                      <Skeleton className="h-4 w-1/2 mr-auto" />
+                    </div>
                   </div>
-                </div>
-              ) : (
-                <motion.div
-                  key={product.id}
-                  initial={{ opacity: 0, y: 50 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1, duration: 0.5 }}
-                  className="group relative w-[46%] flex-shrink-0 md:w-auto aspect-[2/3]"
-                >
+                ) : (
+                  <motion.div
+                    key={product.id}
+                    initial={{ opacity: 0, y: 50 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.1, duration: 0.5 }}
+                    className="group relative w-[46%] flex-shrink-0 md:w-auto aspect-[2/3]"
+                  >
 
-                  {/* Product Content 'Capsule' */}
-                  <Link href={`/products/${product.id}`}>
-                    <div className="relative z-10 h-full w-full rounded-[30px] overflow-hidden shadow-2xl hover:shadow-purple-200/50 transition-all duration-500">
-                      <div className="h-full w-full relative flex flex-col">
-                        {/* Product Image - Full Height */}
-                        <div className="flex-grow w-full relative h-full overflow-hidden bg-white">
-                          <img
-                            src={product.images?.[0] || "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=800&q=80"}
-                            alt={language === 'ar' ? product.nameAr : product.nameEn}
-                            className="w-full h-full object-contain object-center transition-transform duration-700 group-hover:scale-110"
-                          />
-                        </div>
+                    {/* Product Content 'Capsule' */}
+                    <Link href={`/products/${product.id}`}>
+                      <div className="relative z-10 h-full w-full rounded-[30px] overflow-hidden shadow-2xl hover:shadow-purple-200/50 transition-all duration-500">
+                        <div className="h-full w-full relative flex flex-col">
+                          {/* Product Image - Full Height */}
+                          <div className="flex-grow w-full relative h-full overflow-hidden bg-white">
+                            <img
+                              src={product.images?.[0] || "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=800&q=80"}
+                              alt={language === 'ar' ? product.nameAr : product.nameEn}
+                              className="w-full h-full object-contain object-center transition-transform duration-700 group-hover:scale-110"
+                            />
+                          </div>
 
-                        {/* Purple Bottom Overlay */}
-                        <div className="absolute bottom-0 left-0 right-0 h-0 opacity-0 bg-[oklch(44.2%_0.173_285.5)]/10 backdrop-blur-md flex flex-col items-center justify-center text-center p-6 transition-all duration-300 group-hover:h-[40%] group-hover:opacity-100 overflow-hidden">
-                          {/* Product Name */}
-                          <h3 className="text-2xl font-bold text-white mb-2 leading-tight opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100">
-                            {language === 'ar' ? product.nameAr : product.nameEn}
-                          </h3>
+                          {/* Purple Bottom Overlay */}
+                          <div className="absolute bottom-0 left-0 right-0 h-0 opacity-0 bg-[oklch(44.2%_0.173_285.5)]/10 backdrop-blur-md flex flex-col items-center justify-center text-center p-6 transition-all duration-300 group-hover:h-[40%] group-hover:opacity-100 overflow-hidden">
+                            {/* Product Name */}
+                            <h3 className="text-2xl font-bold text-white mb-2 leading-tight opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100">
+                              {language === 'ar' ? product.nameAr : product.nameEn}
+                            </h3>
 
-                          {/* Price */}
-                          <p className="text-white/90 text-lg font-medium mb-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-150">
-                            {formatPrice(product.price)}
-                          </p>
+                            {/* Price */}
+                            <p className="text-white/90 text-lg font-medium mb-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-150">
+                              {formatPrice(product.price)}
+                            </p>
 
-                          {/* More Button */}
-                          <Button className="bg-[oklch(44.2%_0.173_285.5)] text-white hover:bg-[oklch(44.2%_0.173_285.5)]/90 rounded-full px-8 py-1 h-8 text-sm font-bold shadow-sm transition-transform hover:scale-105 opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-200">
-                            {t('more')}
-                          </Button>
+                            {/* More Button */}
+                            <Button className="bg-[oklch(44.2%_0.173_285.5)] text-white hover:bg-[oklch(44.2%_0.173_285.5)]/90 rounded-full px-8 py-1 h-8 text-sm font-bold shadow-sm transition-transform hover:scale-105 opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-200">
+                              {t('more')}
+                            </Button>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </Link>
-                </motion.div>
-              )
-            ))}
+                    </Link>
+                  </motion.div>
+                )
+              ))}
+              </div>
             </div>
           </div>
-        </div>
-      </section >
+        </section>
+      )}
 
       {/* Collections Section */}
       < section className="pt-0 pb-24 relative z-20" >
@@ -655,198 +657,204 @@ export default function Home() {
       <FlashSalesSection onQuickView={setQuickViewProduct} />
 
       {/* Community Marketplace Section */}
-      <section className="py-24 bg-[#fafafa] relative overflow-hidden">
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <span className="text-2xl text-[oklch(44.2%_0.173_285.5)] mb-2 block font-bold">
-              {language === 'ar' ? "من خزانة عميلاتنا" : "From Our Community"}
-            </span>
-            <h2 className="text-4xl md:text-3xl font-medium text-gray-900">
-              {language === 'ar' ? "فساتين معروضة للبيع" : "Pre-loved & Exclusive"}
-            </h2>
-            <p className="mt-4 text-slate-500 font-bold max-w-2xl mx-auto text-lg">
-              {language === 'ar' 
-                ? "اكتشفي تشكيلة فريدة من الفساتين المعروضة مباشرة من عميلاتنا بأسعار مميزة" 
-                : "Discover a unique collection of dresses listed directly by our customers at special prices"}
-            </p>
-          </motion.div>
+      {(communityLoading || (communityProducts && communityProducts.length > 0)) && (
+        <section className="py-24 bg-[#fafafa] relative overflow-hidden">
+          <div className="container mx-auto px-4">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center mb-16"
+            >
+              <span className="text-2xl text-[oklch(44.2%_0.173_285.5)] mb-2 block font-bold">
+                {language === 'ar' ? "من خزانة عميلاتنا" : "From Our Community"}
+              </span>
+              <h2 className="text-4xl md:text-3xl font-medium text-gray-900">
+                {language === 'ar' ? "فساتين معروضة للبيع" : "Pre-loved & Exclusive"}
+              </h2>
+              <p className="mt-4 text-slate-500 font-bold max-w-2xl mx-auto text-lg">
+                {language === 'ar' 
+                  ? "اكتشفي تشكيلة فريدة من الفساتين المعروضة مباشرة من عميلاتنا بأسعار مميزة" 
+                  : "Discover a unique collection of dresses listed directly by our customers at special prices"}
+              </p>
+            </motion.div>
 
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-10">
-            {(communityLoading ? Array(4).fill({}) : (Array.isArray(communityProducts) ? communityProducts : [])).map((product: any, i: number) => (
-              <div key={i}>
-                <ProductCard product={product} loading={communityLoading} onQuickView={setQuickViewProduct} />
-              </div>
-            ))}
-          </div>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-10">
+              {(communityLoading ? Array(4).fill({}) : (Array.isArray(communityProducts) ? communityProducts : [])).map((product: any, i: number) => (
+                <div key={i}>
+                  <ProductCard product={product} loading={communityLoading} onQuickView={setQuickViewProduct} />
+                </div>
+              ))}
+            </div>
 
-          <div className="mt-16 text-center">
-            <Link href="/sell-dress">
-              <Button size="lg" className="h-16 px-12 rounded-full bg-slate-900 hover:bg-black text-white font-medium text-xl shadow-2xl transition-all hover:scale-105 active:scale-95">
-                {language === 'ar' ? "اعرضي فستانك للبيع الآن" : "Sell Your Dress Now"}
-              </Button>
-            </Link>
+            <div className="mt-16 text-center">
+              <Link href="/sell-dress">
+                <Button size="lg" className="h-16 px-12 rounded-full bg-slate-900 hover:bg-black text-white font-medium text-xl shadow-2xl transition-all hover:scale-105 active:scale-95">
+                  {language === 'ar' ? "اعرضي فستانك للبيع الآن" : "Sell Your Dress Now"}
+                </Button>
+              </Link>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
 
 
       {/* New Arrivals Section */}
-      < section className="bg-white relative overflow-hidden pb-32 z-10 pt-0" >
-        <div className="container mx-auto px-4 relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-4xl md:text-3xl font-medium mb-4">{t('newArrivals')}</h2>
-            <p className="text-slate-500 text-lg font-bold">{t('newArrivalsDesc')}</p>
-          </motion.div>
+      {(newArrivalsLoading || (newArrivals && newArrivals.length > 0)) && (
+        <section className="bg-white relative overflow-hidden pb-32 z-10 pt-0">
+          <div className="container mx-auto px-4 relative z-10">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center mb-16"
+            >
+              <h2 className="text-4xl md:text-3xl font-medium mb-4">{t('newArrivals')}</h2>
+              <p className="text-slate-500 text-lg font-bold">{t('newArrivalsDesc')}</p>
+            </motion.div>
 
-          {/* New Arrivals Grid / Slider */}
-          <div className="relative group/scroll">
-            <button 
-              onClick={() => handleHorizontalScroll(newArrivalsRef, 'left')}
-              className={`absolute top-1/2 -translate-y-1/2 z-30 w-10 h-10 flex items-center justify-center bg-white/90 backdrop-blur-md rounded-full shadow-lg border border-gray-200 ${language === 'ar' ? '-right-2' : '-left-2'} md:hidden hover:bg-rose-50 transition-colors text-rose-600`}
-            >
-              <ChevronLeft size={20} />
-            </button>
-            <button 
-              onClick={() => handleHorizontalScroll(newArrivalsRef, 'right')}
-              className={`absolute top-1/2 -translate-y-1/2 z-30 w-10 h-10 flex items-center justify-center bg-white/90 backdrop-blur-md rounded-full shadow-lg border border-gray-200 ${language === 'ar' ? '-left-2' : '-right-2'} md:hidden hover:bg-rose-50 transition-colors text-rose-600`}
-            >
-              <ChevronRight size={20} />
-            </button>
+            {/* New Arrivals Grid / Slider */}
+            <div className="relative group/scroll">
+              <button 
+                onClick={() => handleHorizontalScroll(newArrivalsRef, 'left')}
+                className={`absolute top-1/2 -translate-y-1/2 z-30 w-10 h-10 flex items-center justify-center bg-white/90 backdrop-blur-md rounded-full shadow-lg border border-gray-200 ${language === 'ar' ? '-right-2' : '-left-2'} md:hidden hover:bg-rose-50 transition-colors text-rose-600`}
+              >
+                <ChevronLeft size={20} />
+              </button>
+              <button 
+                onClick={() => handleHorizontalScroll(newArrivalsRef, 'right')}
+                className={`absolute top-1/2 -translate-y-1/2 z-30 w-10 h-10 flex items-center justify-center bg-white/90 backdrop-blur-md rounded-full shadow-lg border border-gray-200 ${language === 'ar' ? '-left-2' : '-right-2'} md:hidden hover:bg-rose-50 transition-colors text-rose-600`}
+              >
+                <ChevronRight size={20} />
+              </button>
 
-            <div 
-              ref={newArrivalsRef}
-              className="flex md:grid md:grid-cols-3 gap-4 md:gap-10 overflow-x-auto no-scrollbar pb-8 md:pb-0 px-2 md:px-0 -mx-2 md:mx-0 scroll-smooth"
-            >
-              {newArrivalsLoading ? (
-                Array(6).fill({}).map((_, i) => (
-                  <Skeleton key={i} className="aspect-[3/4] w-[46%] flex-shrink-0 md:w-auto rounded-[45px]" />
-                ))
-              ) : (
-                (Array.isArray(newArrivals) ? newArrivals : []).map((product: any, i: number) => (
-                  <motion.div
-                    key={product.id}
-                    initial={{ opacity: 0, y: 50 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.1, duration: 0.5 }}
-                    className="flex flex-col drop-shadow-2xl w-[46%] flex-shrink-0 md:w-auto"
-                  >
-                    <Link href={`/products/${product.id}`}>
-                      <div className="relative group cursor-pointer h-full flex flex-col shadow-2xl rounded-[45px] overflow-hidden">
-                        <div className="bg-white aspect-[3/4] overflow-hidden">
-                          <img
-                            src={product.images?.[0]}
-                            alt={product.nameAr}
-                            className="w-full h-full object-contain object-bottom transition-transform duration-700 group-hover:scale-110"
-                          />
-                        </div>
-                        <div className="absolute bottom-0 left-0 right-0 h-0 opacity-0 bg-[oklch(44.2%_0.173_285.5)]/20 backdrop-blur-md flex flex-col items-center justify-center text-center p-6 transition-all duration-300 group-hover:h-[40%] group-hover:opacity-100 overflow-hidden z-20">
-                          <h3 className="text-2xl font-medium text-white mb-2 leading-tight">
-                            {language === 'ar' ? product.nameAr : product.nameEn}
-                          </h3>
-                          <p className="text-white/90 text-lg font-bold mb-4">
-                            {formatPrice(product.price)}
-                          </p>
-                          <Button className="bg-[oklch(44.2%_0.173_285.5)] text-white hover:bg-[oklch(44.2%_0.173_285.5)]/90 rounded-full px-8 py-2 h-10 text-base font-medium shadow-lg transition-transform hover:scale-105">
-                            {t('more')}
-                          </Button>
-                        </div>
-                      </div>
-                    </Link>
-                  </motion.div>
-                ))
-              )}
-            </div>
-          </div>
-        </div>
-      </section >
-
-      {/* Best Sellers Section */}
-      < section className="pt-0 pb-24 relative z-20" >
-        <div className="absolute inset-0 bg-white -z-10" />
-        <div className="container mx-auto px-4 relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-16 pt-20"
-          >
-            <h2 className="text-4xl md:text-3xl font-medium mb-4">{t('bestSellers')}</h2>
-            <p className="text-slate-500 text-lg font-bold">{t('bestSellersDesc')}</p>
-          </motion.div>
-
-          <div className="relative group/scroll">
-            <button 
-              onClick={() => handleHorizontalScroll(bestSellersRef, 'left')}
-              className={`absolute top-1/2 -translate-y-1/2 z-30 w-8 h-8 flex items-center justify-center bg-white/90 backdrop-blur-md rounded-full shadow-lg border border-gray-100 ${language === 'ar' ? '-right-2' : '-left-2'} md:hidden hover:bg-rose-50 transition-colors text-gray-600`}
-            >
-              <ChevronLeft size={16} />
-            </button>
-            <button 
-              onClick={() => handleHorizontalScroll(bestSellersRef, 'right')}
-              className={`absolute top-1/2 -translate-y-1/2 z-30 w-8 h-8 flex items-center justify-center bg-white/90 backdrop-blur-md rounded-full shadow-lg border border-gray-100 ${language === 'ar' ? '-left-2' : '-right-2'} md:hidden hover:bg-rose-50 transition-colors text-gray-600`}
-            >
-              <ChevronRight size={16} />
-            </button>
-
-            <div 
-              ref={bestSellersRef}
-              className="flex md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-10 overflow-x-auto no-scrollbar pb-8 md:pb-0 px-2 md:px-0 -mx-2 md:mx-0 scroll-smooth"
-            >
-              {(bestSellersLoading ? Array(3).fill({}) : (Array.isArray(bestSellers) ? bestSellers : [])).slice(0, 3).map((product: any, i: number) => (
-                bestSellersLoading ? (
-                  <Skeleton key={i} className="aspect-[2/3] w-[46%] sm:w-72 flex-shrink-0 md:w-auto rounded-[40px]" />
+              <div 
+                ref={newArrivalsRef}
+                className="flex md:grid md:grid-cols-3 gap-4 md:gap-10 overflow-x-auto no-scrollbar pb-8 md:pb-0 px-2 md:px-0 -mx-2 md:mx-0 scroll-smooth"
+              >
+                {newArrivalsLoading ? (
+                  Array(6).fill({}).map((_, i) => (
+                    <Skeleton key={i} className="aspect-[3/4] w-[46%] flex-shrink-0 md:w-auto rounded-[45px]" />
+                  ))
                 ) : (
-                  <motion.div
-                    key={product.id}
-                    initial={{ opacity: 0, y: 50 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.1, duration: 0.5 }}
-                    className="group relative w-[46%] sm:w-72 flex-shrink-0 md:w-auto aspect-[2/3]"
-                  >
-                    <Link href={`/products/${product.id}`}>
-                      <div className="relative z-10 h-full w-full rounded-[40px] overflow-hidden shadow-2xl hover:shadow-purple-200/50 transition-all duration-500 bg-white">
-                        <div className="h-full w-full relative flex flex-col">
-                          <div className="flex-grow w-full relative h-full overflow-hidden">
+                  (Array.isArray(newArrivals) ? newArrivals : []).map((product: any, i: number) => (
+                    <motion.div
+                      key={product.id}
+                      initial={{ opacity: 0, y: 50 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: i * 0.1, duration: 0.5 }}
+                      className="flex flex-col drop-shadow-2xl w-[46%] flex-shrink-0 md:w-auto"
+                    >
+                      <Link href={`/products/${product.id}`}>
+                        <div className="relative group cursor-pointer h-full flex flex-col shadow-2xl rounded-[45px] overflow-hidden">
+                          <div className="bg-white aspect-[3/4] overflow-hidden">
                             <img
                               src={product.images?.[0]}
-                              alt={language === 'ar' ? product.nameAr : product.nameEn}
-                              className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-110"
+                              alt={product.nameAr}
+                              className="w-full h-full object-contain object-bottom transition-transform duration-700 group-hover:scale-110"
                             />
                           </div>
-                          <div className="absolute bottom-0 left-0 right-0 h-0 opacity-0 bg-[oklch(44.2%_0.173_285.5)]/10 backdrop-blur-md flex flex-col items-center justify-center text-center p-6 transition-all duration-300 group-hover:h-[45%] group-hover:opacity-100 overflow-hidden">
-                            <h3 className="text-2xl md:text-3xl font-medium text-white mb-2">
+                          <div className="absolute bottom-0 left-0 right-0 h-0 opacity-0 bg-[oklch(44.2%_0.173_285.5)]/20 backdrop-blur-md flex flex-col items-center justify-center text-center p-6 transition-all duration-300 group-hover:h-[40%] group-hover:opacity-100 overflow-hidden z-20">
+                            <h3 className="text-2xl font-medium text-white mb-2 leading-tight">
                               {language === 'ar' ? product.nameAr : product.nameEn}
                             </h3>
                             <p className="text-white/90 text-lg font-bold mb-4">
                               {formatPrice(product.price)}
                             </p>
-                            <Button className="bg-white text-[oklch(44.2%_0.173_285.5)] hover:bg-white/90 rounded-full px-8 py-1 h-8 text-sm font-medium shadow-sm transition-transform hover:scale-105">
+                            <Button className="bg-[oklch(44.2%_0.173_285.5)] text-white hover:bg-[oklch(44.2%_0.173_285.5)]/90 rounded-full px-8 py-2 h-10 text-base font-medium shadow-lg transition-transform hover:scale-105">
                               {t('more')}
                             </Button>
                           </div>
                         </div>
-                      </div>
-                    </Link>
-                  </motion.div>
-                )
-              ))}
+                      </Link>
+                    </motion.div>
+                  ))
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      </section >
+        </section>
+      )}
+
+      {/* Best Sellers Section */}
+      {(bestSellersLoading || (bestSellers && bestSellers.length > 0)) && (
+        <section className="pt-0 pb-24 relative z-20">
+          <div className="absolute inset-0 bg-white -z-10" />
+          <div className="container mx-auto px-4 relative z-10">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center mb-16 pt-20"
+            >
+              <h2 className="text-4xl md:text-3xl font-medium mb-4">{t('bestSellers')}</h2>
+              <p className="text-slate-500 text-lg font-bold">{t('bestSellersDesc')}</p>
+            </motion.div>
+
+            <div className="relative group/scroll">
+              <button 
+                onClick={() => handleHorizontalScroll(bestSellersRef, 'left')}
+                className={`absolute top-1/2 -translate-y-1/2 z-30 w-8 h-8 flex items-center justify-center bg-white/90 backdrop-blur-md rounded-full shadow-lg border border-gray-100 ${language === 'ar' ? '-right-2' : '-left-2'} md:hidden hover:bg-rose-50 transition-colors text-gray-600`}
+              >
+                <ChevronLeft size={16} />
+              </button>
+              <button 
+                onClick={() => handleHorizontalScroll(bestSellersRef, 'right')}
+                className={`absolute top-1/2 -translate-y-1/2 z-30 w-8 h-8 flex items-center justify-center bg-white/90 backdrop-blur-md rounded-full shadow-lg border border-gray-100 ${language === 'ar' ? '-left-2' : '-right-2'} md:hidden hover:bg-rose-50 transition-colors text-gray-600`}
+              >
+                <ChevronRight size={16} />
+              </button>
+
+              <div 
+                ref={bestSellersRef}
+                className="flex md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-10 overflow-x-auto no-scrollbar pb-8 md:pb-0 px-2 md:px-0 -mx-2 md:mx-0 scroll-smooth"
+              >
+                {(bestSellersLoading ? Array(3).fill({}) : (Array.isArray(bestSellers) ? bestSellers : [])).slice(0, 3).map((product: any, i: number) => (
+                  bestSellersLoading ? (
+                    <Skeleton key={i} className="aspect-[2/3] w-[46%] sm:w-72 flex-shrink-0 md:w-auto rounded-[40px]" />
+                  ) : (
+                    <motion.div
+                      key={product.id}
+                      initial={{ opacity: 0, y: 50 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: i * 0.1, duration: 0.5 }}
+                      className="group relative w-[46%] sm:w-72 flex-shrink-0 md:w-auto aspect-[2/3]"
+                    >
+                      <Link href={`/products/${product.id}`}>
+                        <div className="relative z-10 h-full w-full rounded-[40px] overflow-hidden shadow-2xl hover:shadow-purple-200/50 transition-all duration-500 bg-white">
+                          <div className="h-full w-full relative flex flex-col">
+                            <div className="flex-grow w-full relative h-full overflow-hidden">
+                              <img
+                                src={product.images?.[0]}
+                                alt={language === 'ar' ? product.nameAr : product.nameEn}
+                                className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-110"
+                              />
+                            </div>
+                            <div className="absolute bottom-0 left-0 right-0 h-0 opacity-0 bg-[oklch(44.2%_0.173_285.5)]/10 backdrop-blur-md flex flex-col items-center justify-center text-center p-6 transition-all duration-300 group-hover:h-[45%] group-hover:opacity-100 overflow-hidden">
+                              <h3 className="text-2xl md:text-3xl font-medium text-white mb-2">
+                                {language === 'ar' ? product.nameAr : product.nameEn}
+                              </h3>
+                              <p className="text-white/90 text-lg font-bold mb-4">
+                                {formatPrice(product.price)}
+                              </p>
+                              <Button className="bg-white text-[oklch(44.2%_0.173_285.5)] hover:bg-white/90 rounded-full px-8 py-1 h-8 text-sm font-medium shadow-sm transition-transform hover:scale-105">
+                                {t('more')}
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      </Link>
+                    </motion.div>
+                  )
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
 
 
       {/* Luxury Collection Banner */}

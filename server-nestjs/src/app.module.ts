@@ -76,12 +76,12 @@ import { SeoModule } from './seo/seo.module';
       {
         name: 'default',
         ttl: 60000,
-        limit: 60,
+        limit: 100, // Increased from 60
       },
       {
         name: 'auth',
         ttl: 60000,
-        limit: 10, // Strict limit for login/register
+        limit: 50, // Increased from 10 to allow more login attempts during testing
       },
     ]),
   ],

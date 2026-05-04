@@ -16,7 +16,7 @@ import { COOKIE_NAME, SEVEN_DAYS_MS } from '../common/constants';
 import { Logger } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CloudinaryService } from '../media/cloudinary.provider';
-import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
+import { Throttle, ThrottlerGuard, SkipThrottle } from '@nestjs/throttler';
 import { FileValidationPipe } from '../common/pipes/file-validation.pipe';
 
 @Controller('auth')
@@ -120,6 +120,7 @@ export class AuthController {
     return { success: true };
   }
 
+  @SkipThrottle()
   @Get('me')
   async me(@Req() req: Request) {
     const token = req.headers.authorization?.startsWith('Bearer ')
