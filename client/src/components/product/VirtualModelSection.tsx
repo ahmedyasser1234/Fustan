@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
-import { Loader2, Sparkles, Upload, X, Download, RefreshCw, User, Shirt } from "lucide-react";
+import { Loader2, Sparkles, Upload, X, Download, RefreshCw, User, Shirt, Image as ImageIcon } from "lucide-react";
 import { useLanguage } from "@/lib/i18n";
 import api from "@/lib/api";
 import { toast } from "sonner";
@@ -58,7 +58,8 @@ interface UploadBoxProps {
   onChangeClick?: () => void;
 }
 
-function UploadBox({ label, hint, icon, color, preview, onFile, onRemove }: UploadBoxProps) {
+function UploadBox({ label, hint, icon, color, preview, onFile, onRemove, onChangeClick }: UploadBoxProps) {
+  const { language } = useLanguage();
   const borderColor  = color === 'purple' ? 'border-purple-300 hover:border-purple-500' : 'border-rose-300 hover:border-rose-500';
   const bgColor      = color === 'purple' ? 'hover:bg-purple-50' : 'hover:bg-rose-50';
   const iconColor    = color === 'purple' ? 'text-purple-400' : 'text-rose-400';
