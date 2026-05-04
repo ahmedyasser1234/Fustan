@@ -93,10 +93,15 @@ export function useAuth(options?: UseAuthOptions) {
     state.user,
   ]);
 
+  const setUser = useCallback((userData: any) => {
+    queryClient.setQueryData(['auth', 'me'], userData);
+  }, [queryClient]);
+
   return {
     ...state,
     refresh: () => meQuery.refetch(),
     logout,
     logoutMutation,
+    setUser,
   };
 }

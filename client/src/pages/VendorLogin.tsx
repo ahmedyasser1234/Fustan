@@ -130,3 +130,5 @@ function VendorLogin() {
         </div>
     );
 }
+
+export default VendorLogin;
