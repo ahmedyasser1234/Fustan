@@ -1,7 +1,7 @@
 import postgres from 'postgres';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import * as schema from '../database/schema';
-import { eq, or, isNull } from 'not-drizzle-orm'; // Wait, I should use drizzle-orm
+import { eq, or, isNull } from 'drizzle-orm';
 import { generateSKU } from '../products/products.service';
 import * as dotenv from 'dotenv';
 
@@ -19,7 +19,7 @@ async function main() {
   console.log('--- Starting SKU Fix Migration ---');
   
   // Find products with empty, null or obviously invalid (short Arabic) SKUs
-  const allProducts = await db.query.products.findMany();
+  const allProducts = (await db.query.products.findMany()) as schema.Product[];
   
   let updatedCount = 0;
   for (const product of allProducts) {

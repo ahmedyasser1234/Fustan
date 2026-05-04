@@ -17,7 +17,7 @@ const db = drizzle(client, { schema });
 async function main() {
   console.log('--- Starting Stock Fix Migration ---');
   
-  const allProducts = await db.query.products.findMany();
+  const allProducts = (await db.query.products.findMany()) as schema.Product[];
   
   let updatedCount = 0;
   for (const product of allProducts) {

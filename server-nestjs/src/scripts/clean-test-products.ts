@@ -45,9 +45,9 @@ function isTestJunk(name: string | null): boolean {
 async function main() {
   console.log(`--- Starting Test Product Cleanup (DRY_RUN=${DRY_RUN}) ---`);
   
-  const allProducts = await db.query.products.findMany();
+  const allProducts = (await db.query.products.findMany()) as schema.Product[];
   
-  const toDelete: typeof allProducts = [];
+  const toDelete: schema.Product[] = [];
 
   for (const product of allProducts) {
     if (EXCLUDE_IDS.includes(product.id)) continue;
