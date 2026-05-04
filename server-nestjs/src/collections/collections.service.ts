@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, Logger } from '@nestjs/common';
 import { CloudinaryService } from '../media/cloudinary.provider';
 import { DatabaseService } from '../database/database.service';
 import { collections, products, categories } from '../database/schema';
@@ -6,6 +6,7 @@ import { eq, desc, and, sql } from 'drizzle-orm';
 
 @Injectable()
 export class CollectionsService {
+  private readonly logger = new Logger(CollectionsService.name);
   constructor(
     private readonly db: DatabaseService,
     private readonly cloudinary: CloudinaryService,
@@ -29,7 +30,7 @@ export class CollectionsService {
           coverImage = upload.secure_url;
         }
       } catch (error) {
-        console.error('Image upload failed:', error);
+        this.logger.error('Image upload failed', error instanceof Error ? error.stack : error);
         // Proceed without image
       }
     }
@@ -72,7 +73,7 @@ export class CollectionsService {
 
       return collection;
     } catch (error) {
-      console.error('Database Insert Error:', error);
+      this.logger.error('Database Insert Error', error instanceof Error ? error.stack : error);
       throw error;
     }
   }
@@ -164,7 +165,7 @@ export class CollectionsService {
           updateData.coverImage = upload.secure_url;
         }
       } catch (error) {
-        console.error('Image upload failed during update:', error);
+        this.logger.error('Image upload failed during update', error instanceof Error ? error.stack : error);
       }
     }
 

@@ -8,7 +8,7 @@ import {
   MessageBody,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, Logger } from '@nestjs/common';
 import { AuthService } from '../auth/auth.service';
 import { ChatService } from './chat.service';
 import { parse } from 'cookie';
@@ -25,6 +25,7 @@ import { COOKIE_NAME } from '../common/constants'; // Added import
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
+  private readonly logger = new Logger(ChatGateway.name);
 
   // Track online users: userId -> Set of socket IDs
   private static onlineUsers = new Map<number, Set<string>>();
@@ -95,7 +96,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 
     } catch (error) {
-      console.error('Chat Connection Error:', error);
+      this.logger.error('Chat Connection Error', error instanceof Error ? error.stack : error);
       client.disconnect();
     }
   }

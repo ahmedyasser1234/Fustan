@@ -2,6 +2,7 @@ import {
   Injectable,
   NotFoundException,
   UnauthorizedException,
+  Logger,
 } from '@nestjs/common';
 import { DatabaseService } from '../database/database.service';
 import { conversations, messages, users, vendors } from '../database/schema';
@@ -10,6 +11,7 @@ import { NotificationsService } from '../notifications/notifications.service';
 
 @Injectable()
 export class ChatService {
+  private readonly logger = new Logger(ChatService.name);
   constructor(
     private databaseService: DatabaseService,
     private notificationsService: NotificationsService,
@@ -394,7 +396,7 @@ export class ChatService {
         convId,
       );
     } else {
-      console.warn(
+      this.logger.warn(
         `ChatService: No recipientId found for message ${message.id} in conversation ${convId}`,
       );
     }

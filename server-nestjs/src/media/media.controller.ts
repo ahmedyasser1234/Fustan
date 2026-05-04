@@ -4,12 +4,14 @@ import {
   UseInterceptors,
   UploadedFile,
   BadRequestException,
+  Logger,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CloudinaryService } from './cloudinary.provider';
 
 @Controller('media')
 export class MediaController {
+  private readonly logger = new Logger(MediaController.name);
   constructor(private readonly cloudinaryService: CloudinaryService) {}
 
   @Post('upload')
@@ -26,7 +28,7 @@ export class MediaController {
         public_id: result.public_id,
       };
     } catch (error) {
-      console.error('Upload Error:', error);
+      this.logger.error('Upload Error', error instanceof Error ? error.stack : error);
       throw new BadRequestException('Failed to upload file to Cloudinary');
     }
   }

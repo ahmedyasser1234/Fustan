@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { DatabaseService } from '../database/database.service';
 import { categories } from '../database/schema';
 import { eq, and, desc } from 'drizzle-orm';
@@ -6,6 +6,7 @@ import { CloudinaryService } from '../media/cloudinary.provider';
 
 @Injectable()
 export class CategoriesService {
+  private readonly logger = new Logger(CategoriesService.name);
   constructor(
     private databaseService: DatabaseService,
     private readonly cloudinary: CloudinaryService,
@@ -53,9 +54,9 @@ export class CategoriesService {
               categoryBackgroundUrl = result.secure_url;
           }
         } catch (error) {
-          console.error(
-            `❌ Cloudinary Upload Failed for ${file.fieldname}:`,
-            error,
+          this.logger.error(
+            `Cloudinary Upload Failed for ${file.fieldname}`,
+            error instanceof Error ? error.stack : error,
           );
         }
       }
@@ -103,7 +104,7 @@ export class CategoriesService {
 
       return newCategory;
     } catch (error) {
-      console.error('❌ [Categories Service] Database Insert Failed:', error);
+      this.logger.error('Database Insert Failed', error instanceof Error ? error.stack : error);
       if (error.code === '23505') {
         throw new Error(`A category with this slug or name already exists`);
       }

@@ -19,6 +19,27 @@ import { CloudinaryService } from '../media/cloudinary.provider';
 import { PixVerseService } from '../ai/pixverse.service';
 import { PhotoroomService } from '../photoroom/photoroom.service';
 
+export function generateSlug(nameAr: string, nameEn: string): string {
+  const base = nameEn?.trim() || nameAr?.trim() || 'product';
+  const slug = base
+    .toLowerCase()
+    .trim()
+    .replace(/[\s_]+/g, '-')
+    .replace(/[^\w\u0600-\u06FF-]/g, '')
+    .replace(/--+/g, '-')
+    .replace(/^-+|-+$/g, '');
+  const timestamp = Date.now();
+  return slug ? `${slug}-${timestamp}` : `product-${timestamp}`;
+}
+
+export function generateSKU(vendorId: number, categoryId: number): string {
+  const prefix = 'FST';
+  const vendor = String(vendorId).padStart(3, '0');
+  const category = String(categoryId).padStart(2, '0');
+  const random = Math.random().toString(36).substring(2, 6).toUpperCase();
+  return `${prefix}-V${vendor}-C${category}-${random}`;
+}
+
 @Injectable()
 export class ProductsService {
   private readonly logger = new Logger(ProductsService.name);
@@ -106,6 +127,8 @@ export class ProductsService {
     const bgUrl = (category as any)?.categoryBackgroundUrl;
     const bgPrompt = (category as any)?.categoryBackgroundPrompt;
 
+    this.logger.log(`DEBUG: categoryId=${categoryId}, bgUrl=${bgUrl}, bgPrompt=${bgPrompt}`);
+
     const processedMainFiles = await Promise.all(
       mainFiles.map(async (f, idx) => {
         // Only process the first image for now to save API credits and time
@@ -119,7 +142,7 @@ export class ProductsService {
             );
             return { buffer: processedBuffer, original: f };
           } catch (err) {
-            console.error(`   - ❌ PhotoRoom failed: ${err.message}`);
+            this.logger.error(`   - ❌ PhotoRoom failed: ${err.message}`);
             return { buffer: f.buffer, original: f };
           }
         }
@@ -181,16 +204,12 @@ export class ProductsService {
       parseFloat(data.salePrice || '0') * (1 + commissionRate / 100) +
       (data.salePrice ? commissionFixed : 0);
 
-    const productNameEn = data.nameEn || 'unnamed-product';
-    const slug =
-      productNameEn.toLowerCase().replace(/[^a-z0-9]+/g, '-') +
-      '-' +
-      Date.now();
+    const slug = generateSlug(data.nameAr, data.nameEn);
 
     let totalStock = 0;
     if (Array.isArray(sizesArr)) {
       totalStock = sizesArr.reduce(
-        (sum, s) => sum + (parseInt(s.quantity) || 0),
+        (sum, s) => sum + (Number(s.quantity) || 0),
         0,
       );
     }
@@ -211,7 +230,7 @@ export class ProductsService {
         price: finalPrice,
         originalPrice,
         discount: parseFloat(data.discount || '0'),
-        sku: data.sku,
+        sku: data.sku || generateSKU(vendorId, categoryId),
         stock: totalStock,
         images: mainImageUrls,
         specifications: data.specifications,
@@ -546,7 +565,7 @@ export class ProductsService {
     let totalStock = product.stock;
     if (Array.isArray(sizesArr)) {
       totalStock = sizesArr.reduce(
-        (sum, s) => sum + (parseInt(s.quantity) || 0),
+        (sum, s) => sum + (Number(s.quantity) || 0),
         0,
       );
     }

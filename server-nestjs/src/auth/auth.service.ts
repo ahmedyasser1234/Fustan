@@ -13,6 +13,8 @@ export class AuthService {
   private readonly jwtSecret: Uint8Array;
   private readonly appId: string;
 
+  private readonly logger = new Logger(AuthService.name);
+
   constructor(
     private configService: ConfigService,
     private databaseService: DatabaseService,
@@ -340,7 +342,7 @@ export class AuthService {
       const { password: _, ...userWithoutPassword } = user[0];
       return { token: sessionToken, user: userWithoutPassword };
     } catch (error) {
-      console.error('Google Auth Error:', error);
+      this.logger.error('Google Auth Error', error instanceof Error ? error.stack : error);
       throw new UnauthorizedException('Google authentication failed');
     }
   }

@@ -9,6 +9,7 @@ import {
   Patch,
   UseInterceptors,
   UploadedFiles,
+  Logger,
 } from '@nestjs/common';
 import { VendorRequestsService } from './vendor-requests.service';
 import { AuthService } from '../auth/auth.service';
@@ -19,6 +20,7 @@ import { AnyFilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('vendor-requests')
 export class VendorRequestsController {
+  private readonly logger = new Logger(VendorRequestsController.name);
   constructor(
     private vendorRequestsService: VendorRequestsService,
     private authService: AuthService,
@@ -78,7 +80,7 @@ export class VendorRequestsController {
       try {
         data = JSON.parse(data);
       } catch (e) {
-        console.error('Failed to parse request data JSON:', body.data);
+        this.logger.error('Failed to parse request data JSON');
         data = {};
       }
     }

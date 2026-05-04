@@ -1,16 +1,17 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import Stripe from 'stripe';
 
 @Injectable()
 export class PaymentsService {
   private stripe: Stripe;
+  private readonly logger = new Logger(PaymentsService.name);
 
   constructor(private configService: ConfigService) {
     const apiKey = this.configService.get<string>('STRIPE_SECRET_KEY');
     if (!apiKey) {
       // For development, we'll allow it to be missing, but log a warning
-      console.warn(
+      this.logger.warn(
         'STRIPE_SECRET_KEY is not defined. Payments will fail in production.',
       );
     }

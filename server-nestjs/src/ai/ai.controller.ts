@@ -224,6 +224,7 @@ export class AiController {
   }
 
   @Post('virtual-model')
+  @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileFieldsInterceptor([
     { name: 'dressImage', maxCount: 1 },
     { name: 'customerImage', maxCount: 1 },

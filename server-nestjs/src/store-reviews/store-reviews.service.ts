@@ -2,6 +2,7 @@ import {
   Injectable,
   ForbiddenException,
   ConflictException,
+  Logger,
 } from '@nestjs/common';
 import { DatabaseService } from '../database/database.service';
 import { storeReviews } from '../database/schema';
@@ -9,6 +10,7 @@ import { desc, eq, and } from 'drizzle-orm';
 
 @Injectable()
 export class StoreReviewsService {
+  private readonly logger = new Logger(StoreReviewsService.name);
   constructor(private drizzle: DatabaseService) {}
 
   async create(data: any, user: any) {
@@ -38,7 +40,7 @@ export class StoreReviewsService {
         })
         .returning();
     } catch (error) {
-      console.error('Error creating store review:', error);
+      this.logger.error('Error creating store review', error instanceof Error ? error.stack : error);
       throw error;
     }
   }
