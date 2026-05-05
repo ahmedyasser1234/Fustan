@@ -253,11 +253,11 @@ export default function OrderDetailsView({ orderId, onClose }: OrderDetailsViewP
                                                                             </DialogTitle>
                                                                         </DialogHeader>
                                                                         <div className="grid grid-cols-2 gap-4 py-4" dir={language === 'ar' ? 'rtl' : 'ltr'}>
-                                                                            {Object.entries(item.customMeasurements).map(([key, val]) => (
+                                                                            {Object.entries(item.customMeasurements as Record<string, any>).map(([key, val]) => (
                                                                                 val && (
                                                                                     <div key={key} className="flex justify-between border-b border-slate-50 pb-2">
                                                                                         <span className="text-sm text-slate-400">{MEASUREMENT_LABELS[key]?.[language as 'ar' | 'en'] || key}</span>
-                                                                                        <span className="text-sm font-bold text-slate-700">{val} cm</span>
+                                                                                        <span className="text-sm font-bold text-slate-700">{String(val)} cm</span>
                                                                                     </div>
                                                                                 )
                                                                             ))}
