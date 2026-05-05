@@ -28,7 +28,8 @@ import {
   Instagram,
   Sparkles,
   Tag,
-  AlertTriangle
+  AlertTriangle,
+  Check
 } from "lucide-react";
 import { toast } from "sonner";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -349,11 +350,14 @@ export default function ProductDetail() {
   const category = productData?.category;
   const colors = productData?.colors || [];
 
-  const galleryImages = (selectedColor && selectedColor.images && selectedColor.images.length > 0)
-    ? selectedColor.images
-    : (product?.images?.slice(1) || []);
+  const galleryImages = useMemo(() => {
+    if (selectedColor && selectedColor.images && selectedColor.images.length > 0) {
+      return selectedColor.images;
+    }
+    return product?.images || [];
+  }, [selectedColor, product?.images]);
 
-  const displayImage = galleryImages[selectedImage] || galleryImages[0] || (product.images?.[0]);
+  const displayImage = galleryImages[selectedImage] || galleryImages[0] || (product?.images?.[0]);
 
   return (
     <div className="min-h-screen bg-white pb-20 overflow-x-hidden">
@@ -402,8 +406,8 @@ export default function ProductDetail() {
               transition={{ duration: 0.8 }}
               className="lg:sticky lg:top-20 h-fit"
             >
-              <div
-                className="aspect-[3/4] rounded-[2.5rem] md:rounded-[4rem] overflow-hidden bg-white shadow-xl mb-6 relative group cursor-zoom-in max-w-2xl mx-auto"
+            <div
+                className="aspect-[3/4] rounded-[2.5rem] md:rounded-[4rem] overflow-hidden bg-white shadow-xl mb-6 relative group cursor-zoom-in max-w-lg mx-auto"
                 onMouseEnter={() => setIsZoomed(true)}
                 onMouseLeave={() => setIsZoomed(false)}
                 onMouseMove={handleMouseMove}
@@ -530,6 +534,34 @@ export default function ProductDetail() {
                     </div>
                   </div>
                 </div>
+
+                {colors && colors.length > 0 && (
+                  <div className="mb-8" dir="rtl">
+                    <p className="text-lg font-medium text-gray-900 mb-4">{language === 'ar' ? "اللون:" : "Color:"}</p>
+                    <div className="flex flex-wrap gap-4">
+                      {colors.map((colorObj: any, idx: number) => (
+                        <button
+                          key={idx}
+                          onClick={() => {
+                            setSelectedColor(colorObj);
+                            setSelectedImage(0);
+                          }}
+                          className={`group relative w-12 h-12 rounded-2xl border-2 transition-all p-1.5 ${selectedColor?.id === colorObj.id ? "border-rose-600 bg-rose-50" : "border-gray-100 bg-white hover:border-gray-200 shadow-sm"}`}
+                        >
+                          <div 
+                            className="w-full h-full rounded-xl shadow-inner border border-black/5" 
+                            style={{ backgroundColor: colorObj.colorHex || '#ddd' }}
+                          />
+                          {selectedColor?.id === colorObj.id && (
+                             <div className="absolute -top-2 -right-2 bg-rose-600 text-white rounded-full p-1 shadow-md border-2 border-white">
+                               <Check size={12} strokeWidth={3} />
+                             </div>
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 {product.sizes && product.sizes.length > 0 && (
                   <div className="mb-10" dir="rtl">
