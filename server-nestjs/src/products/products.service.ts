@@ -198,9 +198,27 @@ export class ProductsService {
       }),
     );
 
+    // Process AI image if it exists
+    let processedAiBuffer: Buffer | undefined = undefined;
+    if (aiFile && (bgUrl || bgPrompt)) {
+      try {
+        this.logger.log(`   - ✨ Applying PhotoRoom background for AI image...`);
+        processedAiBuffer = await this.photoroomService.replaceBackground(
+          aiFile.buffer,
+          bgUrl,
+          bgPrompt,
+        );
+      } catch (err) {
+        this.logger.error(`   - ❌ PhotoRoom failed for AI image: ${err.message}`);
+        processedAiBuffer = aiFile.buffer;
+      }
+    } else if (aiFile) {
+      processedAiBuffer = aiFile.buffer;
+    }
+
     const uploadResults = await Promise.all([
       ...processedMainFiles.map((pf) => this.cloudinary.uploadBuffer(pf.buffer)),
-      ...(aiFile ? [this.cloudinary.uploadFile(aiFile)] : []),
+      ...(processedAiBuffer ? [this.cloudinary.uploadBuffer(processedAiBuffer)] : []),
       ...processedVariantFiles.map((pvf) => this.cloudinary.uploadBuffer(pvf.buffer)),
     ]);
 
@@ -635,11 +653,24 @@ export class ProductsService {
       imageUrls = newUrls;
     }
 
-    // Upload AI-Ready Image if provided
+    // Upload AI-Ready Image if provided (with PhotoRoom if needed)
     let aiQualifiedImageUrl = null;
     const aiFile = files?.find((f) => f.fieldname === 'aiQualifiedImage');
     if (aiFile) {
-      const result = await this.cloudinary.uploadFile(aiFile);
+      let bufferToUpload = aiFile.buffer;
+      if (bgUrl || bgPrompt) {
+        try {
+          this.logger.log(`   - ✨ Applying PhotoRoom background for AI image...`);
+          bufferToUpload = await this.photoroomService.replaceBackground(
+            aiFile.buffer,
+            bgUrl,
+            bgPrompt,
+          );
+        } catch (err) {
+          this.logger.error(`   - ❌ PhotoRoom failed for AI image: ${err.message}`);
+        }
+      }
+      const result = await this.cloudinary.uploadBuffer(bufferToUpload);
       if ('secure_url' in result) {
         aiQualifiedImageUrl = result.secure_url;
       }
