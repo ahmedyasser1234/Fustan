@@ -37,7 +37,7 @@ export function TryOnModal({ isOpen, onClose, productImage, productName }: TryOn
   };
 
   const handleTryOn = async () => {
-    if (!userPreview) {
+    if (!userPreview || !userImage) {
       toast.error(language === 'ar' ? 'يرجى رفع صورتك أولاً' : 'Please upload your photo first');
       return;
     }
@@ -46,31 +46,28 @@ export function TryOnModal({ isOpen, onClose, productImage, productName }: TryOn
     setGeneratedImage(null);
 
     try {
-      const getBase64FromUrl = async (url: string) => {
-        if (url.startsWith('data:')) return url;
-        const response = await fetch(url);
-        const blob = await response.blob();
-        return new Promise<string>((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onloadend = () => resolve(reader.result as string);
-          reader.onerror = reject;
-          reader.readAsDataURL(blob);
-        });
-      };
+      const formData = new FormData();
+      
+      // Fetch product image and convert to blob
+      const res = await fetch(productImage);
+      const blob = await res.blob();
+      formData.append('dressImage', blob, 'dress.jpg');
+      
+      // User image
+      formData.append('customerImage', userImage);
+      
+      // Defaults
+      formData.append('scenePreset', 'random');
+      formData.append('pose', 'random');
 
-      const userImageBase64 = await getBase64FromUrl(userPreview);
-      const productImageBase64 = await getBase64FromUrl(productImage);
+      const response = await api.post('/ai/virtual-model', formData);
 
-      const response = await api.post('/tryon', {
-        userImage: userImageBase64,
-        productImage: productImageBase64
-      }, {
-        responseType: 'blob'
-      });
-
-      const imageUrl = URL.createObjectURL(response.data);
-      setGeneratedImage(imageUrl);
-      toast.success(language === 'ar' ? 'تمت معالجة التجربة بنجاح!' : 'Try-on processed successfully!');
+      if (response.data?.imageUrl) {
+        setGeneratedImage(response.data.imageUrl);
+        toast.success(language === 'ar' ? 'تمت معالجة التجربة بنجاح!' : 'Try-on processed successfully!');
+      } else {
+        throw new Error('No image URL received');
+      }
     } catch (error: any) {
       console.error('Try-On Error:', error);
       toast.error(language === 'ar' ? 'فشلت عملية التجربة' : 'Try-on failed');

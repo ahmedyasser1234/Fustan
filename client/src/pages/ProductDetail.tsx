@@ -46,7 +46,6 @@ import { ProductCard } from "@/components/ProductCard";
 import { SEO } from "@/components/SEO";
 import { TryOnSection } from "@/components/product/TryOnSection";
 import { TryOnModal } from "@/components/product/TryOnModal";
-import { VirtualModelSection } from "@/components/product/VirtualModelSection";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 
 function RelatedProducts({ collectionId, currentProductId, language }: { collectionId?: number, currentProductId: number, language: string }) {
@@ -599,13 +598,6 @@ export default function ProductDetail() {
           productName={language === 'ar' ? product.nameAr : product.nameEn}
           productImage={displayImage}
           productDescription={language === 'ar' ? product.descriptionAr : product.descriptionEn}
-        />
-      </div>
-
-      <div id="virtual-model-section">
-        <VirtualModelSection 
-          productImage={displayImage} 
-          allImages={product?.images || []}
         />
       </div>
 

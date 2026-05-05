@@ -20,7 +20,6 @@ export function TryOnSection({ productName, productImage, productDescription }: 
     const { language } = useLanguage();
     const { user } = useAuth();
     const [isLoading, setIsLoading] = useState(false);
-    const [isTesting, setIsTesting] = useState(false);
     const [isSavingMeasurements, setIsSavingMeasurements] = useState(false);
     const [generatedImage, setGeneratedImage] = useState<string | null>(null);
 
@@ -138,71 +137,7 @@ export function TryOnSection({ productName, productImage, productDescription }: 
         setUserPreview('');
     };
 
-    const pollForResult = async (imageId: string | number): Promise<string | null> => {
-        const maxAttempts = 40; // 40 × 3s = 2 minutes max
-        console.log(`🚀 Starting poll for imageId: ${imageId}`);
-        for (let i = 0; i < maxAttempts; i++) {
-            await new Promise(r => setTimeout(r, 3000)); // wait 3 seconds
-            try {
-                const res = await api.get(`/ai/try-on/result/${imageId}`);
-                const data = res.data;
-                console.log(`  -> Poll ${i + 1}: Status = ${data.status}`, data);
-                if (data.imageUrl) {
-                    console.log(`✅ Success! Image URL: ${data.imageUrl}`);
-                    return data.imageUrl;
-                }
-                if (data.status === 'failed') throw new Error(data.error || 'Processing failed');
-            } catch (err: any) {
-                console.error(`  -> Poll ${i + 1} Error:`, err);
-                if (err.response?.status === 404) continue; 
-                throw err;
-            }
-        }
-        throw new Error('Timeout: Image took too long to generate');
-    };
 
-    const handleTest = async () => {
-        if (!dressPreview || !userPreview) {
-            toast.error(language === 'ar' ? 'يرجى اختيار صورة الفستان وصورتك' : 'Please select both dress and your photo');
-            return;
-        }
-
-        setIsTesting(true);
-        setGeneratedImage(null);
-
-        try {
-            const getBase64FromUrl = async (url: string) => {
-                if (url.startsWith('data:')) return url;
-                const response = await fetch(url);
-                const blob = await response.blob();
-                return new Promise<string>((resolve, reject) => {
-                    const reader = new FileReader();
-                    reader.onloadend = () => resolve(reader.result as string);
-                    reader.onerror = reject;
-                    reader.readAsDataURL(blob);
-                });
-            };
-
-            const userImageBase64 = await getBase64FromUrl(userPreview);
-            const productImageBase64 = await getBase64FromUrl(dressPreview);
-
-            const response = await api.post('/tryon', {
-                userImage: userImageBase64,
-                productImage: productImageBase64
-            }, {
-                responseType: 'blob'
-            });
-
-            const imageUrl = URL.createObjectURL(response.data);
-            setGeneratedImage(imageUrl);
-            toast.success(language === 'ar' ? 'تم الاختبار بنجاح!' : 'Test completed successfully!');
-        } catch (error: any) {
-            console.error('Try-On Test Error:', error);
-            toast.error(language === 'ar' ? 'فشل الاختبار' : 'Test failed');
-        } finally {
-            setIsTesting(false);
-        }
-    };
 
     const handleGenerate = async () => {
         if (!dressPreview || !userImage) {
@@ -220,42 +155,46 @@ export function TryOnSection({ productName, productImage, productDescription }: 
 
         try {
             const formData = new FormData();
+            
+            // PhotoRoom model requires 'dressImage' and 'customerImage'
             if (dressImage) {
                 formData.append('dressImage', dressImage);
             } else if (dressPreview) {
-                formData.append('productImage', dressPreview);
+                // Fetch the image from URL and append as blob if it's not a local file
+                try {
+                    const res = await fetch(dressPreview);
+                    const blob = await res.blob();
+                    formData.append('dressImage', blob, 'dress.jpg');
+                } catch (e) {
+                    console.error("Failed to fetch dress preview", e);
+                    throw new Error(language === 'ar' ? 'فشل في تحميل صورة الفستان' : 'Failed to load dress image');
+                }
             }
 
-            formData.append('userImage', userImage);
-            formData.append('productName', productName);
-            formData.append('productDescription', productDescription || '');
+            formData.append('customerImage', userImage);
+            
+            // PhotoRoom Virtual Model defaults
+            formData.append('scenePreset', 'random');
+            formData.append('pose', 'random');
 
+            // Send measurements too (ignored by PhotoRoom but good for metadata/future use)
             Object.entries(measurements).forEach(([key, value]) => {
                 formData.append(key, value);
             });
 
-            const response = await api.post('/ai/try-on', formData);
+            // Call the PhotoRoom-powered endpoint
+            const response = await api.post('/ai/virtual-model', formData);
 
             if (response.data?.imageUrl) {
-                // Got direct imageUrl (mock or cached)
                 setGeneratedImage(response.data.imageUrl);
-                toast.success(language === 'ar' ? 'تم إنشاء الصورة بنجاح!' : 'Image generated successfully!');
-            } else if (response.data?.imageId) {
-                // Got a pending task - start polling
-                toast.info(language === 'ar' ? 'جاري المعالجة... قد يستغرق دقيقة أو أكثر' : 'Processing... may take a minute or more');
-                const imageUrl = await pollForResult(response.data.imageId);
-                if (imageUrl) {
-                    setGeneratedImage(imageUrl);
-                    toast.success(language === 'ar' ? 'تم إنشاء الصورة بنجاح!' : 'Image generated successfully!');
-                } else {
-                    toast.error(language === 'ar' ? 'فشل إنشاء الصورة' : 'Failed to generate image');
-                }
+                toast.success(language === 'ar' ? '✨ تم تلبيس الفستان بنجاح!' : '✨ Try-on completed successfully!');
             } else {
                 toast.error(language === 'ar' ? 'لم يتم استلام نتيجة من السيرفر' : 'No result received from server');
             }
         } catch (error: any) {
             console.error('Try-On Error:', error);
-            toast.error(language === 'ar' ? 'فشل إنشاء الصورة. حاول مرة أخرى' : 'Failed to generate image. Try again.');
+            const msg = error?.response?.data?.message || (language === 'ar' ? 'فشل إنشاء الصورة. حاول مرة أخرى' : 'Failed to generate image. Try again.');
+            toast.error(msg);
         } finally {
             setIsLoading(false);
         }
@@ -682,38 +621,26 @@ export function TryOnSection({ productName, productImage, productDescription }: 
                                     </Button>
                                 )}
 
-                                {/* Generate Buttons */}
-                                <div className="flex gap-4 w-full">
-                                    <Button
-                                        onClick={handleGenerate}
-                                        disabled={isLoading || isTesting || !userImage || !measurements.height || !measurements.weight}
-                                        className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white h-14 text-lg font-bold rounded-full shadow-lg transition-all disabled:opacity-50"
-                                    >
-                                        {isLoading ? (
-                                            <>
-                                                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                                                {language === 'ar' ? 'جاري المعالجة...' : 'Processing...'}
-                                            </>
-                                        ) : (
-                                            <>
-                                                <Sparkles className="mr-2 h-5 w-5" />
-                                                {language === 'ar' ? 'اصنعي السحر!' : 'Create Magic!'}
-                                            </>
-                                        )}
-                                    </Button>
-
-                                    <Button
-                                        onClick={handleTest}
-                                        disabled={isLoading || isTesting || !userPreview || !dressPreview}
-                                        className="w-32 bg-gray-800 hover:bg-gray-900 text-white h-14 text-lg font-bold rounded-full shadow-lg transition-all disabled:opacity-50"
-                                    >
-                                        {isTesting ? (
-                                            <Loader2 className="h-5 w-5 animate-spin" />
-                                        ) : (
-                                            language === 'ar' ? 'تيست' : 'Test'
-                                        )}
-                                    </Button>
-                                </div>
+                                 {/* Generate Buttons */}
+                                 <div className="flex gap-4 w-full">
+                                     <Button
+                                         onClick={handleGenerate}
+                                         disabled={isLoading || !userImage || !measurements.height || !measurements.weight}
+                                         className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white h-14 text-lg font-bold rounded-full shadow-lg transition-all disabled:opacity-50"
+                                     >
+                                         {isLoading ? (
+                                             <>
+                                                 <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                                                 {language === 'ar' ? 'جاري المعالجة...' : 'Processing...'}
+                                             </>
+                                         ) : (
+                                             <>
+                                                 <Sparkles className="mr-2 h-5 w-5" />
+                                                 {language === 'ar' ? 'اصنعي السحر!' : 'Create Magic!'}
+                                             </>
+                                         )}
+                                     </Button>
+                                 </div>
                                 <p className="text-xs text-center text-gray-500 mt-3">
                                     {language === 'ar'
                                         ? 'قد تستغرق العملية 10-30 ثانية'
@@ -721,9 +648,9 @@ export function TryOnSection({ productName, productImage, productDescription }: 
                                 </p>
                             </div>
 
-                            {/* Result Section - Below the form */}
-                            {(generatedImage || isLoading || isTesting) && (
-                                <div className="p-8 md:p-12 bg-white border-t-4 border-purple-200">
+                             {/* Result Section - Below the form */}
+                             {(generatedImage || isLoading) && (
+                                 <div className="p-8 md:p-12 bg-white border-t-4 border-purple-200">
                                     {generatedImage && (
                                         <div className="max-w-5xl mx-auto">
                                             <h3 className="text-2xl font-bold mb-6 text-gray-900 text-center flex items-center justify-center gap-2">
@@ -750,8 +677,8 @@ export function TryOnSection({ productName, productImage, productDescription }: 
                                         </div>
                                     )}
 
-                                    {(isLoading || isTesting) && (
-                                        <div className="flex flex-col items-center justify-center py-12">
+                                     {(isLoading) && (
+                                         <div className="flex flex-col items-center justify-center py-12">
                                             <Loader2 className="w-16 h-16 text-purple-600 animate-spin mb-4" />
                                             <p className="text-purple-700 font-bold text-xl animate-pulse">
                                                 {language === 'ar' ? 'جاري صنع السحر...' : 'Creating magic...'}
