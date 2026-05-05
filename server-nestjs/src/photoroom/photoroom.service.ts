@@ -51,6 +51,9 @@ export class PhotoroomService {
       if (!response.ok) {
         const errorText = await response.text();
         this.logger.error(`PhotoRoom API error: ${response.status} - ${errorText}`);
+        if (response.status === 402) {
+          throw new Error('PhotoRoom API: لقد انتهى رصيد حسابك، يرجى تحديث الخطة في PhotoRoom.');
+        }
         throw new Error(`PhotoRoom API failed: ${response.statusText}`);
       }
 
@@ -102,6 +105,9 @@ export class PhotoroomService {
       if (!response.ok) {
         const errorText = await response.text();
         this.logger.error(`PhotoRoom API error: ${response.status} - ${errorText}`);
+        if (response.status === 402) {
+          throw new Error('PhotoRoom API: لقد انتهى رصيد حسابك، يرجى تحديث الخطة في PhotoRoom.');
+        }
         throw new Error(`PhotoRoom API failed: ${response.statusText}`);
       }
 

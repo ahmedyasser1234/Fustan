@@ -347,10 +347,11 @@ export class AiService {
       });
 
       const text = result.candidates?.[0]?.content?.parts?.[0]?.text || '';
-      const jsonStr = text
-        .replace(/```json/g, '')
-        .replace(/```/g, '')
-        .trim();
+      
+      // Improved JSON extraction using regex
+      const jsonMatch = text.match(/\{[\s\S]*\}/);
+      const jsonStr = jsonMatch ? jsonMatch[0] : text;
+      
       const parsed = JSON.parse(jsonStr);
 
       return {

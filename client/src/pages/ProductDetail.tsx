@@ -416,7 +416,7 @@ export default function ProductDetail() {
       </section>
 
       <section className="container mx-auto px-4 mt-4">
-        <div className="grid lg:grid-cols-[1fr_550px] gap-12 relative items-start">
+        <div className="grid lg:grid-cols-[1fr_480px] gap-8 relative items-start">
           {/* Left: Product Media */}
           <div className="relative">
             <motion.div
@@ -426,7 +426,7 @@ export default function ProductDetail() {
               className="lg:sticky lg:top-20 h-fit"
             >
             <div
-                className="aspect-[3/4] rounded-[2.5rem] md:rounded-[4rem] overflow-hidden bg-white shadow-xl mb-6 relative group cursor-zoom-in max-w-lg mx-auto"
+                className="aspect-[3/4] rounded-[2rem] md:rounded-[3rem] overflow-hidden bg-white shadow-xl mb-6 relative group cursor-zoom-in max-w-md mx-auto"
                 onMouseEnter={() => setIsZoomed(true)}
                 onMouseLeave={() => setIsZoomed(false)}
                 onMouseMove={handleMouseMove}
@@ -476,7 +476,7 @@ export default function ProductDetail() {
                   <button
                     key={`thumb-${idx}`}
                     onClick={() => setSelectedImage(idx)}
-                    className={`relative w-20 h-20 md:w-28 md:h-28 rounded-2xl overflow-hidden border-2 transition-all shrink-0 ${selectedImage === idx ? "border-rose-500 scale-105 shadow-lg" : "border-transparent opacity-50"}`}
+                    className={`relative w-16 h-16 md:w-20 md:h-20 rounded-xl overflow-hidden border-2 transition-all shrink-0 ${selectedImage === idx ? "border-rose-500 scale-105 shadow-lg" : "border-transparent opacity-50"}`}
                   >
                     <img src={img} className="w-full h-full object-cover" />
                   </button>
@@ -537,11 +537,11 @@ export default function ProductDetail() {
                 )}
               </div>
 
-              <h1 className="text-2xl md:text-4xl lg:text-3xl font-medium text-gray-900 mb-6 leading-tight select-none">
+              <h1 className="text-xl md:text-3xl lg:text-2xl font-medium text-gray-900 mb-4 leading-tight select-none">
                 {language === 'ar' ? product.nameAr : product.nameEn}
               </h1>
 
-              <div className="bg-white p-6 md:p-10 rounded-[2rem] md:rounded-[3.5rem] shadow-xl border border-gray-50 mb-12">
+              <div className="bg-white p-5 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] shadow-lg border border-gray-50 mb-8">
                 <div className="flex flex-wrap items-end justify-between gap-4 mb-10" dir="rtl">
                   <div>
                     <p className="text-gray-400 font-bold mb-2">{t('currentPrice')}</p>
