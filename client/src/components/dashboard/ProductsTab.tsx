@@ -144,7 +144,7 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
 
 
 
-    
+
     // Auto-sync internal price state for validation and old calculations
     useEffect(() => {
         if (availability === 'sale' || availability === 'both') {
@@ -172,7 +172,7 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
 
             if (result.descriptionAr) setDescriptionAr(result.descriptionAr);
             if (result.descriptionEn) setDescriptionEn(result.descriptionEn);
-            
+
             toast.success(language === 'ar' ? "تم توليد الوصف بنجاح" : "Description generated successfully");
         } catch (error) {
             console.error('AI Generation error:', error);
@@ -193,7 +193,7 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
         try {
             // If it's a local file, we need to upload it first to get a URL that Kie.ai can access
             let imageUrlToProcess = currentImageUrl;
-            
+
             if (aiQualifiedImage) {
                 const formData = new FormData();
                 formData.append('file', aiQualifiedImage);
@@ -203,7 +203,7 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
                 // But wait, the user expects 'kie.ai' to work. 
                 // Let's assume for now the user uploads the image, it gets saved, then they enhance it.
                 // Or better: we upload it to Cloudinary first.
-                
+
                 const uploadRes = await api.post('/media/upload', formData);
                 imageUrlToProcess = uploadRes.data.secure_url;
             }
@@ -302,11 +302,11 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
                 };
             });
             formData.append("colorVariants", JSON.stringify(processedVariants));
-            
+
             // AI Background Processing settings
             formData.append("backgroundPreset", backgroundPreset);
             console.log("   - FormData prepared. Sending request...");
-            
+
             if (editingProduct) {
                 const res = await endpoints.products.update(editingProduct.id, formData);
                 console.log("✅ Update Response:", res);
@@ -663,7 +663,7 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
                                         </div>
 
                                         {(aiQualifiedImage || editingProduct?.aiQualifiedImage) && !isEnhancing && (
-                                            <Button 
+                                            <Button
                                                 onClick={handleEnhanceImage}
                                                 className="w-full bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white h-10 rounded-xl font-medium text-xs shadow-lg shadow-rose-100 transition-all hover:scale-[1.02] active:scale-95 group"
                                             >
@@ -1032,40 +1032,40 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
 
                                     {/* Inventory (Sizes) Section */}
                                     <div className="space-y-6 bg-slate-900 p-6 md:p-12 rounded-[24px] md:rounded-[40px] text-white">
-                                            <div className="flex items-center gap-3">
-                                                <div className="h-2 w-8 bg-amber-500 rounded-full" />
-                                                <h4 className="font-medium text-white uppercase tracking-widest text-xs">{language === 'ar' ? "المخزون والمقاسات" : "Stock & Inventory"}</h4>
+                                        <div className="flex items-center gap-3">
+                                            <div className="h-2 w-8 bg-amber-500 rounded-full" />
+                                            <h4 className="font-medium text-white uppercase tracking-widest text-xs">{language === 'ar' ? "المخزون والمقاسات" : "Stock & Inventory"}</h4>
+                                        </div>
+
+                                        <div className="flex flex-wrap items-center gap-4 bg-white/5 p-4 rounded-3xl border border-white/10">
+                                            <div className="space-y-1">
+                                                <label className="text-[10px] font-medium text-white/40 uppercase tracking-widest flex items-center gap-1">
+                                                    {t('sizeSystem')}
+                                                </label>
+                                                <Select value={selectedSystem} onValueChange={(val: any) => setSelectedSystem(val)}>
+                                                    <SelectTrigger className="h-10 w-40 bg-transparent border-white/10 text-white font-medium rounded-xl">
+                                                        <SelectValue />
+                                                    </SelectTrigger>
+                                                    <SelectContent className="rounded-xl border-slate-800 bg-slate-900 text-white font-bold">
+                                                        <SelectItem value="us">{t('usSystem')}</SelectItem>
+                                                        <SelectItem value="eu">{t('euSystem')}</SelectItem>
+                                                        <SelectItem value="uk">{t('ukSystem')}</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
                                             </div>
 
-                                            <div className="flex flex-wrap items-center gap-4 bg-white/5 p-4 rounded-3xl border border-white/10">
+                                            <div className="flex-1 min-w-[200px] p-3 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-start gap-3">
+                                                <HelpCircle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
                                                 <div className="space-y-1">
-                                                    <label className="text-[10px] font-medium text-white/40 uppercase tracking-widest flex items-center gap-1">
-                                                        {t('sizeSystem')}
-                                                    </label>
-                                                    <Select value={selectedSystem} onValueChange={(val: any) => setSelectedSystem(val)}>
-                                                        <SelectTrigger className="h-10 w-40 bg-transparent border-white/10 text-white font-medium rounded-xl">
-                                                            <SelectValue />
-                                                        </SelectTrigger>
-                                                        <SelectContent className="rounded-xl border-slate-800 bg-slate-900 text-white font-bold">
-                                                            <SelectItem value="us">{t('usSystem')}</SelectItem>
-                                                            <SelectItem value="eu">{t('euSystem')}</SelectItem>
-                                                            <SelectItem value="uk">{t('ukSystem')}</SelectItem>
-                                                        </SelectContent>
-                                                    </Select>
-                                                </div>
-
-                                                <div className="flex-1 min-w-[200px] p-3 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-start gap-3">
-                                                    <HelpCircle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
-                                                    <div className="space-y-1">
-                                                        <p className="text-xs font-medium text-amber-500 uppercase tracking-tight">{t('sizeGuide')}</p>
-                                                        <p className="text-[10px] font-bold text-white/60 leading-relaxed">{t('sizeGuideDesc')}</p>
-                                                    </div>
+                                                    <p className="text-xs font-medium text-amber-500 uppercase tracking-tight">{t('sizeGuide')}</p>
+                                                    <p className="text-[10px] font-bold text-white/60 leading-relaxed">{t('sizeGuideDesc')}</p>
                                                 </div>
                                             </div>
+                                        </div>
 
-                                            <Button variant="outline" size="sm" onClick={handleAddSize} className="rounded-xl bg-white/5 border-white/10 text-white hover:bg-white/10 h-10 px-4">
-                                                <Plus className="w-4 h-4 ml-2" /> {language === 'ar' ? "إضافة مقاس جديد" : "Add Size Variant"}
-                                            </Button>
+                                        <Button variant="outline" size="sm" onClick={handleAddSize} className="rounded-xl bg-white/5 border-white/10 text-white hover:bg-white/10 h-10 px-4">
+                                            <Plus className="w-4 h-4 ml-2" /> {language === 'ar' ? "إضافة مقاس جديد" : "Add Size Variant"}
+                                        </Button>
 
                                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                                             {sizes.map((s, idx) => {
@@ -1073,10 +1073,10 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
                                                 return (
                                                     <div key={idx} className="flex flex-col gap-6 bg-white/5 p-8 rounded-[40px] border border-white/10 group/item relative transition-all hover:bg-white/10">
                                                         {sizes.length > 1 && (
-                                                            <Button 
-                                                                variant="ghost" 
-                                                                size="icon" 
-                                                                className="absolute top-4 right-4 h-10 w-10 text-white/20 hover:text-red-400 hover:bg-red-400/10 z-10" 
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="icon"
+                                                                className="absolute top-4 right-4 h-10 w-10 text-white/20 hover:text-red-400 hover:bg-red-400/10 z-10"
                                                                 onClick={() => handleRemoveSize(idx)}
                                                             >
                                                                 <Trash2 className="w-5 h-5" />
@@ -1099,15 +1099,15 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
                                                                     </SelectContent>
                                                                 </Select>
                                                             </div>
-                                                            
+
                                                             <div className="w-full space-y-2">
                                                                 <label className="text-[9px] font-medium text-white/40 uppercase tracking-[0.2em] text-center block w-full">{language === 'ar' ? "الكمية" : "Qty"}</label>
-                                                                <Input 
-                                                                    type="number" 
-                                                                    placeholder="0" 
-                                                                    value={s.quantity} 
-                                                                    onChange={e => handleSizeChange(idx, 'quantity', parseInt(e.target.value))} 
-                                                                    className="h-10 bg-white/5 border-white/10 text-white font-medium text-center w-full rounded-xl text-sm focus:ring-4 focus:ring-amber-500/20" 
+                                                                <Input
+                                                                    type="number"
+                                                                    placeholder="0"
+                                                                    value={s.quantity}
+                                                                    onChange={e => handleSizeChange(idx, 'quantity', parseInt(e.target.value))}
+                                                                    className="h-10 bg-white/5 border-white/10 text-white font-medium text-center w-full rounded-xl text-sm focus:ring-4 focus:ring-amber-500/20"
                                                                 />
                                                             </div>
                                                         </div>

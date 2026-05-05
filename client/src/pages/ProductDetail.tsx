@@ -49,12 +49,12 @@ import { TryOnSection } from "@/components/product/TryOnSection";
 import { TryOnModal } from "@/components/product/TryOnModal";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 
-function RelatedProducts({ collectionId, currentProductId, language }: { collectionId?: number, currentProductId: number, language: string }) {
+function RelatedProducts({ collectionId, categoryId, currentProductId, language }: { collectionId?: number, categoryId?: number, currentProductId: number, language: string }) {
   const { t } = useLanguage();
   const { data: relatedProducts, isLoading } = useQuery({
-    queryKey: ['products', 'related', collectionId],
-    queryFn: () => endpoints.products.list({ collectionId }),
-    enabled: !!collectionId
+    queryKey: ['products', 'related', collectionId, categoryId],
+    queryFn: () => endpoints.products.list(collectionId ? { collectionId } : { categoryId }),
+    enabled: !!collectionId || !!categoryId
   });
 
   if (isLoading || !relatedProducts || !Array.isArray(relatedProducts) || relatedProducts.length <= 1) return null;
@@ -569,7 +569,7 @@ export default function ProductDetail() {
                         >
                           <div 
                             className="w-full h-full rounded-xl shadow-inner border border-black/5" 
-                            style={{ backgroundColor: colorObj.colorHex || '#ddd' }}
+                            style={{ backgroundColor: colorObj.colorCode || '#ddd' }}
                           />
                           {selectedColor?.id === colorObj.id && (
                              <div className="absolute -top-2 -right-2 bg-rose-600 text-white rounded-full p-1 shadow-md border-2 border-white">
@@ -774,7 +774,12 @@ export default function ProductDetail() {
       </div>
 
       <div className="container mx-auto px-4">
-        <RelatedProducts collectionId={product.collectionId} currentProductId={product.id} language={language} />
+        <RelatedProducts 
+          collectionId={product.collectionId} 
+          categoryId={product.categoryId} 
+          currentProductId={product.id} 
+          language={language} 
+        />
       </div>
 
       <TryOnModal
