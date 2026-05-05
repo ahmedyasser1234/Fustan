@@ -29,6 +29,7 @@ export class CartService {
     quantity: number,
     size?: string,
     color?: string,
+    customMeasurements?: any,
   ) {
     const product = await this.databaseService.db
       .select()
@@ -43,7 +44,7 @@ export class CartService {
     const prod = product[0];
 
     // Stock Validation
-    if (size) {
+    if (size && size !== 'Custom') {
       const sizes = prod.sizes as { size: string; quantity: number }[] | null;
       const sizeObj = sizes?.find((s) => s.size === size);
 
@@ -52,7 +53,7 @@ export class CartService {
           sizeObj ? 'الكمية غير متوفرة لهذا المقاس' : 'المقاس غير متوفر',
         );
       }
-    } else {
+    } else if (!size || size !== 'Custom') {
       if ((prod.stock || 0) < quantity) {
         throw new BadRequestException('الكمية غير متوفرة');
       }
@@ -86,6 +87,7 @@ export class CartService {
       productId,
       quantity,
       size,
+      customMeasurements,
       // color,
     });
   }

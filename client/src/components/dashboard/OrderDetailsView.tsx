@@ -12,6 +12,22 @@ import { Loader2 } from "lucide-react";
 import { format } from "date-fns";
 import { ar } from "date-fns/locale";
 import { cn } from "@/lib/utils";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Ruler } from "lucide-react";
+
+const MEASUREMENT_LABELS: Record<string, { ar: string, en: string }> = {
+    height: { ar: 'الطول', en: 'Height' },
+    weight: { ar: 'الوزن', en: 'Weight' },
+    neck: { ar: 'محيط الرقبة', en: 'Neck' },
+    shoulders: { ar: 'عرض الأكتاف', en: 'Shoulders' },
+    bust: { ar: 'محيط الصدر', en: 'Bust' },
+    underBust: { ar: 'تحت الصدر', en: 'Under Bust' },
+    waist: { ar: 'محيط الخصر', en: 'Waist' },
+    hips: { ar: 'محيط الأرداف', en: 'Hips' },
+    armLength: { ar: 'طول الذراع', en: 'Arm Length' },
+    armCircumference: { ar: 'محيط الذراع', en: 'Arm Circumference' },
+    wrist: { ar: 'محيط الرسغ', en: 'Wrist' },
+};
 
 interface OrderDetailsViewProps {
     orderId: number;
@@ -214,13 +230,42 @@ export default function OrderDetailsView({ orderId, onClose }: OrderDetailsViewP
                                                         </div>
                                                     </td>
                                                     <td className="py-4 px-4 text-center">
-                                                        {item.size ? (
-                                                            <Badge variant="outline" className="border-slate-200 font-bold text-slate-600">
-                                                                {item.size}
-                                                            </Badge>
-                                                        ) : (
-                                                            <span className="text-slate-300">-</span>
-                                                        )}
+                                                        <div className="flex flex-col items-center gap-2">
+                                                            {item.size ? (
+                                                                <Badge variant="outline" className={cn("border-slate-200 font-bold", item.size === 'Custom' ? "bg-rose-50 text-rose-600 border-rose-200" : "text-slate-600")}>
+                                                                    {item.size === 'Custom' ? (language === 'ar' ? "مقاس خاص" : "Custom Size") : item.size}
+                                                                </Badge>
+                                                            ) : (
+                                                                <span className="text-slate-300">-</span>
+                                                            )}
+                                                            {item.customMeasurements && (
+                                                                <Dialog>
+                                                                    <DialogTrigger asChild>
+                                                                        <Button variant="ghost" size="sm" className="h-7 text-[10px] px-2 text-rose-600 hover:text-rose-700 hover:bg-rose-50 font-bold border border-rose-100 rounded-lg shrink-0">
+                                                                            {language === 'ar' ? "عرض القياسات" : "View Measurements"}
+                                                                        </Button>
+                                                                    </DialogTrigger>
+                                                                    <DialogContent className="sm:max-w-md rounded-3xl">
+                                                                        <DialogHeader>
+                                                                            <DialogTitle className="flex items-center gap-2 text-rose-600">
+                                                                                <Ruler className="w-5 h-5" />
+                                                                                {language === 'ar' ? "القياسات المطلوبة" : "Requested Measurements"}
+                                                                            </DialogTitle>
+                                                                        </DialogHeader>
+                                                                        <div className="grid grid-cols-2 gap-4 py-4" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+                                                                            {Object.entries(item.customMeasurements).map(([key, val]) => (
+                                                                                val && (
+                                                                                    <div key={key} className="flex justify-between border-b border-slate-50 pb-2">
+                                                                                        <span className="text-sm text-slate-400">{MEASUREMENT_LABELS[key]?.[language as 'ar' | 'en'] || key}</span>
+                                                                                        <span className="text-sm font-bold text-slate-700">{val} cm</span>
+                                                                                    </div>
+                                                                                )
+                                                                            ))}
+                                                                        </div>
+                                                                    </DialogContent>
+                                                                </Dialog>
+                                                            )}
+                                                        </div>
                                                     </td>
                                                     <td className="py-4 px-4 text-center font-medium text-slate-900">
                                                         {item.quantity}

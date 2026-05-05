@@ -10,7 +10,7 @@ export function useAddToCart() {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: async (data: { productId: number; quantity: number; size?: string; color?: string; product?: any }) => {
+        mutationFn: async (data: { productId: number; quantity: number; size?: string; color?: string; product?: any; customMeasurements?: any }) => {
             if (!user) {
                 // Guest handling: save to localStorage
                 const guestItemsRaw = localStorage.getItem('fustan-guest-items');
@@ -31,7 +31,8 @@ export function useAddToCart() {
                 const existingIndex = guestItems.findIndex((item: any) =>
                     item.productId === data.productId &&
                     item.size === data.size &&
-                    item.color === data.color
+                    item.color === data.color &&
+                    JSON.stringify(item.customMeasurements) === JSON.stringify(data.customMeasurements)
                 );
 
                 if (existingIndex !== -1) {
@@ -50,6 +51,7 @@ export function useAddToCart() {
                         quantity: data.quantity,
                         size: data.size,
                         color: data.color,
+                        customMeasurements: data.customMeasurements,
                         id: Date.now() + Math.random(), // Temporary ID
                         product: data.product ? {
                             id: data.product.id,
@@ -69,7 +71,7 @@ export function useAddToCart() {
             }
 
             // Logged in user: use API
-            return endpoints.cart.add(data.productId, data.quantity, data.size, data.color);
+            return endpoints.cart.add(data.productId, data.quantity, data.size, data.color, data.customMeasurements);
         },
         onSuccess: () => {
             toast.success(t('addedToCart'));

@@ -231,6 +231,7 @@ export const cartItems = pgTable(
     productId: integer('productId').notNull(),
     quantity: integer('quantity').default(1).notNull(),
     size: text('size'),
+    customMeasurements: jsonb('customMeasurements').$type<any>(),
     // color: text('color'), // Added color column
     addedAt: timestamp('addedAt').defaultNow().notNull(),
     updatedAt: timestamp('updatedAt').defaultNow().notNull(),
@@ -301,6 +302,7 @@ export const orderItems = pgTable(
     total: doublePrecision('total').notNull(),
     size: text('size'),
     color: text('color'), // Added color column
+    customMeasurements: jsonb('customMeasurements').$type<any>(),
     createdAt: timestamp('createdAt').defaultNow().notNull(),
   },
   (table) => ({

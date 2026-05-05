@@ -88,7 +88,7 @@ export const endpoints = {
     },
     cart: {
         get: () => api.get('/cart').then(res => res.data),
-        add: (productId: number, quantity: number, size?: string, color?: string) => api.post('/cart', { productId, quantity, size, color }).then(res => res.data),
+        add: (productId: number, quantity: number, size?: string, color?: string, customMeasurements?: any) => api.post('/cart', { productId, quantity, size, color, customMeasurements }).then(res => res.data),
         update: (cartItemId: number, quantity: number) => api.post('/cart/update', { cartItemId, quantity }).then(res => res.data),
         remove: (cartItemId: number) => api.delete(`/cart/${cartItemId}`).then(res => res.data),
         clear: () => api.post('/cart/clear').then(res => res.data),

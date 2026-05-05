@@ -54,10 +54,18 @@ export class CartController {
     @Body('quantity') quantity: number,
     @Body('size') size?: string,
     @Body('color') color?: string,
+    @Body('customMeasurements') customMeasurements?: any,
   ) {
     const userId = await this.getUserId(req);
 
-    return this.cartService.addItem(userId, productId, quantity, size, color);
+    return this.cartService.addItem(
+      userId,
+      productId,
+      quantity,
+      size,
+      color,
+      customMeasurements,
+    );
   }
 
   @Post('update')

@@ -82,6 +82,7 @@ export class OrdersService {
         price: orderItems.price,
         total: orderItems.total,
         size: orderItems.size,
+        customMeasurements: orderItems.customMeasurements,
         productNameAr: products.nameAr,
         productNameEn: products.nameEn,
         productImage: products.images,
@@ -164,6 +165,7 @@ export class OrdersService {
           price: price,
           total: itemTotal,
           size: item.size,
+          customMeasurements: item.customMeasurements,
         });
       }
     }

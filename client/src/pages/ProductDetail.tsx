@@ -150,9 +150,23 @@ export default function ProductDetail() {
   const [match, params] = useRoute("/products/:id");
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
+  const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const [isCustomSizeOpen, setIsCustomSizeOpen] = useState(false);
+  const [customMeasurements, setCustomMeasurements] = useState({
+    height: "",
+    weight: "",
+    neck: "",
+    shoulders: "",
+    bust: "",
+    underBust: "",
+    waist: "",
+    hips: "",
+    armLength: "",
+    armCircumference: "",
+    wrist: ""
+  });
   const [selectedColor, setSelectedColor] = useState<any>(null);
   const [sizeQuantities, setSizeQuantities] = useState<Record<string, number>>({});
-  const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [isZoomed, setIsZoomed] = useState(false);
   const [zoomPosition, setZoomPosition] = useState({ x: 0, y: 0 });
   const [activeTab, setActiveTab] = useState<"details" | "reviews">("details");
@@ -220,6 +234,18 @@ export default function ProductDetail() {
     return { prevId: navData[prevIndex].id, nextId: navData[nextIndex].id };
   }, [navData, productId]);
 
+  const product = productData?.product || productData;
+  const vendor = productData?.vendor;
+  const category = productData?.category;
+  const colors = productData?.colors || [];
+
+  const galleryImages = useMemo(() => {
+    if (selectedColor && selectedColor.images && selectedColor.images.length > 0) {
+      return selectedColor.images;
+    }
+    return product?.images || [];
+  }, [selectedColor, product?.images]);
+
   const handleSizeQtyChange = (size: string, delta: number) => {
     setSizeQuantities(prev => {
       const current = prev[size] || 0;
@@ -230,6 +256,10 @@ export default function ProductDetail() {
   };
 
   const totalSelectedItems = Object.values(sizeQuantities).reduce((a, b) => a + b, 0);
+
+  const handleCustomMeasurementChange = (field: string, value: string) => {
+    setCustomMeasurements(prev => ({ ...prev, [field]: value }));
+  };
 
   const handleAddToCartMulti = async () => {
     if (user && (user.role === 'vendor' || user.role === 'admin')) {
@@ -247,7 +277,8 @@ export default function ProductDetail() {
           return addToCartMutation.mutateAsync({
             productId,
             quantity: qty,
-            size,
+            size: selectedSize || undefined,
+            customMeasurements: selectedSize === 'Custom' ? customMeasurements : undefined,
             color: selectedColor?.colorName,
             product: {
               id: product.id,
@@ -268,7 +299,8 @@ export default function ProductDetail() {
       addToCartMutation.mutate({
         productId,
         quantity,
-        size: undefined,
+        size: selectedSize || undefined,
+        customMeasurements: selectedSize === 'Custom' ? customMeasurements : undefined,
         color: selectedColor?.colorName,
         product: {
           id: product.id,
@@ -343,19 +375,6 @@ export default function ProductDetail() {
   }
 
   if (!productData) return null;
-
-  const product = productData?.product || productData;
-  const vendor = productData?.vendor;
-  const collection = productData?.collection;
-  const category = productData?.category;
-  const colors = productData?.colors || [];
-
-  const galleryImages = useMemo(() => {
-    if (selectedColor && selectedColor.images && selectedColor.images.length > 0) {
-      return selectedColor.images;
-    }
-    return product?.images || [];
-  }, [selectedColor, product?.images]);
 
   const displayImage = galleryImages[selectedImage] || galleryImages[0] || (product?.images?.[0]);
 
@@ -576,7 +595,41 @@ export default function ProductDetail() {
                           {sizeObj.size}
                         </button>
                       ))}
+                      
+                      <button
+                        onClick={() => {
+                          setSelectedSize("Custom");
+                          setIsCustomSizeOpen(true);
+                        }}
+                        className={`min-w-[100px] px-4 h-12 rounded-xl font-medium border-2 transition-all flex items-center justify-center gap-2 ${selectedSize === "Custom" ? "border-rose-600 bg-rose-50 text-rose-600" : "bg-white text-gray-500 border-gray-100 hover:border-gray-200"}`}
+                      >
+                        <Ruler size={16} />
+                        {language === 'ar' ? "مقاس خاص" : "Custom Size"}
+                      </button>
                     </div>
+                  </div>
+                )}
+
+                {/* Custom Measurements Display Summary */}
+                {selectedSize === "Custom" && (
+                  <div className="mb-8 p-4 bg-rose-50/50 rounded-2xl border border-rose-100" dir="rtl">
+                    <div className="flex items-center justify-between mb-2">
+                      <p className="text-sm font-bold text-rose-600 flex items-center gap-2">
+                        <Check size={14} />
+                        {language === 'ar' ? "تم تحديد مقاس خاص" : "Custom size selected"}
+                      </p>
+                      <button 
+                        onClick={() => setIsCustomSizeOpen(true)}
+                        className="text-xs text-rose-500 hover:underline font-medium"
+                      >
+                        {language === 'ar' ? "تعديل المقاسات" : "Edit measurements"}
+                      </button>
+                    </div>
+                    <p className="text-xs text-gray-500">
+                      {language === 'ar' 
+                        ? "سيتم إرسال قياساتك الدقيقة للتاجر لتفصيل الفستان خصيصاً لكِ." 
+                        : "Your exact measurements will be sent to the vendor for a custom fit."}
+                    </p>
                   </div>
                 )}
 
@@ -730,6 +783,67 @@ export default function ProductDetail() {
         productImage={displayImage}
         productName={language === 'ar' ? product.nameAr : product.nameEn}
       />
+
+      {/* Custom Size Modal */}
+      <Dialog open={isCustomSizeOpen} onOpenChange={setIsCustomSizeOpen}>
+        <DialogContent className="sm:max-w-3xl max-h-[90vh] overflow-y-auto rounded-[2rem]">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold flex items-center justify-center gap-2 text-rose-600">
+              <Ruler className="w-6 h-6" />
+              {language === 'ar' ? 'أدخلي مقاساتكِ الخاصة' : 'Enter Your Custom Measurements'}
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="py-6 space-y-8" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+            <div className="bg-rose-50 p-4 rounded-2xl border border-rose-100">
+              <p className="text-sm text-rose-700 leading-relaxed text-center">
+                {language === 'ar' 
+                  ? "يرجى إدخال قياساتكِ بدقة بالسنتيمتر (cm) لضمان أفضل ملاءمة للفستان." 
+                  : "Please enter your measurements accurately in centimeters (cm) for the best fit."}
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[
+                { id: 'height', labelAr: 'الطول', labelEn: 'Height', icon: '📏' },
+                { id: 'weight', labelAr: 'الوزن (كجم)', labelEn: 'Weight (kg)', icon: '⚖️' },
+                { id: 'neck', labelAr: 'محيط الرقبة', labelEn: 'Neck', icon: '🧣' },
+                { id: 'shoulders', labelAr: 'عرض الأكتاف', labelEn: 'Shoulders', icon: '📏' },
+                { id: 'bust', labelAr: 'محيط الصدر', labelEn: 'Bust', icon: '👗' },
+                { id: 'underBust', labelAr: 'تحت الصدر', labelEn: 'Under Bust', icon: '📏' },
+                { id: 'waist', labelAr: 'محيط الخصر', labelEn: 'Waist', icon: '⌛' },
+                { id: 'hips', labelAr: 'محيط الأرداف', labelEn: 'Hips', icon: '📏' },
+                { id: 'armLength', labelAr: 'طول الذراع', labelEn: 'Arm Length', icon: '📏' },
+                { id: 'armCircumference', labelAr: 'محيط الذراع', labelEn: 'Arm Circumference', icon: '💪' },
+                { id: 'wrist', labelAr: 'محيط الرسغ', labelEn: 'Wrist', icon: '⌚' },
+              ].map((field) => (
+                <div key={field.id} className="space-y-2">
+                  <label className="text-sm font-bold text-gray-700 flex items-center gap-2">
+                    <span>{field.icon}</span>
+                    {language === 'ar' ? field.labelAr : field.labelEn}
+                  </label>
+                  <input
+                    type="number"
+                    value={customMeasurements[field.id as keyof typeof customMeasurements]}
+                    onChange={(e) => handleCustomMeasurementChange(field.id, e.target.value)}
+                    placeholder="0"
+                    className="w-full h-12 px-4 rounded-xl border border-gray-200 focus:border-rose-500 focus:ring-2 focus:ring-rose-200 outline-none transition-all text-lg font-medium"
+                  />
+                </div>
+              ))}
+            </div>
+
+            <div className="pt-4">
+              <Button 
+                onClick={() => setIsCustomSizeOpen(false)}
+                className="w-full h-14 rounded-2xl bg-gray-900 hover:bg-black text-white font-bold text-lg shadow-xl"
+              >
+                {language === 'ar' ? 'حفظ المقاسات' : 'Save Measurements'}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
