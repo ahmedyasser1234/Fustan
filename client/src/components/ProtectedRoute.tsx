@@ -23,6 +23,8 @@ export function ProtectedRoute({ path, component: Component, role: propRole, red
     const role = propRole || (path.startsWith('/admin') ? 'admin' : (path.startsWith('/vendor') ? 'vendor' : 'customer'));
 
     useEffect(() => {
+        console.log(`[ProtectedRoute Debug] path=${path}, loading=${loading}, isAuthenticated=${isAuthenticated}, userRole=${user?.role}, expectedRole=${propRole}`);
+        
         if (isGuest) {
             const loginPath = role === 'admin' ? "/admin/login" : (role === 'vendor' ? "/vendor/login" : "/login");
             console.warn(`[ProtectedRoute] GUEST detected on ${path}. Redirecting to ${loginPath}`);

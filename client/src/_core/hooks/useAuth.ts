@@ -64,6 +64,14 @@ export function useAuth(options?: UseAuthOptions) {
     const userData = (meQuery.data as any)?.user ?? meQuery.data ?? null;
     const token = typeof window !== "undefined" ? localStorage.getItem('app_token') : null;
     const hasValidToken = !!token && token !== 'undefined' && token !== 'null';
+    
+    if (meQuery.data) {
+        console.log(`[useAuth Debug] meQuery.data found`, { 
+            hasUser: !!(meQuery.data as any)?.user, 
+            hasToken: !!(meQuery.data as any)?.token,
+            hasValidToken 
+        });
+    }
 
     return {
       user: hasValidToken ? userData : null,

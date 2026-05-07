@@ -68,13 +68,16 @@ export default function Login() {
                 return;
             }
 
-            const userData = response.data.user || response.data;
-            if (userData.token) {
-                localStorage.setItem('app_token', userData.token);
+            const loginData = response.data.user ? response.data : { user: response.data, token: response.data.token };
+            const user = loginData.user;
+            const token = loginData.token;
+
+            if (token) {
+                localStorage.setItem('app_token', token);
             }
             
             // Set user data in cache immediately
-            setUser(userData);
+            setUser(loginData);
             
             try {
                 await refresh(); // Refresh auth state

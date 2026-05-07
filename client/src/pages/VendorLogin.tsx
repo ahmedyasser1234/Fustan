@@ -30,13 +30,16 @@ function VendorLogin() {
                 role: 'vendor'
             });
             
-            const userData = response.data.user || response.data;
-            if (userData.token) {
-                 localStorage.setItem('app_token', userData.token);
+            const loginData = response.data.user ? response.data : { user: response.data, token: response.data.token };
+            const user = loginData.user;
+            const token = loginData.token;
+
+            if (token) {
+                 localStorage.setItem('app_token', token);
             }
             
             // Set user data in cache immediately to avoid race conditions
-            setUser(userData);
+            setUser(loginData);
             
             try {
                 await refresh();

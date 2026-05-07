@@ -12,7 +12,7 @@ export default function AdminLogin() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
-    const { refresh } = useAuth();
+    const { refresh, setUser } = useAuth();
     const [, setLocation] = useLocation();
 
     const [showPassword, setShowPassword] = useState(false);
@@ -26,9 +26,13 @@ export default function AdminLogin() {
                 password,
                 role: 'admin'
             });
-            if (response.data.token) {
-                localStorage.setItem('app_token', response.data.token);
+            const loginData = response.data.user ? response.data : { user: response.data, token: response.data.token };
+            if (loginData.token) {
+                localStorage.setItem('app_token', loginData.token);
             }
+            
+            setUser(loginData);
+            
             await refresh();
 
             toast.success("Welcome, Super Admin");
