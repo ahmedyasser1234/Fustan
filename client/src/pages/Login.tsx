@@ -68,16 +68,30 @@ export default function Login() {
                 return;
             }
 
-            if (response.data.token) {
-                localStorage.setItem('app_token', response.data.token);
+            const userData = response.data.user || response.data;
+            if (userData.token) {
+                localStorage.setItem('app_token', userData.token);
             }
             
             // Set user data in cache immediately
-            setUser(response.data.user || response.data);
+            setUser(userData);
             
-            await refresh(); // Refresh auth state
+            try {
+                await refresh(); // Refresh auth state
+            } catch (e) {
+                console.warn("Auth refresh after login had issues:", e);
+            }
+
             toast.success(language === 'ar' ? 'تم تسجيل الدخول بنجاح' : 'Logged in successfully');
-            window.location.href = "/";
+            
+            setLocation("/");
+            
+            // Safety fallback
+            setTimeout(() => {
+                if (window.location.pathname !== "/") {
+                    window.location.href = "/";
+                }
+            }, 500);
         } catch (error: any) {
             const message = error.response?.data?.message || (language === 'ar' ? 'فشل تسجيل الدخول. تحقق من بياناتك' : 'Login failed. Check your credentials');
             toast.error(message);

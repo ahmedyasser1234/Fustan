@@ -30,19 +30,31 @@ function VendorLogin() {
                 role: 'vendor'
             });
             
-            if (response.data.token) {
-                localStorage.setItem('app_token', response.data.token);
+            const userData = response.data.user || response.data;
+            if (userData.token) {
+                 localStorage.setItem('app_token', userData.token);
             }
-
-            // Set user data in cache immediately to avoid race conditions
-            setUser(response.data.user || response.data);
             
-            await refresh();
+            // Set user data in cache immediately to avoid race conditions
+            setUser(userData);
+            
+            try {
+                await refresh();
+            } catch (e) {
+                console.warn("Auth refresh after login had issues, but token is set:", e);
+            }
             
             toast.success(language === 'ar' ? 'أهلاً بك في بوابة التجار' : 'Welcome to the Vendor Portal');
             
-            // Use window.location.href for a hard redirect to ensure all states are fresh
-            window.location.href = "/vendor-dashboard";
+            // Try soft redirect first, fallback to hard redirect if it fails or after a short delay
+            setLocation("/vendor-dashboard");
+            
+            // Safety fallback: if we're still on the same page after 500ms, force a reload
+            setTimeout(() => {
+                if (window.location.pathname !== "/vendor-dashboard") {
+                    window.location.href = "/vendor-dashboard";
+                }
+            }, 500);
         } catch (error: any) {
             const message = error.response?.data?.message || (language === 'ar' ? 'فشل تسجيل الدخول' : 'Login failed');
 
