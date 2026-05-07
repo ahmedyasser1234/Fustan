@@ -1,5 +1,5 @@
 import { scrypt, randomBytes } from 'node:crypto';
-import { Injectable, UnauthorizedException, Logger } from '@nestjs/common';
+import { Injectable, UnauthorizedException, Logger, ConflictException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { SignJWT, jwtVerify } from 'jose';
 import { DatabaseService } from '../database/database.service';
@@ -120,7 +120,7 @@ export class AuthService {
       .limit(1);
 
     if (existingUser.length > 0) {
-      throw new UnauthorizedException('User already exists');
+      throw new ConflictException('User already exists');
     }
 
     const hashedPassword = await this.hashPassword(data.password);

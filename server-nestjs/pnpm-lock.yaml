@@ -64,7 +64,7 @@ importers:
         version: 17.3.1
       drizzle-orm:
         specifier: ^0.44.5
-        version: 0.44.7(@libsql/client@0.17.0)(pg@8.18.0)(postgres@3.4.8)
+        version: 0.44.7(@libsql/client@0.17.0)(@types/pg@8.20.0)(pg@8.18.0)(postgres@3.4.8)
       file-type:
         specifier: 16.5.4
         version: 16.5.4
@@ -159,6 +159,9 @@ importers:
       '@types/pdfkit':
         specifier: ^0.17.4
         version: 0.17.4
+      '@types/pg':
+        specifier: ^8.20.0
+        version: 8.20.0
       '@types/streamifier':
         specifier: ^0.1.2
         version: 0.1.2
@@ -1609,6 +1612,9 @@ packages:
 
   '@types/pdfkit@0.17.4':
     resolution: {integrity: sha512-odAmVuuguRxKh1X4pbMrJMp8ecwNqHRw6lweupvzK+wuyNmi6wzlUlGVZ9EqMvp3Bs2+L9Ty0sRlrvKL+gsQZg==}
+
+  '@types/pg@8.20.0':
+    resolution: {integrity: sha512-bEPFOaMAHTEP1EzpvHTbmwR8UsFyHSKsRisLIHVMXnpNefSbGA1bD6CVy+qKjGSqmZqNqBDV2azOBo8TgkcVow==}
 
   '@types/qs@6.14.0':
     resolution: {integrity: sha512-eOunJqu0K1923aExK6y8p6fsihYEn/BYuQ4g0CxAAgFc4b/ZLN4CrsRZ55srTdqoiLzU2B2evC+apEIxprEzkQ==}
@@ -5737,6 +5743,12 @@ snapshots:
     dependencies:
       '@types/node': 22.19.8
 
+  '@types/pg@8.20.0':
+    dependencies:
+      '@types/node': 22.19.8
+      pg-protocol: 1.11.0
+      pg-types: 2.2.0
+
   '@types/qs@6.14.0': {}
 
   '@types/range-parser@1.2.7': {}
@@ -6496,9 +6508,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  drizzle-orm@0.44.7(@libsql/client@0.17.0)(pg@8.18.0)(postgres@3.4.8):
+  drizzle-orm@0.44.7(@libsql/client@0.17.0)(@types/pg@8.20.0)(pg@8.18.0)(postgres@3.4.8):
     optionalDependencies:
       '@libsql/client': 0.17.0
+      '@types/pg': 8.20.0
       pg: 8.18.0
       postgres: 3.4.8
 

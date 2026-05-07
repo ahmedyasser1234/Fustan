@@ -74,6 +74,7 @@
     "@types/node": "^22.10.7",
     "@types/nodemailer": "^8.0.0",
     "@types/pdfkit": "^0.17.4",
+    "@types/pg": "^8.20.0",
     "@types/streamifier": "^0.1.2",
     "@types/stripe": "^8.0.417",
     "@types/supertest": "^6.0.2",
