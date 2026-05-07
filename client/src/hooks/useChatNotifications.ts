@@ -12,11 +12,14 @@ export function useChatNotifications() {
     const queryClient = useQueryClient();
     const [location] = useLocation();
 
+    const token = localStorage.getItem('app_token');
+    const hasValidToken = !!token && token !== 'undefined' && token !== 'null';
+
     // Fetch initial unread count
     const { data: unreadData, refetch } = useQuery({
         queryKey: ['chat', 'unread-count'],
         queryFn: endpoints.chat.unreadCount,
-        enabled: !!user && !!user?.id && !!localStorage.getItem('app_token'),
+        enabled: !!user && !!user?.id && hasValidToken,
         refetchOnWindowFocus: true,
         staleTime: 1000 * 30, // 30 seconds
         retry: false, // Do not retry on failure (avoids 401 loop)

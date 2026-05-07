@@ -334,10 +334,13 @@ export default function ProductDetail() {
     }
   };
 
+  const token = localStorage.getItem('app_token');
+  const hasValidToken = !!token && token !== 'undefined' && token !== 'null';
+
   const { data: wishlistStatus } = useQuery({
     queryKey: ['wishlist-status', productId],
     queryFn: () => endpoints.wishlist.check(productId),
-    enabled: !!user && !!productId && !!localStorage.getItem('app_token'),
+    enabled: !!user && !!productId && hasValidToken,
     retry: false,
   });
 

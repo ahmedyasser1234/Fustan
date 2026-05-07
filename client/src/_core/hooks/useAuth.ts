@@ -62,12 +62,14 @@ export function useAuth(options?: UseAuthOptions) {
 
   const state = useMemo(() => {
     const userData = (meQuery.data as any)?.user ?? meQuery.data ?? null;
+    const token = typeof window !== "undefined" ? localStorage.getItem('app_token') : null;
+    const hasValidToken = !!token && token !== 'undefined' && token !== 'null';
 
     return {
-      user: userData,
+      user: hasValidToken ? userData : null,
       loading: (meQuery.isLoading || (meQuery.isFetching && !meQuery.data)) || logoutMutation.isPending,
       error: meQuery.error ?? logoutMutation.error ?? null,
-      isAuthenticated: Boolean(userData),
+      isAuthenticated: Boolean(userData) && hasValidToken,
     };
   }, [
     meQuery.data,
