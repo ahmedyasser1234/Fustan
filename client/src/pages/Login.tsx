@@ -78,7 +78,16 @@ export default function Login() {
             const token = data?.token;
             const user = data?.user ?? data;
 
+            console.log("[Login] Server Response:", { raw, data, token: !!token, user });
+
+            // Check if it's a requireVerification response
+            if (data?.requireVerification) {
+                toast.error(language === 'ar' ? 'يرجى تأكيد بريدك الإلكتروني أولاً' : 'Please verify your email address first');
+                return;
+            }
+
             if (!token) {
+                console.error("[Login] Missing token. Full response data:", response.data);
                 toast.error(language === 'ar' ? 'فشل الحصول على جلسة' : 'Failed to get session');
                 return;
             }
@@ -89,7 +98,10 @@ export default function Login() {
             toast.success(language === 'ar' ? 'تم تسجيل الدخول بنجاح' : 'Logged in successfully');
             window.location.href = "/";
         } catch (error: any) {
-            const message = error.response?.data?.message || (language === 'ar' ? 'فشل تسجيل الدخول. تحقق من بياناتك' : 'Login failed. Check your credentials');
+            console.error("[Login] Login Error:", error);
+            console.error("[Login] Error Response Data:", error.response?.data);
+            
+            const message = error.response?.data?.message || error.message || (language === 'ar' ? 'فشل تسجيل الدخول. تحقق من بياناتك' : 'Login failed. Check your credentials');
             toast.error(message);
             console.error(error);
         } finally {
