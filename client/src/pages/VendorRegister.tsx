@@ -64,13 +64,13 @@ export default function VendorRegister() {
                 await refresh();
                 toast.success(language === 'ar' ? 'تم إنشاء متجركِ بنجاح! أهلاً بكِ في عائلة فستان' : 'Store created successfully! Welcome to Fustan family');
                 setLocation("/vendor-dashboard");
-            } else if (response.data.message) {
+            } else if (response.data.user) {
                 // Handle pending approval case
                 toast.success(
                     language === 'ar' 
                     ? 'حسابكِ قيد المراجعة حالياً. سيتم إرسال رسالة إلى بريدكِ الإلكتروني عند القبول أو الرفض.' 
                     : 'Your account is under review. You will receive an email once it is approved or rejected.',
-                    { duration: 6000 }
+                    { duration: 8000 }
                 );
                 setLocation("/vendor/login");
             }
