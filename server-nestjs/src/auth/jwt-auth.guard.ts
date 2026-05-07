@@ -28,7 +28,7 @@ export class JwtAuthGuard implements CanActivate {
       source = 'cookie';
     }
 
-    if (!token) {
+    if (!token || token === 'undefined' || token === 'null') {
       throw new UnauthorizedException('Authentication required');
     }
 

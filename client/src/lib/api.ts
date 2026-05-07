@@ -10,9 +10,11 @@ const api = axios.create({
 api.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem('app_token');
-        if (token) {
+        if (token && token !== 'undefined' && token !== 'null') {
             console.log(`[API Request] Sending token: ${token.substring(0, 10)}... (length: ${token.length})`);
             config.headers.Authorization = `Bearer ${token}`;
+        } else if (token === 'undefined' || token === 'null') {
+            localStorage.removeItem('app_token');
         }
         return config;
     },

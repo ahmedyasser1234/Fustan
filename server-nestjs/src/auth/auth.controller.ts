@@ -40,13 +40,15 @@ export class AuthController {
 
     const { token, user } = result;
 
-    res.cookie(COOKIE_NAME, token, {
-      httpOnly: true,
-      path: '/',
-      sameSite: isProd ? 'none' : 'lax',
-      secure: isProd,
-      maxAge: SEVEN_DAYS_MS,
-    });
+    if (token) {
+      res.cookie(COOKIE_NAME, token, {
+        httpOnly: true,
+        path: '/',
+        sameSite: isProd ? 'none' : 'lax',
+        secure: isProd,
+        maxAge: SEVEN_DAYS_MS,
+      });
+    }
 
     return { user, token };
   }
@@ -64,13 +66,15 @@ export class AuthController {
     const isProd = process.env.NODE_ENV === 'production';
     const { token, user } = await this.authService.loginWithGoogle(googleToken);
 
-    res.cookie(COOKIE_NAME, token, {
-      httpOnly: true,
-      path: '/',
-      sameSite: isProd ? 'none' : 'lax',
-      secure: isProd,
-      maxAge: SEVEN_DAYS_MS,
-    });
+    if (token) {
+      res.cookie(COOKIE_NAME, token, {
+        httpOnly: true,
+        path: '/',
+        sameSite: isProd ? 'none' : 'lax',
+        secure: isProd,
+        maxAge: SEVEN_DAYS_MS,
+      });
+    }
 
     return { user, token };
   }
@@ -104,14 +108,15 @@ export class AuthController {
       }
 
       const { token, user } = result as any;
-
-      res.cookie(COOKIE_NAME, token, {
-        httpOnly: true,
-        path: '/',
-        sameSite: isProd ? 'none' : 'lax',
-        secure: isProd,
-        maxAge: SEVEN_DAYS_MS,
-      });
+      if (token) {
+        res.cookie(COOKIE_NAME, token, {
+          httpOnly: true,
+          path: '/',
+          sameSite: isProd ? 'none' : 'lax',
+          secure: isProd,
+          maxAge: SEVEN_DAYS_MS,
+        });
+      }
 
       return { user, token };
     } catch (error) {

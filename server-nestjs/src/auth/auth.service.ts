@@ -55,6 +55,9 @@ export class AuthService {
   }
 
   async verifySession(token: string): Promise<SessionPayload | null> {
+    if (!token || token === 'undefined' || token === 'null') {
+      return null;
+    }
     try {
       const { payload } = await jwtVerify(token, this.jwtSecret);
       const sessionPayload = payload as unknown as SessionPayload;
