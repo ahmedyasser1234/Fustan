@@ -27,15 +27,20 @@ export default function Login() {
             const { credential } = credentialResponse;
             const response = await api.post("/auth/google", { token: credential });
             
-            const { user, token } = response.data;
+            // Handle both wrapped and unwrapped response formats
+            const raw = response.data;
+            const data = raw?.data ?? raw;
+            const token = data?.token;
+            const user = data?.user ?? data;
+
             if (token) {
                 localStorage.setItem('app_token', token);
             }
-            setUser(user || response.data);
+            setUser(user);
             
             toast.success(language === 'ar' ? 'تم تسجيل الدخول بنجاح' : 'Logged in successfully');
             
-            const userRole = (user || response.data)?.role;
+            const userRole = user?.role;
             if (userRole === 'vendor') {
                 window.location.href = "/vendor-dashboard";
             } else {
@@ -67,8 +72,11 @@ export default function Login() {
                 return;
             }
 
-            // response.data is unwrapped by the interceptor: { user, token }
-            const { user, token } = response.data;
+            // Handle both wrapped ({data:{user,token}}) and unwrapped ({user,token}) formats
+            const raw = response.data;
+            const data = raw?.data ?? raw;
+            const token = data?.token;
+            const user = data?.user ?? data;
 
             if (!token) {
                 toast.error(language === 'ar' ? 'فشل الحصول على جلسة' : 'Failed to get session');

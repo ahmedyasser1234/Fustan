@@ -26,7 +26,11 @@ export default function AdminLogin() {
                 password,
                 role: 'admin'
             });
-            const { user, token } = response.data;
+            // Handle both wrapped ({data:{user,token}}) and unwrapped ({user,token}) formats
+            const raw = response.data;
+            const data = raw?.data ?? raw;
+            const token = data?.token;
+            const user = data?.user ?? data;
 
             if (!token) {
                 toast.error("Failed to get session token");

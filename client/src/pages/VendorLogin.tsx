@@ -30,24 +30,20 @@ function VendorLogin() {
                 role: 'vendor'
             });
             
-            // response.data is unwrapped by the interceptor: { user, token }
-            const { user, token } = response.data;
+            // Handle both wrapped ({data:{user,token}}) and unwrapped ({user,token}) formats
+            const raw = response.data;
+            const data = raw?.data ?? raw;
+            const token = data?.token;
+            const user = data?.user ?? data;
 
             if (!token) {
                 throw new Error('No token received from server');
             }
             
-            // 1. Save token to localStorage for future requests
             localStorage.setItem('app_token', token);
-            
-            // 2. Pre-populate the auth cache with the user directly
-            //    (setUser now correctly stores just the user object)
             setUser(user);
             
             toast.success(language === 'ar' ? 'أهلاً بك في بوابة التجار' : 'Welcome to the Vendor Portal');
-            
-            // 3. Hard redirect - most reliable way to ensure all components re-initialize
-            //    with the correct auth state from localStorage
             window.location.href = "/vendor-dashboard";
             
         } catch (error: any) {
