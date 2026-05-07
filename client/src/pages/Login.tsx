@@ -19,7 +19,7 @@ export default function Login() {
     const [isLoading, setIsLoading] = useState(false);
 
     const [, setLocation] = useLocation();
-    const { refresh, setUser } = useAuth();
+    const { setUser } = useAuth();
 
     const handleGoogleSuccess = async (credentialResponse: any) => {
         setIsLoading(true);
@@ -68,33 +68,19 @@ export default function Login() {
                 return;
             }
 
-            const loginData = response.data.user ? response.data : { user: response.data, token: response.data.token };
-            const user = loginData.user;
-            const token = loginData.token;
+            // response.data is unwrapped by the interceptor: { user, token }
+            const { user, token } = response.data;
 
-            if (token) {
-                localStorage.setItem('app_token', token);
-            }
-            
-            // Set user data in cache immediately
-            setUser(loginData);
-            
-            try {
-                await refresh(); // Refresh auth state
-            } catch (e) {
-                console.warn("Auth refresh after login had issues:", e);
+            if (!token) {
+                toast.error(language === 'ar' ? 'فشل الحصول على جلسة' : 'Failed to get session');
+                return;
             }
 
+            localStorage.setItem('app_token', token);
+            setUser(user);
+            
             toast.success(language === 'ar' ? 'تم تسجيل الدخول بنجاح' : 'Logged in successfully');
-            
-            setLocation("/");
-            
-            // Safety fallback
-            setTimeout(() => {
-                if (window.location.pathname !== "/") {
-                    window.location.href = "/";
-                }
-            }, 500);
+            window.location.href = "/";
         } catch (error: any) {
             const message = error.response?.data?.message || (language === 'ar' ? 'فشل تسجيل الدخول. تحقق من بياناتك' : 'Login failed. Check your credentials');
             toast.error(message);

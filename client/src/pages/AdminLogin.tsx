@@ -12,7 +12,7 @@ export default function AdminLogin() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
-    const { refresh, setUser } = useAuth();
+    const { setUser } = useAuth();
     const [, setLocation] = useLocation();
 
     const [showPassword, setShowPassword] = useState(false);
@@ -26,17 +26,18 @@ export default function AdminLogin() {
                 password,
                 role: 'admin'
             });
-            const loginData = response.data.user ? response.data : { user: response.data, token: response.data.token };
-            if (loginData.token) {
-                localStorage.setItem('app_token', loginData.token);
+            const { user, token } = response.data;
+
+            if (!token) {
+                toast.error("Failed to get session token");
+                return;
             }
-            
-            setUser(loginData);
-            
-            await refresh();
+
+            localStorage.setItem('app_token', token);
+            setUser(user);
 
             toast.success("Welcome, Super Admin");
-            setLocation("/admin-dashboard");
+            window.location.href = "/admin-dashboard";
         } catch (error: any) {
             const message = error.response?.data?.message || "Invalid credentials or access denied";
             toast.error(message);

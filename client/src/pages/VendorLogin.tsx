@@ -17,7 +17,7 @@ function VendorLogin() {
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [, setLocation] = useLocation();
-    const { refresh, setUser } = useAuth();
+    const { setUser } = useAuth();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -30,36 +30,28 @@ function VendorLogin() {
                 role: 'vendor'
             });
             
-            const loginData = response.data.user ? response.data : { user: response.data, token: response.data.token };
-            const user = loginData.user;
-            const token = loginData.token;
+            // response.data is unwrapped by the interceptor: { user, token }
+            const { user, token } = response.data;
 
-            if (token) {
-                 localStorage.setItem('app_token', token);
+            if (!token) {
+                throw new Error('No token received from server');
             }
             
-            // Set user data in cache immediately to avoid race conditions
-            setUser(loginData);
+            // 1. Save token to localStorage for future requests
+            localStorage.setItem('app_token', token);
             
-            try {
-                await refresh();
-            } catch (e) {
-                console.warn("Auth refresh after login had issues, but token is set:", e);
-            }
+            // 2. Pre-populate the auth cache with the user directly
+            //    (setUser now correctly stores just the user object)
+            setUser(user);
             
             toast.success(language === 'ar' ? 'أهلاً بك في بوابة التجار' : 'Welcome to the Vendor Portal');
             
-            // Try soft redirect first, fallback to hard redirect if it fails or after a short delay
-            setLocation("/vendor-dashboard");
+            // 3. Hard redirect - most reliable way to ensure all components re-initialize
+            //    with the correct auth state from localStorage
+            window.location.href = "/vendor-dashboard";
             
-            // Safety fallback: if we're still on the same page after 500ms, force a reload
-            setTimeout(() => {
-                if (window.location.pathname !== "/vendor-dashboard") {
-                    window.location.href = "/vendor-dashboard";
-                }
-            }, 500);
         } catch (error: any) {
-            const message = error.response?.data?.message || (language === 'ar' ? 'فشل تسجيل الدخول' : 'Login failed');
+            const message = error.response?.data?.message || error.message || (language === 'ar' ? 'فشل تسجيل الدخول' : 'Login failed');
 
             if (message.includes('pending') || message.includes('قيد المراجعة')) {
                 setLocation("/vendor/pending");

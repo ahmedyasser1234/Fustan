@@ -17,7 +17,9 @@ export function useAuth(options?: UseAuthOptions) {
     queryKey: ['auth', 'me'],
     queryFn: async () => {
       const response = await endpoints.auth.me();
-      return response.data;
+      // The response interceptor unwraps the NestJS envelope, so response.data = { user, token }
+      // We only care about the user field
+      return response.data?.user ?? null;
     },
     retry: false,
     refetchOnWindowFocus: false,
@@ -61,21 +63,15 @@ export function useAuth(options?: UseAuthOptions) {
   }, [logoutMutation, queryClient]);
 
   const state = useMemo(() => {
-    const userData = (meQuery.data as any)?.user ?? meQuery.data ?? null;
+    // meQuery.data is now directly the user object (or null)
+    const userData = meQuery.data ?? null;
     const token = typeof window !== "undefined" ? localStorage.getItem('app_token') : null;
     const hasValidToken = !!token && token !== 'undefined' && token !== 'null';
-    
-    if (meQuery.data) {
-        console.log(`[useAuth Debug] meQuery.data found`, { 
-            hasUser: !!(meQuery.data as any)?.user, 
-            hasToken: !!(meQuery.data as any)?.token,
-            hasValidToken 
-        });
-    }
+    const isLoading = meQuery.isLoading || (meQuery.isFetching && meQuery.data === undefined);
 
     return {
-      user: hasValidToken ? userData : null,
-      loading: (meQuery.isLoading || (meQuery.isFetching && !meQuery.data)) || logoutMutation.isPending,
+      user: (hasValidToken && userData) ? userData : null,
+      loading: isLoading || logoutMutation.isPending,
       error: meQuery.error ?? logoutMutation.error ?? null,
       isAuthenticated: Boolean(userData) && hasValidToken,
     };
@@ -83,6 +79,7 @@ export function useAuth(options?: UseAuthOptions) {
     meQuery.data,
     meQuery.error,
     meQuery.isLoading,
+    meQuery.isFetching,
     logoutMutation.error,
     logoutMutation.isPending,
   ]);
@@ -104,7 +101,9 @@ export function useAuth(options?: UseAuthOptions) {
   ]);
 
   const setUser = useCallback((userData: any) => {
-    queryClient.setQueryData(['auth', 'me'], userData);
+    // Store only the user object in cache, not the full { user, token } response
+    const user = userData?.user ?? userData;
+    queryClient.setQueryData(['auth', 'me'], user);
   }, [queryClient]);
 
   return {
