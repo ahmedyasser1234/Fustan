@@ -69,4 +69,32 @@ export class MailService {
     `;
     await this.sendMail(to, subject, html);
   }
+
+  async sendVendorApprovalStatus(to: string, storeName: string, status: 'approved' | 'rejected') {
+    const isApproved = status === 'approved';
+    const subject = isApproved ? 'تم قبول متجرك في فستان! 🎉' : 'بخصوص طلب الانضمام كبائع في فستان';
+    const title = isApproved ? 'تهانينا! تم قبول متجرك' : 'بخصوص طلبك';
+    const color = isApproved ? '#10b981' : '#ef4444';
+    const message = isApproved 
+      ? `تمت الموافقة على متجرك <b>"${storeName}"</b>. يمكنك الآن البدء في إضافة منتجاتك وبيعها على المنصة.`
+      : `نأسف لإبلاغك بأنه لم يتم قبول طلبك لمتجر <b>"${storeName}"</b> في الوقت الحالي. يرجى التواصل مع الدعم الفني لمزيد من التفاصيل.`;
+
+    const html = `
+      <div style="font-family: Arial, sans-serif; text-align: center; padding: 20px; direction: rtl; border-top: 5px solid ${color};">
+        <h2 style="color: ${color};">${title}</h2>
+        <p style="font-size: 16px; color: #374151;">${message}</p>
+        ${isApproved ? `
+        <div style="margin: 30px 0;">
+          <a href="https://fustan.com/vendor/login" 
+             style="background-color: ${color}; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold;">
+            الدخول إلى لوحة التحكم
+          </a>
+        </div>
+        ` : ''}
+        <p style="font-size: 14px; color: #6b7280; margin-top: 30px;">شكراً لاهتمامك بالانضمام إلينا.</p>
+        <p style="font-weight: bold; color: #e11d48;">فريق فستان</p>
+      </div>
+    `;
+    await this.sendMail(to, subject, html);
+  }
 }

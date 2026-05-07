@@ -29,12 +29,14 @@ import {
 import { eq, and, desc, sql } from 'drizzle-orm';
 
 import { NotificationsService } from '../notifications/notifications.service';
+import { MailService } from '../common/mail.service';
 
 @Injectable()
 export class AdminService {
   constructor(
     private databaseService: DatabaseService,
     private notificationsService: NotificationsService,
+    private mailService: MailService,
   ) {}
 
   async onModuleInit() {
@@ -80,6 +82,12 @@ export class AdminService {
           'مبروك! تم تفعيل حساب البائع الخاص بك. يمكنك الآن الدخول إلى لوحة التحكم.',
           vendorId,
         );
+        // Send Email
+        await this.mailService.sendVendorApprovalStatus(
+          vendor[0].email,
+          vendor[0].storeNameAr || vendor[0].storeNameEn,
+          'approved'
+        );
       } else if (status === 'rejected') {
         await this.notificationsService.notify(
           vendor[0].userId,
@@ -87,6 +95,12 @@ export class AdminService {
           'تم رفض طلبك ❌',
           'عذراً، لم يتم قبول طلبك للانضمام كبائع. يرجى التواصل مع الإدارة لمزيد من التفاصيل.',
           vendorId,
+        );
+        // Send Email
+        await this.mailService.sendVendorApprovalStatus(
+          vendor[0].email,
+          vendor[0].storeNameAr || vendor[0].storeNameEn,
+          'rejected'
         );
       }
 

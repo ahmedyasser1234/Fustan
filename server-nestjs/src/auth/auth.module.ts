@@ -12,6 +12,6 @@ import { MailService } from '../common/mail.service';
   imports: [DatabaseModule, MediaModule, forwardRef(() => NotificationsModule)],
   providers: [AuthService, MailService],
   controllers: [AuthController],
-  exports: [AuthService],
+  exports: [AuthService, MailService],
 })
 export class AuthModule {}

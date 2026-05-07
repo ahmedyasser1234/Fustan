@@ -64,10 +64,15 @@ export default function VendorRegister() {
                 await refresh();
                 toast.success(language === 'ar' ? 'تم إنشاء متجركِ بنجاح! أهلاً بكِ في عائلة فستان' : 'Store created successfully! Welcome to Fustan family');
                 setLocation("/vendor-dashboard");
-            } else if (response.data.message && response.data.message.includes('pending')) {
+            } else if (response.data.message) {
                 // Handle pending approval case
-                toast.success(language === 'ar' ? 'تم استلام طلبك بنجاح' : 'Registration successful');
-                setLocation("/vendor/pending");
+                toast.success(
+                    language === 'ar' 
+                    ? 'حسابكِ قيد المراجعة حالياً. سيتم إرسال رسالة إلى بريدكِ الإلكتروني عند القبول أو الرفض.' 
+                    : 'Your account is under review. You will receive an email once it is approved or rejected.',
+                    { duration: 6000 }
+                );
+                setLocation("/vendor/login");
             }
 
         } catch (error: any) {

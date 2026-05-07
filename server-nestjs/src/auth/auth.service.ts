@@ -194,7 +194,7 @@ export class AuthService {
         return {
           user: { email: email, name: data.name, role: data.role },
           message:
-            'Registration successful. Your account is pending admin approval.',
+            'Registration successful. Your account is under review. You will receive an email once it is approved or rejected.',
         };
       }
 
