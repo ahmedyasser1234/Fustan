@@ -60,6 +60,14 @@ export default function Login() {
                 password,
                 role: 'customer'
             });
+
+            if (response.data.requireVerification) {
+                localStorage.setItem("pending_verification_email", email.toLowerCase());
+                toast.info(language === 'ar' ? 'يرجى تفعيل حسابك أولاً' : 'Please verify your account first');
+                setLocation(`/verify-email?email=${encodeURIComponent(email.toLowerCase())}`);
+                return;
+            }
+
             if (response.data.token) {
                 localStorage.setItem('app_token', response.data.token);
             }
@@ -113,7 +121,12 @@ export default function Login() {
                             />
                         </div>
                         <div className={`space-y-2 text-${language === 'ar' ? 'right' : 'left'}`}>
-                            <Label htmlFor="password">{language === 'ar' ? 'كلمة المرور' : 'Password'}</Label>
+                            <div className="flex items-center justify-between mx-1">
+                                <Label htmlFor="password">{language === 'ar' ? 'كلمة المرور' : 'Password'}</Label>
+                                <Link href="/forgot-password" className="text-xs font-medium text-rose-600 hover:text-rose-500">
+                                    {language === 'ar' ? 'نسيت كلمة المرور؟' : 'Forgot Password?'}
+                                </Link>
+                            </div>
                             <div className="relative">
                                 <Input
                                     id="password"

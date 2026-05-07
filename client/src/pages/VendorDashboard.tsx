@@ -118,6 +118,8 @@ export default function VendorDashboard() {
     queryKey: ['vendor', 'dashboard'],
     queryFn: async () => await endpoints.vendors.dashboard(),
     staleTime: 1000 * 60 * 2,
+    enabled: !!user && user.role === 'vendor' && !!localStorage.getItem('app_token'),
+    retry: false
   });
 
   if (!user) return null;

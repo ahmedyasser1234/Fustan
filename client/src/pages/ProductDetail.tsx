@@ -337,7 +337,8 @@ export default function ProductDetail() {
   const { data: wishlistStatus } = useQuery({
     queryKey: ['wishlist-status', productId],
     queryFn: () => endpoints.wishlist.check(productId),
-    enabled: !!user && !!productId && productId > 0,
+    enabled: !!user && !!productId && !!localStorage.getItem('app_token'),
+    retry: false,
   });
 
   const isFavorite = wishlistStatus?.isFavorite;

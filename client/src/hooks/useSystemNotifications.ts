@@ -8,9 +8,10 @@ export function useSystemNotifications() {
     const { data: unreadData, refetch } = useQuery({
         queryKey: ['notifications', 'unread-count'],
         queryFn: endpoints.notifications.getUnreadCount,
-        enabled: !!user && !!user?.id,
+        enabled: !!user && !!user?.id && !!localStorage.getItem('app_token'),
         refetchOnWindowFocus: true,
         staleTime: 1000 * 60, // 1 minute
+        retry: false,
     });
 
     const unreadCount = unreadData?.count || 0;

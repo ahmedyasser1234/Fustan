@@ -56,6 +56,8 @@ export default function Orders() {
   const { data: ordersData, isLoading } = useQuery({
     queryKey: ['orders'],
     queryFn: async () => await endpoints.orders.list(),
+    enabled: !!localStorage.getItem('app_token'),
+    retry: false
   });
 
   const orders = Array.isArray(ordersData) ? ordersData : [];

@@ -27,7 +27,8 @@ export default function OrderDetails() {
     const { data: order, isLoading } = useQuery({
         queryKey: ['order', id],
         queryFn: async () => await endpoints.orders.get(Number(id)),
-        enabled: !!id,
+        enabled: !!id && !!localStorage.getItem('app_token'),
+        retry: false
     });
 
     const updateStatusMutation = useMutation({

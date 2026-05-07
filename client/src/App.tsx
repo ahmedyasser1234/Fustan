@@ -33,6 +33,9 @@ import SharedWishlist from "@/pages/SharedWishlist";
 import FAQ from "@/pages/FAQ";
 import SearchResults from "@/pages/SearchResults";
 import SellDress from "@/pages/SellDress";
+import ForgotPassword from "@/pages/ForgotPassword";
+import ResetPassword from "@/pages/ResetPassword";
+import VerifyEmail from "@/pages/VerifyEmail";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { endpoints } from "@/lib/api";
 import { ProtectedRoute } from "./components/ProtectedRoute";
@@ -88,7 +91,8 @@ function Navigation({ isChatHistoryOpen, setIsChatHistoryOpen, unreadCount, syst
   const { data: cartData } = useQuery({
     queryKey: ['cart'],
     queryFn: () => endpoints.cart.get(),
-    enabled: !!user
+    enabled: !!user && !!localStorage.getItem('app_token'),
+    retry: false
   });
 
   const [guestCartTrigger, setGuestCartTrigger] = useState(0);
@@ -586,6 +590,9 @@ function Router() {
       <Route path="/search" component={SearchResults} />
       <Route path="/login" component={Login} />
       <Route path="/register" component={Register} />
+      <Route path="/forgot-password" component={ForgotPassword} />
+      <Route path="/reset-password" component={ResetPassword} />
+      <Route path="/verify-email" component={VerifyEmail} />
 
       {/* Product Routes */}
       <Route path={"/products"} component={Products} />

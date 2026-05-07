@@ -7,6 +7,7 @@ import { users, vendors } from '../database/schema';
 import { eq, sql } from 'drizzle-orm';
 import { SessionPayload } from '../common/constants';
 import { NotificationsService } from '../notifications/notifications.service';
+import { MailService } from '../common/mail.service';
 
 @Injectable()
 export class AuthService {
@@ -19,6 +20,7 @@ export class AuthService {
     private configService: ConfigService,
     private databaseService: DatabaseService,
     private notificationsService: NotificationsService,
+    private mailService: MailService,
   ) {
     const secret = this.configService.get<string>('JWT_SECRET');
     if (!secret) {
@@ -100,6 +102,10 @@ export class AuthService {
     });
   }
 
+  private generateOtp(): string {
+    return Math.floor(100000 + Math.random() * 900000).toString();
+  }
+
   // --- Auth Flows ---
 
   async register(data: any) {
@@ -121,6 +127,9 @@ export class AuthService {
     const openId = `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
     return await this.databaseService.db.transaction(async (tx) => {
+      const otp = this.generateOtp();
+      const otpExpiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
+
       const [newUser] = await tx
         .insert(users)
         .values({
@@ -133,9 +142,15 @@ export class AuthService {
           whatsapp: data.whatsapp,
           address: data.address,
           loginMethod: 'email',
+          otp,
+          otpExpiresAt,
+          isEmailVerified: false,
           lastSignedIn: new Date(),
         })
         .returning();
+
+      // Send verification email
+      await this.mailService.sendVerificationCode(email, otp);
 
       if (data.role === 'vendor') {
         const storeSlug =
@@ -183,15 +198,9 @@ export class AuthService {
         };
       }
 
-      const token = await this.createSessionToken(
-        newUser.id,
-        openId,
-        data.name,
-        data.role || 'customer',
-        email,
-      );
       return {
-        token,
+        requireVerification: true,
+        email: email,
         user: {
           id: newUser.id,
           email: email,
@@ -227,6 +236,15 @@ export class AuthService {
       throw new UnauthorizedException(
         `This account is registered as a ${currentRole}. Please use the correct login page.`,
       );
+    }
+
+    // Check Email Verification
+    if (!user.isEmailVerified && user.loginMethod === 'email') {
+      return {
+        requireVerification: true,
+        email: user.email,
+        message: 'Please verify your email address',
+      };
     }
 
     // Check Vendor Status
@@ -428,5 +446,124 @@ export class AuthService {
         .where(eq(users.id, existingAdmin[0].id));
       return { message: 'Admin password reset', email, password };
     }
+  }
+
+  async forgotPassword(email: string) {
+    const user = await this.databaseService.db
+      .select()
+      .from(users)
+      .where(sql`lower(${users.email}) = ${email.toLowerCase()}`)
+      .limit(1);
+
+    if (user.length === 0) {
+      // Don't reveal if user exists
+      return { success: true, message: 'If an account exists, a code has been sent.' };
+    }
+
+    const otp = this.generateOtp();
+    const otpExpiresAt = new Date(Date.now() + 15 * 60 * 1000);
+
+    await this.databaseService.db
+      .update(users)
+      .set({ otp, otpExpiresAt })
+      .where(eq(users.id, user[0].id));
+
+    await this.mailService.sendPasswordResetCode(email, otp);
+
+    return { success: true, message: 'Reset code sent to your email' };
+  }
+
+  async verifyOtp(email: string, otp: string, type: 'verification' | 'reset') {
+    const userData = await this.databaseService.db
+      .select()
+      .from(users)
+      .where(sql`lower(${users.email}) = ${email.toLowerCase()}`)
+      .limit(1);
+
+    if (userData.length === 0) {
+      throw new UnauthorizedException('Invalid request');
+    }
+
+    const user = userData[0];
+
+    if (user.otp !== otp || !user.otpExpiresAt || user.otpExpiresAt < new Date()) {
+      throw new UnauthorizedException('Invalid or expired code');
+    }
+
+    if (type === 'verification') {
+      await this.databaseService.db
+        .update(users)
+        .set({ isEmailVerified: true, otp: null, otpExpiresAt: null })
+        .where(eq(users.id, user.id));
+
+      const token = await this.createSessionToken(
+        user.id,
+        user.openId,
+        user.name || 'User',
+        user.role || 'customer',
+        user.email || undefined,
+      );
+      return { success: true, token, user };
+    }
+
+    return { success: true };
+  }
+
+  async resetPassword(data: any) {
+    const email = data.email.toLowerCase();
+    const userData = await this.databaseService.db
+      .select()
+      .from(users)
+      .where(sql`lower(${users.email}) = ${email}`)
+      .limit(1);
+
+    if (userData.length === 0) {
+      throw new UnauthorizedException('Invalid request');
+    }
+
+    const user = userData[0];
+
+    if (user.otp !== data.otp || !user.otpExpiresAt || user.otpExpiresAt < new Date()) {
+      throw new UnauthorizedException('Invalid or expired code');
+    }
+
+    const hashedPassword = await this.hashPassword(data.password);
+
+    await this.databaseService.db
+      .update(users)
+      .set({
+        password: hashedPassword,
+        otp: null,
+        otpExpiresAt: null,
+        isEmailVerified: true, // Verification happens automatically on password reset
+      })
+      .where(eq(users.id, user.id));
+
+    return { success: true, message: 'Password reset successfully' };
+  }
+
+  async resendOtp(email: string) {
+    const userData = await this.databaseService.db
+      .select()
+      .from(users)
+      .where(sql`lower(${users.email}) = ${email.toLowerCase()}`)
+      .limit(1);
+
+    if (userData.length === 0) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    const user = userData[0];
+    const otp = this.generateOtp();
+    const otpExpiresAt = new Date(Date.now() + 15 * 60 * 1000);
+
+    await this.databaseService.db
+      .update(users)
+      .set({ otp, otpExpiresAt })
+      .where(eq(users.id, user.id));
+
+    await this.mailService.sendVerificationCode(email, otp);
+
+    return { success: true, message: 'Verification code resent' };
   }
 }

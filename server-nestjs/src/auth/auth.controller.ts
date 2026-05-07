@@ -32,7 +32,13 @@ export class AuthController {
   @Post('login')
   async login(@Body() body: any, @Res({ passthrough: true }) res: Response) {
     const isProd = process.env.NODE_ENV === 'production';
-    const { token, user } = await this.authService.login(body);
+    const result = await this.authService.login(body);
+
+    if ('requireVerification' in result) {
+      return result;
+    }
+
+    const { token, user } = result;
 
     res.cookie(COOKIE_NAME, token, {
       httpOnly: true,
@@ -88,10 +94,16 @@ export class AuthController {
         }
       }
 
-      const { token, user } = await this.authService.register({
+      const result = await this.authService.register({
         ...body,
         logo: logoUrl,
       });
+
+      if ('requireVerification' in result) {
+        return result;
+      }
+
+      const { token, user } = result as any;
 
       res.cookie(COOKIE_NAME, token, {
         httpOnly: true,
@@ -106,6 +118,44 @@ export class AuthController {
       this.logger.error(`Register Controller Error: ${error.message}`);
       throw error;
     }
+  }
+
+  @Post('forgot-password')
+  async forgotPassword(@Body('email') email: string) {
+    return this.authService.forgotPassword(email);
+  }
+
+  @Post('verify-otp')
+  async verifyOtp(
+    @Body('email') email: string,
+    @Body('otp') otp: string,
+    @Body('type') type: 'verification' | 'reset',
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const isProd = process.env.NODE_ENV === 'production';
+    const result = await this.authService.verifyOtp(email, otp, type);
+
+    if (type === 'verification' && result.token) {
+      res.cookie(COOKIE_NAME, result.token, {
+        httpOnly: true,
+        path: '/',
+        sameSite: isProd ? 'none' : 'lax',
+        secure: isProd,
+        maxAge: SEVEN_DAYS_MS,
+      });
+    }
+
+    return result;
+  }
+
+  @Post('reset-password')
+  async resetPassword(@Body() body: any) {
+    return this.authService.resetPassword(body);
+  }
+
+  @Post('resend-otp')
+  async resendOtp(@Body('email') email: string) {
+    return this.authService.resendOtp(email);
   }
 
   @Post('logout')

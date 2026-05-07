@@ -36,37 +36,43 @@ export default function Profile() {
     const { data: vendorData } = useQuery({
         queryKey: ["vendor-dashboard"],
         queryFn: () => endpoints.vendors.dashboard(),
-        enabled: !!user && user.role === 'vendor',
+        enabled: !!user && user.role === 'vendor' && !!localStorage.getItem('app_token'),
+        retry: false,
     });
 
     const { data: orders } = useQuery({
         queryKey: ["orders"],
         queryFn: () => endpoints.orders.list(),
-        enabled: !!user,
+        enabled: !!user && !!localStorage.getItem('app_token'),
+        retry: false,
     });
 
     const { data: wishlist } = useQuery({
         queryKey: ["wishlist"],
         queryFn: () => endpoints.wishlist.list(),
-        enabled: !!user,
+        enabled: !!user && !!localStorage.getItem('app_token'),
+        retry: false,
     });
 
     const { data: unreadNotifications } = useQuery({
         queryKey: ["notifications", "unread-count"],
         queryFn: () => endpoints.notifications.getUnreadCount(),
-        enabled: !!user,
+        enabled: !!user && !!localStorage.getItem('app_token'),
+        retry: false,
     });
 
     const { data: adminVendors } = useQuery({
         queryKey: ['admin', 'vendors', 'count'],
         queryFn: async () => (await api.get('/admin/vendors')).data,
-        enabled: !!user && user.role === 'admin',
+        enabled: !!user && user.role === 'admin' && !!localStorage.getItem('app_token'),
+        retry: false,
     });
 
     const { data: adminProducts } = useQuery({
         queryKey: ['admin', 'products', 'count'],
         queryFn: async () => (await api.get('/admin/products')).data,
-        enabled: !!user && user.role === 'admin',
+        enabled: !!user && user.role === 'admin' && !!localStorage.getItem('app_token'),
+        retry: false,
     });
 
     if (loading) {

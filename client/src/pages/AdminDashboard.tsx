@@ -314,11 +314,15 @@ export default function AdminDashboard() {
   const { data: pendingVendorsCount } = useQuery({
     queryKey: ['admin', 'vendors', 'pending', 'count'],
     queryFn: async () => (await api.get('/admin/vendors/pending')).data.length,
+    enabled: !!user && user.role === 'admin' && !!localStorage.getItem('app_token'),
+    retry: false
   });
 
   const { data: allRequests } = useQuery({
     queryKey: ['admin', 'vendor-requests', 'count'],
     queryFn: () => endpoints.vendorRequests.listAll(),
+    enabled: !!user && user.role === 'admin' && !!localStorage.getItem('app_token'),
+    retry: false
   });
 
   const pendingContentRequestsCount = useMemo(() => 
@@ -475,6 +479,8 @@ export default function AdminDashboard() {
   const { data: products, isLoading: productsLoading } = useQuery({
     queryKey: ['admin', 'products', productSearch],
     queryFn: async () => (await api.get('/admin/products', { params: { search: productSearch } })).data,
+    enabled: !!user && user.role === 'admin' && !!localStorage.getItem('app_token'),
+    retry: false
   });
 
   // Scroll to top on tab change
@@ -485,6 +491,8 @@ export default function AdminDashboard() {
   const { data: vendors, isLoading: vendorsLoading } = useQuery({
     queryKey: ['admin', 'vendors'],
     queryFn: async () => (await api.get('/admin/vendors')).data,
+    enabled: !!user && user.role === 'admin' && !!localStorage.getItem('app_token'),
+    retry: false
   });
 
   const { data: categories } = useQuery({
@@ -495,11 +503,15 @@ export default function AdminDashboard() {
   const { data: adminOrders } = useQuery({
     queryKey: ['admin-orders-full'],
     queryFn: async () => (await api.get('/admin/orders')).data,
+    enabled: !!user && user.role === 'admin' && !!localStorage.getItem('app_token'),
+    retry: false
   });
 
   const { data: customers, isLoading: customersLoading } = useQuery({
     queryKey: ['admin', 'customers'],
     queryFn: async () => (await api.get('/admin/customers')).data,
+    enabled: !!user && user.role === 'admin' && !!localStorage.getItem('app_token'),
+    retry: false
   });
 
   const { data: adminConversations } = useQuery({

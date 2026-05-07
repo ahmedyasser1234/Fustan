@@ -9,7 +9,7 @@ import { useLanguage } from "@/lib/i18n";
 import api from "@/lib/api";
 import { Loader2, UserPlus } from "lucide-react";
 import { toast } from "sonner";
-import { GoogleLogin } from "@react-oauth/google";
+
 
 export default function Register() {
     const { language } = useLanguage();
@@ -38,6 +38,14 @@ export default function Register() {
                 phone,
                 address
             });
+
+            if (response.data.requireVerification) {
+                localStorage.setItem("pending_verification_email", email.toLowerCase());
+                toast.success(language === 'ar' ? 'تم إنشاء الحساب بنجاح. يرجى تفعيل بريدك الإلكتروني' : 'Account created. Please verify your email');
+                setLocation(`/verify-email?email=${encodeURIComponent(email.toLowerCase())}`);
+                return;
+            }
+
             if (response.data.token) {
                 localStorage.setItem('app_token', response.data.token);
             }

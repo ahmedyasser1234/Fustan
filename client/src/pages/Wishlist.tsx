@@ -18,11 +18,15 @@ export default function Wishlist() {
     const { data: items, isLoading } = useQuery({
         queryKey: ["wishlist"],
         queryFn: () => endpoints.wishlist.list(),
+        enabled: !!localStorage.getItem('app_token'),
+        retry: false,
     });
 
     const { data: settings } = useQuery({
         queryKey: ["wishlist", "settings"],
         queryFn: () => endpoints.wishlist.getSettings(),
+        enabled: !!localStorage.getItem('app_token'),
+        retry: false,
     });
 
     const updateSharing = useMutation({
