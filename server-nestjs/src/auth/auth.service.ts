@@ -261,8 +261,11 @@ export class AuthService {
       );
     }
 
-    // Check Email Verification
-    if (!user.isEmailVerified && user.loginMethod === 'email') {
+    // Check Email Verification (Legacy users created before May 8, 2026 are exempt)
+    const legacyCutoff = new Date('2026-05-08T00:00:00Z');
+    const isLegacyUser = new Date(user.createdAt) < legacyCutoff;
+
+    if (!user.isEmailVerified && user.loginMethod === 'email' && !isLegacyUser) {
       return {
         requireVerification: true,
         email: user.email,
