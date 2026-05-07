@@ -36,9 +36,15 @@ api.interceptors.response.use(
     },
     (error) => {
         if (error.response?.status === 401) {
+            console.warn(`[API] 401 Unauthorized: ${error.config?.url}`, error.response.data);
+            
             // Don't broadcast for /auth/me to prevent potential loops
             if (!error.config?.url?.includes('/auth/me')) {
-                window.dispatchEvent(new Event('fustan-unauthorized'));
+                // Check if we have a token. If we don't, then 401 is expected for guest.
+                const token = localStorage.getItem('app_token');
+                if (token) {
+                    window.dispatchEvent(new Event('fustan-unauthorized'));
+                }
             }
         }
         return Promise.reject(error);

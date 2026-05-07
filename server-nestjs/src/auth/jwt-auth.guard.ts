@@ -3,6 +3,7 @@ import {
   CanActivate,
   ExecutionContext,
   UnauthorizedException,
+  Logger,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { COOKIE_NAME } from '../common/constants';
@@ -23,6 +24,8 @@ export class JwtAuthGuard implements CanActivate {
 
     const payload = await this.authService.verifySession(token);
     if (!payload) {
+      const logger = new Logger('JwtAuthGuard');
+      logger.warn(`Invalid session for request to ${request.url}`);
       throw new UnauthorizedException('Invalid session');
     }
 
