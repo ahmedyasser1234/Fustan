@@ -26,17 +26,16 @@ export default function Login() {
         try {
             const { credential } = credentialResponse;
             const response = await api.post("/auth/google", { token: credential });
-            if (response.data.token) {
-                localStorage.setItem('app_token', response.data.token);
+            
+            const { user, token } = response.data;
+            if (token) {
+                localStorage.setItem('app_token', token);
             }
+            setUser(user || response.data);
             
-            // Set user data in cache immediately
-            setUser(response.data.user || response.data);
-            
-            await refresh();
             toast.success(language === 'ar' ? 'تم تسجيل الدخول بنجاح' : 'Logged in successfully');
             
-            const userRole = response.data.user?.role;
+            const userRole = (user || response.data)?.role;
             if (userRole === 'vendor') {
                 window.location.href = "/vendor-dashboard";
             } else {
