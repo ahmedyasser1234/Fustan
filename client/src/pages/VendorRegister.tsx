@@ -59,20 +59,24 @@ export default function VendorRegister() {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
 
-            if (response.data.token) {
+            if (response.data && response.data.token) {
                 localStorage.setItem('app_token', response.data.token);
                 await refresh();
                 toast.success(language === 'ar' ? 'تم إنشاء متجركِ بنجاح! أهلاً بكِ في عائلة فستان' : 'Store created successfully! Welcome to Fustan family');
                 setLocation("/vendor-dashboard");
-            } else if (response.data.user) {
-                // Handle pending approval case
+            } else {
+                // If the request succeeded but no token returned, it's a pending vendor
                 toast.success(
                     language === 'ar' 
-                    ? 'حسابكِ قيد المراجعة حالياً. سيتم إرسال رسالة إلى بريدكِ الإلكتروني عند القبول أو الرفض.' 
-                    : 'Your account is under review. You will receive an email once it is approved or rejected.',
-                    { duration: 8000 }
+                    ? 'تم تسجيل حسابكِ بنجاح وهو قيد المراجعة حالياً. سيتم إرسال رسالة إلى بريدكِ الإلكتروني عند القبول أو الرفض.' 
+                    : 'Registration successful! Your account is under review. You will receive an email once it is approved or rejected.',
+                    { duration: 10000 }
                 );
-                setLocation("/vendor/login");
+                
+                // Small delay to ensure user sees the toast before redirect
+                setTimeout(() => {
+                    setLocation("/vendor/login");
+                }, 1000);
             }
 
         } catch (error: any) {
