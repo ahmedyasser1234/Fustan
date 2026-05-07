@@ -14,13 +14,26 @@ export class JwtAuthGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-    const token = request.headers.authorization?.startsWith('Bearer ')
-      ? request.headers.authorization.split(' ')[1]
-      : request.cookies?.[COOKIE_NAME];
+    const authHeader = request.headers.authorization;
+    const cookieToken = request.cookies?.[COOKIE_NAME];
+    
+    let token = null;
+    let source = 'none';
+
+    if (authHeader?.startsWith('Bearer ')) {
+      token = authHeader.split(' ')[1];
+      source = 'header';
+    } else if (cookieToken) {
+      token = cookieToken;
+      source = 'cookie';
+    }
 
     if (!token) {
       throw new UnauthorizedException('Authentication required');
     }
+
+    const logger = new Logger('JwtAuthGuard');
+    logger.debug(`Verifying token from ${source} for ${request.url}`);
 
     const payload = await this.authService.verifySession(token);
     if (!payload) {

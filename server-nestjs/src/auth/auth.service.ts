@@ -68,6 +68,19 @@ export class AuthService {
       return sessionPayload;
     } catch (error) {
       this.logger.error(`Session verification failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      this.logger.debug(`${error instanceof Error ? error.constructor.name : 'Unknown'}: ${error instanceof Error ? error.message : 'Unknown'}`);
+      
+      // Diagnostic logging: Check if token is malformed
+      if (token) {
+        const parts = token.split('.');
+        this.logger.debug(`Token details: length=${token.length}, parts=${parts.length}, first5=${token.substring(0, 5)}, last5=${token.substring(token.length - 5)}`);
+        if (parts.length !== 3) {
+           this.logger.warn(`Token is NOT a valid 3-part JWT! Parts found: ${parts.length}`);
+        }
+      } else {
+        this.logger.warn('Token is empty or null');
+      }
+      
       if (error instanceof Error && error.stack) {
         this.logger.debug(error.stack);
       }
