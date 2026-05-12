@@ -12,8 +12,7 @@ import {
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { AiService } from './ai.service';
 import { PixVerseService } from './pixverse.service';
-
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { JwtAuthGuard, Public } from '../auth/jwt-auth.guard';
 
 @Controller('ai')
 @UseGuards(JwtAuthGuard)
@@ -224,7 +223,7 @@ export class AiController {
   }
 
   @Post('virtual-model')
-  @UseGuards(JwtAuthGuard)
+  @Public()
   @UseInterceptors(FileFieldsInterceptor([
     { name: 'dressImage', maxCount: 1 },
     { name: 'customerImage', maxCount: 1 },

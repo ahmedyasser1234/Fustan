@@ -521,42 +521,55 @@ export class AiService {
   async generateVirtualModel(
     productImageBuffer: Buffer,
     customerImageBuffer: Buffer,
-    scenePreset: string,
-    pose: string,
+    _scenePreset: string,
+    _pose: string,
   ) {
-    try {
-      this.logger.log(`Starting PhotoRoom Virtual Try-On generation...`);
-      const resultBuffer = await this.photoroomService.generateVirtualModel(
-        productImageBuffer,
-        customerImageBuffer,
-        scenePreset,
-        pose,
-      );
+    const pixaApiKey = this.configService.get<string>('PIXA_API_KEY');
 
-      // Upload the resulting buffer to Cloudinary
-      const uploadResult = await new Promise<any>((resolve, reject) => {
-        const uploadStream = cloudinary.uploader.upload_stream(
-          { folder: 'fustan-photoroom-results' },
-          (error, result) => {
-            if (error) reject(error);
-            else resolve(result);
-          },
-        );
-        const stream = new Readable();
-        stream.push(resultBuffer);
-        stream.push(null);
-        stream.pipe(uploadStream);
-      });
-
-      return {
-        imageUrl: uploadResult.secure_url,
-        provider: 'photoroom-virtual-model',
-        status: 'completed',
-      };
-    } catch (error) {
-      this.logger.error('PhotoRoom Virtual Model failed:', error);
-      throw error;
+    if (!pixaApiKey) {
+      this.logger.warn('PIXA_API_KEY not set — returning error');
+      return { imageUrl: null, provider: 'pixa', status: 'error', message: 'PIXA_API_KEY not configured' };
     }
+
+    this.logger.log('🎽 Starting Pixa Virtual Try-On...');
+
+    const formData = new FormData();
+    formData.append(
+      'person_image',
+      new Blob([new Uint8Array(customerImageBuffer)], { type: 'image/jpeg' }),
+      'person.jpg',
+    );
+    formData.append(
+      'garment_image',
+      new Blob([new Uint8Array(productImageBuffer)], { type: 'image/jpeg' }),
+      'garment.jpg',
+    );
+    formData.append('wait_for_result', 'true');
+
+    const response = await fetch('https://api.developer.pixelcut.ai/v1/try-on', {
+      method: 'POST',
+      headers: {
+        'X-API-KEY': pixaApiKey,
+        'Accept': 'application/json',
+      },
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const errText = await response.text();
+      this.logger.error(`Pixa API error: ${response.status} ${errText}`);
+      throw new Error(`Pixa Virtual Try-On failed: ${response.status}`);
+    }
+
+    const result = await response.json() as any;
+    this.logger.log(`✅ Pixa Try-On success: ${result.result_url}`);
+
+    return {
+      imageUrl: result.result_url,
+      provider: 'pixa-virtual-tryon',
+      status: 'completed',
+    };
   }
 }
+
 
