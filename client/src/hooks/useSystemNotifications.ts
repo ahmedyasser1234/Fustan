@@ -5,13 +5,10 @@ import { useAuth } from '@/_core/hooks/useAuth';
 export function useSystemNotifications() {
     const { user } = useAuth();
 
-    // token check removed
-    const hasValidToken = !!token && token !== 'undefined' && token !== 'null';
-
     const { data: unreadData, refetch } = useQuery({
         queryKey: ['notifications', 'unread-count'],
         queryFn: endpoints.notifications.getUnreadCount,
-        enabled: !!user && !!user?.id && hasValidToken,
+        enabled: !!user && !!user?.id,
         refetchOnWindowFocus: true,
         staleTime: 1000 * 60, // 1 minute
         retry: false,

@@ -334,13 +334,10 @@ export default function ProductDetail() {
     }
   };
 
-  // token check removed
-  const hasValidToken = !!token && token !== 'undefined' && token !== 'null';
-
   const { data: wishlistStatus } = useQuery({
     queryKey: ['wishlist-status', productId],
     queryFn: () => endpoints.wishlist.check(productId),
-    enabled: !!user && !!productId && hasValidToken,
+    enabled: !!user && !!productId,
     retry: false,
   });
 
