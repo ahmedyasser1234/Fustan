@@ -521,8 +521,8 @@ export class AiService {
   async generateVirtualModel(
     productImageBuffer: Buffer,
     customerImageBuffer: Buffer,
-    _scenePreset: string,
-    _pose: string,
+    garmentMimeType: string = 'image/jpeg',
+    personMimeType: string = 'image/jpeg',
   ) {
     const pixaApiKey = this.configService.get<string>('PIXA_API_KEY');
 
@@ -531,18 +531,28 @@ export class AiService {
       return { imageUrl: null, provider: 'pixa', status: 'error', message: 'PIXA_API_KEY not configured' };
     }
 
-    this.logger.log('🎽 Starting Pixa Virtual Try-On...');
+    // Pixa supports: jpeg, png, webp — map mimetype to extension
+    const extMap: Record<string, string> = {
+      'image/jpeg': 'jpg',
+      'image/jpg': 'jpg',
+      'image/png': 'png',
+      'image/webp': 'webp',
+    };
+    const garmentExt = extMap[garmentMimeType] ?? 'jpg';
+    const personExt = extMap[personMimeType] ?? 'jpg';
+
+    this.logger.log(`🎽 Starting Pixa Virtual Try-On... garment=${garmentMimeType} person=${personMimeType}`);
 
     const formData = new FormData();
     formData.append(
       'person_image',
-      new Blob([new Uint8Array(customerImageBuffer)], { type: 'image/jpeg' }),
-      'person.jpg',
+      new Blob([new Uint8Array(customerImageBuffer)], { type: personMimeType }),
+      `person.${personExt}`,
     );
     formData.append(
       'garment_image',
-      new Blob([new Uint8Array(productImageBuffer)], { type: 'image/jpeg' }),
-      'garment.jpg',
+      new Blob([new Uint8Array(productImageBuffer)], { type: garmentMimeType }),
+      `garment.${garmentExt}`,
     );
     formData.append('wait_for_result', 'true');
 
@@ -558,7 +568,7 @@ export class AiService {
     if (!response.ok) {
       const errText = await response.text();
       this.logger.error(`Pixa API error: ${response.status} ${errText}`);
-      throw new Error(`Pixa Virtual Try-On failed: ${response.status}`);
+      throw new Error(`Pixa Virtual Try-On failed: ${response.status} - ${errText}`);
     }
 
     const result = await response.json() as any;
@@ -571,5 +581,4 @@ export class AiService {
     };
   }
 }
-
 

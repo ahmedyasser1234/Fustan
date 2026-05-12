@@ -240,8 +240,8 @@ export class AiController {
     return this.aiService.generateVirtualModel(
       dressFile.buffer,
       customerFile.buffer,
-      body.scenePreset || 'random',
-      body.pose || 'random',
+      dressFile.mimetype || 'image/jpeg',
+      customerFile.mimetype || 'image/jpeg',
     );
   }
 
