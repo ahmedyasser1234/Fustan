@@ -4,7 +4,7 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { useLanguage } from "@/lib/i18n";
 import api from "@/lib/api";
 import { Loader2, Store, Upload, CheckCircle2, Mail } from "lucide-react";
