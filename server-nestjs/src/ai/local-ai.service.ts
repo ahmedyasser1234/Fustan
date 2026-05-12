@@ -20,15 +20,17 @@ export class LocalAiService {
     private readonly databaseService: DatabaseService,
     private readonly cloudinary: CloudinaryService,
   ) {
-    // Use PYTHON_PATH env var if set, otherwise use venv python3, fallback to 'python3'
+    // Use PYTHON_PATH env var if set, otherwise auto-detect venv python3
+    // __dirname in compiled code = server-nestjs/dist/ai/
+    // so ../../ goes up to server-nestjs/ root
     this.pythonBin =
       process.env.PYTHON_PATH ||
-      path.join(__dirname, '..', '..', '..', 'venv', 'bin', 'python3');
+      path.join(__dirname, '..', '..', 'venv', 'bin', 'python3');
 
     // Path to the python script, located at the root of server-nestjs
-    this.pythonScript = path.join(__dirname, '..', '..', '..', 'ai_background_replacement_script.py');
+    this.pythonScript = path.join(__dirname, '..', '..', 'ai_background_replacement_script.py');
     // Temp directory inside server-nestjs for processing
-    this.tmpDir = path.join(__dirname, '..', '..', '..', 'tmp_ai');
+    this.tmpDir = path.join(__dirname, '..', '..', 'tmp_ai');
     if (!fs.existsSync(this.tmpDir)) {
       fs.mkdirSync(this.tmpDir, { recursive: true });
     }
