@@ -9,75 +9,65 @@ import { ConfigService } from '@nestjs/config';
 export class VirtualTryonService {
   private readonly logger = new Logger(VirtualTryonService.name);
   private readonly apiKey: string;
+  private readonly apiUrl = 'https://api.developer.pixelcut.ai/v1/try-on';
 
   constructor(private configService: ConfigService) {
-    this.apiKey = this.configService.get<string>('GEMINI_API_KEY');
+    this.apiKey = this.configService.get<string>('PIXA_API_KEY');
   }
 
+  /**
+   * Calls Pixa virtual try-on API.
+   * @param personImageBase64 - base64 string of the person's photo
+   * @param garmentImageBase64 - base64 string of the garment/dress photo
+   * @returns result_url - URL to the generated try-on image (valid for 1 hour)
+   */
   async generateTryOn(
-    userImageBase64: string,
-    productImageBase64: string,
-  ): Promise<Buffer> {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${this.apiKey}`;
+    personImageBase64: string,
+    garmentImageBase64: string,
+  ): Promise<{ result_url: string }> {
+    if (!this.apiKey) {
+      throw new InternalServerErrorException('PIXA_API_KEY is not configured');
+    }
 
-    const cleanUserImage = userImageBase64.replace(
-      /^data:image\/\w+;base64,/,
-      '',
-    );
-    const cleanProductImage = productImageBase64.replace(
-      /^data:image\/\w+;base64,/,
-      '',
-    );
+    // Strip base64 data URI prefix if present
+    const cleanPerson = personImageBase64.replace(/^data:image\/\w+;base64,/, '');
+    const cleanGarment = garmentImageBase64.replace(/^data:image\/\w+;base64,/, '');
 
-    const requestBody = {
-      contents: [
-        {
-          parts: [
-            {
-              text: 'I have two images: a person and a dress. Describe in detail how the person would look wearing this dress. Mention fit, style, and overall appearance.',
-            },
-            { inlineData: { mimeType: 'image/jpeg', data: cleanUserImage } },
-            { inlineData: { mimeType: 'image/jpeg', data: cleanProductImage } },
-          ],
-        },
-      ],
-    };
+    const personBuffer = Buffer.from(cleanPerson, 'base64');
+    const garmentBuffer = Buffer.from(cleanGarment, 'base64');
 
-    try {
-      this.logger.log('Sending request to Gemini 1.5 Flash...');
+    // Build multipart form using native FormData (Node 18+)
+    const formData = new FormData();
 
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestBody),
-      });
+    const personBlob = new Blob([personBuffer], { type: 'image/jpeg' });
+    const garmentBlob = new Blob([garmentBuffer], { type: 'image/jpeg' });
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        this.logger.error(`Gemini API error: ${response.status} ${errorText}`);
-        throw new InternalServerErrorException(
-          `Gemini API failed: ${response.status}`,
-        );
-      }
+    formData.append('person_image', personBlob, 'person.jpg');
+    formData.append('garment_image', garmentBlob, 'garment.jpg');
+    formData.append('wait_for_result', 'true');
 
-      const result = await response.json();
-      const text =
-        result.candidates?.[0]?.content?.parts?.[0]?.text ||
-        'No response from AI';
+    this.logger.log('🎽 Sending request to Pixa Virtual Try-On API...');
 
-      return Buffer.from(
-        JSON.stringify({
-          success: true,
-          message: 'Analysis completed',
-          data: text,
-        }),
-      );
-    } catch (error) {
-      this.logger.error(`Failed to call Gemini API: ${error.message}`);
-      if (error instanceof InternalServerErrorException) throw error;
+    const response = await fetch(this.apiUrl, {
+      method: 'POST',
+      headers: {
+        'X-API-KEY': this.apiKey,
+        'Accept': 'application/json',
+      },
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      this.logger.error(`Pixa API error: ${response.status} ${errorText}`);
       throw new InternalServerErrorException(
-        'An unexpected error occurred during AI analysis',
+        `Pixa Virtual Try-On failed: ${response.status} - ${errorText}`,
       );
     }
+
+    const result = await response.json() as any;
+    this.logger.log(`✅ Pixa Try-On success: ${result.result_url}`);
+
+    return { result_url: result.result_url };
   }
 }
