@@ -77,7 +77,7 @@ export default function AdminLogin() {
                                 </div>
                                 <Input
                                     type="email"
-                                    placeholder="admin@fustan.com"
+                                    placeholder=""
                                     className="pl-12 h-14 bg-slate-50 border-slate-200 focus:ring-4 focus:ring-primary/10 focus:border-primary/30 focus:bg-white transition-all rounded-2xl text-base"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
@@ -93,7 +93,7 @@ export default function AdminLogin() {
                                 </div>
                                 <Input
                                     type={showPassword ? "text" : "password"}
-                                    placeholder="••••••••"
+                                    placeholder=""
                                     className="pl-12 pr-12 h-14 bg-slate-50 border-slate-200 focus:ring-4 focus:ring-primary/10 focus:border-primary/30 focus:bg-white transition-all rounded-2xl text-base"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}

@@ -4,16 +4,18 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useLanguage } from "@/lib/i18n";
 import api from "@/lib/api";
-import { Loader2, Store, Upload } from "lucide-react";
+import { Loader2, Store, Upload, CheckCircle2, Mail } from "lucide-react";
 import { toast } from "sonner";
 
 export default function VendorRegister() {
     const { language } = useLanguage();
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [registrationSuccess, setRegistrationSuccess] = useState(false);
+    const [registeredEmail, setRegisteredEmail] = useState("");
     const [, setLocation] = useLocation();
     const { refresh } = useAuth();
 
@@ -60,23 +62,14 @@ export default function VendorRegister() {
             });
 
             if (response.data && response.data.token) {
-                // Token is handled by httpOnly cookie
+                // Token is handled by httpOnly cookie - approved vendor
                 await refresh();
                 toast.success(language === 'ar' ? 'تم إنشاء متجركِ بنجاح! أهلاً بكِ في عائلة فستان' : 'Store created successfully! Welcome to Fustan family');
                 setLocation("/vendor-dashboard");
             } else {
-                // If the request succeeded but no token returned, it's a pending vendor
-                toast.success(
-                    language === 'ar' 
-                    ? 'تم تسجيل حسابكِ بنجاح وهو قيد المراجعة حالياً. سيتم إرسال رسالة إلى بريدكِ الإلكتروني عند القبول أو الرفض.' 
-                    : 'Registration successful! Your account is under review. You will receive an email once it is approved or rejected.',
-                    { duration: 10000 }
-                );
-                
-                // Small delay to ensure user sees the toast before redirect
-                setTimeout(() => {
-                    setLocation("/vendor/login");
-                }, 1000);
+                // Pending vendor — show success screen
+                setRegisteredEmail(email.toLowerCase());
+                setRegistrationSuccess(true);
             }
 
         } catch (error: any) {
@@ -87,6 +80,54 @@ export default function VendorRegister() {
             setIsLoading(false);
         }
     };
+
+    // Show success screen after registration
+    if (registrationSuccess) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-rose-50 via-white to-purple-50 py-12 px-4">
+                <div className="w-full max-w-lg text-center">
+                    <div className="bg-white rounded-3xl shadow-2xl border border-rose-100 p-10 flex flex-col items-center gap-6">
+                        {/* Icon */}
+                        <div className="w-24 h-24 bg-green-50 rounded-full flex items-center justify-center border-4 border-green-100 shadow-inner">
+                            <CheckCircle2 className="w-12 h-12 text-green-500" />
+                        </div>
+
+                        {/* Title */}
+                        <h2 className="text-2xl font-bold text-gray-900">
+                            {language === 'ar' ? '🎉 تم استلام طلبكِ بنجاح!' : '🎉 Application Received!'}
+                        </h2>
+
+                        {/* Message */}
+                        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5 text-right w-full" dir="rtl">
+                            <p className="text-amber-800 font-semibold text-base leading-relaxed">
+                                {language === 'ar'
+                                    ? 'حسابكِ قيد المراجعة من قِبَل فريق فستان. سنقوم بمراجعة بياناتكِ وإرسال رد نهائي (قبول أو رفض) على بريدكِ الإلكتروني.'
+                                    : 'Your account is currently under review by the Fustan team. We will review your details and send a final decision (approval or rejection) to your email.'}
+                            </p>
+                        </div>
+
+                        {/* Email display */}
+                        <div className="flex items-center gap-3 bg-gray-50 border border-gray-200 rounded-2xl px-5 py-3 w-full justify-center">
+                            <Mail className="w-5 h-5 text-rose-500 shrink-0" />
+                            <span className="text-gray-700 font-mono font-medium text-sm">{registeredEmail}</span>
+                        </div>
+
+                        {/* CTA Button */}
+                        <Button
+                            onClick={() => setLocation('/vendor/login')}
+                            className="w-full h-14 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-lg shadow-lg shadow-rose-200 transition-all"
+                        >
+                            {language === 'ar' ? 'الانتقال إلى صفحة تسجيل الدخول' : 'Go to Vendor Login'}
+                        </Button>
+
+                        <p className="text-sm text-gray-400">
+                            {language === 'ar' ? 'شكراً لانضمامكِ إلى عائلة فستان 💜' : 'Thank you for joining the Fustan family 💜'}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
