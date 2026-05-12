@@ -37,7 +37,7 @@ export default function AdminLogin() {
                 return;
             }
 
-            localStorage.setItem('app_token', token);
+            // Token is handled by httpOnly cookie
             setUser(user);
 
             toast.success("Welcome, Super Admin");

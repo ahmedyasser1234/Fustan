@@ -334,7 +334,7 @@ export default function ProductDetail() {
     }
   };
 
-  const token = localStorage.getItem('app_token');
+  // token check removed
   const hasValidToken = !!token && token !== 'undefined' && token !== 'null';
 
   const { data: wishlistStatus } = useQuery({

@@ -9,12 +9,6 @@ const api = axios.create({
 // Add a request interceptor to add the auth token to every request
 api.interceptors.request.use(
     (config) => {
-        const token = localStorage.getItem('app_token');
-        if (token && token !== 'undefined' && token !== 'null') {
-            config.headers.Authorization = `Bearer ${token}`;
-        } else if (token === 'undefined' || token === 'null') {
-            localStorage.removeItem('app_token');
-        }
         return config;
     },
     (error) => {
@@ -42,11 +36,7 @@ api.interceptors.response.use(
             
             // Don't broadcast for /auth/me to prevent potential loops
             if (!error.config?.url?.includes('/auth/me')) {
-                // Check if we have a token. If we don't, then 401 is expected for guest.
-                const token = localStorage.getItem('app_token');
-                if (token) {
-                    window.dispatchEvent(new Event('fustan-unauthorized'));
-                }
+                window.dispatchEvent(new Event('fustan-unauthorized'));
             }
         }
         return Promise.reject(error);

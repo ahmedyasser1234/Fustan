@@ -5,7 +5,7 @@ import { useAuth } from '@/_core/hooks/useAuth';
 export function useSystemNotifications() {
     const { user } = useAuth();
 
-    const token = localStorage.getItem('app_token');
+    // token check removed
     const hasValidToken = !!token && token !== 'undefined' && token !== 'null';
 
     const { data: unreadData, refetch } = useQuery({

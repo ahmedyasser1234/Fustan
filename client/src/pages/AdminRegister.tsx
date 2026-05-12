@@ -34,7 +34,7 @@ export default function AdminRegister() {
             });
 
             if (response.data.token) {
-                localStorage.setItem('app_token', response.data.token);
+                // Token is handled by httpOnly cookie
             }
 
             await refresh();

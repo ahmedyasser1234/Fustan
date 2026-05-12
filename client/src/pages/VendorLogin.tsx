@@ -49,7 +49,7 @@ function VendorLogin() {
                 throw new Error('No token received from server');
             }
             
-            localStorage.setItem('app_token', token);
+            // Token is handled by httpOnly cookie
             setUser(user);
             
             toast.success(language === 'ar' ? 'أهلاً بك في بوابة التجار' : 'Welcome to the Vendor Portal');

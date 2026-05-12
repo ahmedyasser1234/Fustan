@@ -34,7 +34,7 @@ export default function Login() {
             const user = data?.user ?? data;
 
             if (token) {
-                localStorage.setItem('app_token', token);
+                // Token is handled by httpOnly cookie
             }
             setUser(user);
             
@@ -92,7 +92,7 @@ export default function Login() {
                 return;
             }
 
-            localStorage.setItem('app_token', token);
+            // Token is handled by httpOnly cookie
             setUser(user);
             
             toast.success(language === 'ar' ? 'تم تسجيل الدخول بنجاح' : 'Logged in successfully');

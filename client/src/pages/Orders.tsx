@@ -56,7 +56,7 @@ export default function Orders() {
   const { data: ordersData, isLoading } = useQuery({
     queryKey: ['orders'],
     queryFn: async () => await endpoints.orders.list(),
-    enabled: !!localStorage.getItem('app_token'),
+    enabled: true /* token check removed */,
     retry: false
   });
 

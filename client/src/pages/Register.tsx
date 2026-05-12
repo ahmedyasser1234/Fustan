@@ -47,7 +47,7 @@ export default function Register() {
             }
 
             if (response.data.token) {
-                localStorage.setItem('app_token', response.data.token);
+                // Token is handled by httpOnly cookie
             }
 
             await refresh(); // Refresh auth state

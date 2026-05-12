@@ -28,9 +28,6 @@ export function useAuth(options?: UseAuthOptions) {
   useEffect(() => {
     const handleUnauthorized = () => {
       queryClient.setQueryData(['auth', 'me'], null);
-      if (typeof window !== "undefined") {
-        localStorage.removeItem('app_token');
-      }
     };
     window.addEventListener('fustan-unauthorized', handleUnauthorized);
     return () => window.removeEventListener('fustan-unauthorized', handleUnauthorized);
@@ -56,7 +53,6 @@ export function useAuth(options?: UseAuthOptions) {
       // 3. Clear all queries and redirect to home
       queryClient.clear();
       if (typeof window !== "undefined") {
-        localStorage.removeItem('app_token');
         window.location.href = "/";
       }
     }
@@ -65,15 +61,13 @@ export function useAuth(options?: UseAuthOptions) {
   const state = useMemo(() => {
     // meQuery.data is now directly the user object (or null)
     const userData = meQuery.data ?? null;
-    const token = typeof window !== "undefined" ? localStorage.getItem('app_token') : null;
-    const hasValidToken = !!token && token !== 'undefined' && token !== 'null';
     const isLoading = meQuery.isLoading || (meQuery.isFetching && meQuery.data === undefined);
 
     return {
-      user: (hasValidToken && userData) ? userData : null,
+      user: userData,
       loading: isLoading || logoutMutation.isPending,
       error: meQuery.error ?? logoutMutation.error ?? null,
-      isAuthenticated: Boolean(userData) && hasValidToken,
+      isAuthenticated: Boolean(userData),
     };
   }, [
     meQuery.data,

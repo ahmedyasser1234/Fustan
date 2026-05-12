@@ -12,7 +12,7 @@ export function useChatNotifications() {
     const queryClient = useQueryClient();
     const [location] = useLocation();
 
-    const token = localStorage.getItem('app_token');
+    // token check removed
     const hasValidToken = !!token && token !== 'undefined' && token !== 'null';
 
     // Fetch initial unread count

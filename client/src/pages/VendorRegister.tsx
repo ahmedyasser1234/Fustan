@@ -60,7 +60,7 @@ export default function VendorRegister() {
             });
 
             if (response.data && response.data.token) {
-                localStorage.setItem('app_token', response.data.token);
+                // Token is handled by httpOnly cookie
                 await refresh();
                 toast.success(language === 'ar' ? 'تم إنشاء متجركِ بنجاح! أهلاً بكِ في عائلة فستان' : 'Store created successfully! Welcome to Fustan family');
                 setLocation("/vendor-dashboard");

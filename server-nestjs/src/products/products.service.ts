@@ -25,6 +25,7 @@ import { eq, and, like, notLike, desc, or, SQL, inArray, sql } from 'drizzle-orm
 import { CloudinaryService } from '../media/cloudinary.provider';
 import { PixVerseService } from '../ai/pixverse.service';
 import { PhotoroomService } from '../photoroom/photoroom.service';
+import { LocalAiService } from '../ai/local-ai.service';
 
 export function generateSlug(nameAr: string, nameEn: string): string {
   const base = nameEn?.trim() || nameAr?.trim() || 'product';
@@ -66,6 +67,7 @@ export class ProductsService {
     private readonly cloudinary: CloudinaryService,
     private readonly pixVerseService: PixVerseService,
     private readonly photoroomService: PhotoroomService,
+    private readonly localAiService: LocalAiService,
   ) { }
 
   async create(data: any, files: Express.Multer.File[], userId?: number) {
@@ -158,68 +160,12 @@ export class ProductsService {
 
     this.logger.log(`DEBUG: categoryId=${categoryId}, bgUrl=${bgUrl}, bgPrompt=${bgPrompt}`);
 
-    const processedMainFiles = await Promise.all(
-      mainFiles.map(async (f) => {
-        if (bgUrl || bgPrompt) {
-          try {
-            this.logger.log(`   - ✨ Applying PhotoRoom background for image...`);
-            const processedBuffer = await this.photoroomService.replaceBackground(
-              f.buffer,
-              bgUrl,
-              bgPrompt,
-            );
-            return { buffer: processedBuffer, original: f };
-          } catch (err) {
-            this.logger.error(`   - ❌ PhotoRoom failed: ${err.message}`);
-            return { buffer: f.buffer, original: f };
-          }
-        }
-        return { buffer: f.buffer, original: f };
-      }),
-    );
-
-    const processedVariantFiles = await Promise.all(
-      allVariantFiles.map(async (vf) => {
-        if (bgUrl || bgPrompt) {
-          try {
-            this.logger.log(`   - ✨ Applying PhotoRoom background for variant image...`);
-            const processedBuffer = await this.photoroomService.replaceBackground(
-              vf.file.buffer,
-              bgUrl,
-              bgPrompt,
-            );
-            return { ...vf, buffer: processedBuffer };
-          } catch (err) {
-            this.logger.error(`   - ❌ PhotoRoom failed for variant: ${err.message}`);
-            return { ...vf, buffer: vf.file.buffer };
-          }
-        }
-        return { ...vf, buffer: vf.file.buffer };
-      }),
-    );
-
-    // Process AI image if it exists
-    let processedAiBuffer: Buffer | undefined = undefined;
-    if (aiFile && (bgUrl || bgPrompt)) {
-      try {
-        this.logger.log(`   - ✨ Applying PhotoRoom background for AI image...`);
-        processedAiBuffer = await this.photoroomService.replaceBackground(
-          aiFile.buffer,
-          bgUrl,
-          bgPrompt,
-        );
-      } catch (err) {
-        this.logger.error(`   - ❌ PhotoRoom failed for AI image: ${err.message}`);
-        processedAiBuffer = aiFile.buffer;
-      }
-    } else if (aiFile) {
-      processedAiBuffer = aiFile.buffer;
-    }
-
+    // Upload original images directly to Cloudinary (fast, no blocking)
+    // Background AI processing will run asynchronously after product is saved
     const uploadResults = await Promise.all([
-      ...processedMainFiles.map((pf) => this.cloudinary.uploadBuffer(pf.buffer)),
-      ...(processedAiBuffer ? [this.cloudinary.uploadBuffer(processedAiBuffer)] : []),
-      ...processedVariantFiles.map((pvf) => this.cloudinary.uploadBuffer(pvf.buffer)),
+      ...mainFiles.map((f) => this.cloudinary.uploadBuffer(f.buffer)),
+      ...(aiFile ? [this.cloudinary.uploadBuffer(aiFile.buffer)] : []),
+      ...allVariantFiles.map((vf) => this.cloudinary.uploadBuffer(vf.file.buffer)),
     ]);
 
     // 4. Map results back
@@ -330,14 +276,14 @@ export class ProductsService {
       return insertedProduct;
     });
 
-    // 7. Background AI Task (Non-blocking)
-    /*
-    if (aiQualifiedImageUrl) {
-      this.pixVerseService
-        .createBackgroundChangeTask(newProduct.id, aiQualifiedImageUrl)
-        .catch((err) => this.logger.error(`   - ❌ PixVerse failed: ${err.message}`));
+    // 7. Trigger async AI background replacement (non-blocking)
+    if (categoryId) {
+      setImmediate(() => {
+        this.localAiService
+          .processProductBackgroundsAsync(newProduct.id, categoryId)
+          .catch((err) => this.logger.error(`❌ [LocalAI] Background job failed: ${err.message}`));
+      });
     }
-    */
 
     this.logger.log(
       `✅ [Products Service] Create completed for product: ${newProduct.id}`,
@@ -623,54 +569,20 @@ export class ProductsService {
     let imageUrls = product.images || [];
     const mainFiles = files?.filter((f) => f.fieldname === 'images') || [];
     if (mainFiles.length > 0) {
-      const processedMainFiles = await Promise.all(
-        mainFiles.map(async (f) => {
-          if (bgUrl || bgPrompt) {
-            try {
-              const processedBuffer = await this.photoroomService.replaceBackground(
-                f.buffer,
-                bgUrl,
-                bgPrompt,
-              );
-              return { buffer: processedBuffer };
-            } catch (err) {
-              this.logger.error(`   - ❌ PhotoRoom failed: ${err.message}`);
-              return { buffer: f.buffer };
-            }
-          }
-          return { buffer: f.buffer };
-        }),
-      );
-
-      const uploadPromises = processedMainFiles.map((pf) =>
-        this.cloudinary.uploadBuffer(pf.buffer),
-      );
+      // Upload original images directly to Cloudinary (fast)
+      const uploadPromises = mainFiles.map((f) => this.cloudinary.uploadBuffer(f.buffer));
       const results = await Promise.all(uploadPromises);
       const newUrls = results
         .filter((res) => 'secure_url' in res)
         .map((res) => (res as any).secure_url);
-
       imageUrls = newUrls;
     }
 
-    // Upload AI-Ready Image if provided (with PhotoRoom if needed)
+    // Upload AI-Ready Image if provided directly (no blocking processing)
     let aiQualifiedImageUrl = null;
     const aiFile = files?.find((f) => f.fieldname === 'aiQualifiedImage');
     if (aiFile) {
-      let bufferToUpload = aiFile.buffer;
-      if (bgUrl || bgPrompt) {
-        try {
-          this.logger.log(`   - ✨ Applying PhotoRoom background for AI image...`);
-          bufferToUpload = await this.photoroomService.replaceBackground(
-            aiFile.buffer,
-            bgUrl,
-            bgPrompt,
-          );
-        } catch (err) {
-          this.logger.error(`   - ❌ PhotoRoom failed for AI image: ${err.message}`);
-        }
-      }
-      const result = await this.cloudinary.uploadBuffer(bufferToUpload);
+      const result = await this.cloudinary.uploadBuffer(aiFile.buffer);
       if ('secure_url' in result) {
         aiQualifiedImageUrl = result.secure_url;
       }
@@ -841,26 +753,20 @@ export class ProductsService {
         }
       }
 
-      // Handle AI Background Change automatically if AI-Ready image is updated
-      /*
-      if (
-        aiQualifiedImageUrl &&
-        aiQualifiedImageUrl !== (product as any).aiQualifiedImage
-      ) {
-        try {
-
-          await this.pixVerseService.createBackgroundChangeTask(
-            id,
-            aiQualifiedImageUrl,
-          );
-        } catch (err) {
-          this.logger.error(`   - ❌ PixVerse failed: ${err.message}`);
-        }
-      }
-      */
-
       return updatedProduct;
     });
+
+    // Trigger async AI background replacement (non-blocking)
+    const effectiveCategoryId = data.categoryId ? parseInt(data.categoryId) : product.categoryId;
+    if (effectiveCategoryId) {
+      setImmediate(() => {
+        this.localAiService
+          .processProductBackgroundsAsync(id, effectiveCategoryId)
+          .catch((err) => this.logger.error(`❌ [LocalAI] Background job failed on update: ${err.message}`));
+      });
+    }
+
+    return this.findOne(id);
   }
 
   async remove(id: number, userId?: number) {

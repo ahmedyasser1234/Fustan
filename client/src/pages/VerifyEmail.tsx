@@ -46,7 +46,7 @@ export default function VerifyEmail() {
 
             if (response.data.success) {
                 if (response.data.token) {
-                    localStorage.setItem('app_token', response.data.token);
+                    // Token is handled by httpOnly cookie
                 }
                 localStorage.removeItem("pending_verification_email");
                 await refresh();

@@ -91,7 +91,7 @@ function Navigation({ isChatHistoryOpen, setIsChatHistoryOpen, unreadCount, syst
   const { data: cartData } = useQuery({
     queryKey: ['cart'],
     queryFn: () => endpoints.cart.get(),
-    enabled: !!user && !!localStorage.getItem('app_token'),
+    enabled: !!user,
     retry: false
   });
 
