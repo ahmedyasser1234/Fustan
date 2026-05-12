@@ -1,5 +1,4 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { spawn } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -15,11 +14,17 @@ export class LocalAiService {
   private readonly logger = new Logger(LocalAiService.name);
   private readonly pythonScript: string;
   private readonly tmpDir: string;
+  private readonly pythonBin: string;
 
   constructor(
     private readonly databaseService: DatabaseService,
     private readonly cloudinary: CloudinaryService,
   ) {
+    // Use PYTHON_PATH env var if set, otherwise use venv python3, fallback to 'python3'
+    this.pythonBin =
+      process.env.PYTHON_PATH ||
+      path.join(__dirname, '..', '..', '..', 'venv', 'bin', 'python3');
+
     // Path to the python script, located at the root of server-nestjs
     this.pythonScript = path.join(__dirname, '..', '..', '..', 'ai_background_replacement_script.py');
     // Temp directory inside server-nestjs for processing
@@ -27,6 +32,7 @@ export class LocalAiService {
     if (!fs.existsSync(this.tmpDir)) {
       fs.mkdirSync(this.tmpDir, { recursive: true });
     }
+    this.logger.log(`🐍 Using Python: ${this.pythonBin}`);
   }
 
   /**
@@ -201,8 +207,8 @@ export class LocalAiService {
       const args = ['-u', this.pythonScript, inputPath, outputPath];
       if (bgPath) args.push(bgPath);
 
-      this.logger.log(`🐍 Running: python3 ${args.join(' ')}`);
-      const proc = spawn('python3', args);
+      this.logger.log(`🐍 Running: ${this.pythonBin} ${args.join(' ')}`);
+      const proc = spawn(this.pythonBin, args);
 
       proc.stdout.on('data', (d) => this.logger.log(`Python: ${d.toString().trim()}`));
       proc.stderr.on('data', (d) => this.logger.warn(`Python stderr: ${d.toString().trim()}`));
