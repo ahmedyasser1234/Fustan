@@ -8,6 +8,7 @@ import { v2 as cloudinary } from 'cloudinary';
 import { Readable } from 'stream';
 import { PixVerseService } from './pixverse.service';
 import { PhotoroomService } from '../photoroom/photoroom.service';
+import sharp from 'sharp';
 
 @Injectable()
 export class AiService {
@@ -521,8 +522,8 @@ export class AiService {
   async generateVirtualModel(
     productImageBuffer: Buffer,
     customerImageBuffer: Buffer,
-    garmentMimeType: string = 'image/jpeg',
-    personMimeType: string = 'image/jpeg',
+    _garmentMimeType: string = 'image/jpeg',
+    _personMimeType: string = 'image/jpeg',
   ) {
     const pixaApiKey = this.configService.get<string>('PIXA_API_KEY');
 
@@ -531,28 +532,27 @@ export class AiService {
       return { imageUrl: null, provider: 'pixa', status: 'error', message: 'PIXA_API_KEY not configured' };
     }
 
-    // Pixa supports: jpeg, png, webp — map mimetype to extension
-    const extMap: Record<string, string> = {
-      'image/jpeg': 'jpg',
-      'image/jpg': 'jpg',
-      'image/png': 'png',
-      'image/webp': 'webp',
-    };
-    const garmentExt = extMap[garmentMimeType] ?? 'jpg';
-    const personExt = extMap[personMimeType] ?? 'jpg';
+    this.logger.log('🎽 Starting Pixa Virtual Try-On — converting images to JPEG...');
 
-    this.logger.log(`🎽 Starting Pixa Virtual Try-On... garment=${garmentMimeType} person=${personMimeType}`);
+    // Convert BOTH images to JPEG regardless of input format
+    // Pixa only supports JPEG and PNG — WebP is NOT supported
+    const [garmentJpeg, personJpeg] = await Promise.all([
+      sharp(productImageBuffer).jpeg({ quality: 90 }).toBuffer(),
+      sharp(customerImageBuffer).jpeg({ quality: 90 }).toBuffer(),
+    ]);
+
+    this.logger.log(`✅ Images converted — garment: ${garmentJpeg.length} bytes, person: ${personJpeg.length} bytes`);
 
     const formData = new FormData();
     formData.append(
       'person_image',
-      new Blob([new Uint8Array(customerImageBuffer)], { type: personMimeType }),
-      `person.${personExt}`,
+      new Blob([new Uint8Array(personJpeg)], { type: 'image/jpeg' }),
+      'person.jpg',
     );
     formData.append(
       'garment_image',
-      new Blob([new Uint8Array(productImageBuffer)], { type: garmentMimeType }),
-      `garment.${garmentExt}`,
+      new Blob([new Uint8Array(garmentJpeg)], { type: 'image/jpeg' }),
+      'garment.jpg',
     );
     formData.append('wait_for_result', 'true');
 
