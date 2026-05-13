@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { v2 as cloudinary } from 'cloudinary';
 import { DatabaseService } from '../database/database.service';
-import { products, productColors } from '../database/schema';
+import { products, productColors, categories } from '../database/schema';
 import { eq } from 'drizzle-orm';
 
 @Injectable()
@@ -11,35 +11,60 @@ export class LocalAiService {
   constructor(
     private readonly databaseService: DatabaseService,
   ) {
-    this.logger.log(`☁️ Using Cloudinary AI Background Removal instead of local Python script`);
+    this.logger.log(`☁️ Using Cloudinary AI Background Removal & Underlay Overlay`);
   }
 
   /**
-   * Process a single image buffer using Cloudinary AI Background Removal.
-   * Uploads buffer directly with background removal add-on, then downloads the transparent result buffer.
+   * Helper to extract the Cloudinary public_id from a full URL.
+   */
+  private extractPublicId(url: string): string | null {
+    if (!url) return null;
+    try {
+      const parts = url.split('/upload/');
+      if (parts.length < 2) return null;
+      let pathPart = parts[1];
+      // Remove version prefix if present (e.g. v1778657980/)
+      pathPart = pathPart.replace(/^v\d+\//, '');
+      // Remove extension
+      const lastDotIndex = pathPart.lastIndexOf('.');
+      if (lastDotIndex !== -1) {
+        pathPart = pathPart.substring(0, lastDotIndex);
+      }
+      return pathPart;
+    } catch {
+      return null;
+    }
+  }
+
+  /**
+   * Process a single image buffer using Cloudinary AI Background Removal and optional background underlay.
    */
   async processImageBuffer(
     imageBuffer: Buffer,
-    _backgroundUrl?: string,
+    backgroundUrl?: string,
   ): Promise<Buffer | null> {
     try {
-      // Upload buffer directly to Cloudinary with background removal enabled
+      const options: any = {
+        folder: 'fustan-ai-bg-removal',
+        background_removal: 'cloudinary_ai',
+      };
+
+      const bgPublicId = backgroundUrl ? this.extractPublicId(backgroundUrl) : null;
+      if (bgPublicId) {
+        options.transformation = [
+          { underlay: bgPublicId, width: '1.0', height: '1.0', flags: 'relative', crop: 'scale' }
+        ];
+      }
+
       const uploadResult: any = await new Promise((resolve, reject) => {
-        const uploadStream = cloudinary.uploader.upload_stream(
-          {
-            folder: 'fustan-ai-bg-removal',
-            background_removal: 'cloudinary_ai',
-          },
-          (error, result) => {
-            if (error) return reject(error);
-            resolve(result);
-          },
-        );
+        const uploadStream = cloudinary.uploader.upload_stream(options, (error, result) => {
+          if (error) return reject(error);
+          resolve(result);
+        });
         uploadStream.end(imageBuffer);
       });
 
       if (uploadResult?.secure_url) {
-        // Fetch the processed transparent image buffer
         const res = await fetch(uploadResult.secure_url);
         const arrayBuffer = await res.arrayBuffer();
         return Buffer.from(arrayBuffer);
@@ -53,16 +78,30 @@ export class LocalAiService {
 
   /**
    * Fully process all product images in the background using Cloudinary AI Background Removal.
-   * Triggers Cloudinary background replacement for each image URL and updates DB.
+   * Retrieves category background URL, cuts product background, and underlays the category image.
    */
   async processProductBackgroundsAsync(
     productId: number,
-    _categoryId: number | null,
+    categoryId: number | null,
   ): Promise<void> {
     this.logger.log(`🔄 [LocalAiService] Starting Cloudinary AI background processing for product ${productId}...`);
 
     try {
-      // 1. Fetch the product
+      // 1. Fetch category background URL if categoryId is provided
+      let bgUrl: string | undefined;
+      if (categoryId) {
+        const categoryRows = await this.databaseService.db
+          .select()
+          .from(categories)
+          .where(eq(categories.id, categoryId))
+          .limit(1);
+        if (categoryRows.length > 0) {
+          bgUrl = (categoryRows[0] as any)?.categoryBackgroundUrl;
+          this.logger.log(`📁 Found category background URL: ${bgUrl}`);
+        }
+      }
+
+      // 2. Fetch the product
       const productRows = await this.databaseService.db
         .select()
         .from(products)
@@ -75,12 +114,12 @@ export class LocalAiService {
       }
       const product = productRows[0];
 
-      // 2. Process main product images
+      // 3. Process main product images
       const imageUrls: string[] = (product.images as string[]) || [];
       if (imageUrls.length > 0) {
         const newImageUrls: string[] = [];
         for (const imgUrl of imageUrls) {
-          const processed = await this.processCloudinaryImageUrl(imgUrl);
+          const processed = await this.processCloudinaryImageUrl(imgUrl, bgUrl);
           newImageUrls.push(processed ?? imgUrl); // keep original if failed
         }
         // Update product images in DB
@@ -88,10 +127,10 @@ export class LocalAiService {
           .update(products)
           .set({ images: newImageUrls, updatedAt: new Date() })
           .where(eq(products.id, productId));
-        this.logger.log(`✅ [LocalAiService] Updated main images for product ${productId} with background removal`);
+        this.logger.log(`✅ [LocalAiService] Updated main images for product ${productId} with background removal & underlay`);
       }
 
-      // 3. Process product color variant images
+      // 4. Process product color variant images
       const colorRows = await this.databaseService.db
         .select()
         .from(productColors)
@@ -102,7 +141,7 @@ export class LocalAiService {
         if (colorImages.length === 0) continue;
         const newColorImages: string[] = [];
         for (const imgUrl of colorImages) {
-          const processed = await this.processCloudinaryImageUrl(imgUrl);
+          const processed = await this.processCloudinaryImageUrl(imgUrl, bgUrl);
           newColorImages.push(processed ?? imgUrl);
         }
         await this.databaseService.db
@@ -119,16 +158,25 @@ export class LocalAiService {
   }
 
   /**
-   * Applies Cloudinary AI Background Removal to an existing image URL.
-   * Re-uploads the URL directly to Cloudinary to run the add-on asynchronously/synchronously.
+   * Applies Cloudinary AI Background Removal and category background underlay to an existing image URL.
    */
-  private async processCloudinaryImageUrl(imageUrl: string): Promise<string | null> {
+  private async processCloudinaryImageUrl(imageUrl: string, bgUrl?: string): Promise<string | null> {
     try {
       this.logger.log(`☁️ Triggering background removal for: ${imageUrl}`);
-      const uploadResult = await cloudinary.uploader.upload(imageUrl, {
+      const options: any = {
         folder: 'fustan-ai-bg-removal',
         background_removal: 'cloudinary_ai',
-      });
+      };
+
+      const bgPublicId = bgUrl ? this.extractPublicId(bgUrl) : null;
+      if (bgPublicId) {
+        this.logger.log(`🎨 Adding category background underlay: ${bgPublicId}`);
+        options.transformation = [
+          { underlay: bgPublicId, width: '1.0', height: '1.0', flags: 'relative', crop: 'scale' }
+        ];
+      }
+
+      const uploadResult = await cloudinary.uploader.upload(imageUrl, options);
       return uploadResult?.secure_url ?? null;
     } catch (err) {
       this.logger.error(`❌ [LocalAiService] processCloudinaryImageUrl failed: ${err.message}`);
