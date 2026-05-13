@@ -51,8 +51,10 @@ export class LocalAiService {
 
       const bgPublicId = backgroundUrl ? this.extractPublicId(backgroundUrl) : null;
       if (bgPublicId) {
+        // Cloudinary layers require replacing slashes with colons for folder paths
+        const layerId = bgPublicId.replace(/\//g, ':');
         options.transformation = [
-          { underlay: bgPublicId, width: '1.0', height: '1.0', flags: 'relative', crop: 'scale' }
+          { underlay: layerId, width: '1.0', height: '1.0', flags: 'relative', crop: 'scale' }
         ];
       }
 
@@ -170,9 +172,11 @@ export class LocalAiService {
 
       const bgPublicId = bgUrl ? this.extractPublicId(bgUrl) : null;
       if (bgPublicId) {
-        this.logger.log(`🎨 Adding category background underlay: ${bgPublicId}`);
+        // Replace slashes with colons to conform to Cloudinary layer string requirements
+        const layerId = bgPublicId.replace(/\//g, ':');
+        this.logger.log(`🎨 Adding category background underlay: ${layerId}`);
         options.transformation = [
-          { underlay: bgPublicId, width: '1.0', height: '1.0', flags: 'relative', crop: 'scale' }
+          { underlay: layerId, width: '1.0', height: '1.0', flags: 'relative', crop: 'scale' }
         ];
       }
 
