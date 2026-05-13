@@ -47,7 +47,6 @@ export default function CustomersTab({ vendorId }: CustomersTabProps) {
             setMessageOpen(false);
             setMessageContent("");
         } catch (error) {
-            console.error(error);
             toast.error(t('errorSendingMessage'));
         } finally {
             setSending(false);

@@ -121,7 +121,7 @@ function Navigation({ isChatHistoryOpen, setIsChatHistoryOpen, unreadCount, syst
             count += guestItems.reduce((acc, item) => acc + (item.quantity || 0), 0);
           }
         } catch (e) {
-          console.error("Failed to parse guest cart", e);
+          // guest cart parsed silently
         }
       }
     }
@@ -708,7 +708,6 @@ function AppContent() {
               const supportVendor = await endpoints.vendors.support();
 
               if (supportVendor) {
-                console.log('✅ Debug: Support vendor found', supportVendor.id);
                 openChat({
                   vendorId: supportVendor.id,
                   vendorName: language === 'ar' ? supportVendor.storeNameAr : supportVendor.storeNameEn,
@@ -716,11 +715,9 @@ function AppContent() {
                   recipientId: supportVendor.userId
                 });
               } else {
-                console.warn('⚠️ Debug: Support vendor not found, falling back to history');
                 setIsChatHistoryOpen(true);
               }
             } catch (err) {
-              console.error('❌ Debug: Error finding support vendor', err);
               setIsChatHistoryOpen(true);
             }
           }}

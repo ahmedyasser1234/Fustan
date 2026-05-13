@@ -20,9 +20,8 @@ class ErrorBoundary extends Component<Props, State> {
     return { hasError: true };
   }
 
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    // Log error to an error reporting service if available
-    console.error("ErrorBoundary caught an error", error, errorInfo);
+  componentDidCatch() {
+    // UI tree exception caught silently
   }
 
   render() {

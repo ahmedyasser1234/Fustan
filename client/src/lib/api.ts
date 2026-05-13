@@ -32,7 +32,6 @@ api.interceptors.response.use(
     },
     (error) => {
         if (error.response?.status === 401) {
-            console.warn(`[API] 401 Unauthorized: ${error.config?.url}`, error.response.data);
             
             // Don't broadcast for /auth/me to prevent potential loops
             if (!error.config?.url?.includes('/auth/me')) {

@@ -175,7 +175,6 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
 
             toast.success(language === 'ar' ? "تم توليد الوصف بنجاح" : "Description generated successfully");
         } catch (error) {
-            console.error('AI Generation error:', error);
             toast.error(language === 'ar' ? "فشل توليد الوصف" : "Failed to generate description");
         } finally {
             setIsGeneratingAI(false);
@@ -227,7 +226,6 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
                 toast.success(language === 'ar' ? "تم تحسين الصورة بنجاح" : "Image enhanced successfully");
             }
         } catch (error) {
-            console.error('Enhancement error:', error);
             toast.error(language === 'ar' ? "فشل تحسين الصورة" : "Failed to enhance image");
         } finally {
             setIsEnhancing(false);
@@ -317,8 +315,7 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
             handleCloseModal();
             queryClient.invalidateQueries({ queryKey: ['vendor', 'products', vendorId] });
         },
-        onError: (err: any) => {
-            console.error(err);
+        onError: () => {
             toast.error(language === 'ar' ? "فشل حفظ المنتج" : "Failed to save product");
         }
     });
@@ -368,7 +365,6 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
                 existingImages: c.images || []
             })));
         } catch (error) {
-            console.error("Failed to fetch colors:", error);
             setColorVariants([]);
         }
 

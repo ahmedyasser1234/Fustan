@@ -12,6 +12,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { useAuth } from "@/_core/hooks/useAuth";
+import { useLocation } from "wouter";
 
 // ─── Scene & Pose Data ───────────────────────────────────────────────────────
 
@@ -126,6 +128,8 @@ interface VirtualModelSectionProps {
 
 export function VirtualModelSection({ productImage, allImages = [] }: VirtualModelSectionProps) {
   const { language } = useLanguage();
+  const { user } = useAuth();
+  const [, setLocation] = useLocation();
 
   const [dressImage,    setDressImage]    = useState<File | null>(null);
   const [dressPreview,  setDressPreview]  = useState<string>(productImage || '');
@@ -154,6 +158,11 @@ export function VirtualModelSection({ productImage, allImages = [] }: VirtualMod
   };
 
   const handleGenerate = async () => {
+    if (!user) {
+      toast.info(language === 'ar' ? 'يرجى تسجيل الدخول أولاً لاستخدام التجربة الافتراضية' : 'Please login first to use virtual try-on');
+      setLocation("/login");
+      return;
+    }
     if (!customerImage) {
       toast.error(language === 'ar' ? 'يرجى رفع صورة العميلة أولاً' : 'Please upload the customer photo first');
       return;
@@ -189,9 +198,9 @@ export function VirtualModelSection({ productImage, allImages = [] }: VirtualMod
         toast.success(language === 'ar' ? '✨ تم تلبيس الفستان بنجاح!' : '✨ Try-on completed successfully!');
       }
     } catch (error: any) {
-      console.error('Virtual Try-On Error:', error);
-      const msg = error?.response?.data?.message || (language === 'ar' ? 'فشل في إنشاء الصورة' : 'Failed to generate image');
-      toast.error(msg);
+      const srvMsg = error?.response?.data?.message || error?.response?.data?.error || error?.message;
+      const baseMsg = language === 'ar' ? 'فشل في إنشاء الصورة' : 'Failed to generate image';
+      toast.error(`${baseMsg}: ${srvMsg || 'Unknown error'}`);
     } finally {
       setIsLoading(false);
     }

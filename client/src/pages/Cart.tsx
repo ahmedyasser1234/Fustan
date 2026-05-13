@@ -60,7 +60,7 @@ export default function Cart() {
             finalItems = [...finalItems, ...guestItems.map(item => ({ ...item, isGuestItem: true }))];
           }
         } catch (e) {
-          console.error("Failed to parse guest cart", e);
+          // guest cart parsed silently
         }
       }
     }

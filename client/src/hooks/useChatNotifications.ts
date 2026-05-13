@@ -28,7 +28,6 @@ export function useChatNotifications() {
         if (!socket || !user) return;
 
         const handleReceiveMessage = (message: any) => {
-            console.log('Notification receivedMessage:', message);
 
             if (message.senderId !== user.id) {
                 // Play notification sound (optional)

@@ -75,7 +75,6 @@ export default function VendorRegister() {
         } catch (error: any) {
             const msg = error.response?.data?.message || (language === 'ar' ? 'فشل التسجيل. يرجى مراجعة البيانات' : 'Registration failed. Please check your data.');
             toast.error(msg);
-            console.error(error);
         } finally {
             setIsLoading(false);
         }

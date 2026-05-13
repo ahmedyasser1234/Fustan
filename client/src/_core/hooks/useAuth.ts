@@ -48,7 +48,7 @@ export function useAuth(options?: UseAuthOptions) {
       // 2. Call the server to clear the session cookie
       await logoutMutation.mutateAsync();
     } catch (error: unknown) {
-      console.error("Logout request failed:", error);
+      // logout request error silently handled
     } finally {
       // 3. Clear all queries and redirect to home
       queryClient.clear();

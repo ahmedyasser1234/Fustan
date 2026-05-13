@@ -56,7 +56,6 @@ export default function Register() {
         } catch (error: any) {
             const msg = error.response?.data?.message || (language === 'ar' ? 'فشل إنشاء الحساب. قد يكون البريد مستخدم مسبقاً' : 'Registration failed. Email might be in use.');
             toast.error(msg);
-            console.error(error);
         } finally {
             setIsLoading(false);
         }

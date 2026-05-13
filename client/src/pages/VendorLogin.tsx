@@ -36,8 +36,6 @@ function VendorLogin() {
             const token = data?.token;
             const user = data?.user ?? data;
 
-            console.log("[VendorLogin] Server Response:", { raw, data, token: !!token, user });
-
             // Check if it's a requireVerification response
             if (data?.requireVerification) {
                 toast.error(language === 'ar' ? 'يرجى تأكيد بريدك الإلكتروني أولاً' : 'Please verify your email address first');
@@ -45,7 +43,6 @@ function VendorLogin() {
             }
 
             if (!token) {
-                console.error("[VendorLogin] Missing token. Full response data:", response.data);
                 throw new Error('No token received from server');
             }
             
@@ -56,9 +53,6 @@ function VendorLogin() {
             window.location.href = "/vendor-dashboard";
             
         } catch (error: any) {
-            console.error("[VendorLogin] Login Error:", error);
-            console.error("[VendorLogin] Error Response Data:", error.response?.data);
-            
             const message = error.response?.data?.message || error.message || (language === 'ar' ? 'فشل تسجيل الدخول' : 'Login failed');
 
             if (message.includes('pending') || message.includes('قيد المراجعة')) {
@@ -66,7 +60,6 @@ function VendorLogin() {
             } else {
                 toast.error(message);
             }
-            console.error(error);
         } finally {
             setIsLoading(false);
         }

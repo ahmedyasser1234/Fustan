@@ -25,7 +25,6 @@ export const useSocket = () => {
 
             // Prevent connecting to self (Netlify) if URL is relative or missing
             if (!SOCKET_URL || SOCKET_URL.startsWith('/')) {
-                console.error('Socket URL is missing or relative. Please set VITE_SOCKET_URL in your environment variables.');
                 return;
             }
 
@@ -39,17 +38,16 @@ export const useSocket = () => {
             });
 
             socketRef.current.on('connect', () => {
-                console.log('Socket connected');
+                // connection established silently
             });
 
-            socketRef.current.on('notification', (data) => {
-                console.log('Notification received:', data);
+            socketRef.current.on('notification', () => {
                 queryClient.invalidateQueries({ queryKey: ['notifications'] });
                 // You can add toast notifications here
             });
 
             socketRef.current.on('disconnect', () => {
-                console.log('Socket disconnected');
+                // socket disconnected silently
             });
         }
 

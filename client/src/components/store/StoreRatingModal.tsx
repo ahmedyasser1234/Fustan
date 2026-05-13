@@ -35,7 +35,6 @@ export function StoreRatingModal({ isOpen, onClose, vendorId, vendorName }: Stor
             setComment("");
         },
         onError: (error: any) => {
-            console.error("Review submit error:", error);
             toast.error(error?.response?.data?.message || (language === 'ar' ? "فشل إرسال التقييم" : "Failed to submit review"));
         }
     });

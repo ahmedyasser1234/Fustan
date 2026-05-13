@@ -56,9 +56,7 @@ export function ChatWidget({ vendorId, recipientId: explicitRecipientId, vendorN
             // Signal to backend (persistent)
             endpoints.chat.markRead(conversationId).then(() => {
                 queryClient.invalidateQueries({ queryKey: ['chat', 'unread-count'] });
-            }).catch(err => {
-                console.error(`ChatWidget: Failed to mark ${conversationId} as read`, err);
-            });
+            }).catch(() => {});
 
             // Signal to socket (real-time, requires recipient)
             if (presenceUserId) {
@@ -179,7 +177,6 @@ export function ChatWidget({ vendorId, recipientId: explicitRecipientId, vendorN
                         setConversationId(response.conversationId);
                     }
                 } else {
-                    console.error('❌ Debug: sendMessage Ack returned no message!', response);
                     setMessages(prev => prev.map(m => m.id === tempId ? { ...m, status: 'error' } : m));
                 }
             });
@@ -201,7 +198,6 @@ export function ChatWidget({ vendorId, recipientId: explicitRecipientId, vendorN
                     }
                 }
             } catch (err) {
-                console.error('❌ Debug: API fallback failed', err);
                 setMessages(prev => prev.map(m => m.id === tempId ? { ...m, status: 'error' } : m));
             }
         }

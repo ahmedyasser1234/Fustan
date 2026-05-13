@@ -5,6 +5,8 @@ import { Sparkles, Upload, X, ImageIcon, Loader2 } from "lucide-react";
 import { useLanguage } from "@/lib/i18n";
 import api from "@/lib/api";
 import { toast } from "sonner";
+import { useAuth } from "@/_core/hooks/useAuth";
+import { useLocation } from "wouter";
 
 interface TryOnModalProps {
   isOpen: boolean;
@@ -69,7 +71,6 @@ export function TryOnModal({ isOpen, onClose, productImage, productName }: TryOn
         throw new Error('No image URL received');
       }
     } catch (error: any) {
-      console.error('Try-On Error:', error);
       toast.error(language === 'ar' ? 'فشلت عملية التجربة' : 'Try-on failed');
     } finally {
       setIsLoading(false);

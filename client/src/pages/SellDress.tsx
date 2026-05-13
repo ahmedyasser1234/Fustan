@@ -60,8 +60,7 @@ export default function SellDress() {
       queryClient.invalidateQueries({ queryKey: ['products'] });
       setLocation("/");
     },
-    onError: (error) => {
-      console.error("Submission error:", error);
+    onError: () => {
       toast.error(language === 'ar' ? "فشل في عرض الفستان. يرجى المحاولة مرة أخرى." : "Failed to list dress. Please try again.");
     }
   });

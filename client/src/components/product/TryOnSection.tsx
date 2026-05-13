@@ -87,9 +87,10 @@ export function TryOnSection({ productName, productImage, productDescription }: 
             await api.patch(`/users/${user.id}`, { measurements });
             toast.success(language === 'ar' ? "تم حفظ المقاسات بنجاح" : "Measurements saved successfully");
             // Optionally update local storage/auth state if needed, but the patch should be enough for next visit
-        } catch (err) {
-            console.error(err);
-            toast.error(language === 'ar' ? "فشل حفظ المقاسات" : "Failed to save measurements");
+        } catch (err: any) {
+            const srvMsg = err?.response?.data?.message || err?.response?.data?.error || err?.message;
+            const baseMsg = language === 'ar' ? "فشل حفظ المقاسات" : "Failed to save measurements";
+            toast.error(`${baseMsg}: ${srvMsg || 'Unknown error'}`);
         } finally {
             setIsSavingMeasurements(false);
         }
@@ -166,7 +167,6 @@ export function TryOnSection({ productName, productImage, productDescription }: 
                     const blob = await res.blob();
                     formData.append('dressImage', blob, 'dress.jpg');
                 } catch (e) {
-                    console.error("Failed to fetch dress preview", e);
                     throw new Error(language === 'ar' ? 'فشل في تحميل صورة الفستان' : 'Failed to load dress image');
                 }
             }
@@ -192,7 +192,6 @@ export function TryOnSection({ productName, productImage, productDescription }: 
                 toast.error(language === 'ar' ? 'لم يتم استلام نتيجة من السيرفر' : 'No result received from server');
             }
         } catch (error: any) {
-            console.error('Try-On Error:', error);
             const msg = error?.response?.data?.message || (language === 'ar' ? 'فشل إنشاء الصورة. حاول مرة أخرى' : 'Failed to generate image. Try again.');
             toast.error(msg);
         } finally {

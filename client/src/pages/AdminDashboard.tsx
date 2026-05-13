@@ -446,7 +446,6 @@ export default function AdminDashboard() {
       setCustomerToDelete(null);
       queryClient.invalidateQueries({ queryKey: ['admin', 'customers'] });
     } catch (error) {
-      console.error(error);
       toast.error('Failed to delete customer');
     }
   };
@@ -2004,7 +2003,6 @@ function CategoriesTab({
       toast.success(t('categoryCreated'));
     },
     onError: (error: any) => {
-      console.error("❌ [Frontend] Create Category Mutation Failed:", error);
       const message = error.response?.data?.message || error.message || t('errorCreating');
       toast.error(message);
     }
@@ -2019,7 +2017,6 @@ function CategoriesTab({
       toast.success(t('categoryUpdated'));
     },
     onError: (error: any) => {
-      console.error("❌ [Frontend] Update Category Mutation Failed:", error);
       const message = error.response?.data?.message || error.message || t('errorUpdating');
       toast.error(message);
     }
@@ -2050,7 +2047,6 @@ function CategoriesTab({
   };
 
   const handleSubmit = () => {
-    console.log("🚀 [Frontend] Submitting Category Form...");
     const formData = new FormData();
     formData.append("nameAr", nameAr);
     formData.append("nameEn", nameEn);
@@ -2060,10 +2056,8 @@ function CategoriesTab({
     // Only append if we have a value. Order matters for Multer if using specific fields,
     // but AnyFilesInterceptor is flexible.
     if (imageFile) {
-      console.log("   - Appending image file to FormData");
       formData.append("image", imageFile);
     } else if (image) {
-      console.log("   - Appending image URL to FormData");
       formData.append("image", image);
     }
 
@@ -2073,16 +2067,6 @@ function CategoriesTab({
       formData.append("categoryBackgroundUrl", categoryBackgroundUrl);
     }
     formData.append("categoryBackgroundPrompt", categoryBackgroundPrompt);
-
-    // Debug FormData
-    console.log("   - FormData Preview:");
-    formData.forEach((value, key) => {
-      if (value instanceof File) {
-        console.log(`     📦 ${key}: [File] ${value.name} (${value.size} bytes)`);
-      } else {
-        console.log(`     📦 ${key}:`, value);
-      }
-    });
 
     if (editingCategory) {
       updateCategory.mutate({ id: editingCategory.id, data: formData });
