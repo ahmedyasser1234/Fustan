@@ -54,9 +54,7 @@ export function ChatWidget({ vendorId, recipientId: explicitRecipientId, vendorN
     const markAsRead = () => {
         if (conversationId) {
             // Signal to backend (persistent)
-            console.log(`ChatWidget: Marking conversation ${conversationId} as read via API`);
             endpoints.chat.markRead(conversationId).then(() => {
-                console.log(`ChatWidget: Marked ${conversationId} as read successfully`);
                 queryClient.invalidateQueries({ queryKey: ['chat', 'unread-count'] });
             }).catch(err => {
                 console.error(`ChatWidget: Failed to mark ${conversationId} as read`, err);
@@ -147,7 +145,6 @@ export function ChatWidget({ vendorId, recipientId: explicitRecipientId, vendorN
     const handleSend = async () => {
         if (!inputValue.trim()) return;
 
-        console.log('📤 Debug: handleSend triggered');
         const content = inputValue;
         setInputValue("");
 
@@ -167,19 +164,12 @@ export function ChatWidget({ vendorId, recipientId: explicitRecipientId, vendorN
         setMessages(prev => [...prev, optimisticMessage]);
 
         if (socket && socket.connected) {
-            console.log('📤 Debug: Emit sendMessage', {
-                conversationId: conversationIdRef.current,
-                vendorId,
-                recipientId: presenceUserId,
-                content,
-            });
             socket.emit("sendMessage", {
                 conversationId: conversationIdRef.current,
                 vendorId,
                 recipientId: presenceUserId,
                 content,
             }, (response: { message: Message, conversationId: number }) => {
-                console.log('✅ Debug: sendMessage Ack/Response:', response);
                 if (response && response.message) {
                     setMessages((prev) => {
                         // Replace optimistic message with actual one
@@ -194,7 +184,6 @@ export function ChatWidget({ vendorId, recipientId: explicitRecipientId, vendorN
                 }
             });
         } else {
-            console.warn('⚠️ Debug: Socket is null or disconnected, using API fallback');
             try {
                 const response = await endpoints.chat.sendMessage({
                     conversationId: conversationIdRef.current || undefined,
@@ -203,7 +192,6 @@ export function ChatWidget({ vendorId, recipientId: explicitRecipientId, vendorN
                     userId: explicitRecipientId // If vendor is sending to customer
                 });
 
-                console.log('✅ Debug: sendMessage API Response:', response);
                 if (response && response.message) {
                     setMessages((prev) => {
                         return prev.map(m => m.id === tempId ? { ...response.message, status: 'sent' } : m);

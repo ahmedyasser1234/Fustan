@@ -223,7 +223,6 @@ export class AiController {
   }
 
   @Post('virtual-model')
-  @Public()
   @UseInterceptors(FileFieldsInterceptor([
     { name: 'dressImage', maxCount: 1 },
     { name: 'customerImage', maxCount: 1 },

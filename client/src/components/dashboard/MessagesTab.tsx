@@ -68,7 +68,7 @@ export default function MessagesTab() {
         });
 
         newSocket.on("connect", () => {
-            // console.log("Vendor Chat Connected");
+            // connection established
         });
 
         newSocket.on("receiveMessage", (message: Message) => {
@@ -148,28 +148,19 @@ export default function MessagesTab() {
 
     const handleSend = () => {
         if (!inputValue.trim() || !selectedConversation || !socket) {
-            console.error('❌ Debug: cannot send. Missing info.', {
-                input: !!inputValue.trim(),
-                conv: !!selectedConversation,
-                socket: !!socket
-            });
             return;
         }
 
-        console.log("📤 Debug: Sending message to:", selectedConversation.recipientId);
         const payload = {
             conversationId: selectedConversation.id,
             content: inputValue,
             recipientId: selectedConversation.recipientId
         };
-        console.log("📤 Debug: Payload:", payload);
 
         socket.emit("sendMessage", payload, (response: any) => {
-            console.log('✅ Debug: sendMessage Ack/Response:', response);
             if (response && response.id) {
                 setMessages(prev => [...prev, response]);
             } else {
-                console.error("❌ Debug: Message send failed/No ACK:", response);
                 toast.error(t('messageFailed'));
             }
         });

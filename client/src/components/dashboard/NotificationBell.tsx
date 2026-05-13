@@ -39,16 +39,13 @@ export default function NotificationBell() {
         });
 
         newSocket.on('connect', () => {
-            console.log('Notification Socket Connected');
             newSocket.emit('join', user.id);
         });
 
         newSocket.on('notification', (data: any) => {
-            console.log('Notification received:', data);
-
             // Play sound
             const audio = new Audio('/notification.mp3'); // Ensure this file exists or remove
-            audio.play().catch(e => console.log('Audio play failed', e));
+            audio.play().catch(() => {});
 
             // Show Toast
             toast.message(language === 'ar' ? data.title : data.title, {

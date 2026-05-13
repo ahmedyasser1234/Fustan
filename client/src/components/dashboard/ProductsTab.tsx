@@ -244,10 +244,6 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
 
     const submitMutation = useMutation({
         mutationFn: async () => {
-            console.log("🚀 Starting Product Submission...");
-            console.log("   - Name AR:", nameAr);
-            console.log("   - Category ID:", categoryId);
-
             if (!aiQualifiedImage && !editingProduct?.aiQualifiedImage) {
                 toast.error(language === 'ar' ? "صورة AI مطلوبة للميزة التجريبية" : "AI-Ready image is required for Try-On feature");
                 throw new Error("AI Image required");
@@ -305,15 +301,12 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
 
             // AI Background Processing settings
             formData.append("backgroundPreset", backgroundPreset);
-            console.log("   - FormData prepared. Sending request...");
 
             if (editingProduct) {
                 const res = await endpoints.products.update(editingProduct.id, formData);
-                console.log("✅ Update Response:", res);
                 return res;
             }
             const res = await endpoints.products.create(formData);
-            console.log("✅ Create Response:", res);
             return res;
         },
         onSuccess: () => {
