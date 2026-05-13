@@ -242,6 +242,10 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
 
     const submitMutation = useMutation({
         mutationFn: async () => {
+            if (!categoryId) {
+                toast.error(language === 'ar' ? "يرجى اختيار القسم أولاً" : "Please select a category first");
+                throw new Error("Category required");
+            }
             if (!aiQualifiedImage && !editingProduct?.aiQualifiedImage) {
                 toast.error(language === 'ar' ? "صورة AI مطلوبة للميزة التجريبية" : "AI-Ready image is required for Try-On feature");
                 throw new Error("AI Image required");
@@ -315,8 +319,9 @@ export default function ProductsTab({ vendorId, onProductClick, onPreview, showC
             handleCloseModal();
             queryClient.invalidateQueries({ queryKey: ['vendor', 'products', vendorId] });
         },
-        onError: () => {
-            toast.error(language === 'ar' ? "فشل حفظ المنتج" : "Failed to save product");
+        onError: (error: any) => {
+            const srvMsg = error?.response?.data?.message || error?.response?.data?.error || error?.message;
+            toast.error(`${language === 'ar' ? "فشل حفظ المنتج" : "Failed to save product"}: ${srvMsg || ''}`);
         }
     });
 
