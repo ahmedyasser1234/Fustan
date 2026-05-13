@@ -46,7 +46,6 @@ export class LocalAiService {
     try {
       const options: any = {
         folder: 'fustan-ai-bg-removal',
-        background_removal: 'cloudinary_ai',
       };
 
       const bgPublicId = backgroundUrl ? this.extractPublicId(backgroundUrl) : null;
@@ -54,7 +53,12 @@ export class LocalAiService {
         // Cloudinary layers require replacing slashes with colons for folder paths
         const layerId = bgPublicId.replace(/\//g, ':');
         options.transformation = [
+          { effect: 'background_removal' },
           { underlay: layerId, width: '1.0', height: '1.0', flags: 'relative', crop: 'scale' }
+        ];
+      } else {
+        options.transformation = [
+          { effect: 'background_removal' }
         ];
       }
 
@@ -167,7 +171,6 @@ export class LocalAiService {
       this.logger.log(`☁️ Triggering background removal for: ${imageUrl}`);
       const options: any = {
         folder: 'fustan-ai-bg-removal',
-        background_removal: 'cloudinary_ai',
       };
 
       const bgPublicId = bgUrl ? this.extractPublicId(bgUrl) : null;
@@ -176,7 +179,12 @@ export class LocalAiService {
         const layerId = bgPublicId.replace(/\//g, ':');
         this.logger.log(`🎨 Adding category background underlay: ${layerId}`);
         options.transformation = [
+          { effect: 'background_removal' },
           { underlay: layerId, width: '1.0', height: '1.0', flags: 'relative', crop: 'scale' }
+        ];
+      } else {
+         options.transformation = [
+          { effect: 'background_removal' }
         ];
       }
 
