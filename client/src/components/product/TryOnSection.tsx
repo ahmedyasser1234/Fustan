@@ -8,6 +8,7 @@ import { useLanguage } from "@/lib/i18n";
 import api from "@/lib/api";
 import { toast } from "sonner";
 import { useAuth } from "@/_core/hooks/useAuth";
+import { useLocation } from "wouter";
 import { useEffect } from "react";
 
 interface TryOnSectionProps {
@@ -19,6 +20,7 @@ interface TryOnSectionProps {
 export function TryOnSection({ productName, productImage, productDescription }: TryOnSectionProps) {
     const { language } = useLanguage();
     const { user } = useAuth();
+    const [, setLocation] = useLocation();
     const [isLoading, setIsLoading] = useState(false);
     const [isSavingMeasurements, setIsSavingMeasurements] = useState(false);
     const [generatedImage, setGeneratedImage] = useState<string | null>(null);
@@ -141,6 +143,12 @@ export function TryOnSection({ productName, productImage, productDescription }: 
 
 
     const handleGenerate = async () => {
+        if (!user) {
+            toast.info(language === 'ar' ? 'يرجى تسجيل الدخول أولاً لاستخدام التجربة الافتراضية' : 'Please login first to use virtual try-on');
+            setLocation("/login");
+            return;
+        }
+
         if (!dressPreview || !userImage) {
             toast.error(language === 'ar' ? 'يرجى اختيار صورة الفستان وصورتك' : 'Please select both dress and your photo');
             return;
@@ -192,8 +200,9 @@ export function TryOnSection({ productName, productImage, productDescription }: 
                 toast.error(language === 'ar' ? 'لم يتم استلام نتيجة من السيرفر' : 'No result received from server');
             }
         } catch (error: any) {
-            const msg = error?.response?.data?.message || (language === 'ar' ? 'فشل إنشاء الصورة. حاول مرة أخرى' : 'Failed to generate image. Try again.');
-            toast.error(msg);
+            const srvMsg = error?.response?.data?.message || error?.response?.data?.error || error?.message;
+            const baseMsg = language === 'ar' ? 'فشل إنشاء الصورة. حاول مرة أخرى' : 'Failed to generate image. Try again.';
+            toast.error(`${baseMsg}: ${srvMsg || 'Unknown error'}`);
         } finally {
             setIsLoading(false);
         }

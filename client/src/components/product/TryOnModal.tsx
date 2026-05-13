@@ -17,6 +17,9 @@ interface TryOnModalProps {
 
 export function TryOnModal({ isOpen, onClose, productImage, productName }: TryOnModalProps) {
   const { language } = useLanguage();
+  const { user } = useAuth();
+  const [, setLocation] = useLocation();
+
   const [userImage, setUserImage] = useState<File | null>(null);
   const [userPreview, setUserPreview] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
@@ -39,6 +42,12 @@ export function TryOnModal({ isOpen, onClose, productImage, productName }: TryOn
   };
 
   const handleTryOn = async () => {
+    if (!user) {
+      toast.info(language === 'ar' ? 'يرجى تسجيل الدخول أولاً لاستخدام التجربة الافتراضية' : 'Please login first to use virtual try-on');
+      onClose();
+      setLocation("/login");
+      return;
+    }
     if (!userPreview || !userImage) {
       toast.error(language === 'ar' ? 'يرجى رفع صورتك أولاً' : 'Please upload your photo first');
       return;
@@ -71,7 +80,9 @@ export function TryOnModal({ isOpen, onClose, productImage, productName }: TryOn
         throw new Error('No image URL received');
       }
     } catch (error: any) {
-      toast.error(language === 'ar' ? 'فشلت عملية التجربة' : 'Try-on failed');
+      const srvMsg = error?.response?.data?.message || error?.response?.data?.error || error?.message;
+      const baseMsg = language === 'ar' ? 'فشلت عملية التجربة' : 'Try-on failed';
+      toast.error(`${baseMsg}: ${srvMsg || 'Unknown error'}`);
     } finally {
       setIsLoading(false);
     }
