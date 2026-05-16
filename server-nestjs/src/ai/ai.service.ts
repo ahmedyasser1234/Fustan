@@ -8,6 +8,7 @@ import { v2 as cloudinary } from 'cloudinary';
 import { Readable } from 'stream';
 import { PixVerseService } from './pixverse.service';
 import { PhotoroomService } from '../photoroom/photoroom.service';
+import { AiSubscriptionsService } from '../ai-subscriptions/ai-subscriptions.service';
 import sharp from 'sharp';
 
 @Injectable()
@@ -21,6 +22,7 @@ export class AiService {
     private configService: ConfigService,
     private readonly pixVerseService: PixVerseService,
     private readonly photoroomService: PhotoroomService,
+    private readonly aiSubscriptionsService: AiSubscriptionsService,
   ) {
     const apiKey = this.configService.get<string>('OPENAI_API_KEY');
     const geminiApiKey = this.configService.get<string>('GEMINI_API_KEY');
@@ -77,6 +79,11 @@ export class AiService {
     },
     files?: Express.Multer.File[],
   ) {
+    // Enforce AI subscription credits if userId is provided
+    if (data.userId) {
+      await this.aiSubscriptionsService.useCredit(data.userId);
+    }
+
     // Check if we have uploaded images
     let dressImageUrl = data.productImage;
     let userImageUrl: string | null = null;
@@ -524,7 +531,13 @@ export class AiService {
     customerImageBuffer: Buffer,
     _garmentMimeType: string = 'image/jpeg',
     _personMimeType: string = 'image/jpeg',
+    userId?: number,
   ) {
+    // Enforce AI subscription credits
+    if (userId) {
+      await this.aiSubscriptionsService.useCredit(userId);
+    }
+
     const pixaApiKey = this.configService.get<string>('PIXA_API_KEY');
 
     if (!pixaApiKey) {

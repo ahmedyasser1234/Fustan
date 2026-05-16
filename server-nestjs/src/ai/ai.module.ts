@@ -10,8 +10,10 @@ import { AuthModule } from '../auth/auth.module';
 import { PhotoroomModule } from '../photoroom/photoroom.module';
 import { MediaModule } from '../media/media.module';
 
+import { AiSubscriptionsModule } from '../ai-subscriptions/ai-subscriptions.module';
+
 @Module({
-  imports: [ConfigModule, DatabaseModule, AuthModule, PhotoroomModule, MediaModule],
+  imports: [ConfigModule, DatabaseModule, AuthModule, PhotoroomModule, MediaModule, AiSubscriptionsModule],
   controllers: [AiController, PixVerseWebhookController],
   providers: [AiService, PixVerseService, LocalAiService],
   exports: [AiService, PixVerseService, LocalAiService],

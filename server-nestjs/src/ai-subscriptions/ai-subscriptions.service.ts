@@ -55,14 +55,14 @@ export class AiSubscriptionsService {
       .limit(1);
     
     if (!credits) {
-      // Initialize if not exists
+      // Initialize with free trial (3 credits)
       const [newCredits] = await this.databaseService.db
         .insert(userAiCredits)
         .values({
           userId,
-          totalCredits: 0,
+          totalCredits: 3, 
           usedCredits: 0,
-          remainingCredits: 0,
+          remainingCredits: 3,
           updatedAt: new Date(),
         })
         .returning();

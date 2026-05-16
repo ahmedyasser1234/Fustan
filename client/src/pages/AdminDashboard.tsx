@@ -292,6 +292,191 @@ function SettingsTab() {
   );
 }
 
+function AiPlansTab() {
+  const { language } = useLanguage();
+  const queryClient = useQueryClient();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingPlan, setEditingPlan] = useState<any>(null);
+
+  const [nameAr, setNameAr] = useState("");
+  const [nameEn, setNameEn] = useState("");
+  const [descriptionAr, setDescriptionAr] = useState("");
+  const [descriptionEn, setDescriptionEn] = useState("");
+  const [price, setPrice] = useState(0);
+  const [credits, setCredits] = useState(0);
+  const [durationDays, setDurationDays] = useState(30);
+  const [isActive, setIsActive] = useState(true);
+  const [isPopular, setIsPopular] = useState(false);
+
+  const { data: plans, isLoading } = useQuery({
+    queryKey: ['admin', 'ai-plans'],
+    queryFn: async () => (await api.get('/ai-subscriptions/plans?all=true')).data,
+  });
+
+  const savePlan = useMutation({
+    mutationFn: async (data: any) => {
+      if (editingPlan) {
+        return (await api.patch(`/ai-subscriptions/plans/${editingPlan.id}`, data)).data;
+      }
+      return (await api.post('/ai-subscriptions/plans', data)).data;
+    },
+    onSuccess: () => {
+      toast.success(language === 'ar' ? "تم حفظ الخطة بنجاح" : "Plan saved successfully");
+      setIsModalOpen(false);
+      setEditingPlan(null);
+      queryClient.invalidateQueries({ queryKey: ['admin', 'ai-plans'] });
+    }
+  });
+
+  const resetForm = () => {
+    setNameAr("");
+    setNameEn("");
+    setDescriptionAr("");
+    setDescriptionEn("");
+    setPrice(0);
+    setCredits(0);
+    setDurationDays(30);
+    setIsActive(true);
+    setIsPopular(false);
+    setEditingPlan(null);
+  };
+
+  if (isLoading) return <div className="p-8 text-center"><Loader2 className="animate-spin mx-auto" /></div>;
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-bold text-gray-900">{language === 'ar' ? "إدارة خطط الذكاء الاصطناعي" : "AI Plans Management"}</h2>
+        <Button onClick={() => { resetForm(); setIsModalOpen(true); }} className="bg-indigo-600 hover:bg-indigo-700 gap-2">
+          <Plus size={18} /> {language === 'ar' ? "إضافة خطة" : "Add Plan"}
+        </Button>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {plans?.map((plan: any) => (
+          <Card key={plan.id} className={`border-0 shadow-sm relative overflow-hidden ${!plan.isActive ? 'opacity-60' : ''}`}>
+            {plan.isPopular && (
+              <div className="absolute top-0 right-0 bg-amber-500 text-white text-[10px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-tighter">
+                Popular
+              </div>
+            )}
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center">
+                  <Sparkles size={24} />
+                </div>
+                <div className="text-right">
+                  <p className="text-lg font-bold text-gray-900">{plan.price} EGP</p>
+                  <p className="text-xs text-gray-400">{plan.durationDays} Days</p>
+                </div>
+              </div>
+              <h3 className="font-bold text-lg mb-1">{language === 'ar' ? plan.nameAr : plan.nameEn}</h3>
+              <p className="text-sm text-gray-500 mb-4 h-10 overflow-hidden">{language === 'ar' ? plan.descriptionAr : plan.descriptionEn}</p>
+              
+              <div className="bg-gray-50 p-3 rounded-xl flex justify-between items-center mb-6">
+                <span className="text-sm font-medium text-gray-600">{language === 'ar' ? "الرصيد:" : "Credits:"}</span>
+                <span className="text-lg font-bold text-indigo-600">{plan.credits}</span>
+              </div>
+
+              <div className="flex gap-2">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="flex-1 rounded-xl"
+                  onClick={() => {
+                    setEditingPlan(plan);
+                    setNameAr(plan.nameAr);
+                    setNameEn(plan.nameEn);
+                    setDescriptionAr(plan.descriptionAr);
+                    setDescriptionEn(plan.descriptionEn);
+                    setPrice(plan.price);
+                    setCredits(plan.credits);
+                    setDurationDays(plan.durationDays);
+                    setIsActive(plan.isActive);
+                    setIsPopular(plan.isPopular);
+                    setIsModalOpen(true);
+                  }}
+                >
+                  <Edit size={14} className="mr-2" /> {language === 'ar' ? "تعديل" : "Edit"}
+                </Button>
+                <Button 
+                  variant={plan.isActive ? "ghost" : "outline"} 
+                  size="sm" 
+                  className={`flex-1 rounded-xl ${plan.isActive ? 'text-red-500 hover:bg-red-50' : 'text-green-500 hover:bg-green-50'}`}
+                  onClick={() => savePlan.mutate({ ...plan, isActive: !plan.isActive })}
+                >
+                  {plan.isActive ? (language === 'ar' ? "تعطيل" : "Deactivate") : (language === 'ar' ? "تفعيل" : "Activate")}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="sm:max-w-[500px]" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+          <DialogHeader>
+            <DialogTitle>{editingPlan ? (language === 'ar' ? "تعديل الخطة" : "Edit Plan") : (language === 'ar' ? "خطة جديدة" : "New Plan")}</DialogTitle>
+          </DialogHeader>
+          <div className="py-4 space-y-4 max-h-[70vh] overflow-y-auto px-1">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-sm font-bold text-gray-600">{language === 'ar' ? "الاسم (عربي)" : "Name (AR)"}</label>
+                <Input value={nameAr} onChange={(e) => setNameAr(e.target.value)} />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-bold text-gray-600">{language === 'ar' ? "الاسم (EN)" : "Name (EN)"}</label>
+                <Input value={nameEn} onChange={(e) => setNameEn(e.target.value)} />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-bold text-gray-600">{language === 'ar' ? "الوصف (عربي)" : "Description (AR)"}</label>
+              <Textarea value={descriptionAr} onChange={(e) => setDescriptionAr(e.target.value)} />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-bold text-gray-600">{language === 'ar' ? "الوصف (EN)" : "Description (EN)"}</label>
+              <Textarea value={descriptionEn} onChange={(e) => setDescriptionEn(e.target.value)} />
+            </div>
+            <div className="grid grid-cols-3 gap-4">
+              <div className="space-y-2">
+                <label className="text-sm font-bold text-gray-600">{language === 'ar' ? "السعر" : "Price"}</label>
+                <Input type="number" value={price} onChange={(e) => setPrice(Number(e.target.value))} />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-bold text-gray-600">{language === 'ar' ? "الرصيد" : "Credits"}</label>
+                <Input type="number" value={credits} onChange={(e) => setCredits(Number(e.target.value))} />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-bold text-gray-600">{language === 'ar' ? "الأيام" : "Days"}</label>
+                <Input type="number" value={durationDays} onChange={(e) => setDurationDays(Number(e.target.value))} />
+              </div>
+            </div>
+            <div className="flex items-center gap-6 pt-2">
+              <div className="flex items-center gap-2">
+                <input type="checkbox" checked={isActive} onChange={(e) => setIsActive(e.target.checked)} id="plan-active" />
+                <label htmlFor="plan-active" className="text-sm font-medium">{language === 'ar' ? "نشطة" : "Active"}</label>
+              </div>
+              <div className="flex items-center gap-2">
+                <input type="checkbox" checked={isPopular} onChange={(e) => setIsPopular(e.target.checked)} id="plan-popular" />
+                <label htmlFor="plan-popular" className="text-sm font-medium">{language === 'ar' ? "شائعة" : "Popular"}</label>
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsModalOpen(false)}>{language === 'ar' ? "إلغاء" : "Cancel"}</Button>
+            <Button 
+              onClick={() => savePlan.mutate({ nameAr, nameEn, descriptionAr, descriptionEn, price, credits, durationDays, isActive, isPopular })}
+              className="bg-indigo-600 hover:bg-indigo-700"
+            >
+              {savePlan.isPending ? <Loader2 className="animate-spin" /> : (language === 'ar' ? "حفظ" : "Save")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}
+
 export default function AdminDashboard() {
   const { user, loading } = useAuth();
   const { language, t } = useLanguage();
@@ -347,9 +532,10 @@ export default function AdminDashboard() {
     { id: "categories", label: t('categories'), icon: Layers, color: "from-teal-400 to-emerald-600 shadow-teal-500/30", badge: pendingCategoriesCount },
     { id: "orders", label: t('orders'), icon: ShoppingCart, color: "from-orange-500 to-red-600 shadow-orange-500/30" },
     { id: "customers", label: t('customers'), icon: Users, color: "from-sky-500 to-blue-600 shadow-sky-500/30" },
+    { id: "aiPlans", label: language === 'ar' ? "خطط AI" : "AI Plans", icon: Sparkles, color: "from-indigo-500 to-purple-600 shadow-indigo-500/30" },
     { id: "chat", label: t('chat'), icon: MessageSquare, badge: unreadCount, color: "from-pink-500 to-rose-600 shadow-pink-500/30" },
     { id: "settings", label: t('settings'), icon: Settings, color: "from-slate-700 to-slate-900 shadow-slate-500/30" },
-  ], [t, unreadCount, pendingVendorsCount, pendingContentRequestsCount, pendingCategoriesCount]);
+  ], [t, unreadCount, pendingVendorsCount, pendingContentRequestsCount, pendingCategoriesCount, language]);
 
   const setActiveTab = (tab: typeof activeTab) => {
     setActiveTabInternal(tab);
@@ -641,6 +827,9 @@ export default function AdminDashboard() {
 
       {/* Content */}
       <main className="flex-1 overflow-y-auto p-4 md:p-8 scroll-smooth">
+        {/* AI Plans Tab */}
+        {activeTab === "aiPlans" && <AiPlansTab />}
+
         {/* Overview Tab */}
         {activeTab === "overview" && (
           <div className="space-y-8">
@@ -1915,6 +2104,20 @@ export default function AdminDashboard() {
                   <div className="flex justify-between">
                     <span className="text-sm text-gray-500">{t('address')}</span>
                     <span className="text-sm font-medium max-w-[200px] text-right truncate">{customerDetails.address || '-'}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <h4 className="font-bold text-gray-900 mb-2">{language === 'ar' ? "رصيد الذكاء الاصطناعي" : "AI Credits"}</h4>
+                <div className="bg-rose-50 border border-rose-100 rounded-xl p-4 grid grid-cols-2 gap-4">
+                  <div className="text-center">
+                    <p className="text-[10px] text-rose-500 font-bold uppercase tracking-widest mb-1">{language === 'ar' ? "الرصيد المتبقي" : "Remaining"}</p>
+                    <p className="text-2xl font-medium text-rose-700">{customerDetails.aiCredits?.remainingCredits || 0}</p>
+                  </div>
+                  <div className="text-center border-l border-rose-100">
+                    <p className="text-[10px] text-rose-500 font-bold uppercase tracking-widest mb-1">{language === 'ar' ? "إجمالي المستخدم" : "Used Total"}</p>
+                    <p className="text-2xl font-medium text-rose-700">{customerDetails.aiCredits?.usedCredits || 0}</p>
                   </div>
                 </div>
               </div>

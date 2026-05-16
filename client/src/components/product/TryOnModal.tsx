@@ -7,6 +7,8 @@ import api from "@/lib/api";
 import { toast } from "sonner";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { useLocation } from "wouter";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { endpoints } from "@/lib/api";
 
 interface TryOnModalProps {
   isOpen: boolean;
@@ -24,6 +26,15 @@ export function TryOnModal({ isOpen, onClose, productImage, productName }: TryOn
   const [userPreview, setUserPreview] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
+  const queryClient = useQueryClient();
+
+  const { data: credits, isLoading: creditsLoading } = useQuery({
+    queryKey: ["ai-credits"],
+    queryFn: () => endpoints.aiSubscriptions.getMyCredits(),
+    enabled: !!user && isOpen,
+  });
+
+  const hasCredits = credits && credits.remainingCredits > 0;
 
   const handleUserImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -76,6 +87,8 @@ export function TryOnModal({ isOpen, onClose, productImage, productName }: TryOn
       if (response.data?.imageUrl) {
         setGeneratedImage(response.data.imageUrl);
         toast.success(language === 'ar' ? 'تمت معالجة التجربة بنجاح!' : 'Try-on processed successfully!');
+        // Update credits
+        queryClient.invalidateQueries({ queryKey: ["ai-credits"] });
       } else {
         throw new Error('No image URL received');
       }
@@ -157,28 +170,55 @@ export function TryOnModal({ isOpen, onClose, productImage, productName }: TryOn
 
           {!generatedImage && (
             <div className="pt-4 flex flex-col gap-4">
-              <Button 
-                onClick={handleTryOn} 
-                disabled={isLoading || !userPreview} 
-                className="h-14 rounded-2xl bg-gradient-to-r from-purple-600 to-rose-600 hover:from-purple-700 hover:to-rose-700 text-white font-bold text-lg shadow-xl"
-              >
-                {isLoading ? (
-                  <>
-                    <Loader2 className="w-5 h-5 animate-spin mr-2" />
-                    {language === 'ar' ? 'جاري المعالجة...' : 'Processing...'}
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="w-5 h-5 mr-2" />
-                    {language === 'ar' ? 'ابدئي التجربة الآن' : 'Start Try-On Now'}
-                  </>
-                )}
-              </Button>
-              <p className="text-[10px] text-gray-400 text-center px-8">
-                {language === 'ar' 
-                  ? 'يتم استخدام تقنيات الذكاء الاصطناعي لمعالجة الصور. قد تستغرق العملية بضع ثوانٍ.' 
-                  : 'AI technology is used to process images. The process may take a few seconds.'}
-              </p>
+              {!hasCredits && !creditsLoading && user ? (
+                <div className="bg-amber-50 p-6 rounded-3xl border border-amber-100 text-center space-y-4">
+                  <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto shadow-sm">
+                    <Sparkles className="w-6 h-6 text-amber-500" />
+                  </div>
+                  <div>
+                    <p className="font-bold text-amber-900">{language === 'ar' ? "نفذ رصيدك" : "Out of Credits"}</p>
+                    <p className="text-xs text-amber-700 mt-1">{language === 'ar' ? "يرجى شحن رصيدك لتتمكن من استخدام ميزة التجربة الذكية" : "Please purchase credits to continue using AI features"}</p>
+                  </div>
+                  <Button 
+                    onClick={() => { onClose(); setLocation("/pricing"); }}
+                    className="w-full bg-amber-600 hover:bg-amber-700 text-white rounded-xl h-12 font-bold"
+                  >
+                    {language === 'ar' ? "شحن الرصيد" : "Purchase Credits"}
+                  </Button>
+                </div>
+              ) : (
+                <>
+                  <Button 
+                    onClick={handleTryOn} 
+                    disabled={isLoading || !userPreview || creditsLoading} 
+                    className="h-14 rounded-2xl bg-gradient-to-r from-purple-600 to-rose-600 hover:from-purple-700 hover:to-rose-700 text-white font-bold text-lg shadow-xl"
+                  >
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="w-5 h-5 animate-spin mr-2" />
+                        {language === 'ar' ? 'جاري المعالجة...' : 'Processing...'}
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles className="w-5 h-5 mr-2" />
+                        {language === 'ar' ? 'ابدئي التجربة الآن' : 'Start Try-On Now'}
+                      </>
+                    )}
+                  </Button>
+                  <div className="text-center space-y-2">
+                    <p className="text-[10px] text-gray-400 px-8">
+                      {language === 'ar' 
+                        ? 'سيتم خصم 1 كريديت من رصيدك عند بدء التجربة.' 
+                        : '1 credit will be deducted from your balance for this try-on.'}
+                    </p>
+                    {credits && (
+                      <p className="text-xs font-bold text-rose-600">
+                        {language === 'ar' ? `رصيدك المتبقي: ${credits.remainingCredits}` : `Remaining Credits: ${credits.remainingCredits}`}
+                      </p>
+                    )}
+                  </div>
+                </>
+              )}
             </div>
           )}
         </div>

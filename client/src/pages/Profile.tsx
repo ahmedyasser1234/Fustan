@@ -21,7 +21,7 @@ import {
 import {
     User, ShoppingBag, Heart, LogOut, Settings, Bell, ChevronLeft,
     Loader2, Eye, EyeOff, Plus, Camera, Store, MapPin,
-    Share2, Truck, Image as ImageIcon, X, Package, Award, ChevronRight
+    Share2, Truck, Image as ImageIcon, X, Package, Award, ChevronRight, Sparkles
 } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import UserPointsView from "@/components/account/UserPointsView";
@@ -57,6 +57,13 @@ export default function Profile() {
     const { data: unreadNotifications } = useQuery({
         queryKey: ["notifications", "unread-count"],
         queryFn: () => endpoints.notifications.getUnreadCount(),
+        enabled: !!user,
+        retry: false,
+    });
+
+    const { data: aiCredits } = useQuery({
+        queryKey: ["ai-credits"],
+        queryFn: () => endpoints.aiSubscriptions.getMyCredits(),
         enabled: !!user,
         retry: false,
     });
@@ -108,6 +115,7 @@ export default function Profile() {
         { label: language === 'ar' ? "الطلبات" : "Orders", value: orders?.length || 0, icon: ShoppingBag, color: "text-blue-600", bg: "bg-blue-50" },
         { label: language === 'ar' ? "المفضلة" : "Wishlist", value: wishlist?.length || 0, icon: Heart, color: "text-rose-600", bg: "bg-rose-50" },
         { label: language === 'ar' ? "النقاط" : "Points", value: user.points || 0, icon: Award, color: "text-purple-600", bg: "bg-purple-50" },
+        { label: language === 'ar' ? "رصيد AI" : "AI Credits", value: aiCredits?.remainingCredits || 0, icon: Sparkles, color: "text-rose-600", bg: "bg-rose-50" },
         { label: language === 'ar' ? "التنبيهات" : "Notifications", value: unreadNotifications?.count || 0, icon: Bell, color: "text-amber-600", bg: "bg-amber-50" },
     ];
 
@@ -309,6 +317,21 @@ export default function Profile() {
                                     <div className="text-start">
                                         <p className="font-medium text-gray-900 leading-none mb-1">{language === 'ar' ? "تنبيهات النظام" : "System Notifications"}</p>
                                         <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{language === 'ar' ? "إدارة الإشعارات" : "Manage notifications"}</p>
+                                    </div>
+                                </div>
+                                <ChevronLeft size={16} className={`text-gray-300 group-hover:text-rose-500 transition-all ${language === 'en' ? 'rotate-180' : ''}`} />
+                            </div>
+                            <div
+                                onClick={() => setLocation("/pricing")}
+                                className="bg-white p-6 rounded-3xl border border-gray-100 flex items-center justify-between group cursor-pointer hover:border-rose-100 hover:shadow-md transition-all h-24"
+                            >
+                                <div className="flex items-center gap-4">
+                                    <div className="w-12 h-12 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center">
+                                        <Sparkles size={20} />
+                                    </div>
+                                    <div className="text-start">
+                                        <p className="font-medium text-gray-900 leading-none mb-1">{language === 'ar' ? "باقات الذكاء الاصطناعي" : "AI Subscriptions"}</p>
+                                        <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{language === 'ar' ? "شحن رصيد التجربة" : "Recharge try-on credits"}</p>
                                     </div>
                                 </div>
                                 <ChevronLeft size={16} className={`text-gray-300 group-hover:text-rose-500 transition-all ${language === 'en' ? 'rotate-180' : ''}`} />

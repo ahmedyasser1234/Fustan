@@ -12,6 +12,7 @@ import {
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { AiService } from './ai.service';
 import { PixVerseService } from './pixverse.service';
+import { AiSubscriptionsService } from '../ai-subscriptions/ai-subscriptions.service';
 import { JwtAuthGuard, Public } from '../auth/jwt-auth.guard';
 
 @Controller('ai')
@@ -21,6 +22,7 @@ export class AiController {
   constructor(
     private readonly aiService: AiService,
     private readonly pixVerseService: PixVerseService,
+    private readonly aiSubscriptionsService: AiSubscriptionsService,
   ) {}
 
   @Post('try-on')
@@ -37,7 +39,10 @@ export class AiController {
       userImage?: Express.Multer.File[];
     },
     @Body() body: any,
+    @Req() req: any,
   ) {
+    // Force userId from authenticated session
+    body.userId = req.user.id;
     // Normalize files to array for service
     const fileArray: Express.Multer.File[] = [];
     if (files.dressImage?.[0]) fileArray.push(files.dressImage[0]);
@@ -129,9 +134,13 @@ export class AiController {
       brideImageUrl: string;
       dressImageUrl: string;
     },
+    @Req() req: any,
   ) {
+    // Deduct credit
+    await this.aiSubscriptionsService.useCredit(req.user.id);
+
     const taskId = await this.pixVerseService.createVirtualTryOnTask(
-      body.userId,
+      req.user.id,
       body.brideImageUrl,
       body.dressImageUrl,
     );
@@ -158,7 +167,11 @@ export class AiController {
   @Post('pixverse/image/template')
   async pixVerseImageTemplate(
     @Body() body: { imgUrls: string[]; templateId: number },
+    @Req() req: any,
   ) {
+    // Deduct credit (since image templates are often used for VTON or high-value AI)
+    await this.aiSubscriptionsService.useCredit(req.user.id);
+
     const imgIds = await Promise.all(
       body.imgUrls.map((url) => this.pixVerseService.uploadImage(url)),
     );
@@ -230,6 +243,7 @@ export class AiController {
   async generateVirtualModel(
     @UploadedFiles() files: { dressImage?: Express.Multer.File[]; customerImage?: Express.Multer.File[] },
     @Body() body: { scenePreset?: string; pose?: string },
+    @Req() req: any,
   ) {
     const dressFile = files.dressImage?.[0];
     const customerFile = files.customerImage?.[0];
@@ -237,10 +251,10 @@ export class AiController {
     if (!customerFile) throw new Error('Customer image is required');
 
     return this.aiService.generateVirtualModel(
-      dressFile.buffer,
       customerFile.buffer,
       dressFile.mimetype || 'image/jpeg',
       customerFile.mimetype || 'image/jpeg',
+      req.user.id,
     );
   }
 

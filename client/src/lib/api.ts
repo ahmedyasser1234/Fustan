@@ -209,4 +209,9 @@ export const endpoints = {
     points: {
         getMyPoints: () => api.get('/points/my-points').then(res => res.data),
     },
+    aiSubscriptions: {
+        getPlans: () => api.get('/ai-subscriptions/plans').then(res => res.data),
+        getMyCredits: () => api.get('/ai-subscriptions/credits').then(res => res.data),
+        purchasePlan: (planId: number) => api.post(`/ai-subscriptions/purchase/${planId}`).then(res => res.data),
+    },
 };

@@ -25,6 +25,7 @@ import {
   vendorReviews,
   vendorPayouts,
   vendorWallets,
+  userAiCredits,
 } from '../database/schema';
 import { eq, and, desc, sql } from 'drizzle-orm';
 
@@ -549,9 +550,16 @@ export class AdminService {
       .where(eq(orders.customerId, id))
       .orderBy(desc(orders.createdAt));
 
+    const [aiCredits] = await this.databaseService.db
+      .select()
+      .from(userAiCredits)
+      .where(eq(userAiCredits.userId, id))
+      .limit(1);
+
     return {
       ...customer[0],
       orders: customerOrders,
+      aiCredits: aiCredits || null,
     };
   }
 
