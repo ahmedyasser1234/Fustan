@@ -491,7 +491,7 @@ export default function AdminDashboard() {
   const [customerDetails, setCustomerDetails] = useState<any>(null);
   const [detailsCustomerId, setDetailsCustomerId] = useState<number | null>(null);
 
-  const [activeTab, setActiveTabInternal] = useState<"overview" | "vendors" | "requests" | "reports" | "analytics" | "products" | "categories" | "orders" | "customers" | "chat" | "content" | "settings">(() => {
+  const [activeTab, setActiveTabInternal] = useState<"overview" | "vendors" | "requests" | "reports" | "analytics" | "products" | "categories" | "orders" | "customers" | "aiPlans" | "chat" | "content" | "settings">(() => {
     const params = new URLSearchParams(window.location.search);
     return (params.get("tab") as any) || "overview";
   });
