@@ -8,6 +8,7 @@ import {
   UploadedFiles,
   UseGuards,
   Logger,
+  Req,
 } from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { AiService } from './ai.service';
@@ -251,6 +252,7 @@ export class AiController {
     if (!customerFile) throw new Error('Customer image is required');
 
     return this.aiService.generateVirtualModel(
+      dressFile.buffer,
       customerFile.buffer,
       dressFile.mimetype || 'image/jpeg',
       customerFile.mimetype || 'image/jpeg',
