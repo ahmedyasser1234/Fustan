@@ -310,15 +310,15 @@ function AiPlansTab() {
 
   const { data: plans, isLoading } = useQuery({
     queryKey: ['admin', 'ai-plans'],
-    queryFn: async () => (await api.get('/ai-subscriptions/plans?all=true')).data,
+    queryFn: async () => (await api.get('/ai-subscriptions/admin/plans')).data,
   });
 
   const savePlan = useMutation({
     mutationFn: async (data: any) => {
       if (editingPlan) {
-        return (await api.patch(`/ai-subscriptions/plans/${editingPlan.id}`, data)).data;
+        return (await api.patch(`/ai-subscriptions/admin/plans/${editingPlan.id}`, data)).data;
       }
-      return (await api.post('/ai-subscriptions/plans', data)).data;
+      return (await api.post('/ai-subscriptions/admin/plans', data)).data;
     },
     onSuccess: () => {
       toast.success(language === 'ar' ? "تم حفظ الخطة بنجاح" : "Plan saved successfully");

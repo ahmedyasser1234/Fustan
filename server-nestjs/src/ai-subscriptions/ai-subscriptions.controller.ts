@@ -2,7 +2,7 @@ import {
   Controller,
   Get,
   Post,
-  Put,
+  Patch,
   Body,
   Param,
   UseGuards,
@@ -62,7 +62,7 @@ export class AiSubscriptionsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
-  @Put('admin/plans/:id')
+  @Patch('admin/plans/:id')
   @ApiOperation({ summary: 'Update an existing AI plan (Admin only)' })
   async updatePlan(@Param('id', ParseIntPipe) id: number, @Body() data: any) {
     return this.service.updatePlan(id, data);
