@@ -100,11 +100,24 @@ export default function Home() {
     queryFn: () => endpoints.products.list({ limit: 6 })
   });
 
-  // Fetch All/Filtered Products
-  const { data: products, isLoading: productsLoading } = useQuery({
+  const { data: productsData, isLoading: productsLoading } = useQuery({
     queryKey: ['products', selectedCategory],
-    queryFn: () => endpoints.products.list({ categoryId: selectedCategory ?? undefined, limit: 12 })
+    queryFn: () => endpoints.products.list({ categoryId: selectedCategory ?? undefined, limit: 13 })
   });
+
+  const products = Array.isArray(productsData) ? productsData : [];
+  const hasMoreProducts = products.length > 12;
+  const displayProducts = products.slice(0, 12);
+  
+  const currentCategory = selectedCategory && Array.isArray(categories) 
+    ? categories.find((c: any) => c.id === selectedCategory) 
+    : null;
+  
+  const showMoreLabel = selectedCategory && currentCategory
+    ? (language === 'ar' ? `شاهد المزيد من ${currentCategory.nameAr}` : `Show more from ${currentCategory.nameEn}`)
+    : (language === 'ar' ? 'شاهد المزيد من المنتجات' : 'Show more products');
+
+  const showMoreLink = selectedCategory ? `/products?category=${selectedCategory}` : '/products';
 
   // Fetch Store Reviews
   const { data: storeReviews, isLoading: storeReviewsLoading } = useQuery({
@@ -588,12 +601,31 @@ export default function Home() {
                   ref={trendingRef}
                   className="flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-8 overflow-x-auto no-scrollbar pb-8 md:pb-0 px-2 md:px-0 -mx-2 md:mx-0 scroll-smooth"
                 >
-                  {(productsLoading ? Array(8).fill({}) : (Array.isArray(products) ? products : [])).map((product: any, i: number) => (
+                  {(productsLoading ? Array(8).fill({}) : displayProducts).map((product: any, i: number) => (
                     <div key={i} className="w-[46%] flex-shrink-0 md:w-auto">
                       <ProductCard product={product} loading={productsLoading} onQuickView={setQuickViewProduct} />
                     </div>
                   ))}
                 </div>
+
+                {hasMoreProducts && !productsLoading && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    className="mt-16 text-center"
+                  >
+                    <Link href={showMoreLink}>
+                      <Button 
+                        size="lg" 
+                        className="h-14 px-10 rounded-full bg-white border-2 border-[oklch(58.6%_0.253_17.585)] text-[oklch(58.6%_0.253_17.585)] hover:bg-[oklch(58.6%_0.253_17.585)] hover:text-white font-medium text-lg shadow-xl transition-all hover:scale-105 active:scale-95 group"
+                      >
+                        {showMoreLabel}
+                        <ChevronLeft className={`mr-2 h-5 w-5 transition-transform group-hover:-translate-x-1 ${language === 'ar' ? '' : 'rotate-180 group-hover:translate-x-1'}`} />
+                      </Button>
+                    </Link>
+                  </motion.div>
+                )}
               </div>
             </TabsContent>
           </Tabs>
