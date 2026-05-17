@@ -378,17 +378,17 @@ export function VirtualModelSection({ productImage, allImages = [] }: VirtualMod
             </div>
 
             {/* Generate Button */}
-            {user?.role === 'admin' ? (
-              <div className="bg-red-50 p-6 rounded-3xl border border-red-100 text-center space-y-3 shadow-sm">
+            {user?.role === 'admin' || user?.role === 'vendor' ? (
+              <div className="bg-blue-50 p-6 rounded-3xl border border-blue-100 text-center space-y-3 shadow-sm">
                 <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto shadow-sm">
-                  <X className="w-6 h-6 text-red-500" />
+                  <ImageIcon className="w-6 h-6 text-blue-500" />
                 </div>
                 <div>
-                  <p className="font-bold text-red-900">{language === 'ar' ? "غير متاح للإدارة" : "Not Available for Admins"}</p>
-                  <p className="text-xs text-red-700 mt-1">
+                  <p className="font-bold text-blue-900">{language === 'ar' ? "ميزة للمتسوقين" : "Customer Feature"}</p>
+                  <p className="text-xs text-blue-700 mt-1">
                     {language === 'ar' 
-                      ? "هذه الميزة مخصصة للمتسوقين فقط. كمسؤول، لا يمكنك إنشاء صور تجربة افتراضية." 
-                      : "This feature is for customers only. As an admin, you cannot generate virtual try-on images."}
+                      ? "هذه الميزة مخصصة للمتسوقين فقط لتجربة الفساتين. كتاجر أو مسؤول، لا يمكنك إنشاء صور تجربة افتراضية." 
+                      : "This feature is for customers only. As a vendor or admin, you cannot generate virtual try-on images."}
                   </p>
                 </div>
               </div>
