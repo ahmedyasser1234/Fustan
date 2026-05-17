@@ -631,23 +631,39 @@ export function TryOnSection({ productName, productImage, productDescription }: 
 
                                  {/* Generate Buttons */}
                                  <div className="flex gap-4 w-full">
-                                     <Button
-                                         onClick={handleGenerate}
-                                         disabled={isLoading || !userImage || !measurements.height || !measurements.weight}
-                                         className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white h-14 text-lg font-bold rounded-full shadow-lg transition-all disabled:opacity-50"
-                                     >
-                                         {isLoading ? (
-                                             <>
-                                                 <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                                                 {language === 'ar' ? 'جاري المعالجة...' : 'Processing...'}
-                                             </>
-                                         ) : (
-                                             <>
-                                                 <Sparkles className="mr-2 h-5 w-5" />
-                                                 {language === 'ar' ? 'اصنعي السحر!' : 'Create Magic!'}
-                                             </>
-                                         )}
-                                     </Button>
+                                    {user?.role === 'admin' ? (
+                                        <div className="w-full bg-red-50 p-6 rounded-3xl border border-red-100 text-center space-y-3 shadow-sm">
+                                            <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto shadow-sm">
+                                                <X className="w-6 h-6 text-red-500" />
+                                            </div>
+                                            <div>
+                                                <p className="font-bold text-red-900">{language === 'ar' ? "غير متاح للإدارة" : "Not Available for Admins"}</p>
+                                                <p className="text-xs text-red-700 mt-1">
+                                                    {language === 'ar' 
+                                                        ? "هذه الميزة مخصصة للمتسوقين فقط. كمسؤول، لا يمكنك إنشاء صور تجربة افتراضية." 
+                                                        : "This feature is for customers only. As an admin, you cannot generate virtual try-on images."}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <Button
+                                            onClick={handleGenerate}
+                                            disabled={isLoading || !userImage || !measurements.height || !measurements.weight}
+                                            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white h-14 text-lg font-bold rounded-full shadow-lg transition-all disabled:opacity-50"
+                                        >
+                                            {isLoading ? (
+                                                <>
+                                                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                                                    {language === 'ar' ? 'جاري المعالجة...' : 'Processing...'}
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <Sparkles className="mr-2 h-5 w-5" />
+                                                    {language === 'ar' ? 'اصنعي السحر!' : 'Create Magic!'}
+                                                </>
+                                            )}
+                                        </Button>
+                                    )}
                                  </div>
                                 <p className="text-xs text-center text-gray-500 mt-3">
                                     {language === 'ar'
