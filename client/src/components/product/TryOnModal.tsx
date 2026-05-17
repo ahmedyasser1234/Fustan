@@ -21,6 +21,7 @@ export function TryOnModal({ isOpen, onClose, productImage, productName }: TryOn
   const { language } = useLanguage();
   const { user } = useAuth();
   const [, setLocation] = useLocation();
+  const isCustomer = user?.role === 'customer';
 
   const [userImage, setUserImage] = useState<File | null>(null);
   const [userPreview, setUserPreview] = useState<string>('');
@@ -59,6 +60,11 @@ export function TryOnModal({ isOpen, onClose, productImage, productName }: TryOn
       setLocation("/login");
       return;
     }
+    if (!isCustomer) {
+      toast.error(language === 'ar' ? 'عذراً، هذه الميزة متاحة للمتسوقين فقط' : 'Sorry, this feature is only available for customers');
+      return;
+    }
+
     if (!userPreview || !userImage) {
       toast.error(language === 'ar' ? 'يرجى رفع صورتك أولاً' : 'Please upload your photo first');
       return;
@@ -184,6 +190,26 @@ export function TryOnModal({ isOpen, onClose, productImage, productName }: TryOn
                     className="w-full bg-amber-600 hover:bg-amber-700 text-white rounded-xl h-12 font-bold"
                   >
                     {language === 'ar' ? "شحن الرصيد" : "Purchase Credits"}
+                  </Button>
+                </div>
+              ) : !isCustomer && user ? (
+                <div className="bg-blue-50 p-6 rounded-3xl border border-blue-100 text-center space-y-4">
+                  <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto shadow-sm">
+                    <ImageIcon className="w-6 h-6 text-blue-500" />
+                  </div>
+                  <div>
+                    <p className="font-bold text-blue-900">{language === 'ar' ? "ميزة للمتسوقين" : "Customer Feature"}</p>
+                    <p className="text-xs text-blue-700 mt-1">
+                      {language === 'ar' 
+                        ? "هذه الميزة مخصصة للمتسوقين لتجربة الفساتين. كتاجر أو مسؤول، يمكنك معاينة المنتجات فقط." 
+                        : "This feature is for customers to try on dresses. As a vendor or admin, you can only preview products."}
+                    </p>
+                  </div>
+                  <Button 
+                    onClick={onClose}
+                    className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl h-12 font-bold"
+                  >
+                    {language === 'ar' ? "حسناً" : "I Understand"}
                   </Button>
                 </div>
               ) : (

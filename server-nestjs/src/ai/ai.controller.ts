@@ -15,9 +15,12 @@ import { AiService } from './ai.service';
 import { PixVerseService } from './pixverse.service';
 import { AiSubscriptionsService } from '../ai-subscriptions/ai-subscriptions.service';
 import { JwtAuthGuard, Public } from '../auth/jwt-auth.guard';
+import { RolesGuard } from '../auth/roles.guard';
+import { Roles } from '../common/decorators/roles.decorator';
 
 @Controller('ai')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles('customer')
 export class AiController {
   private readonly logger = new Logger(AiController.name);
   constructor(
