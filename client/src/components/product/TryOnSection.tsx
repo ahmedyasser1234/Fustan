@@ -10,7 +10,8 @@ import { toast } from "sonner";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { useLocation } from "wouter";
 import { useEffect } from "react";
-
+import { useQuery } from "@tanstack/react-query";
+import { endpoints } from "@/lib/api";
 interface TryOnSectionProps {
     productName: string;
     productImage: string;
@@ -24,6 +25,12 @@ export function TryOnSection({ productName, productImage, productDescription }: 
     const [isLoading, setIsLoading] = useState(false);
     const [isSavingMeasurements, setIsSavingMeasurements] = useState(false);
     const [generatedImage, setGeneratedImage] = useState<string | null>(null);
+
+    const { data: credits } = useQuery({
+        queryKey: ["ai-credits"],
+        queryFn: () => endpoints.aiSubscriptions.getMyCredits(),
+        enabled: !!user,
+    });
 
     // Image uploads
     const [dressImage, setDressImage] = useState<File | null>(null);
@@ -221,11 +228,18 @@ export function TryOnSection({ productName, productImage, productDescription }: 
                             {language === 'ar' ? 'جربي الفستان بالذكاء الاصطناعي' : 'AI Virtual Try-On'}
                         </h2>
                     </div>
-                    <p className="text-gray-600 text-base md:text-lg max-w-2xl mx-auto">
+                    <p className="text-gray-600 text-base md:text-lg max-w-2xl mx-auto mb-2">
                         {language === 'ar'
                             ? 'ارفعي صورة الفستان وصورتك، ودعي الذكاء الاصطناعي يريكِ كيف ستبدين به'
                             : 'Upload a dress photo and your photo, let AI show you how you\'ll look'}
                     </p>
+                    {credits && (
+                        <div className="inline-flex items-center justify-center px-4 py-2 bg-rose-50 border border-rose-100 rounded-full">
+                            <p className="text-sm font-bold text-rose-600">
+                                {language === 'ar' ? `رصيدك المتبقي: ${credits.remainingCredits} صور` : `Remaining Credits: ${credits.remainingCredits} images`}
+                            </p>
+                        </div>
+                    )}
                 </div>
 
                 <div className="w-[90%] mx-auto">

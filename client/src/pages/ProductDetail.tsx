@@ -667,7 +667,9 @@ export default function ProductDetail() {
                           <span className="truncate">{language === 'ar' ? 'تواصل مع المصمم' : 'Contact Designer'}</span>
                         </Button>
                       </div>
-                      <Button onClick={() => setIsTryOnModalOpen(true)} className="h-14 rounded-2xl bg-gradient-to-r from-purple-600 to-rose-600 text-white font-medium w-full text-lg shadow-lg shadow-rose-100">
+                      <Button onClick={() => {
+                        document.getElementById('ai-try-on-section')?.scrollIntoView({ behavior: 'smooth' });
+                      }} className="h-14 rounded-2xl bg-gradient-to-r from-purple-600 to-rose-600 text-white font-medium w-full text-lg shadow-lg shadow-rose-100">
                         {language === 'ar' ? '✨ جربي الفستان' : '✨ Try It On'}
                       </Button>
                     </div>
