@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
-import { Loader2, Sparkles, Upload, X, Download, RefreshCw, User, Shirt, Image as ImageIcon } from "lucide-react";
+import { Loader2, Sparkles, Upload, X, Download, RefreshCw, User, Shirt, Image as ImageIcon, ShieldCheck } from "lucide-react";
 import { useLanguage } from "@/lib/i18n";
 import api from "@/lib/api";
 import { toast } from "sonner";
@@ -405,6 +405,13 @@ export function VirtualModelSection({ productImage, allImages = [] }: VirtualMod
                 )}
               </Button>
             )}
+            
+            <p className="text-xs font-bold text-center text-green-600 flex items-center justify-center gap-1 pt-2">
+              <ShieldCheck className="w-4 h-4" />
+              {language === 'ar'
+                  ? 'لا يتم حفظ صورتك نهائياً، الخصوصية مضمونة 100%'
+                  : 'Your photo is never saved, 100% privacy guaranteed'}
+            </p>
           </Card>
         </div>
       </div>

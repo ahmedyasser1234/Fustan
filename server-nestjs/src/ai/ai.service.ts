@@ -87,6 +87,7 @@ export class AiService {
     // Check if we have uploaded images
     let dressImageUrl = data.productImage;
     let userImageUrl: string | null = null;
+    let userUploadPublicId: string | null = null;
 
     if (files && files.length > 0) {
       this.logger.log(`Processing ${files.length} uploaded images...`);
@@ -128,7 +129,8 @@ export class AiService {
           stream.pipe(uploadStream);
         });
         userImageUrl = userUpload.secure_url;
-        this.logger.log(`User image uploaded: ${userImageUrl}`);
+        userUploadPublicId = userUpload.public_id;
+        this.logger.log(`User image uploaded: ${userImageUrl} (Public ID: ${userUploadPublicId})`);
       }
     }
 
@@ -139,16 +141,27 @@ export class AiService {
         `Using Official PixVerse Image Template VTON with ID: ${templateId}`,
       );
 
-      const result = await this.performPixVerseTemplateVTON(
-        dressImageUrl,
-        userImageUrl,
-        templateId,
-      );
+      try {
+        const result = await this.performPixVerseTemplateVTON(
+          dressImageUrl,
+          userImageUrl,
+          templateId,
+        );
 
-      return {
-        ...result,
-        message: 'Virtual Try-On task created successfully.',
-      };
+        return {
+          ...result,
+          message: 'Virtual Try-On task created successfully.',
+        };
+      } finally {
+        if (userUploadPublicId) {
+          try {
+            await cloudinary.uploader.destroy(userUploadPublicId);
+            this.logger.log(`Deleted user image from Cloudinary to protect privacy: ${userUploadPublicId}`);
+          } catch (err: any) {
+            this.logger.error(`Failed to delete user image from Cloudinary: ${err.message}`);
+          }
+        }
+      }
     }
 
     throw new Error(

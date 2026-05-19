@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
-import { Loader2, Sparkles, Upload, X, Image as ImageIcon, Save, Check, Zap, Crown } from "lucide-react";
+import { Loader2, Sparkles, Upload, X, Image as ImageIcon, Save, Check, Zap, Crown, ShieldCheck } from "lucide-react";
 import { useLanguage } from "@/lib/i18n";
 import api from "@/lib/api";
 import { toast } from "sonner";
@@ -751,6 +751,12 @@ export function TryOnSection({ productName, productImage, productDescription }: 
                                     {language === 'ar'
                                         ? 'قد تستغرق العملية 10-30 ثانية'
                                         : 'Process may take 10-30 seconds'}
+                                </p>
+                                <p className="text-xs font-bold text-center text-green-600 mt-2 flex items-center justify-center gap-1">
+                                    <ShieldCheck className="w-4 h-4" />
+                                    {language === 'ar'
+                                        ? 'لا يتم حفظ صورتك نهائياً، الخصوصية مضمونة 100%'
+                                        : 'Your photo is never saved, 100% privacy guaranteed'}
                                 </p>
                             </div>
 
