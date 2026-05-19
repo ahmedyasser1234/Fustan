@@ -37,6 +37,7 @@ import ForgotPassword from "@/pages/ForgotPassword";
 import ResetPassword from "@/pages/ResetPassword";
 import VerifyEmail from "@/pages/VerifyEmail";
 import Pricing from "@/pages/Pricing";
+import AiCheckoutSuccess from "@/pages/AiCheckoutSuccess";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { endpoints } from "@/lib/api";
 import { ProtectedRoute } from "./components/ProtectedRoute";
@@ -629,6 +630,7 @@ function Router() {
       <Route path={"/about-us"} component={AboutUs} />
       <Route path={"/contact-us"} component={ContactUs} />
       <Route path={"/pricing"} component={Pricing} />
+      <ProtectedRoute path={"/ai-checkout/success"} component={AiCheckoutSuccess} />
       <Route path={"/faq"} component={FAQ} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}

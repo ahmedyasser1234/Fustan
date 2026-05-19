@@ -1,11 +1,24 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { DatabaseService } from '../database/database.service';
-import { aiPlans, userAiCredits } from '../database/schema';
+import { aiPlans, userAiCredits, users } from '../database/schema';
 import { eq, sql } from 'drizzle-orm';
+import { ConfigService } from '@nestjs/config';
+import Stripe from 'stripe';
 
 @Injectable()
 export class AiSubscriptionsService {
-  constructor(private databaseService: DatabaseService) {}
+  private stripe: Stripe;
+  private processedSessions = new Set<string>();
+
+  constructor(
+    private databaseService: DatabaseService,
+    private configService: ConfigService,
+  ) {
+    const apiKey = this.configService.get<string>('STRIPE_SECRET_KEY');
+    this.stripe = new Stripe(apiKey || 'sk_test_mock', {
+      apiVersion: '2023-10-16' as any,
+    });
+  }
 
   // --- Plan Management (Admin) ---
 
@@ -122,8 +135,9 @@ export class AiSubscriptionsService {
     if (!plan) throw new NotFoundException('Plan not found');
     if (!plan.isActive) throw new BadRequestException('Plan is currently inactive');
 
-    const expiresAt = new Date();
-    expiresAt.setDate(expiresAt.getDate() + (plan.durationDays || 30));
+    const expiresAt = plan.durationDays 
+      ? new Date(Date.now() + plan.durationDays * 24 * 60 * 60 * 1000) 
+      : null;
 
     return await this.databaseService.db.transaction(async (tx) => {
       const [currentCredits] = await tx
@@ -185,5 +199,72 @@ export class AiSubscriptionsService {
       .returning();
     
     return updated;
+  }
+
+  async createStripeCheckoutSession(userId: number, planId: number) {
+    const [plan] = await this.databaseService.db
+      .select()
+      .from(aiPlans)
+      .where(eq(aiPlans.id, planId))
+      .limit(1);
+
+    if (!plan) throw new NotFoundException('Plan not found');
+    if (!plan.isActive) throw new BadRequestException('Plan is inactive');
+    if (plan.price === 0) throw new BadRequestException('Free plans cannot be purchased');
+
+    const [user] = await this.databaseService.db
+      .select()
+      .from(users)
+      .where(eq(users.id, userId))
+      .limit(1);
+
+    const session = await this.stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      line_items: [
+        {
+          price_data: {
+            currency: 'egp',
+            product_data: {
+              name: plan.nameAr || plan.nameEn || `AI Plan #${planId}`,
+              description: plan.descriptionAr || plan.descriptionEn || undefined,
+            },
+            unit_amount: Math.round(plan.price * 100),
+          },
+          quantity: 1,
+        },
+      ],
+      mode: 'payment',
+      success_url: `${this.configService.get('FRONTEND_URL')}/ai-checkout/success?session_id={CHECKOUT_SESSION_ID}&planId=${planId}`,
+      cancel_url: `${this.configService.get('FRONTEND_URL')}/ai-checkout/cancel`,
+      customer_email: user?.email || undefined,
+      metadata: {
+        userId: userId.toString(),
+        planId: planId.toString(),
+      },
+    });
+
+    return { url: session.url };
+  }
+
+  async verifyStripeCheckoutSession(sessionId: string) {
+    const session = await this.stripe.checkout.sessions.retrieve(sessionId);
+    if (!session) throw new NotFoundException('Session not found');
+    if (session.payment_status !== 'paid') {
+      throw new BadRequestException('Payment has not been completed');
+    }
+
+    const userId = parseInt(session.metadata?.userId || '', 10);
+    const planId = parseInt(session.metadata?.planId || '', 10);
+
+    if (isNaN(userId) || isNaN(planId)) {
+      throw new BadRequestException('Invalid session metadata');
+    }
+
+    if (this.processedSessions.has(sessionId)) {
+      return this.getUserCredits(userId);
+    }
+    this.processedSessions.add(sessionId);
+
+    return this.purchasePlan(userId, planId);
   }
 }

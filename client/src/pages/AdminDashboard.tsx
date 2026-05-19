@@ -298,6 +298,7 @@ function AiPlansTab() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingPlan, setEditingPlan] = useState<any>(null);
 
+  const [planType, setPlanType] = useState<'free' | 'paid'>('paid');
   const [nameAr, setNameAr] = useState("");
   const [nameEn, setNameEn] = useState("");
   const [descriptionAr, setDescriptionAr] = useState("");
@@ -339,6 +340,7 @@ function AiPlansTab() {
     setIsActive(true);
     setIsPopular(false);
     setEditingPlan(null);
+    setPlanType('paid');
   };
 
   if (isLoading) return <div className="p-8 text-center"><Loader2 className="animate-spin mx-auto" /></div>;
@@ -367,7 +369,7 @@ function AiPlansTab() {
                 </div>
                 <div className="text-right">
                   <p className="text-lg font-bold text-gray-900">{plan.price} EGP</p>
-                  <p className="text-xs text-gray-400">{plan.durationDays} Days</p>
+                  {plan.durationDays && <p className="text-xs text-gray-400">{plan.durationDays} Days</p>}
                 </div>
               </div>
               <h3 className="font-bold text-lg mb-1">{language === 'ar' ? plan.nameAr : plan.nameEn}</h3>
@@ -394,6 +396,7 @@ function AiPlansTab() {
                     setDurationDays(plan.durationDays);
                     setIsActive(plan.isActive);
                     setIsPopular(plan.isPopular);
+                    setPlanType(plan.price === 0 ? 'free' : 'paid');
                     setIsModalOpen(true);
                   }}
                 >
@@ -437,18 +440,46 @@ function AiPlansTab() {
               <label className="text-sm font-bold text-gray-600">{language === 'ar' ? "الوصف (EN)" : "Description (EN)"}</label>
               <Textarea value={descriptionEn} onChange={(e) => setDescriptionEn(e.target.value)} />
             </div>
-            <div className="grid grid-cols-3 gap-4">
-              <div className="space-y-2">
-                <label className="text-sm font-bold text-gray-600">{language === 'ar' ? "السعر" : "Price"}</label>
-                <Input type="number" value={price} onChange={(e) => setPrice(Number(e.target.value))} />
+            {/* Plan Type Selector */}
+            <div className="space-y-2">
+              <label className="text-sm font-bold text-gray-700">{language === 'ar' ? "نوع الخطة" : "Plan Type"}</label>
+              <div className="flex gap-4">
+                <label className="flex items-center gap-2 cursor-pointer bg-gray-50 hover:bg-gray-100 p-3 rounded-xl border flex-1 transition-all">
+                  <input 
+                    type="radio" 
+                    name="planType" 
+                    checked={planType === 'free'} 
+                    onChange={() => {
+                      setPlanType('free');
+                      setPrice(0);
+                    }} 
+                    className="text-indigo-600 focus:ring-indigo-500"
+                  />
+                  <span className="text-sm font-bold text-gray-700">{language === 'ar' ? "مجانية (تلقائية للجدد)" : "Free (Auto-applied)"}</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer bg-gray-50 hover:bg-gray-100 p-3 rounded-xl border flex-1 transition-all">
+                  <input 
+                    type="radio" 
+                    name="planType" 
+                    checked={planType === 'paid'} 
+                    onChange={() => setPlanType('paid')} 
+                    className="text-indigo-600 focus:ring-indigo-500"
+                  />
+                  <span className="text-sm font-bold text-gray-700">{language === 'ar' ? "مدفوعة" : "Paid"}</span>
+                </label>
               </div>
-              <div className="space-y-2">
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              {planType === 'paid' && (
+                <div className="space-y-2">
+                  <label className="text-sm font-bold text-gray-600">{language === 'ar' ? "السعر" : "Price"}</label>
+                  <Input type="number" value={price} onChange={(e) => setPrice(Number(e.target.value))} min={1} />
+                </div>
+              )}
+              <div className={`space-y-2 ${planType === 'free' ? 'col-span-2' : ''}`}>
                 <label className="text-sm font-bold text-gray-600">{language === 'ar' ? "الرصيد" : "Credits"}</label>
-                <Input type="number" value={credits} onChange={(e) => setCredits(Number(e.target.value))} />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-bold text-gray-600">{language === 'ar' ? "الأيام" : "Days"}</label>
-                <Input type="number" value={durationDays} onChange={(e) => setDurationDays(Number(e.target.value))} />
+                <Input type="number" value={credits} onChange={(e) => setCredits(Number(e.target.value))} min={1} />
               </div>
             </div>
             <div className="flex items-center gap-6 pt-2">
@@ -465,7 +496,17 @@ function AiPlansTab() {
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsModalOpen(false)}>{language === 'ar' ? "إلغاء" : "Cancel"}</Button>
             <Button 
-              onClick={() => savePlan.mutate({ nameAr, nameEn, descriptionAr, descriptionEn, price, credits, durationDays, isActive, isPopular })}
+              onClick={() => savePlan.mutate({ 
+                nameAr, 
+                nameEn, 
+                descriptionAr, 
+                descriptionEn, 
+                price: planType === 'free' ? 0 : price, 
+                credits, 
+                durationDays: null, 
+                isActive, 
+                isPopular 
+              })}
               className="bg-indigo-600 hover:bg-indigo-700"
             >
               {savePlan.isPending ? <Loader2 className="animate-spin" /> : (language === 'ar' ? "حفظ" : "Save")}

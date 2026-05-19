@@ -25,15 +25,17 @@ export default function Pricing() {
         enabled: !!user,
     });
 
-    const purchaseMutation = useMutation({
-        mutationFn: (planId: number) => endpoints.aiSubscriptions.purchasePlan(planId),
-        onSuccess: () => {
-            toast.success(language === 'ar' ? "تم شحن الرصيد بنجاح!" : "Credits purchased successfully!");
-            // Invalidate credits query
-            window.dispatchEvent(new Event('ai-credits-updated'));
+    const checkoutMutation = useMutation({
+        mutationFn: (planId: number) => endpoints.aiSubscriptions.createCheckoutSession(planId),
+        onSuccess: (data: any) => {
+            if (data?.url) {
+                window.location.href = data.url;
+            } else {
+                toast.error(language === 'ar' ? "فشل إنشاء جلسة الدفع" : "Failed to create checkout session");
+            }
         },
         onError: (error: any) => {
-            toast.error(error.response?.data?.message || (language === 'ar' ? "فشل شحن الرصيد" : "Failed to purchase credits"));
+            toast.error(error.response?.data?.message || (language === 'ar' ? "فشل بدء الدفع" : "Failed to initiate payment"));
         },
     });
 
@@ -108,9 +110,11 @@ export default function Pricing() {
                                             <p className="text-2xl font-medium text-gray-900">
                                                 {formatPrice(plan.price)}
                                             </p>
-                                            <p className="text-xs text-gray-400 font-bold uppercase tracking-tighter">
-                                                {plan.durationDays} {language === 'ar' ? "يوم" : "Days"}
-                                            </p>
+                                            {plan.durationDays && (
+                                                <p className="text-xs text-gray-400 font-bold uppercase tracking-tighter">
+                                                    {plan.durationDays} {language === 'ar' ? "يوم" : "Days"}
+                                                </p>
+                                            )}
                                         </div>
                                     </div>
                                     <CardTitle className="text-2xl font-medium text-gray-900">
@@ -163,14 +167,14 @@ export default function Pricing() {
                                                 setLocation("/login");
                                                 return;
                                             }
-                                            purchaseMutation.mutate(plan.id);
+                                            checkoutMutation.mutate(plan.id);
                                         }}
-                                        disabled={purchaseMutation.isPending}
+                                        disabled={checkoutMutation.isPending}
                                         className={`w-full h-14 rounded-2xl font-bold transition-all shadow-lg ${plan.isPopular 
                                             ? 'bg-rose-600 hover:bg-rose-700 text-white shadow-rose-200' 
                                             : 'bg-gray-900 hover:bg-gray-800 text-white shadow-gray-200'}`}
                                     >
-                                        {purchaseMutation.isPending && purchaseMutation.variables === plan.id ? (
+                                        {checkoutMutation.isPending && checkoutMutation.variables === plan.id ? (
                                             <Loader2 className="animate-spin" />
                                         ) : (
                                             <>

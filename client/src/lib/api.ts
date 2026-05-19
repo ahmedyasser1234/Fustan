@@ -213,5 +213,7 @@ export const endpoints = {
         getPlans: () => api.get('/ai-subscriptions/plans').then(res => res.data),
         getMyCredits: () => api.get('/ai-subscriptions/credits').then(res => res.data),
         purchasePlan: (planId: number) => api.post(`/ai-subscriptions/purchase/${planId}`).then(res => res.data),
+        createCheckoutSession: (planId: number) => api.post(`/ai-subscriptions/checkout/${planId}`).then(res => res.data),
+        verifyCheckoutSession: (sessionId: string) => api.post('/ai-subscriptions/verify-checkout', { sessionId }).then(res => res.data),
     },
 };

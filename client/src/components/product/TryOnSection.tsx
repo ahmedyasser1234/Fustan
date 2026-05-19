@@ -41,16 +41,17 @@ export function TryOnSection({ productName, productImage, productDescription }: 
         queryFn: () => endpoints.aiSubscriptions.getPlans(),
     });
 
-    const purchaseMutation = useMutation({
-        mutationFn: (planId: number) => endpoints.aiSubscriptions.purchasePlan(planId),
-        onSuccess: () => {
-            toast.success(language === 'ar' ? "تم الاشتراك وتفعيل الخطة بنجاح!" : "Plan activated successfully!");
-            queryClient.invalidateQueries({ queryKey: ["ai-credits"] });
-            setIsSubscriptionDialogOpen(false);
-            window.dispatchEvent(new Event('ai-credits-updated'));
+    const checkoutMutation = useMutation({
+        mutationFn: (planId: number) => endpoints.aiSubscriptions.createCheckoutSession(planId),
+        onSuccess: (data: any) => {
+            if (data?.url) {
+                window.location.href = data.url;
+            } else {
+                toast.error(language === 'ar' ? "فشل إنشاء جلسة الدفع" : "Failed to create checkout session");
+            }
         },
         onError: (error: any) => {
-            toast.error(error.response?.data?.message || (language === 'ar' ? "فشل تفعيل الاشتراك" : "Failed to purchase plan"));
+            toast.error(error.response?.data?.message || (language === 'ar' ? "فشل بدء الدفع" : "Failed to initiate payment"));
         },
     });
 
@@ -846,9 +847,11 @@ export function TryOnSection({ productName, productImage, productDescription }: 
                                         </div>
                                         <div className="text-right">
                                             <p className="text-2xl font-black text-gray-900">{plan.price} EGP</p>
-                                            <p className="text-xs text-gray-400 font-bold">
-                                                {language === 'ar' ? `لمدة ${plan.durationDays} يوم` : `For ${plan.durationDays} Days`}
-                                            </p>
+                                            {plan.durationDays && (
+                                                <p className="text-xs text-gray-400 font-bold">
+                                                    {language === 'ar' ? `لمدة ${plan.durationDays} يوم` : `For ${plan.durationDays} Days`}
+                                                </p>
+                                            )}
                                         </div>
                                     </div>
 
@@ -884,15 +887,15 @@ export function TryOnSection({ productName, productImage, productDescription }: 
                                 </div>
 
                                 <Button
-                                    onClick={() => purchaseMutation.mutate(plan.id)}
-                                    disabled={purchaseMutation.isPending}
+                                    onClick={() => checkoutMutation.mutate(plan.id)}
+                                    disabled={checkoutMutation.isPending}
                                     className={`w-full h-11 font-bold rounded-2xl transition-all ${
                                         plan.isPopular
                                             ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:opacity-90 shadow-lg shadow-purple-200 border-0'
                                             : 'bg-gray-900 text-white hover:bg-gray-800 border-0'
                                     }`}
                                 >
-                                    {purchaseMutation.isPending ? (
+                                    {checkoutMutation.isPending && checkoutMutation.variables === plan.id ? (
                                         <Loader2 className="w-4 h-4 animate-spin" />
                                     ) : (
                                         language === 'ar' ? 'اشتركي الآن' : 'Subscribe Now'

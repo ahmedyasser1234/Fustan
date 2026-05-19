@@ -48,6 +48,27 @@ export class AiSubscriptionsController {
     return this.service.purchasePlan(req.user.id, planId);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Post('checkout/:planId')
+  @ApiOperation({ summary: 'Create Stripe checkout session for AI plan' })
+  async createStripeCheckout(
+    @Req() req: any,
+    @Param('planId', ParseIntPipe) planId: number,
+  ) {
+    return this.service.createStripeCheckoutSession(req.user.id, planId);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Post('verify-checkout')
+  @ApiOperation({ summary: 'Verify Stripe checkout session and award credits' })
+  async verifyCheckout(
+    @Body('sessionId') sessionId: string,
+  ) {
+    return this.service.verifyStripeCheckoutSession(sessionId);
+  }
+
   // --- Admin Endpoints ---
 
   @ApiBearerAuth()
