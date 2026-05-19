@@ -218,12 +218,14 @@ export class AiSubscriptionsService {
       .where(eq(users.id, userId))
       .limit(1);
 
+    const frontendUrl = this.configService.get('FRONTEND_URL') || 'http://localhost:5173';
+
     const session = await this.stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: [
         {
           price_data: {
-            currency: 'egp',
+            currency: 'sar',
             product_data: {
               name: plan.nameAr || plan.nameEn || `AI Plan #${planId}`,
               description: plan.descriptionAr || plan.descriptionEn || undefined,
@@ -234,8 +236,8 @@ export class AiSubscriptionsService {
         },
       ],
       mode: 'payment',
-      success_url: `${this.configService.get('FRONTEND_URL')}/ai-checkout/success?session_id={CHECKOUT_SESSION_ID}&planId=${planId}`,
-      cancel_url: `${this.configService.get('FRONTEND_URL')}/ai-checkout/cancel`,
+      success_url: `${frontendUrl}/ai-checkout/success?session_id={CHECKOUT_SESSION_ID}&planId=${planId}`,
+      cancel_url: `${frontendUrl}/ai-checkout/cancel`,
       customer_email: user?.email || undefined,
       metadata: {
         userId: userId.toString(),

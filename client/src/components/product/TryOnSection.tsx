@@ -20,7 +20,7 @@ interface TryOnSectionProps {
 }
 
 export function TryOnSection({ productName, productImage, productDescription }: TryOnSectionProps) {
-    const { language } = useLanguage();
+    const { language, formatPrice } = useLanguage();
     const { user } = useAuth();
     const [, setLocation] = useLocation();
     const [isLoading, setIsLoading] = useState(false);
@@ -287,17 +287,17 @@ export function TryOnSection({ productName, productImage, productDescription }: 
                                     </p>
                                 </div>
                             </div>
-                            {(credits.remainingCredits <= 0 || (credits.expiresAt && new Date(credits.expiresAt) < new Date())) && (
-                                <div className="mt-2">
-                                    <Button
-                                        onClick={() => setIsSubscriptionDialogOpen(true)}
-                                        size="sm"
-                                        className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold rounded-xl shadow-md py-2 hover:from-purple-700 hover:to-pink-700 transition-all text-xs"
-                                    >
-                                        {language === 'ar' ? "تجديد أو ترقية الاشتراك" : "Renew or Upgrade Subscription"}
-                                    </Button>
-                                </div>
-                            )}
+                            <div className="mt-2">
+                                <Button
+                                    onClick={() => setIsSubscriptionDialogOpen(true)}
+                                    size="sm"
+                                    className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold rounded-xl shadow-md py-2.5 hover:from-purple-700 hover:to-pink-700 transition-all text-xs"
+                                >
+                                    {credits.remainingCredits <= 0 || (credits.expiresAt && new Date(credits.expiresAt) < new Date())
+                                        ? (language === 'ar' ? "تجديد أو ترقية الاشتراك" : "Renew or Upgrade Subscription")
+                                        : (language === 'ar' ? "شحن رصيد / ترقية الخطة" : "Add Credits / Upgrade Plan")}
+                                </Button>
+                            </div>
                         </div>
                     )}
                 </div>
@@ -846,7 +846,7 @@ export function TryOnSection({ productName, productImage, productDescription }: 
                                             {getPlanIcon(plan.nameEn)}
                                         </div>
                                         <div className="text-right">
-                                            <p className="text-2xl font-black text-gray-900">{plan.price} EGP</p>
+                                            <p className="text-2xl font-black text-gray-900">{formatPrice(plan.price)}</p>
                                             {plan.durationDays && (
                                                 <p className="text-xs text-gray-400 font-bold">
                                                     {language === 'ar' ? `لمدة ${plan.durationDays} يوم` : `For ${plan.durationDays} Days`}

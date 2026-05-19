@@ -26,7 +26,9 @@ export class PaymentsService {
     customerEmail: string,
   ) {
     // ... Stripe logic existing
-    return this.stripe.checkout.sessions.create({
+    const frontendUrl = this.configService.get('FRONTEND_URL') || 'http://localhost:5173';
+
+    return await this.stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: [
         {
@@ -41,8 +43,8 @@ export class PaymentsService {
         },
       ],
       mode: 'payment',
-      success_url: `${this.configService.get('FRONTEND_URL')}/checkout/success?orderId=${orderId}`,
-      cancel_url: `${this.configService.get('FRONTEND_URL')}/checkout/cancel?orderId=${orderId}`,
+      success_url: `${frontendUrl}/checkout/success?orderId=${orderId}`,
+      cancel_url: `${frontendUrl}/checkout/cancel?orderId=${orderId}`,
       customer_email: customerEmail,
       metadata: {
         orderId: orderId.toString(),
