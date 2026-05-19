@@ -86,7 +86,7 @@ export default function Pricing() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    {plans?.map((plan: any, i: number) => (
+                    {plans?.filter((plan: any) => plan.price > 0).map((plan: any, i: number) => (
                         <motion.div
                             key={plan.id}
                             initial={{ opacity: 0, y: 20 }}

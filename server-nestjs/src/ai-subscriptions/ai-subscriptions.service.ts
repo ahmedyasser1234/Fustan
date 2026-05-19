@@ -48,25 +48,66 @@ export class AiSubscriptionsService {
   // --- User Credit Management ---
 
   async getUserCredits(userId: number) {
-    const [credits] = await this.databaseService.db
-      .select()
+    let [credits] = await this.databaseService.db
+      .select({
+        id: userAiCredits.id,
+        userId: userAiCredits.userId,
+        totalCredits: userAiCredits.totalCredits,
+        usedCredits: userAiCredits.usedCredits,
+        remainingCredits: userAiCredits.remainingCredits,
+        expiresAt: userAiCredits.expiresAt,
+        planId: userAiCredits.planId,
+        updatedAt: userAiCredits.updatedAt,
+        planNameAr: aiPlans.nameAr,
+        planNameEn: aiPlans.nameEn,
+        planPrice: aiPlans.price,
+      })
       .from(userAiCredits)
+      .leftJoin(aiPlans, eq(userAiCredits.planId, aiPlans.id))
       .where(eq(userAiCredits.userId, userId))
       .limit(1);
     
     if (!credits) {
-      // Initialize with free trial (3 credits)
-      const [newCredits] = await this.databaseService.db
+      // Find the free trial plan configured by the admin (price = 0)
+      const [freePlan] = await this.databaseService.db
+        .select()
+        .from(aiPlans)
+        .where(eq(aiPlans.price, 0))
+        .limit(1);
+
+      const trialCredits = freePlan ? freePlan.credits : 3;
+      const planId = freePlan ? freePlan.id : null;
+
+      await this.databaseService.db
         .insert(userAiCredits)
         .values({
           userId,
-          totalCredits: 3, 
+          totalCredits: trialCredits, 
           usedCredits: 0,
-          remainingCredits: 3,
+          remainingCredits: trialCredits,
+          planId: planId,
           updatedAt: new Date(),
+        });
+
+      // Fetch again to return standard structure with joined fields
+      [credits] = await this.databaseService.db
+        .select({
+          id: userAiCredits.id,
+          userId: userAiCredits.userId,
+          totalCredits: userAiCredits.totalCredits,
+          usedCredits: userAiCredits.usedCredits,
+          remainingCredits: userAiCredits.remainingCredits,
+          expiresAt: userAiCredits.expiresAt,
+          planId: userAiCredits.planId,
+          updatedAt: userAiCredits.updatedAt,
+          planNameAr: aiPlans.nameAr,
+          planNameEn: aiPlans.nameEn,
+          planPrice: aiPlans.price,
         })
-        .returning();
-      return newCredits;
+        .from(userAiCredits)
+        .leftJoin(aiPlans, eq(userAiCredits.planId, aiPlans.id))
+        .where(eq(userAiCredits.userId, userId))
+        .limit(1);
     }
     return credits;
   }
@@ -97,6 +138,7 @@ export class AiSubscriptionsService {
           .set({
             totalCredits: currentCredits.totalCredits + plan.credits,
             remainingCredits: currentCredits.remainingCredits + plan.credits,
+            planId: planId,
             expiresAt: expiresAt,
             updatedAt: new Date(),
           })
@@ -111,6 +153,7 @@ export class AiSubscriptionsService {
             totalCredits: plan.credits,
             remainingCredits: plan.credits,
             usedCredits: 0,
+            planId: planId,
             expiresAt: expiresAt,
             updatedAt: new Date(),
           })

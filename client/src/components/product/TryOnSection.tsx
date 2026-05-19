@@ -3,15 +3,16 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
-import { Loader2, Sparkles, Upload, X, Image as ImageIcon, Save } from "lucide-react";
+import { Loader2, Sparkles, Upload, X, Image as ImageIcon, Save, Check, Zap, Crown } from "lucide-react";
 import { useLanguage } from "@/lib/i18n";
 import api from "@/lib/api";
 import { toast } from "sonner";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { useLocation } from "wouter";
 import { useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { endpoints } from "@/lib/api";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 interface TryOnSectionProps {
     productName: string;
     productImage: string;
@@ -26,49 +27,68 @@ export function TryOnSection({ productName, productImage, productDescription }: 
     const [isSavingMeasurements, setIsSavingMeasurements] = useState(false);
     const [generatedImage, setGeneratedImage] = useState<string | null>(null);
 
+    const queryClient = useQueryClient();
+    const [isSubscriptionDialogOpen, setIsSubscriptionDialogOpen] = useState(false);
+
     const { data: credits } = useQuery({
         queryKey: ["ai-credits"],
         queryFn: () => endpoints.aiSubscriptions.getMyCredits(),
         enabled: !!user,
     });
 
-    // Image uploads
+    const { data: plans } = useQuery({
+        queryKey: ["ai-plans"],
+        queryFn: () => endpoints.aiSubscriptions.getPlans(),
+    });
+
+    const purchaseMutation = useMutation({
+        mutationFn: (planId: number) => endpoints.aiSubscriptions.purchasePlan(planId),
+        onSuccess: () => {
+            toast.success(language === 'ar' ? "تم الاشتراك وتفعيل الخطة بنجاح!" : "Plan activated successfully!");
+            queryClient.invalidateQueries({ queryKey: ["ai-credits"] });
+            setIsSubscriptionDialogOpen(false);
+            window.dispatchEvent(new Event('ai-credits-updated'));
+        },
+        onError: (error: any) => {
+            toast.error(error.response?.data?.message || (language === 'ar' ? "فشل تفعيل الاشتراك" : "Failed to purchase plan"));
+        },
+    });
+
+    const getPlanIcon = (name: string) => {
+        const n = name.toLowerCase();
+        if (n.includes('pro') || n.includes('بريميوم')) return <Zap className="w-5 h-5 text-amber-500" />;
+        if (n.includes('premium') || n.includes('ملكي')) return <Crown className="w-5 h-5 text-purple-500" />;
+        return <Sparkles className="w-5 h-5 text-rose-500" />;
+    };
+
     const [dressImage, setDressImage] = useState<File | null>(null);
     const [dressPreview, setDressPreview] = useState<string>('');
     const [userImage, setUserImage] = useState<File | null>(null);
     const [userPreview, setUserPreview] = useState<string>('');
 
-    // Comprehensive Tailor Measurements
     const [measurements, setMeasurements] = useState({
-        // Basic Info
         height: '',
         weight: '',
 
-        // Upper Body
         neck: '',
         shoulders: '',
         bust: '',
         underBust: '',
 
-        // Core Body
         waist: '',
         hips: '',
 
-        // Arm Measurements
         armLength: '',
         armCircumference: '',
         wrist: '',
 
-        // Dress Lengths
         dressLength: '',
         kneeLength: '',
 
-        // Back Measurements
         backWidth: '',
         frontLength: ''
     });
 
-    // Pre-fill measurements from user profile
     useEffect(() => {
         if (user?.measurements) {
             setMeasurements(prev => ({
@@ -78,7 +98,6 @@ export function TryOnSection({ productName, productImage, productDescription }: 
         }
     }, [user]);
 
-    // Sync dressPreview with productImage prop if no manual file is selected
     useEffect(() => {
         if (!dressImage && productImage) {
             setDressPreview(productImage);
@@ -95,7 +114,6 @@ export function TryOnSection({ productName, productImage, productDescription }: 
         try {
             await api.patch(`/users/${user.id}`, { measurements });
             toast.success(language === 'ar' ? "تم حفظ المقاسات بنجاح" : "Measurements saved successfully");
-            // Optionally update local storage/auth state if needed, but the patch should be enough for next visit
         } catch (err: any) {
             const srvMsg = err?.response?.data?.message || err?.response?.data?.error || err?.message;
             const baseMsg = language === 'ar' ? "فشل حفظ المقاسات" : "Failed to save measurements";
@@ -156,6 +174,18 @@ export function TryOnSection({ productName, productImage, productDescription }: 
             return;
         }
 
+        if (credits && credits.remainingCredits <= 0) {
+            toast.error(language === 'ar' ? 'لقد انتهى رصيد الصور المجانية/الاشتراك. يرجى الترقية أو تجديد الاشتراك.' : 'No remaining credits. Please upgrade or renew your subscription.');
+            setIsSubscriptionDialogOpen(true);
+            return;
+        }
+
+        if (credits && credits.expiresAt && new Date(credits.expiresAt) < new Date()) {
+            toast.error(language === 'ar' ? 'لقد انتهت صلاحية اشتراكك. يرجى تجديد الاشتراك.' : 'Your subscription has expired. Please renew.');
+            setIsSubscriptionDialogOpen(true);
+            return;
+        }
+
         if (!dressPreview || !userImage) {
             toast.error(language === 'ar' ? 'يرجى اختيار صورة الفستان وصورتك' : 'Please select both dress and your photo');
             return;
@@ -171,12 +201,10 @@ export function TryOnSection({ productName, productImage, productDescription }: 
 
         try {
             const formData = new FormData();
-            
-            // PhotoRoom model requires 'dressImage' and 'customerImage'
+
             if (dressImage) {
                 formData.append('dressImage', dressImage);
             } else if (dressPreview) {
-                // Fetch the image from URL and append as blob if it's not a local file
                 try {
                     const res = await fetch(dressPreview);
                     const blob = await res.blob();
@@ -187,22 +215,19 @@ export function TryOnSection({ productName, productImage, productDescription }: 
             }
 
             formData.append('customerImage', userImage);
-            
-            // PhotoRoom Virtual Model defaults
+
             formData.append('scenePreset', 'random');
             formData.append('pose', 'random');
 
-            // Send measurements too (ignored by PhotoRoom but good for metadata/future use)
             Object.entries(measurements).forEach(([key, value]) => {
                 formData.append(key, value);
             });
 
-            // Call the PhotoRoom-powered endpoint
             const response = await api.post('/ai/virtual-model', formData);
 
             if (response.data?.imageUrl) {
                 setGeneratedImage(response.data.imageUrl);
-                toast.success(language === 'ar' ? '✨ تم تلبيس الفستان بنجاح!' : '✨ Try-on completed successfully!');
+                toast.success(language === 'ar' ? ' تم تلبيس الفستان بنجاح!' : ' Try-on completed successfully!');
             } else {
                 toast.error(language === 'ar' ? 'لم يتم استلام نتيجة من السيرفر' : 'No result received from server');
             }
@@ -234,10 +259,44 @@ export function TryOnSection({ productName, productImage, productDescription }: 
                             : 'Upload a dress photo and your photo, let AI show you how you\'ll look'}
                     </p>
                     {credits && (
-                        <div className="inline-flex items-center justify-center px-4 py-2 bg-rose-50 border border-rose-100 rounded-full">
-                            <p className="text-sm font-bold text-rose-600">
-                                {language === 'ar' ? `رصيدك المتبقي: ${credits.remainingCredits} صور` : `Remaining Credits: ${credits.remainingCredits} images`}
-                            </p>
+                        <div className="max-w-md mx-auto mt-6 bg-white/90 backdrop-blur-md rounded-3xl p-6 border border-purple-100 shadow-xl flex flex-col gap-4 text-center">
+                            <div className="flex items-center justify-between border-b border-purple-50 pb-3">
+                                <span className="text-gray-500 text-sm font-bold">{language === 'ar' ? "الخطة الحالية" : "Current Plan"}</span>
+                                <span className="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider">
+                                    {language === 'ar' 
+                                        ? (credits.planNameAr || "تجربة مجانية") 
+                                        : (credits.planNameEn || "Free Trial")}
+                                </span>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="bg-purple-50/50 p-4 rounded-2xl border border-purple-100/50">
+                                    <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">
+                                        {language === 'ar' ? "الرصيد المتبقي" : "Remaining Credits"}
+                                    </p>
+                                    <p className="text-2xl font-black text-purple-700">
+                                        {credits.remainingCredits}
+                                    </p>
+                                </div>
+                                <div className="bg-pink-50/50 p-4 rounded-2xl border border-pink-100/50">
+                                    <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">
+                                        {language === 'ar' ? "المستهلك" : "Used"}
+                                    </p>
+                                    <p className="text-2xl font-black text-pink-700">
+                                        {credits.usedCredits}
+                                    </p>
+                                </div>
+                            </div>
+                            {(credits.remainingCredits <= 0 || (credits.expiresAt && new Date(credits.expiresAt) < new Date())) && (
+                                <div className="mt-2">
+                                    <Button
+                                        onClick={() => setIsSubscriptionDialogOpen(true)}
+                                        size="sm"
+                                        className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold rounded-xl shadow-md py-2 hover:from-purple-700 hover:to-pink-700 transition-all text-xs"
+                                    >
+                                        {language === 'ar' ? "تجديد أو ترقية الاشتراك" : "Renew or Upgrade Subscription"}
+                                    </Button>
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>
@@ -643,8 +702,8 @@ export function TryOnSection({ productName, productImage, productDescription }: 
                                     </Button>
                                 )}
 
-                                 {/* Generate Buttons */}
-                                 <div className="flex gap-4 w-full">
+                                {/* Generate Buttons */}
+                                <div className="flex gap-4 w-full">
                                     {user?.role === 'admin' || user?.role === 'vendor' ? (
                                         <div className="w-full bg-blue-50 p-6 rounded-3xl border border-blue-100 text-center space-y-3 shadow-sm">
                                             <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto shadow-sm">
@@ -653,12 +712,20 @@ export function TryOnSection({ productName, productImage, productDescription }: 
                                             <div>
                                                 <p className="font-bold text-blue-900">{language === 'ar' ? "ميزة للمتسوقين" : "Customer Feature"}</p>
                                                 <p className="text-xs text-blue-700 mt-1">
-                                                    {language === 'ar' 
-                                                        ? "هذه الميزة مخصصة للمتسوقين فقط لتجربة الفساتين. كتاجر أو مسؤول، لا يمكنك إنشاء صور تجربة افتراضية." 
+                                                    {language === 'ar'
+                                                        ? "هذه الميزة مخصصة للمتسوقين فقط لتجربة الفساتين. كتاجر أو مسؤول، لا يمكنك إنشاء صور تجربة افتراضية."
                                                         : "This feature is for customers only. As a vendor or admin, you cannot generate virtual try-on images."}
                                                 </p>
                                             </div>
                                         </div>
+                                    ) : credits && (credits.remainingCredits <= 0 || (credits.expiresAt && new Date(credits.expiresAt) < new Date())) ? (
+                                        <Button
+                                            onClick={() => setIsSubscriptionDialogOpen(true)}
+                                            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white h-14 text-lg font-bold rounded-full shadow-lg transition-all"
+                                        >
+                                            <Sparkles className="mr-2 h-5 w-5" />
+                                            {language === 'ar' ? 'اشتركي في خطة (رصيدك الحالي 0)' : 'Subscribe to a Plan (Current balance 0)'}
+                                        </Button>
                                     ) : (
                                         <Button
                                             onClick={handleGenerate}
@@ -678,7 +745,7 @@ export function TryOnSection({ productName, productImage, productDescription }: 
                                             )}
                                         </Button>
                                     )}
-                                 </div>
+                                </div>
                                 <p className="text-xs text-center text-gray-500 mt-3">
                                     {language === 'ar'
                                         ? 'قد تستغرق العملية 10-30 ثانية'
@@ -686,9 +753,9 @@ export function TryOnSection({ productName, productImage, productDescription }: 
                                 </p>
                             </div>
 
-                             {/* Result Section - Below the form */}
-                             {(generatedImage || isLoading) && (
-                                 <div className="p-8 md:p-12 bg-white border-t-4 border-purple-200">
+                            {/* Result Section - Below the form */}
+                            {(generatedImage || isLoading) && (
+                                <div className="p-8 md:p-12 bg-white border-t-4 border-purple-200">
                                     {generatedImage && (
                                         <div className="max-w-5xl mx-auto">
                                             <h3 className="text-2xl font-bold mb-6 text-gray-900 text-center flex items-center justify-center gap-2">
@@ -715,8 +782,8 @@ export function TryOnSection({ productName, productImage, productDescription }: 
                                         </div>
                                     )}
 
-                                     {(isLoading) && (
-                                         <div className="flex flex-col items-center justify-center py-12">
+                                    {(isLoading) && (
+                                        <div className="flex flex-col items-center justify-center py-12">
                                             <Loader2 className="w-16 h-16 text-purple-600 animate-spin mb-4" />
                                             <p className="text-purple-700 font-bold text-xl animate-pulse">
                                                 {language === 'ar' ? 'جاري صنع السحر...' : 'Creating magic...'}
@@ -735,12 +802,107 @@ export function TryOnSection({ productName, productImage, productDescription }: 
                     <div className="mt-8 bg-purple-50 border border-purple-200 rounded-2xl p-6 text-center">
                         <p className="text-purple-800 font-medium">
                             {language === 'ar'
-                                ? '💡 نصيحة: استخدمي صوراً واضحة بإضاءة جيدة للحصول على أفضل النتائج'
-                                : '💡 Tip: Use clear photos with good lighting for best results'}
+                                ? ' نصيحة: استخدمي صوراً واضحة بإضاءة جيدة للحصول على أفضل النتائج'
+                                : ' Tip: Use clear photos with good lighting for best results'}
                         </p>
                     </div>
                 </div>
             </div>
+
+            <Dialog open={isSubscriptionDialogOpen} onOpenChange={setIsSubscriptionDialogOpen}>
+                <DialogContent className="sm:max-w-[700px] max-h-[85vh] overflow-y-auto rounded-3xl border-0 bg-white/95 backdrop-blur-md p-6 md:p-8 shadow-2xl">
+                    <DialogHeader className="text-center mb-6">
+                        <DialogTitle className="text-2xl md:text-3xl font-black text-gray-900 flex items-center justify-center gap-2">
+                            <Sparkles className="w-6 h-6 text-purple-600 animate-pulse" />
+                            {language === 'ar' ? 'باقات تصاميم الذكاء الاصطناعي' : 'AI Generation Plans'}
+                        </DialogTitle>
+                        <p className="text-sm text-gray-500 mt-2">
+                            {language === 'ar' 
+                                ? 'قومي بترقية حسابك لتتمكني من تجربة الفساتين بلا حدود وحفظ مقاساتك الخاصة' 
+                                : 'Upgrade your plan to try on infinite dresses and save custom measurements'}
+                        </p>
+                    </DialogHeader>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                        {plans?.filter((plan: any) => plan.price > 0 && plan.isActive).map((plan: any) => (
+                            <div 
+                                key={plan.id} 
+                                className={`relative rounded-3xl p-6 border-2 transition-all flex flex-col justify-between ${
+                                    plan.isPopular 
+                                        ? 'border-purple-600 bg-gradient-to-br from-purple-50/50 via-white to-pink-50/30 shadow-xl' 
+                                        : 'border-gray-100 hover:border-purple-200 bg-white shadow-sm'
+                                }`}
+                            >
+                                {plan.isPopular && (
+                                    <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-[10px] font-black uppercase tracking-wider px-3.5 py-1.5 rounded-full shadow-md">
+                                        {language === 'ar' ? 'الأكثر شعبية' : 'Most Popular'}
+                                    </span>
+                                )}
+
+                                <div>
+                                    <div className="flex items-center justify-between mb-4">
+                                        <div className="p-3 bg-purple-50 rounded-2xl text-purple-600">
+                                            {getPlanIcon(plan.nameEn)}
+                                        </div>
+                                        <div className="text-right">
+                                            <p className="text-2xl font-black text-gray-900">{plan.price} EGP</p>
+                                            <p className="text-xs text-gray-400 font-bold">
+                                                {language === 'ar' ? `لمدة ${plan.durationDays} يوم` : `For ${plan.durationDays} Days`}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <h3 className="text-lg font-bold text-gray-950 mb-1">
+                                        {language === 'ar' ? plan.nameAr : plan.nameEn}
+                                    </h3>
+                                    <p className="text-xs text-gray-500 mb-6 line-clamp-2">
+                                        {language === 'ar' ? plan.descriptionAr : plan.descriptionEn}
+                                    </p>
+
+                                    <ul className="space-y-2 mb-6 font-bold">
+                                        <li className="flex items-center gap-2 text-xs text-gray-700">
+                                            <Check className="w-4 h-4 text-emerald-500 shrink-0" />
+                                            <span>
+                                                {language === 'ar' 
+                                                    ? `رصيد ${plan.credits} صورة ذكاء اصطناعي` 
+                                                    : `${plan.credits} AI Try-on Credits`}
+                                            </span>
+                                        </li>
+                                        <li className="flex items-center gap-2 text-xs text-gray-700">
+                                            <Check className="w-4 h-4 text-emerald-500 shrink-0" />
+                                            <span>
+                                                {language === 'ar' ? 'توليد فوري فائق السرعة' : 'Super-fast instant generation'}
+                                            </span>
+                                        </li>
+                                        <li className="flex items-center gap-2 text-xs text-gray-700">
+                                            <Check className="w-4 h-4 text-emerald-500 shrink-0" />
+                                            <span>
+                                                {language === 'ar' ? 'دعم كامل للمقاسات التفصيلية' : 'Full support for detailed measurements'}
+                                            </span>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <Button
+                                    onClick={() => purchaseMutation.mutate(plan.id)}
+                                    disabled={purchaseMutation.isPending}
+                                    className={`w-full h-11 font-bold rounded-2xl transition-all ${
+                                        plan.isPopular
+                                            ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:opacity-90 shadow-lg shadow-purple-200 border-0'
+                                            : 'bg-gray-900 text-white hover:bg-gray-800 border-0'
+                                    }`}
+                                >
+                                    {purchaseMutation.isPending ? (
+                                        <Loader2 className="w-4 h-4 animate-spin" />
+                                    ) : (
+                                        language === 'ar' ? 'اشتركي الآن' : 'Subscribe Now'
+                                    )}
+                                </Button>
+                            </div>
+                        ))}
+                    </div>
+                </DialogContent>
+            </Dialog>
         </section>
     );
 }

@@ -696,6 +696,7 @@ export const userAiCredits = pgTable(
     usedCredits: integer('usedCredits').default(0).notNull(),
     remainingCredits: integer('remainingCredits').default(0).notNull(),
     expiresAt: timestamp('expiresAt'),
+    planId: integer('planId'),
     updatedAt: timestamp('updatedAt').defaultNow().notNull(),
   },
   (table) => ({

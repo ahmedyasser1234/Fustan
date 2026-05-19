@@ -16,10 +16,9 @@ interface FlashSalesSectionProps {
 export function FlashSalesSection({ onQuickView }: FlashSalesSectionProps) {
     const { language, t, dir } = useLanguage();
 
-    // Fetch Discounted Products
     const { data: products, isLoading } = useQuery({
         queryKey: ['products', 'flash-sale'],
-        queryFn: () => endpoints.products.list({ limit: 4 }) // Ideally filter by discount
+        queryFn: () => endpoints.products.list({ limit: 4 })
     });
 
     const [timeLeft, setTimeLeft] = useState({
@@ -34,7 +33,7 @@ export function FlashSalesSection({ onQuickView }: FlashSalesSectionProps) {
                 if (prev.seconds > 0) return { ...prev, seconds: prev.seconds - 1 };
                 if (prev.minutes > 0) return { ...prev, minutes: prev.minutes - 1, seconds: 59 };
                 if (prev.hours > 0) return { ...prev, hours: prev.hours - 1, minutes: 59, seconds: 59 };
-                return prev; // Timer finished
+                return prev;
             });
         }, 1000);
         return () => clearInterval(timer);
@@ -87,7 +86,7 @@ export function FlashSalesSection({ onQuickView }: FlashSalesSectionProps) {
                 </div>
 
                 <div className="relative group/scroll">
-                    <button 
+                    <button
                         onClick={() => {
                             const container = document.getElementById('flash-sales-scroll');
                             if (container) {
@@ -99,7 +98,7 @@ export function FlashSalesSection({ onQuickView }: FlashSalesSectionProps) {
                     >
                         <ChevronLeft size={16} />
                     </button>
-                    <button 
+                    <button
                         onClick={() => {
                             const container = document.getElementById('flash-sales-scroll');
                             if (container) {
@@ -112,7 +111,7 @@ export function FlashSalesSection({ onQuickView }: FlashSalesSectionProps) {
                         <ChevronRight size={16} />
                     </button>
 
-                    <div 
+                    <div
                         id="flash-sales-scroll"
                         className="flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8 overflow-x-auto no-scrollbar pb-8 md:pb-0 px-2 md:px-0 -mx-2 md:mx-0 scroll-smooth"
                     >
