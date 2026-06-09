@@ -26,9 +26,6 @@ export class VendorRequestsService {
     if (file) {
       const result = await this.cloudinary.uploadFile(file);
       if ('secure_url' in result) {
-        // If it's a collection_request, it expects imageUrl.
-        // If it's a category_request, maybe it expects imageUrl or image.
-        // We'll update the data object with the new URL.
         if (type === 'collection_request' || type === 'category_request') {
           data.imageUrl = result.secure_url;
         }
@@ -67,7 +64,6 @@ export class VendorRequestsService {
         const data = request.data;
 
         if (request.type === 'collection_request') {
-          // Create collection
           const slug = (data.nameEn || 'collection')
             .toLowerCase()
             .trim()
@@ -86,7 +82,6 @@ export class VendorRequestsService {
           });
           await this.markAsExecuted(id);
         } else if (request.type === 'category_request') {
-          // Create category
           const slug = (data.nameEn || 'category')
             .toLowerCase()
             .trim()

@@ -51,7 +51,6 @@ export class VendorsService {
       .limit(1);
 
     if (!supportVendor) {
-      // Find an admin user to bind it to
       const [admin] = await this.databaseService.db
         .select()
         .from(users)
@@ -85,7 +84,6 @@ export class VendorsService {
   }
 
   async findOne(idOrSlug: string | number) {
-    // Try to parse as ID if it looks like a number
     const id = Number(idOrSlug);
 
     if (!isNaN(id) && id > 0) {
@@ -98,7 +96,6 @@ export class VendorsService {
       if (result.length > 0) return result[0];
     }
 
-    // Try to find by slug
     const result = await this.databaseService.db
       .select()
       .from(vendors)
@@ -109,7 +106,6 @@ export class VendorsService {
   }
 
   async getStats(vendorId: number) {
-    // Run queries in parallel for maximum performance
     const [
       productsCountResult,
       ordersCountResult,
@@ -117,19 +113,16 @@ export class VendorsService {
       pendingOrdersResult,
       ratingResult,
     ] = await Promise.all([
-      // Total Products
       this.databaseService.db
         .select({ count: sql<number>`count(*)` })
         .from(products)
         .where(eq(products.vendorId, vendorId)),
 
-      // Total Orders
       this.databaseService.db
         .select({ count: sql<number>`count(*)` })
         .from(orders)
         .where(eq(orders.vendorId, vendorId)),
 
-      // Total Revenue (Paid orders only)
       this.databaseService.db
         .select({ total: sql<string>`sum(${orders.total})` })
         .from(orders)
@@ -137,7 +130,6 @@ export class VendorsService {
           and(eq(orders.vendorId, vendorId), eq(orders.paymentStatus, 'paid')),
         ),
 
-      // Pending Orders
       this.databaseService.db
         .select({ count: sql<number>`count(*)` })
         .from(orders)
@@ -145,7 +137,6 @@ export class VendorsService {
           and(eq(orders.vendorId, vendorId), eq(orders.status, 'pending')),
         ),
 
-      // Average Rating (from product reviews)
       this.databaseService.db
         .select({ rating: sql<string>`avg(${reviews.rating})` })
         .from(reviews)
@@ -165,7 +156,6 @@ export class VendorsService {
   }
 
   async getRecentOrders(vendorId: number, limit = 5) {
-    // Get orders with customer info
     const ordersList = await this.databaseService.db
       .select({
         order: orders,
@@ -184,7 +174,6 @@ export class VendorsService {
 
     if (ordersList.length === 0) return [];
 
-    // Get items count for these orders
     const orderIds = ordersList.map((o) => o.order.id);
     const itemsCount = await this.databaseService.db
       .select({
@@ -195,7 +184,6 @@ export class VendorsService {
       .where(inArray(orderItems.orderId, orderIds))
       .groupBy(orderItems.orderId);
 
-    // Map items count to orders
     return ordersList.map(({ order, customer }) => ({
       ...order,
       customer,
@@ -208,7 +196,6 @@ export class VendorsService {
   async getOrders(vendorId: number, page = 1) {
     const offset = (page - 1) * 20;
 
-    // 1. Get Orders with Customer Info
     const ordersList = await this.databaseService.db
       .select({
         order: orders,
@@ -230,7 +217,6 @@ export class VendorsService {
       return { data: [], total: 0 };
     }
 
-    // 2. Get Items for these orders with product details
     const orderIds = ordersList.map((o) => o.order.id);
 
     const items = await this.databaseService.db
@@ -246,7 +232,6 @@ export class VendorsService {
       .leftJoin(products, eq(orderItems.productId, products.id))
       .where(inArray(orderItems.orderId, orderIds));
 
-    // 3. Attach items and customer info to orders
     const ordersWithItems = ordersList.map(({ order, customer }) => {
       const orderItemsList = items
         .filter((i) => i.item.orderId === order.id)
@@ -254,7 +239,6 @@ export class VendorsService {
       return { ...order, items: orderItemsList, customer };
     });
 
-    // 4. Get Total Count (Separate query for pagination)
     const [countResult] = await this.databaseService.db
       .select({ count: count() })
       .from(orders)
@@ -274,7 +258,6 @@ export class VendorsService {
     },
     userId?: number,
   ) {
-    // Ownership check
     if (userId) {
       const user = await this.databaseService.db.query.users.findFirst({
         where: eq(users.id, userId),
@@ -295,13 +278,11 @@ export class VendorsService {
 
     const updateData = { ...data };
 
-    // Parse socialLinks if it's a JSON string (FormData sends objects as strings)
     if (updateData.socialLinks && typeof updateData.socialLinks === 'string') {
       try {
         updateData.socialLinks = JSON.parse(updateData.socialLinks);
       } catch (e) {
         this.logger.error(`Failed to parse socialLinks: ${e.message}`);
-        // Keep as-is if parsing fails
       }
     }
 
@@ -328,7 +309,6 @@ export class VendorsService {
       );
       const galleryUrls = uploadResults.map((res) => res.secure_url);
 
-      // Get existing gallery to append
       const [existing] = await this.databaseService.db
         .select({ gallery: vendors.gallery })
         .from(vendors)
@@ -347,7 +327,6 @@ export class VendorsService {
   }
 
   async getCustomers(vendorId: number) {
-    // Get all paid/delivered orders for this vendor to find unique customers
     const vendorOrders = await this.databaseService.db
       .select({
         customerId: orders.customerId,
@@ -359,7 +338,6 @@ export class VendorsService {
       .where(
         and(
           eq(orders.vendorId, vendorId),
-          // Simplify: List anyone who has an order that is paid, shipped or delivered
           inArray(orders.status, ['paid', 'shipped', 'delivered']),
         ),
       );
@@ -368,7 +346,6 @@ export class VendorsService {
 
     const customerIds = [...new Set(vendorOrders.map((o) => o.customerId))];
 
-    // Fetch user details for these customers
     const customers = await this.databaseService.db
       .select({
         id: users.id,
@@ -380,7 +357,6 @@ export class VendorsService {
       .from(users)
       .where(inArray(users.id, customerIds));
 
-    // Calculate stats for each customer
     const customersWithStats = customers.map((customer) => {
       const customerOrders = vendorOrders.filter(
         (o) => o.customerId === customer.id,
@@ -406,7 +382,6 @@ export class VendorsService {
   }
 
   async getCustomerDetails(vendorId: number, customerId: number) {
-    // Verify customer exists
     const [customer] = await this.databaseService.db
       .select({
         id: users.id,
@@ -421,12 +396,9 @@ export class VendorsService {
 
     if (!customer) throw new NotFoundException('Customer not found');
 
-    // Get orders history with this vendor
     const customerOrders = await this.getOrders(vendorId); // Reuse getOrders but filter? No, standard getOrders is paginated and for all.
 
-    // Let's make a specific query for this customer's orders with this vendor
-    // We can reuse the logic from getOrders partially or write a new one.
-    // Let's write a targeted query.
+   
 
     const ordersList = await this.databaseService.db
       .select()
@@ -436,9 +408,6 @@ export class VendorsService {
       )
       .orderBy(desc(orders.createdAt));
 
-    // We also need items for these orders to show details if asked, or just list them.
-    // Let's just return the orders list first. Frontend can expand if needed or we assume simple list.
-    // Actually, fetching items is better for "Profile" view to show what they bought.
 
     const orderIds = ordersList.map((o) => o.id);
     let ordersWithItems: any[] = [];
@@ -465,7 +434,6 @@ export class VendorsService {
       });
     }
 
-    // Calculate total stats
     const totalSpent = ordersList.reduce(
       (sum, o) => sum + Number(o.total || 0),
       0,

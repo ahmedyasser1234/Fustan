@@ -42,7 +42,6 @@ export class WalletsService {
     const wallet = await this.getOrCreateWallet(vendorId);
 
     return await this.databaseService.db.transaction(async (tx) => {
-      // Update pending balance
       await tx
         .update(vendorWallets)
         .set({
@@ -51,7 +50,6 @@ export class WalletsService {
         })
         .where(eq(vendorWallets.id, wallet.id));
 
-      // Record transaction
       await tx.insert(walletTransactions).values({
         walletId: wallet.id,
         amount,
@@ -71,7 +69,6 @@ export class WalletsService {
     const wallet = await this.getOrCreateWallet(vendorId);
 
     return await this.databaseService.db.transaction(async (tx) => {
-      // Move from pending to available
       await tx
         .update(vendorWallets)
         .set({
@@ -81,7 +78,6 @@ export class WalletsService {
         })
         .where(eq(vendorWallets.id, wallet.id));
 
-      // Mark transaction as completed
       await tx
         .update(walletTransactions)
         .set({ status: 'completed' })

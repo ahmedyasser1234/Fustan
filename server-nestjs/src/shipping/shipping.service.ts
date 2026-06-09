@@ -25,11 +25,9 @@ export class ShippingService {
   }
 
   async upsert(vendorId: number, productId: number, shippingCost: number) {
-    // Check if shipping cost already exists for this product
     const existing = await this.findByProduct(productId);
 
     if (existing) {
-      // Update existing
       const [updated] = await this.databaseService.db
         .update(shipping)
         .set({ shippingCost, updatedAt: new Date() })
@@ -37,7 +35,6 @@ export class ShippingService {
         .returning();
       return updated;
     } else {
-      // Insert new
       const [created] = await this.databaseService.db
         .insert(shipping)
         .values({ vendorId, productId, shippingCost })

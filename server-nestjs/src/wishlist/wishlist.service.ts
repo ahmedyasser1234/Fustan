@@ -27,8 +27,6 @@ export class WishlistService {
   }
 
   async add(customerId: number, productId: number) {
-    // ... (existing add code)
-    // Check if product exists
     const [product] = await this.databaseService.db
       .select()
       .from(products)
@@ -39,7 +37,6 @@ export class WishlistService {
       throw new NotFoundException('Product not found');
     }
 
-    // Check if already in wishlist
     const [existing] = await this.databaseService.db
       .select()
       .from(wishlist)
@@ -67,7 +64,6 @@ export class WishlistService {
   }
 
   async remove(customerId: number, productId: number) {
-    // ... (existing remove code)
     const result = await this.databaseService.db
       .delete(wishlist)
       .where(
@@ -86,7 +82,6 @@ export class WishlistService {
   }
 
   async checkStatus(customerId: number, productId: number) {
-    // ... (existing checkStatus code)
     const [item] = await this.databaseService.db
       .select()
       .from(wishlist)
@@ -101,7 +96,6 @@ export class WishlistService {
     return { isFavorite: !!item };
   }
 
-  // --- Sharing Logic ---
 
   async getSettings(userId: number) {
     let [settings] = await this.databaseService.db

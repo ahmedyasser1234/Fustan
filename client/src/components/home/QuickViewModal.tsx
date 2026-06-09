@@ -27,7 +27,6 @@ export function QuickViewModal({ initialProduct, isOpen, onClose }: QuickViewMod
     const [selectedSize, setSelectedSize] = useState<string | null>(null);
     const [selectedColor, setSelectedColor] = useState<string | null>(null);
 
-    // Fetch full product details when modal is open
     const { data: fullProduct, isLoading } = useQuery({
         queryKey: ['product', initialProduct?.id],
         queryFn: () => endpoints.products.get(initialProduct.id),
@@ -36,7 +35,6 @@ export function QuickViewModal({ initialProduct, isOpen, onClose }: QuickViewMod
 
     const product = fullProduct || initialProduct;
 
-    // Reset state when product changes
     if (!product) return null;
 
     const name = language === 'ar' ? product.nameAr : product.nameEn;
@@ -45,10 +43,7 @@ export function QuickViewModal({ initialProduct, isOpen, onClose }: QuickViewMod
         ? Number(product.price).toLocaleString('ar-SA')
         : Number(product.price).toLocaleString();
 
-    // Parse options
     const sizes = Array.isArray(product.sizes) ? product.sizes : JSON.parse(product.sizes || '[]');
-    // Handle colors from relation (array of objects) or legacy/prop (if any)
-    // The backend getter returns 'colors' property which is array of ProductColor
     const colors = product.colors || [];
 
     return (

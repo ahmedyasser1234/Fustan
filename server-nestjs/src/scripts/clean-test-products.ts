@@ -6,8 +6,7 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 
-// CONFIGURATION
-const DRY_RUN = true; // Set to false to actually delete
+const DRY_RUN = true; 
 const EXCLUDE_IDS = [2];
 
 const connectionString = process.env.DATABASE_URL;
@@ -23,17 +22,13 @@ function isTestJunk(name: string | null): boolean {
   const clean = name.trim();
   if (clean.length === 0) return false;
 
-  // 1. Less than 4 meaningful characters
   if (clean.length < 4) return true;
 
-  // 2. Repeated characters pattern (e.g., "منمنم", "بيبيب", "تتتات", "aaaaa")
-  // This regex looks for a character repeated 3 or more times, or a sequence of 2 chars repeated
-  const repeatedChar = /(.)\1{2,}/; // aaa
-  const repeatedSequence = /(.{2})\1{1,}/; // abab
+  const repeatedChar = /(.)\1{2,}/; 
+  const repeatedSequence = /(.{2})\1{1,}/; 
   if (repeatedChar.test(clean) || repeatedSequence.test(clean)) return true;
 
-  // 3. Keyboard mashed / random (heuristic)
-  // Consonants only or very low vowel density in English
+
   if (/^[a-zA-Z]+$/.test(clean)) {
     const vowels = clean.match(/[aeiouAEIOU]/g);
     if (!vowels || vowels.length / clean.length < 0.2) return true;

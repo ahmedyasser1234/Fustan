@@ -76,15 +76,12 @@ export function TryOnModal({ isOpen, onClose, productImage, productName }: TryOn
     try {
       const formData = new FormData();
       
-      // Fetch product image and convert to blob
       const res = await fetch(productImage);
       const blob = await res.blob();
       formData.append('dressImage', blob, 'dress.jpg');
       
-      // User image
       formData.append('customerImage', userImage);
       
-      // Defaults
       formData.append('scenePreset', 'random');
       formData.append('pose', 'random');
 
@@ -93,7 +90,6 @@ export function TryOnModal({ isOpen, onClose, productImage, productName }: TryOn
       if (response.data?.imageUrl) {
         setGeneratedImage(response.data.imageUrl);
         toast.success(language === 'ar' ? 'تمت معالجة التجربة بنجاح!' : 'Try-on processed successfully!');
-        // Update credits
         queryClient.invalidateQueries({ queryKey: ["ai-credits"] });
       } else {
         throw new Error('No image URL received');

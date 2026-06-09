@@ -18,7 +18,6 @@ const db = drizzle(client, { schema });
 async function main() {
   console.log('--- Starting SKU Fix Migration ---');
   
-  // Find products with empty, null or obviously invalid (short Arabic) SKUs
   const allProducts = (await db.query.products.findMany()) as schema.Product[];
   
   let updatedCount = 0;
@@ -26,7 +25,7 @@ async function main() {
     const currentSku = product.sku?.trim();
     const isInvalid = !currentSku || 
                      currentSku === '' || 
-                     /[\u0600-\u06FF]/.test(currentSku); // Contains Arabic
+                     /[\u0600-\u06FF]/.test(currentSku); 
 
     if (isInvalid) {
       const newSku = generateSKU(product.vendorId, product.categoryId || 0);

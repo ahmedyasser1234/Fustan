@@ -28,7 +28,6 @@ export class WalletsController {
     }
     const userId = user.id;
 
-    // Find vendor by userId
     const [vendor] = await this.databaseService.db
       .select()
       .from(vendors)

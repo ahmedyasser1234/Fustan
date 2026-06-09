@@ -43,7 +43,6 @@ export class WishlistController {
     return this.wishlistService.checkStatus(req.user.id, productId);
   }
 
-  // --- Sharing Endpoints ---
 
   @Get('settings')
   @UseGuards(JwtAuthGuard)

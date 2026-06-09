@@ -21,7 +21,6 @@ export function VendorsSection() {
         !v.storeNameAr?.includes('دعم')
     ) || [];
 
-    // if (!isLoading && activeVendors.length === 0) return null; // Force render for now to debug visibility
 
     return (
         <section className="pt-20 pb-0 bg-white relative overflow-hidden">

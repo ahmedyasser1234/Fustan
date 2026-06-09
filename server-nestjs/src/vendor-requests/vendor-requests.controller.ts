@@ -71,8 +71,6 @@ export class VendorRequestsController {
   ) {
     const vendor = await this.getVendor(req);
 
-    // When using multipart/form-data, NestJS might not auto-parse JSON fields in Body
-    // if they are strings. We need to check and parse if needed.
     const type = body.type || 'category_request';
     let data = body.data || {};
 

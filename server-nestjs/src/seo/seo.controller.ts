@@ -13,10 +13,8 @@ export class SeoController {
   async getSitemap(@Res() res: Response) {
     const siteUrl = 'https://fustan.cloud';
     
-    // Fetch all products
     const allProducts = await this.db.db.select().from(products);
     
-    // Fetch all categories
     const allCategories = await this.db.db.select().from(categories);
 
     const sitemap = `<?xml version="1.0" encoding="UTF-8"?>

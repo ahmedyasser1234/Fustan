@@ -5,7 +5,6 @@ import * as dotenv from 'dotenv';
 import { eq } from 'drizzle-orm';
 import * as path from 'path';
 
-// Load env from project root
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
 async function main() {
@@ -22,10 +21,10 @@ async function main() {
   console.log('1. Checking if storeReviews table exists...');
   try {
     const reviews = await db.select().from(schema.storeReviews).limit(1);
-    console.log('✅ Success! Table exists. Query result:', reviews);
+    console.log(' Success! Table exists. Query result:', reviews);
   } catch (e) {
     console.error(
-      '❌ Error querying storeReviews table. It might not exist.',
+      ' Error querying storeReviews table. It might not exist.',
       e,
     );
     await pool.end();
@@ -35,16 +34,15 @@ async function main() {
   console.log('2. Finding a valid user to test with...');
   const users = await db.select().from(schema.users).limit(1);
   if (!users.length) {
-    console.log('⚠️ No users found in database. Cannot test insertion.');
+    console.log('No users found in database. Cannot test insertion.');
     await pool.end();
     return;
   }
   const testUser = users[0];
-  console.log(`✅ Found user: ID=${testUser.id}, Role=${testUser.role}`);
+  console.log(` Found user: ID=${testUser.id}, Role=${testUser.role}`);
 
   console.log('3. Attempting to insert a test review...');
   try {
-    // cleanup potential previous runs
     await db
       .delete(schema.storeReviews)
       .where(eq(schema.storeReviews.customerId, testUser.id));
@@ -60,9 +58,9 @@ async function main() {
         city: 'Test City',
       })
       .returning();
-    console.log('✅ Insert successful:', result);
+    console.log(' Insert successful:', result);
   } catch (e) {
-    console.error('❌ Insert failed:', e);
+    console.error('Insert failed:', e);
   }
 
   await pool.end();

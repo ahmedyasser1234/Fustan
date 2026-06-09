@@ -29,14 +29,12 @@ export class VirtualTryonService {
       throw new InternalServerErrorException('PIXA_API_KEY is not configured');
     }
 
-    // Strip base64 data URI prefix if present
     const cleanPerson = personImageBase64.replace(/^data:image\/\w+;base64,/, '');
     const cleanGarment = garmentImageBase64.replace(/^data:image\/\w+;base64,/, '');
 
     const personBuffer = Buffer.from(cleanPerson, 'base64');
     const garmentBuffer = Buffer.from(cleanGarment, 'base64');
 
-    // Build multipart form using native FormData (Node 18+)
     const formData = new FormData();
 
     const personBlob = new Blob([personBuffer], { type: 'image/jpeg' });
@@ -46,7 +44,7 @@ export class VirtualTryonService {
     formData.append('garment_image', garmentBlob, 'garment.jpg');
     formData.append('wait_for_result', 'true');
 
-    this.logger.log('🎽 Sending request to Pixa Virtual Try-On API...');
+    this.logger.log(' Sending request to Pixa Virtual Try-On API...');
 
     const response = await fetch(this.apiUrl, {
       method: 'POST',
@@ -66,7 +64,7 @@ export class VirtualTryonService {
     }
 
     const result = await response.json() as any;
-    this.logger.log(`✅ Pixa Try-On success: ${result.result_url}`);
+    this.logger.log(` Pixa Try-On success: ${result.result_url}`);
 
     return { result_url: result.result_url };
   }

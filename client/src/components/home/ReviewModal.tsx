@@ -74,7 +74,7 @@ export function ReviewModal({ children }: ReviewModalProps) {
     }
 
     if (user?.role !== 'customer') {
-        return null; // Don't show review button for vendors/admins
+        return null; 
     }
 
     return (
