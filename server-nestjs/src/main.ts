@@ -80,14 +80,12 @@ async function bootstrap() {
         persistAuthorization: true,
       },
     });
-    logger.log(
-      `📚 Swagger documentation available at: ${await app.getUrl()}/api/docs`,
-    );
-  }
-
+    }
   const port = process.env.PORT || 3001;
   await app.listen(port, '0.0.0.0');
-
   logger.log(`🚀 Application is running on: ${await app.getUrl()}`);
+  if (process.env.NODE_ENV !== 'production') {
+    logger.log(`📚 Swagger documentation available at: ${await app.getUrl()}/api/docs`);
+  }
 }
 bootstrap();

@@ -1,9 +1,10 @@
 {
   "include": [
-    "src/**/*",
     "client/src/**/*",
+    "server-nestjs/src/database/schema.ts",
     "shared/**/*",
-    "server-nestjs/src/database/schema.ts"
+    "src/**/*",
+    ".next/types/**/*.ts"
   ],
   "exclude": [
     "node_modules",
@@ -40,6 +41,15 @@
       "@shared/*": [
         "./shared/*"
       ]
-    }
+    },
+    "target": "ES2017",
+    "allowJs": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   }
 }
