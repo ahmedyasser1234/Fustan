@@ -182,6 +182,7 @@ function Navigation({ isChatHistoryOpen, setIsChatHistoryOpen, unreadCount, syst
               { label: t('products'), href: "/products" },
               { label: t('about'), href: "/about-us" },
               { label: t('contact'), href: "/contact-us" },
+              { label: language === 'ar' ? 'المدونة' : 'Blog', href: "/blog" },
               { label: language === 'ar' ? 'اعرضي فستانك' : 'Sell Your Dress', href: "/sell-dress" }
             ].map(link => {
               const isActive = location === link.href;
@@ -424,6 +425,7 @@ function Navigation({ isChatHistoryOpen, setIsChatHistoryOpen, unreadCount, syst
                     { label: t('products'), href: "/products" },
                     { label: t('about'), href: "/about-us" },
                     { label: t('contact'), href: "/contact-us" },
+                    { label: language === 'ar' ? 'المدونة' : 'Blog', href: "/blog" },
                     { label: language === 'ar' ? 'اعرضي فستانك للبيع' : 'Sell Your Dress', href: "/sell-dress" }
                   ].map((item) => (
                     <Link key={item.label} href={item.href}>
