@@ -233,13 +233,13 @@ export default function Home() {
             initial={{ opacity: 0, x: language === 'ar' ? 50 : -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
-            className={`max-w-3xl w-full ${language === 'ar'
-              ? 'mr-auto lg:mr-[40%] text-right lg:-translate-x-[300px]'
-              : 'ml-auto lg:ml-[40%] text-left lg:translate-x-[300px]'
+            className={`max-w-2xl w-full mr-auto ${language === 'ar'
+              ? 'text-right'
+              : 'text-left'
               }`}
           >
             <div className="flex flex-col items-start space-y-6">
-              <h2 className="text-white leading-tight drop-shadow-2xl font-medium w-full text-center sm:text-start">
+              <h2 className="text-white leading-tight drop-shadow-2xl font-medium w-full text-start">
                 <span className="text-lg sm:text-3xl lg:text-4xl block mb-1 lg:mb-2">{t(heroSlides[currentVideo].title1 as any)}</span>
                 <span className="text-2xl sm:text-3xl lg:text-3xl text-white/90 leading-[1.1] sm:leading-tight">{t(heroSlides[currentVideo].title2 as any)}</span>
               </h2>
