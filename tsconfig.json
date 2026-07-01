@@ -3,8 +3,7 @@
     "client/src/**/*",
     "server-nestjs/src/database/schema.ts",
     "shared/**/*",
-    "src/**/*",
-    ".next/types/**/*.ts"
+    "src/**/*"
   ],
   "exclude": [
     "node_modules",
@@ -45,11 +44,6 @@
     "target": "ES2017",
     "allowJs": true,
     "resolveJsonModule": true,
-    "isolatedModules": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ]
+    "isolatedModules": true
   }
 }
