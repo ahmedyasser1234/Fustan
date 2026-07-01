@@ -649,15 +649,6 @@ import { ChatProvider } from "./contexts/ChatContext";
 import { ChatContainer } from "./components/chat/ChatContainer";
 
 function App() {
-  // const socket = useSocket(); // Socket is now managed in ChatContext
-  const { user } = useAuth();
-  // const [isChatHistoryOpen, setIsChatHistoryOpen] = useState(false); // MOVED TO CONTEXT
-
-  // Centralized chat notifications
-
-  const [location] = useLocation();
-  const isHome = location === '/';
-
   return (
     <ErrorBoundary>
       <Router>
@@ -672,7 +663,6 @@ function App() {
     </ErrorBoundary>
   );
 }
-
 // Separated Content to use ChatContext
 import { useChat } from "./contexts/ChatContext";
 
