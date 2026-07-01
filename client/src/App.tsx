@@ -1,7 +1,7 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
-import { Route, Switch, Link, useLocation } from "wouter";
+import { Route, Switch, Link, useLocation, Router } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "@/pages/Home";
@@ -589,7 +589,7 @@ function Footer() {
   );
 }
 
-function Router() {
+function AppRoutes() {
   return (
     <Switch>
       <Route path="/" component={Home} />
@@ -660,13 +660,15 @@ function App() {
 
   return (
     <ErrorBoundary>
-      <ThemeProvider defaultTheme="light">
-        <TooltipProvider>
-          <ChatProvider>
-            <AppContent />
-          </ChatProvider>
-        </TooltipProvider>
-      </ThemeProvider>
+      <Router>
+        <ThemeProvider defaultTheme="light">
+          <TooltipProvider>
+            <ChatProvider>
+              <AppContent />
+            </ChatProvider>
+          </TooltipProvider>
+        </ThemeProvider>
+      </Router>
     </ErrorBoundary>
   );
 }
@@ -694,7 +696,7 @@ function AppContent() {
         systemUnreadCount={systemUnreadCount}
       />
       <main className={`flex-1 ${!HERO_PAGES.includes(location) ? 'pt-20' : ''}`}>
-        <Router />
+        <AppRoutes />
       </main>
       <Footer />
 
